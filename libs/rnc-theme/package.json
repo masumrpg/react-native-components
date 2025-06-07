@@ -1,0 +1,66 @@
+{
+  "name": "rnc-theme",
+  "version": "0.0.1",
+  "funding": {
+    "type": "github",
+    "url": "https://github.com/sponsors/masumrpg"
+  },
+  "homepage": "https://docs.masum.cloud/docs/category/-rnc-theme",
+  "scripts": {
+    "build": "bob build"
+  },
+  "react-native-builder-bob": {
+    "source": "src",
+    "output": "dist",
+    "targets": [
+      "commonjs",
+      "module",
+      [
+        "typescript",
+        {
+          "project": "tsconfig.lib.json",
+          "tsc": "../../node_modules/.bin/tsc"
+        }
+      ]
+    ]
+  },
+  "main": "./dist/commonjs/index.js",
+  "module": "./dist/module/index.js",
+  "types": "./dist/typescript/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/typescript/index.d.ts",
+      "import": "./dist/module/index.js",
+      "require": "./dist/commonjs/index.js",
+      "default": "./src/index.ts"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "!**/*.tsbuildinfo"
+  ],
+  "keywords": [
+    "react-native",
+    "rnc-theme",
+    "mobile"
+  ],
+  "author": "Masum",
+  "license": "MIT",
+  "peerDependencies": {
+    "react": ">=19",
+    "react-native": ">=0.79.3",
+    "react-native-reanimated": ">=3",
+    "@react-native-async-storage/async-storage": ">=2",
+    "lucide-react-native": ">=0.513.0"
+  },
+  "devDependencies": {
+    "@types/react": ">=19",
+    "typescript": ">=5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/masumrpg/masumdev.git",
+    "directory": "libs/rnc-theme"
+  }
+}
