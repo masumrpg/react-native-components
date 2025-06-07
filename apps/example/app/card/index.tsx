@@ -1,346 +1,222 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView, Switch } from 'react-native';
-import {
-  Heart,
-  Star,
-  Settings,
-  Download,
-  Plus,
-  Edit,
-  Trash2,
-  Save,
-} from 'lucide-react-native';
+import React from 'react';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
-  ButtonText,
   Button,
+  Typography,
+  ButtonText,
   ButtonIcon,
-  useTheme,
 } from 'rnc-theme';
+import { MaterialIcons } from '@expo/vector-icons';
 
-const CardScreen: React.FC = () => {
-  const { theme, themeMode, setThemeMode } = useTheme();
-  const [loading, setLoading] = useState(false);
-
-  const toggleTheme = () => {
-    setThemeMode(themeMode === 'light' ? 'dark' : 'light');
-  };
-
-  const handleLoadingDemo = () => {
-    setLoading(true);
-    setTimeout(() => setLoading(false), 2000);
-  };
-
-  const createStyles = () => ({
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.background,
-      padding: theme.spacing.md,
-    },
-    header: {
-      fontSize: theme.typography.heading.fontSize,
-      fontWeight: theme.typography.heading.fontWeight,
-      color: theme.colors.text,
-      marginBottom: theme.spacing.lg,
-      textAlign: 'center' as const,
-    },
-    section: {
-      marginBottom: theme.spacing.xl,
-    },
-    sectionTitle: {
-      fontSize: theme.typography.subtitle.fontSize,
-      fontWeight: theme.typography.subtitle.fontWeight,
-      color: theme.colors.text,
-      marginBottom: theme.spacing.md,
-    },
-    themeControl: {
-      flexDirection: 'row' as const,
-      alignItems: 'center' as const,
-      justifyContent: 'space-between' as const,
-      padding: theme.spacing.md,
-      backgroundColor: theme.colors.surface,
-      borderRadius: theme.borderRadius.md,
-      marginBottom: theme.spacing.lg,
-    },
-    themeText: {
-      fontSize: theme.typography.body.fontSize,
-      color: theme.colors.text,
-    },
-    buttonGrid: {
-      flexDirection: 'row' as const,
-      flexWrap: 'wrap' as const,
-      gap: theme.spacing.sm,
-      marginBottom: theme.spacing.md,
-    },
-    buttonRow: {
-      flexDirection: 'row' as const,
-      gap: theme.spacing.sm,
-      marginBottom: theme.spacing.sm,
-    },
-  });
-
-  const styles = createStyles();
-
+const CardScreen = () => {
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>UI Components Demo</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      {/* 1. Simplest Card */}
+      <Card margin="md">
+        <CardContent>
+          <Typography>Simple card with just content.</Typography>
+        </CardContent>
+      </Card>
 
-      {/* Theme Control */}
-      <View style={styles.themeControl}>
-        <Text style={styles.themeText}>
-          Mode: {themeMode === 'light' ? 'Light' : 'Dark'}
-        </Text>
-        <Switch
-          value={themeMode === 'dark'}
-          onValueChange={toggleTheme}
-          trackColor={{
-            false: theme.colors.border,
-            true: theme.colors.primary,
-          }}
-          thumbColor={theme.colors.surface}
+      {/* 2. Basic Card with Header */}
+      <Card margin="md">
+        <CardHeader title="Basic Card" />
+        <CardContent>
+          <Typography>A card with header and content.</Typography>
+        </CardContent>
+      </Card>
+
+      {/* 3. Standard Card */}
+      <Card margin="md">
+        <CardHeader
+          title="Standard Card"
+          subtitle="With header and footer"
+          borderBottom
         />
-      </View>
+        <CardContent>
+          <Typography>
+            This is a standard card layout with all basic features.
+          </Typography>
+        </CardContent>
+        <CardFooter showBorder>
+          <Button size="sm" variant="primary">
+            <ButtonText>Action</ButtonText>
+          </Button>
+        </CardFooter>
+      </Card>
 
-      {/* Card Demo */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Card Components</Text>
-
-        <Card style={{ marginBottom: theme.spacing.md }}>
-          <CardHeader
-            title="Card dengan Header"
-            subtitle="Ini adalah subtitle dari card"
-          />
-          <CardContent>
-            <Text
-              style={{
-                color: theme.colors.text,
-                fontSize: theme.typography.body.fontSize,
-              }}
-            >
-              Ini adalah konten dari card. Anda dapat menempatkan berbagai
-              komponen di sini.
-            </Text>
-          </CardContent>
-          <CardFooter>
-            <Button variant="outline" size="sm">
-              <ButtonText variant="outline" size="sm">
-                Cancel
-              </ButtonText>
+      {/* 4. Interactive Card */}
+      <Card margin="md" style={styles.interactiveCard} elevation={2}>
+        <CardHeader
+          title="Interactive Card"
+          subtitle="With multiple actions"
+          borderBottom
+        />
+        <CardContent>
+          <Typography style={styles.mb8}>Primary content area with:</Typography>
+          <View style={styles.bulletPoints}>
+            <MaterialIcons name="check-circle" size={16} color="green" />
+            <Typography style={styles.bulletText}>
+              Multiple action buttons
+            </Typography>
+          </View>
+          <View style={styles.bulletPoints}>
+            <MaterialIcons name="check-circle" size={16} color="green" />
+            <Typography style={styles.bulletText}>Custom styling</Typography>
+          </View>
+        </CardContent>
+        <CardFooter showBorder justifyContent="space-between">
+          <Button variant="ghost" size="sm">
+            <ButtonText>Cancel</ButtonText>
+          </Button>
+          <View style={styles.footerButtons}>
+            <Button variant="outline" size="sm" style={styles.mr8}>
+              <ButtonText>Save</ButtonText>
             </Button>
-            <Button
-              variant="primary"
-              size="sm"
-              style={{ marginLeft: theme.spacing.sm }}
-            >
-              <ButtonText variant="primary" size="sm">
-                Save
-              </ButtonText>
+            <Button variant="primary" size="sm">
+              <ButtonText>Submit</ButtonText>
             </Button>
-          </CardFooter>
-        </Card>
+          </View>
+        </CardFooter>
+      </Card>
 
-        <Card>
-          <CardContent>
-            <Text
-              style={{
-                color: theme.colors.text,
-                fontSize: theme.typography.body.fontSize,
-              }}
-            >
-              Card sederhana tanpa header dan footer.
-            </Text>
-          </CardContent>
-        </Card>
-      </View>
-
-      {/* Button Variants Demo */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Button Variants</Text>
-
-        <View style={styles.buttonGrid}>
-          <Button variant="primary">
-            <ButtonText variant="primary">Primary</ButtonText>
-          </Button>
-
-          <Button variant="secondary">
-            <ButtonText variant="secondary">Secondary</ButtonText>
-          </Button>
-
-          <Button variant="outline">
-            <ButtonText variant="outline">Outline</ButtonText>
-          </Button>
-
-          <Button variant="ghost">
-            <ButtonText variant="ghost">Ghost</ButtonText>
-          </Button>
-        </View>
-
-        <View style={styles.buttonGrid}>
-          <Button variant="success">
-            <ButtonText variant="success">Success</ButtonText>
-          </Button>
-
-          <Button variant="error">
-            <ButtonText variant="error">Error</ButtonText>
-          </Button>
-
-          <Button variant="warning">
-            <ButtonText variant="warning">Warning</ButtonText>
-          </Button>
-
-          <Button variant="info">
-            <ButtonText variant="info">Info</ButtonText>
-          </Button>
-        </View>
-      </View>
-
-      {/* Button Sizes Demo */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Button Sizes</Text>
-
-        <View style={styles.buttonRow}>
-          <Button variant="primary" size="sm">
-            <ButtonText variant="primary" size="sm">
-              Small
-            </ButtonText>
-          </Button>
-
-          <Button variant="primary" size="md">
-            <ButtonText variant="primary" size="md">
-              Medium
-            </ButtonText>
-          </Button>
-
-          <Button variant="primary" size="lg">
-            <ButtonText variant="primary" size="lg">
-              Large
-            </ButtonText>
-          </Button>
-        </View>
-      </View>
-
-      {/* Button with Icons Demo */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Buttons with Icons</Text>
-
-        <View style={styles.buttonGrid}>
-          <Button variant="primary">
+      {/* 5. Complex Card */}
+      <Card
+        margin="md"
+        backgroundColor="primary"
+        borderRadius="xl"
+        elevation={5}
+        shadowOpacity={0.2}
+      >
+        <CardHeader
+          title="Complex Card"
+          subtitle="Advanced usage example"
+          titleStyle={styles.lightText}
+          subtitleStyle={styles.lightText}
+          borderBottom
+        />
+        <CardContent padding="lg">
+          <View style={styles.complexContent}>
+            <View style={styles.statsContainer}>
+              <View style={styles.statItem}>
+                <Typography style={styles.statNumber}>128</Typography>
+                <Typography style={styles.lightStatLabel}>Views</Typography>
+              </View>
+              <View style={styles.statItem}>
+                <Typography style={styles.statNumber}>47</Typography>
+                <Typography style={styles.lightStatLabel}>Likes</Typography>
+              </View>
+              <View style={styles.statItem}>
+                <Typography style={styles.statNumber}>12</Typography>
+                <Typography style={styles.lightStatLabel}>Comments</Typography>
+              </View>
+            </View>
+            <Typography style={styles.lightTextWithMargin}>
+              Advanced card with custom styling, statistics, and multiple
+              interactive elements.
+            </Typography>
+          </View>
+        </CardContent>
+        <CardFooter
+          padding="lg"
+          showBorder
+          style={styles.complexFooter}
+          justifyContent="space-between"
+        >
+          <Button variant="ghost" size="sm" style={styles.lightButton}>
             <ButtonIcon
-              icon={<Heart color={'#fff'} />}
-              variant="primary"
-              marginRight="xs"
+              icon={<MaterialIcons name="share" size={16} color="#fff" />}
             />
-            <ButtonText variant="primary">Like</ButtonText>
+            <ButtonText style={styles.lightText}>Share</ButtonText>
           </Button>
-
-          <Button variant="secondary">
+          <Button variant="outline" size="sm" style={styles.lightButton}>
             <ButtonIcon
-              icon={<Star color={'#fff'} />}
-              variant="secondary"
-              marginRight="xs"
+              icon={<MaterialIcons name="favorite" size={16} color="#fff" />}
             />
-            <ButtonText variant="secondary">Favorite</ButtonText>
+            <Typography style={styles.lightText}>Like</Typography>
           </Button>
-
-          <Button variant="outline">
-            <ButtonIcon
-              icon={<Settings color={'#fff'} />}
-              variant="outline"
-              marginRight="xs"
-            />
-            <ButtonText variant="outline">Settings</ButtonText>
-          </Button>
-
-          <Button variant="success">
-            <ButtonIcon
-              icon={<Download color={'#fff'} />}
-              variant="success"
-              marginRight="xs"
-            />
-            <ButtonText variant="success">Download</ButtonText>
-          </Button>
-        </View>
-
-        {/* Icon Only Buttons */}
-        <View style={styles.buttonRow}>
-          <Button variant="primary" style={{ width: 48, height: 48 }}>
-            <ButtonIcon icon={<Plus color={'#fff'} />} variant="primary" />
-          </Button>
-
-          <Button variant="secondary" style={{ width: 48, height: 48 }}>
-            <ButtonIcon icon={<Edit color={'#fff'} />} variant="secondary" />
-          </Button>
-
-          <Button variant="error" style={{ width: 48, height: 48 }}>
-            <ButtonIcon icon={<Trash2 color={'#fff'} />} variant="error" />
-          </Button>
-
-          <Button variant="success" style={{ width: 48, height: 48 }}>
-            <ButtonIcon icon={<Save color={'#fff'} />} variant="success" />
-          </Button>
-        </View>
-      </View>
-
-      {/* Button States Demo */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Button States</Text>
-
-        <View style={styles.buttonGrid}>
-          <Button variant="primary" disabled>
-            <ButtonText variant="primary" disabled>
-              Disabled
-            </ButtonText>
-          </Button>
-
-          <Button
-            variant="primary"
-            loading={loading}
-            onPress={handleLoadingDemo}
-          >
-            <ButtonText
-              variant="primary"
-              loading={loading}
-              showLoadingIndicator
-            >
-              {loading ? 'Loading...' : 'Click for Loading'}
-            </ButtonText>
-          </Button>
-        </View>
-      </View>
-
-      {/* Component Types Demo */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Component Types</Text>
-
-        <View style={styles.buttonGrid}>
-          <Button variant="primary" component="pressable">
-            <ButtonText variant="primary">Pressable</ButtonText>
-          </Button>
-
-          <Button variant="secondary" component="touchable">
-            <ButtonText variant="secondary">TouchableOpacity</ButtonText>
-          </Button>
-        </View>
-      </View>
-
-      {/* Full Width Button */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Full Width Button</Text>
-
-        <Button variant="primary" fullWidth>
-          <ButtonIcon
-            icon={<Plus color={'#fff'} />}
-            variant="primary"
-            marginRight="xs"
-          />
-          <ButtonText variant="primary">Full Width Button</ButtonText>
-        </Button>
-      </View>
+        </CardFooter>
+      </Card>
     </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5' as const,
+  },
+  content: {
+    padding: 16,
+  },
+  lightText: {
+    color: '#ffffff' as const,
+  },
+  interactiveCard: {
+    borderColor: '#e2e8f0' as const,
+  },
+  bulletPoints: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    marginBottom: 4,
+  },
+  bulletText: {
+    marginLeft: 8,
+  },
+  footerButtons: {
+    flexDirection: 'row' as const,
+  },
+  mr8: {
+    marginRight: 8,
+  },
+  mb8: {
+    marginBottom: 8,
+  },
+  mt16: {
+    marginTop: 16,
+  },
+  complexContent: {
+    paddingVertical: 8,
+  },
+  statsContainer: {
+    flexDirection: 'row' as const,
+    justifyContent: 'space-around' as const,
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: 'rgba(255,255,255,0.2)' as const,
+  },
+  statItem: {
+    alignItems: 'center' as const,
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: 'bold' as const,
+    color: '#ffffff' as const,
+  },
+  statLabel: {
+    fontSize: 12,
+    opacity: 0.8,
+  },
+  // Combined styles untuk menghindari array
+  lightStatLabel: {
+    color: '#ffffff' as const,
+    fontSize: 12,
+    opacity: 0.8,
+  },
+  lightTextWithMargin: {
+    color: '#ffffff' as const,
+    marginTop: 16,
+  },
+  complexFooter: {
+    borderTopColor: 'rgba(255,255,255,0.2)' as const,
+  },
+  lightButton: {
+    borderColor: 'rgba(255,255,255,0.3)' as const,
+  },
+});
 
 export default CardScreen;

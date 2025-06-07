@@ -1,11 +1,12 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Text, TextStyle, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils/color';
 import { Theme } from '../../../types/theme';
 
-interface CardProps {
+// Types
+interface CardProps extends React.ComponentPropsWithoutRef<typeof View> {
   children?: React.ReactNode;
   style?: ViewStyle;
   padding?: keyof Theme['spacing'];
@@ -16,13 +17,13 @@ interface CardProps {
   backgroundColor?: string;
 }
 
-interface CardContentProps {
+interface CardContentProps extends React.ComponentPropsWithoutRef<typeof View> {
   children?: React.ReactNode;
   style?: ViewStyle;
   padding?: keyof Theme['spacing'];
 }
 
-interface CardFooterProps {
+interface CardFooterProps extends React.ComponentPropsWithoutRef<typeof View> {
   children?: React.ReactNode;
   style?: ViewStyle;
   padding?: keyof Theme['spacing'];
@@ -36,7 +37,7 @@ interface CardFooterProps {
     | 'space-evenly';
 }
 
-interface CardHeaderProps {
+interface CardHeaderProps extends React.ComponentPropsWithoutRef<typeof View> {
   title?: string;
   subtitle?: string;
   children?: React.ReactNode;
@@ -49,70 +50,7 @@ interface CardHeaderProps {
   borderBottom?: boolean;
 }
 
-const Card: React.FC<CardProps> = ({
-  children,
-  style,
-  padding = 'sm',
-  margin,
-  borderRadius = 'lg',
-  elevation = 3,
-  shadowOpacity = 0.1,
-  backgroundColor,
-  ...props
-}) => {
-  const { theme } = useTheme();
-  const styles = useThemedStyles(createCardStyles);
-
-  return (
-    <View
-      style={[
-        styles.base,
-        {
-          backgroundColor: resolveColor(
-            theme,
-            backgroundColor,
-            theme.colors.surface
-          ),
-          borderRadius: theme.borderRadius[borderRadius],
-          padding: theme.spacing[padding],
-          marginBottom: margin ? theme.spacing[margin] : undefined,
-          shadowOpacity,
-          elevation,
-        },
-        style,
-      ]}
-      {...props}
-    >
-      {children}
-    </View>
-  );
-};
-
-const CardContent: React.FC<CardContentProps> = ({
-  children,
-  style,
-  padding = 'sm',
-  ...props
-}) => {
-  const { theme } = useTheme();
-  const styles = useThemedStyles(createCardContentStyles);
-
-  return (
-    <View
-      style={[
-        styles.base,
-        {
-          padding: theme.spacing[padding],
-        },
-        style,
-      ]}
-      {...props}
-    >
-      {children}
-    </View>
-  );
-};
-
+// Styles
 const createCardStyles = (theme: Theme) => ({
   base: {
     borderWidth: 1,
@@ -123,86 +61,183 @@ const createCardStyles = (theme: Theme) => ({
   },
 });
 
-const createCardContentStyles = (_: Theme) => ({
-  base: {},
-});
+// Components
+const Card = forwardRef<View, CardProps>(
+  (
+    {
+      children,
+      style,
+      padding = 'sm',
+      margin,
+      borderRadius = 'lg',
+      elevation = 3,
+      shadowOpacity = 0.1,
+      backgroundColor,
+      ...props
+    },
+    ref
+  ) => {
+    const { theme } = useTheme();
+    const styles = useThemedStyles(createCardStyles);
 
-const CardFooter: React.FC<CardFooterProps> = ({
-  children,
-  style,
-  padding = 'sm',
-  showBorder = false,
-  justifyContent = 'flex-end',
-  ...props
-}) => {
-  const { theme } = useTheme();
+    return (
+      <View
+        ref={ref}
+        style={[
+          styles.base,
+          {
+            backgroundColor: resolveColor(
+              theme,
+              backgroundColor,
+              theme.colors.surface
+            ),
+            borderRadius: theme.borderRadius[borderRadius],
+            padding: theme.spacing[padding],
+            marginBottom: margin ? theme.spacing[margin] : undefined,
+            shadowOpacity,
+            elevation,
+          },
+          style,
+        ]}
+        {...props}
+      >
+        {children}
+      </View>
+    );
+  }
+);
 
-  const footerStyle: ViewStyle = {
-    padding: theme.spacing[padding],
-    borderTopWidth: showBorder ? 1 : 0,
-    borderTopColor: theme.colors.border,
-    flexDirection: 'row',
-    justifyContent,
-    alignItems: 'center',
-  };
+const CardContent = forwardRef<View, CardContentProps>(
+  ({ children, style, padding = 'sm', ...props }, ref) => {
+    const { theme } = useTheme();
 
-  return (
-    <View style={[footerStyle, style]} {...props}>
-      {children}
-    </View>
-  );
-};
+    return (
+      <View
+        ref={ref}
+        style={[
+          {
+            padding: theme.spacing[padding],
+          },
+          style,
+        ]}
+        {...props}
+      >
+        {children}
+      </View>
+    );
+  }
+);
 
-const CardHeader: React.FC<CardHeaderProps> = ({
-  title,
-  subtitle,
-  children,
-  style,
-  titleStyle,
-  subtitleStyle,
-  padding = 'sm',
-  titleVariant = 'subtitle',
-  subtitleVariant = 'body',
-  borderBottom = false,
-  ...props
-}) => {
-  const { theme } = useTheme();
+const CardFooter = forwardRef<View, CardFooterProps>(
+  (
+    {
+      children,
+      style,
+      padding = 'sm',
+      showBorder = false,
+      justifyContent = 'flex-end',
+      ...props
+    },
+    ref
+  ) => {
+    const { theme } = useTheme();
 
-  const headerStyle: ViewStyle = {
-    padding: theme.spacing[padding],
-    borderBottomWidth: borderBottom ? 1 : 0,
-    borderBottomColor: theme.colors.border,
-  };
+    return (
+      <View
+        ref={ref}
+        style={[
+          {
+            padding: theme.spacing[padding],
+            borderTopWidth: showBorder ? 1 : 0,
+            borderTopColor: theme.colors.border,
+            flexDirection: 'row',
+            justifyContent,
+            alignItems: 'center',
+          },
+          style,
+        ]}
+        {...props}
+      >
+        {children}
+      </View>
+    );
+  }
+);
 
-  const defaultTitleStyle: TextStyle = {
-    fontSize: theme.typography[titleVariant].fontSize,
-    lineHeight: theme.typography[titleVariant].lineHeight,
-    color: theme.colors.text,
-    fontWeight: '600',
-    marginBottom: subtitle ? theme.spacing.xs : 0,
-  };
+const CardHeader = forwardRef<View, CardHeaderProps>(
+  (
+    {
+      title,
+      subtitle,
+      children,
+      style,
+      titleStyle,
+      subtitleStyle,
+      padding = 'sm',
+      titleVariant = 'subtitle',
+      subtitleVariant = 'body',
+      borderBottom = false,
+      ...props
+    },
+    ref
+  ) => {
+    const { theme } = useTheme();
 
-  const defaultSubtitleStyle: TextStyle = {
-    fontSize: theme.typography[subtitleVariant].fontSize,
-    lineHeight: theme.typography[subtitleVariant].lineHeight,
-    color: theme.colors.textSecondary,
-    fontWeight: '400',
-  };
+    return (
+      <View
+        ref={ref}
+        style={[
+          {
+            padding: theme.spacing[padding],
+            borderBottomWidth: borderBottom ? 1 : 0,
+            borderBottomColor: theme.colors.border,
+          },
+          style,
+        ]}
+        {...props}
+      >
+        {title && (
+          <Text
+            style={[
+              {
+                fontSize: theme.typography[titleVariant].fontSize,
+                lineHeight: theme.typography[titleVariant].lineHeight,
+                color: theme.colors.text,
+                fontWeight: '600',
+                marginBottom: subtitle ? theme.spacing.xs : 0,
+              },
+              titleStyle,
+            ]}
+          >
+            {title}
+          </Text>
+        )}
+        {subtitle && (
+          <Text
+            style={[
+              {
+                fontSize: theme.typography[subtitleVariant].fontSize,
+                lineHeight: theme.typography[subtitleVariant].lineHeight,
+                color: theme.colors.textSecondary,
+                fontWeight: '400',
+              },
+              subtitleStyle,
+            ]}
+          >
+            {subtitle}
+          </Text>
+        )}
+        {children}
+      </View>
+    );
+  }
+);
 
-  return (
-    <View style={[headerStyle, style]} {...props}>
-      {title && <Text style={[defaultTitleStyle, titleStyle]}>{title}</Text>}
-      {subtitle && (
-        <Text style={[defaultSubtitleStyle, subtitleStyle]}>{subtitle}</Text>
-      )}
-      {children}
-    </View>
-  );
-};
+// Display names for debugging
+Card.displayName = 'Card';
+CardContent.displayName = 'CardContent';
+CardFooter.displayName = 'CardFooter';
+CardHeader.displayName = 'CardHeader';
 
-export {
-  Card, CardContent, CardFooter, CardHeader
-};
-export type {
-  CardProps, CardContentProps, CardFooterProps, CardHeaderProps
-};
+export { Card, CardContent, CardFooter, CardHeader };
+export type { CardProps, CardContentProps, CardFooterProps, CardHeaderProps };
