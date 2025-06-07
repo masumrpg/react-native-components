@@ -13,7 +13,6 @@ import Animated, {
   withTiming,
   interpolate,
   Extrapolation,
-  runOnJS,
 } from 'react-native-reanimated';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -150,6 +149,7 @@ const Checkbox: React.FC<CheckboxProps> = ({
     borderProgress.value = withTiming(isChecked ? 1 : 0, {
       duration: 120,
     });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isChecked]);
 
   const handlePress = () => {
