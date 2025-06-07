@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "license": "MIT",
   "scripts": {
+    "create-lib": "node tools/scripts/create-lib.js",
     "start": "bunx nx start example",
     "start:clear": "bun run nx reset && bun start --clear",
-    "build": "bunx nx run-many --target=build --all",
-    "generate:lib": "./tools/scripts/generate-lib.sh"
+    "build": "bunx nx run-many --target=build --all"
   },
   "private": true,
   "dependencies": {
