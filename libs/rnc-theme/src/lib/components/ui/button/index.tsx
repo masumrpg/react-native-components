@@ -1,4 +1,10 @@
-import React from 'react';
+import React, {
+  useMemo,
+  useRef,
+  forwardRef,
+  useImperativeHandle,
+  useCallback,
+} from 'react';
 import {
   Pressable,
   TouchableOpacity,
@@ -7,14 +13,29 @@ import {
   TouchableOpacityProps,
   View,
   TextStyle,
-  Text,
+  GestureResponderEvent,
 } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+  runOnJS,
+  withSequence,
+  SharedValue,
+} from 'react-native-reanimated';
 import { Theme } from '../../../types/theme';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils/color';
 import { Spinner } from '../spinner';
 
+// Animated components
+const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
+const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity);
+
+// Type definitions
 type ButtonVariant =
   | 'primary'
   | 'secondary'
@@ -26,6 +47,20 @@ type ButtonVariant =
   | 'info';
 type ButtonSize = 'sm' | 'md' | 'lg';
 type ButtonComponent = 'pressable' | 'touchable';
+type IconPosition = 'left' | 'right' | 'center';
+type AnimationType = 'bounce' | 'pulse' | 'shake';
+
+interface ButtonRef {
+  focus: () => void;
+  blur: () => void;
+  animate: (type: AnimationType) => void;
+}
+
+interface SpringConfig {
+  damping?: number;
+  stiffness?: number;
+  mass?: number;
+}
 
 interface BaseButtonProps {
   children?: React.ReactNode;
@@ -37,24 +72,24 @@ interface BaseButtonProps {
   borderRadius?: keyof Theme['borderRadius'];
   fullWidth?: boolean;
   component?: ButtonComponent;
+  animationEnabled?: boolean;
+  pressAnimationScale?: number;
+  springConfig?: SpringConfig;
 }
 
-// Separate interfaces for cleaner type definitions
 interface PressableButtonProps
   extends BaseButtonProps,
-    Omit<PressableProps, keyof BaseButtonProps> {
+    Omit<PressableProps, keyof BaseButtonProps | 'style'> {
   component?: 'pressable';
 }
 
 interface TouchableButtonProps
   extends BaseButtonProps,
-    Omit<TouchableOpacityProps, keyof BaseButtonProps> {
+    Omit<TouchableOpacityProps, keyof BaseButtonProps | 'style'> {
   component: 'touchable';
 }
 
 type ButtonProps = PressableButtonProps | TouchableButtonProps;
-
-type IconPosition = 'left' | 'right' | 'center';
 
 interface ButtonIconProps {
   icon?: React.ReactNode;
@@ -77,160 +112,65 @@ interface ButtonTextProps {
   showLoadingIndicator?: boolean;
 }
 
-const Button: React.FC<ButtonProps> = ({
-  children,
-  variant = 'primary',
-  size = 'md',
-  disabled = false,
-  loading = false,
-  style,
-  borderRadius = 'md',
-  fullWidth = false,
-  component = 'pressable',
-  ...props
-}) => {
-  const { theme } = useTheme();
-  const styles = useThemedStyles(createButtonStyles);
+// Style configurations
+const VARIANT_COLORS = {
+  success: '#10B981',
+  warning: '#F59E0B',
+  info: '#3B82F6',
+} as const;
 
-  const baseStyle: ViewStyle = {
-    ...styles.base,
-    ...styles[variant],
-    ...styles[size],
-    borderRadius: theme.borderRadius[borderRadius],
-    ...(fullWidth && { width: '100%' as const }),
-    opacity: disabled ? 0.6 : 1,
-    ...(style as ViewStyle),
-  };
+const SIZE_CONFIG = {
+  sm: { minHeight: 32, spinnerSize: 16 },
+  md: { minHeight: 40, spinnerSize: 20 },
+  lg: { minHeight: 48, spinnerSize: 24 },
+} as const;
 
-  const isDisabled = disabled || loading;
+const DEFAULT_SPRING_CONFIG: Required<SpringConfig> = {
+  damping: 12,
+  stiffness: 120,
+  mass: 0.8,
+} as const;
 
-  const childrenWithProps = React.Children.map(children, (child) => {
-    if (React.isValidElement(child)) {
-      if (child.type === ButtonText) {
-        return React.cloneElement(
-          child as React.ReactElement<ButtonTextProps>,
-          {
-            variant,
-            size,
-            disabled,
-            loading,
-          }
-        );
-      }
-      if (child.type === ButtonIcon) {
-        return React.cloneElement(
-          child as React.ReactElement<ButtonIconProps>,
-          {
-            variant,
-            size,
-            disabled,
-          }
-        );
-      }
-    }
-    return child;
-  });
+// Animation configurations with proper typing
+interface BounceConfig {
+  type: 'bounce';
+  scale: readonly number[];
+  duration: number;
+}
 
-  if (component === 'touchable') {
-    // Type assertion for TouchableOpacity props
-    const touchableProps = props as Omit<
-      TouchableOpacityProps,
-      keyof BaseButtonProps
-    >;
-    return (
-      <TouchableOpacity
-        style={baseStyle}
-        disabled={isDisabled}
-        {...touchableProps}
-      >
-        {childrenWithProps}
-      </TouchableOpacity>
-    );
-  }
+interface PulseConfig {
+  type: 'pulse';
+  scale: readonly number[];
+  duration: number;
+}
 
-  // Default to Pressable
-  const pressableProps = props as Omit<PressableProps, keyof BaseButtonProps>;
-  return (
-    <Pressable style={baseStyle} disabled={isDisabled} {...pressableProps}>
-      {childrenWithProps}
-    </Pressable>
-  );
-};
+interface ShakeConfig {
+  type: 'shake';
+  translateX: readonly number[];
+  duration: number;
+}
 
-const ButtonText: React.FC<ButtonTextProps> = ({
-  children,
-  variant = 'primary',
-  size = 'md',
-  disabled = false,
-  loading = false,
-  style,
-  showLoadingIndicator = true,
-  ...props
-}) => {
-  const styles = useThemedStyles(createButtonTextStyles);
+type AnimationConfig = BounceConfig | PulseConfig | ShakeConfig;
 
-  if (loading && showLoadingIndicator) {
-    return (
-      <View style={styles.loadingContainer}>
-        <Spinner
-          size={size === 'sm' ? 16 : size === 'md' ? 20 : 24}
-          color={styles[variant].color}
-          style={styles.loadingIndicator}
-        />
-        <Text
-          style={[styles.base, styles[variant], styles[size], style]}
-          {...props}
-        >
-          {children}
-        </Text>
-      </View>
-    );
-  }
+const ANIMATION_CONFIGS: Record<AnimationType, AnimationConfig> = {
+  bounce: {
+    type: 'bounce',
+    scale: [1, 1.1, 0.95, 1.02, 1],
+    duration: 600,
+  },
+  pulse: {
+    type: 'pulse',
+    scale: [1, 1.05, 1],
+    duration: 400,
+  },
+  shake: {
+    type: 'shake',
+    translateX: [0, -10, 10, -8, 8, -5, 5, 0],
+    duration: 500,
+  },
+} as const;
 
-  return (
-    <Text
-      style={[styles.base, styles[variant], styles[size], style]}
-      {...props}
-    >
-      {children}
-    </Text>
-  );
-};
-
-const ButtonIcon: React.FC<ButtonIconProps> = ({
-  icon,
-  variant = 'primary',
-  size = 'md',
-  disabled = false,
-  style,
-  position = 'left',
-  marginLeft,
-  marginRight,
-  ...props
-}) => {
-  const { theme } = useTheme();
-  const styles = useThemedStyles(createButtonIconStyles);
-
-  const iconStyle = {
-    marginLeft: marginLeft
-      ? theme.spacing[marginLeft]
-      : position === 'right'
-      ? theme.spacing.xs
-      : 0,
-    marginRight: marginRight
-      ? theme.spacing[marginRight]
-      : position === 'left'
-      ? theme.spacing.xs
-      : 0,
-  };
-
-  return (
-    <View style={[styles.base, styles[size], iconStyle, style]} {...props}>
-      {icon}
-    </View>
-  );
-};
-
+// Memoized style creators
 const createButtonStyles = (theme: Theme) => ({
   base: {
     flexDirection: 'row' as const,
@@ -256,36 +196,36 @@ const createButtonStyles = (theme: Theme) => ({
     borderColor: 'transparent',
   },
   success: {
-    backgroundColor: resolveColor(theme, 'success', '#10B981'),
-    borderColor: resolveColor(theme, 'success', '#10B981'),
+    backgroundColor: resolveColor(theme, 'success', VARIANT_COLORS.success),
+    borderColor: resolveColor(theme, 'success', VARIANT_COLORS.success),
   },
   error: {
     backgroundColor: resolveColor(theme, 'error', theme.colors.error),
     borderColor: resolveColor(theme, 'error', theme.colors.error),
   },
   warning: {
-    backgroundColor: resolveColor(theme, 'warning', '#F59E0B'),
-    borderColor: resolveColor(theme, 'warning', '#F59E0B'),
+    backgroundColor: resolveColor(theme, 'warning', VARIANT_COLORS.warning),
+    borderColor: resolveColor(theme, 'warning', VARIANT_COLORS.warning),
   },
   info: {
-    backgroundColor: resolveColor(theme, 'info', '#3B82F6'),
-    borderColor: resolveColor(theme, 'info', '#3B82F6'),
+    backgroundColor: resolveColor(theme, 'info', VARIANT_COLORS.info),
+    borderColor: resolveColor(theme, 'info', VARIANT_COLORS.info),
   },
   // Sizes
   sm: {
     paddingHorizontal: theme.spacing.sm,
     paddingVertical: theme.spacing.xs,
-    minHeight: 32,
+    minHeight: SIZE_CONFIG.sm.minHeight,
   },
   md: {
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm,
-    minHeight: 40,
+    minHeight: SIZE_CONFIG.md.minHeight,
   },
   lg: {
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
-    minHeight: 48,
+    minHeight: SIZE_CONFIG.lg.minHeight,
   },
 });
 
@@ -302,30 +242,14 @@ const createButtonTextStyles = (theme: Theme) => ({
     marginRight: theme.spacing.xs,
   },
   // Variants
-  primary: {
-    color: '#FFFFFF',
-  },
-  secondary: {
-    color: '#FFFFFF',
-  },
-  outline: {
-    color: resolveColor(theme, 'primary', theme.colors.primary),
-  },
-  ghost: {
-    color: resolveColor(theme, 'text', theme.colors.text),
-  },
-  success: {
-    color: '#FFFFFF',
-  },
-  error: {
-    color: '#FFFFFF',
-  },
-  warning: {
-    color: '#FFFFFF',
-  },
-  info: {
-    color: '#FFFFFF',
-  },
+  primary: { color: '#FFFFFF' },
+  secondary: { color: '#FFFFFF' },
+  outline: { color: resolveColor(theme, 'primary', theme.colors.primary) },
+  ghost: { color: resolveColor(theme, 'text', theme.colors.text) },
+  success: { color: '#FFFFFF' },
+  error: { color: '#FFFFFF' },
+  warning: { color: '#FFFFFF' },
+  info: { color: '#FFFFFF' },
   // Sizes
   sm: {
     fontSize: theme.typography.small.fontSize,
@@ -346,20 +270,428 @@ const createButtonIconStyles = (theme: Theme) => ({
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
   },
-  sm: {
-    width: 16,
-    height: 16,
-  },
-  md: {
-    width: 20,
-    height: 20,
-  },
-  lg: {
-    width: 24,
-    height: 24,
-  },
+  sm: { width: 16, height: 16 },
+  md: { width: 20, height: 20 },
+  lg: { width: 24, height: 24 },
 });
 
-export { Button, ButtonIcon, ButtonText };
+// Helper function to clone children with props
+const cloneChildrenWithProps = (
+  children: React.ReactNode,
+  variant: ButtonVariant,
+  size: ButtonSize,
+  disabled: boolean,
+  loading: boolean
+): React.ReactNode => {
+  return React.Children.map(children, (child) => {
+    if (!React.isValidElement(child)) return child;
 
-export type { ButtonProps, ButtonIconProps, ButtonTextProps };
+    if (child.type === ButtonText) {
+      return React.cloneElement(child as React.ReactElement<ButtonTextProps>, {
+        variant,
+        size,
+        disabled,
+        loading,
+      });
+    }
+
+    if (child.type === ButtonIcon) {
+      return React.cloneElement(child as React.ReactElement<ButtonIconProps>, {
+        variant,
+        size,
+        disabled,
+      });
+    }
+
+    return child;
+  });
+};
+
+// Animation helper functions
+const createScaleAnimation = (
+  scale: SharedValue<number>,
+  config: BounceConfig | PulseConfig
+): void => {
+  'worklet';
+  const { scale: scaleValues, duration } = config;
+  const stepDuration = duration / scaleValues.length;
+
+  scale.value = withSequence(
+    ...scaleValues.map((value) => withTiming(value, { duration: stepDuration }))
+  );
+};
+
+const createShakeAnimation = (
+  translateX: SharedValue<number>,
+  config: ShakeConfig
+): void => {
+  'worklet';
+  const { translateX: translateValues, duration } = config;
+  const stepDuration = duration / translateValues.length;
+
+  translateX.value = withSequence(
+    ...translateValues.map((value) =>
+      withTiming(value, { duration: stepDuration })
+    )
+  );
+};
+
+// Custom hook for button animations - FIXED VERSION
+const useButtonAnimation = (
+  animationEnabled: boolean,
+  pressAnimationScale: number,
+  springConfig: Required<SpringConfig>,
+  disabled: boolean,
+  loading: boolean
+) => {
+  const scale = useSharedValue(1);
+  const translateX = useSharedValue(0);
+  const opacity = useSharedValue(1);
+
+  // Smooth animation for disabled state
+  React.useEffect(() => {
+    opacity.value = withTiming(disabled || loading ? 0.6 : 1, {
+      duration: 200,
+    });
+  }, [disabled, loading, opacity]);
+
+  const animatedStyle = useAnimatedStyle(
+    () => ({
+      transform: [{ scale: scale.value }, { translateX: translateX.value }],
+      opacity: opacity.value,
+    }),
+    []
+  );
+
+  const handlePressIn = useCallback(() => {
+    'worklet';
+    if (animationEnabled && !disabled && !loading) {
+      scale.value = withSpring(pressAnimationScale, springConfig);
+    }
+  }, [
+    animationEnabled,
+    pressAnimationScale,
+    springConfig,
+    scale,
+    disabled,
+    loading,
+  ]);
+
+  const handlePressOut = useCallback(() => {
+    'worklet';
+    if (animationEnabled && !disabled && !loading) {
+      scale.value = withSpring(1, springConfig);
+    }
+  }, [animationEnabled, springConfig, scale, disabled, loading]);
+
+  const animate = useCallback(
+    (type: AnimationType) => {
+      'worklet';
+      if (disabled || loading) return;
+
+      const config = ANIMATION_CONFIGS[type];
+
+      switch (config.type) {
+        case 'bounce':
+        case 'pulse':
+          createScaleAnimation(scale, config);
+          break;
+        case 'shake':
+          createShakeAnimation(translateX, config);
+          break;
+      }
+    },
+    [scale, translateX, disabled, loading]
+  );
+
+  return {
+    animatedStyle,
+    handlePressIn,
+    handlePressOut,
+    animate,
+  };
+};
+
+// Main Button Component - FIXED VERSION
+const Button = forwardRef<ButtonRef, ButtonProps>(
+  (
+    {
+      children,
+      variant = 'primary',
+      size = 'md',
+      disabled = false,
+      loading = false,
+      style,
+      borderRadius = 'md',
+      fullWidth = false,
+      component = 'pressable',
+      animationEnabled = true,
+      pressAnimationScale = 0.95,
+      springConfig = DEFAULT_SPRING_CONFIG,
+      onPressIn,
+      onPressOut,
+      ...props
+    },
+    ref
+  ) => {
+    const { theme } = useTheme();
+    const styles = useThemedStyles(createButtonStyles);
+    const buttonRef = useRef<View>(null);
+
+    const mergedSpringConfig: Required<SpringConfig> = useMemo(
+      () => ({
+        ...DEFAULT_SPRING_CONFIG,
+        ...springConfig,
+      }),
+      [springConfig]
+    );
+
+    const { animatedStyle, handlePressIn, handlePressOut, animate } =
+      useButtonAnimation(
+        animationEnabled,
+        pressAnimationScale,
+        mergedSpringConfig,
+        disabled,
+        loading
+      );
+
+    // FIXED: Removed opacity from baseStyle
+    const baseStyle = useMemo(
+      (): ViewStyle => ({
+        ...styles.base,
+        ...styles[variant],
+        ...styles[size],
+        borderRadius: theme.borderRadius[borderRadius],
+        ...(fullWidth && { width: '100%' }),
+        ...(style as ViewStyle),
+      }),
+      [
+        styles,
+        variant,
+        size,
+        theme.borderRadius,
+        borderRadius,
+        fullWidth,
+        style,
+      ]
+    );
+
+    const isDisabled = disabled || loading;
+
+    const childrenWithProps = useMemo(
+      () => cloneChildrenWithProps(children, variant, size, disabled, loading),
+      [children, variant, size, disabled, loading]
+    );
+
+    useImperativeHandle(
+      ref,
+      () => ({
+        focus: () => {
+          const focusableRef = buttonRef.current as unknown as {
+            focus?: () => void;
+          };
+          focusableRef?.focus?.();
+        },
+        blur: () => {
+          const blurableRef = buttonRef.current as unknown as {
+            blur?: () => void;
+          };
+          blurableRef?.blur?.();
+        },
+        animate: (type: AnimationType) => {
+          runOnJS(animate)(type);
+        },
+      }),
+      [animate]
+    );
+
+    const handlePressInWrapper = useCallback(
+      (event: GestureResponderEvent) => {
+        handlePressIn();
+        onPressIn?.(event);
+      },
+      [handlePressIn, onPressIn]
+    );
+
+    const handlePressOutWrapper = useCallback(
+      (event: GestureResponderEvent) => {
+        handlePressOut();
+        onPressOut?.(event);
+      },
+      [handlePressOut, onPressOut]
+    );
+
+    const combinedStyle = useMemo(
+      () => [baseStyle, animatedStyle],
+      [baseStyle, animatedStyle]
+    );
+
+    if (component === 'touchable') {
+      const touchableProps = props as Omit<
+        TouchableOpacityProps,
+        keyof BaseButtonProps | 'style'
+      >;
+      return (
+        <AnimatedTouchableOpacity
+          ref={buttonRef}
+          style={combinedStyle}
+          disabled={isDisabled}
+          onPressIn={handlePressInWrapper}
+          onPressOut={handlePressOutWrapper}
+          {...touchableProps}
+        >
+          {childrenWithProps}
+        </AnimatedTouchableOpacity>
+      );
+    }
+
+    const pressableProps = props as Omit<
+      PressableProps,
+      keyof BaseButtonProps | 'style'
+    >;
+    return (
+      <AnimatedPressable
+        ref={buttonRef}
+        style={combinedStyle}
+        disabled={isDisabled}
+        onPressIn={handlePressInWrapper}
+        onPressOut={handlePressOutWrapper}
+        {...pressableProps}
+      >
+        {childrenWithProps}
+      </AnimatedPressable>
+    );
+  }
+);
+
+Button.displayName = 'Button';
+
+// ButtonText Component - FIXED VERSION
+const ButtonText: React.FC<ButtonTextProps> = React.memo(
+  ({
+    children,
+    variant = 'primary',
+    size = 'md',
+    disabled = false,
+    loading = false,
+    style,
+    showLoadingIndicator = true,
+    ...props
+  }) => {
+    const styles = useThemedStyles(createButtonTextStyles);
+    const textOpacity = useSharedValue(1);
+
+    const textStyle = useMemo(
+      () => [styles.base, styles[variant], styles[size], style],
+      [styles, variant, size, style]
+    );
+
+    // FIXED: Smooth animation for text opacity
+    React.useEffect(() => {
+      textOpacity.value = withTiming(loading ? 0.7 : 1, { duration: 200 });
+    }, [loading, textOpacity]);
+
+    const animatedTextStyle = useAnimatedStyle(
+      () => ({
+        opacity: textOpacity.value,
+      }),
+      []
+    );
+
+    if (loading && showLoadingIndicator) {
+      return (
+        <Animated.View style={[styles.loadingContainer, animatedTextStyle]}>
+          <Spinner
+            size={SIZE_CONFIG[size].spinnerSize}
+            color={styles[variant].color}
+            style={styles.loadingIndicator}
+          />
+          <Animated.Text style={textStyle} {...props}>
+            {children}
+          </Animated.Text>
+        </Animated.View>
+      );
+    }
+
+    return (
+      <Animated.Text style={[textStyle, animatedTextStyle]} {...props}>
+        {children}
+      </Animated.Text>
+    );
+  }
+);
+
+ButtonText.displayName = 'ButtonText';
+
+// ButtonIcon Component - FIXED VERSION
+const ButtonIcon: React.FC<ButtonIconProps> = React.memo(
+  ({
+    icon,
+    variant = 'primary',
+    size = 'md',
+    disabled = false,
+    style,
+    position = 'left',
+    marginLeft,
+    marginRight,
+    ...props
+  }) => {
+    const { theme } = useTheme();
+    const styles = useThemedStyles(createButtonIconStyles);
+    const iconScale = useSharedValue(1);
+    const iconOpacity = useSharedValue(1);
+
+    const iconStyle = useMemo(
+      () => ({
+        marginLeft: marginLeft
+          ? theme.spacing[marginLeft]
+          : position === 'right'
+          ? theme.spacing.xs
+          : 0,
+        marginRight: marginRight
+          ? theme.spacing[marginRight]
+          : position === 'left'
+          ? theme.spacing.xs
+          : 0,
+      }),
+      [marginLeft, marginRight, position, theme.spacing]
+    );
+
+    const combinedStyle = useMemo(
+      () => [styles.base, styles[size], iconStyle, style],
+      [styles, size, iconStyle, style]
+    );
+
+    // FIXED: Smooth animation for disabled state
+    React.useEffect(() => {
+      iconScale.value = withTiming(disabled ? 0.8 : 1, { duration: 200 });
+      iconOpacity.value = withTiming(disabled ? 0.6 : 1, { duration: 200 });
+    }, [disabled, iconScale, iconOpacity]);
+
+    const animatedIconStyle = useAnimatedStyle(
+      () => ({
+        transform: [{ scale: iconScale.value }],
+        opacity: iconOpacity.value,
+      }),
+      []
+    );
+
+    return (
+      <Animated.View style={[combinedStyle, animatedIconStyle]} {...props}>
+        {icon}
+      </Animated.View>
+    );
+  }
+);
+
+ButtonIcon.displayName = 'ButtonIcon';
+
+export { Button, ButtonIcon, ButtonText };
+export type {
+  ButtonProps,
+  ButtonIconProps,
+  ButtonTextProps,
+  ButtonRef,
+  AnimationType,
+  SpringConfig,
+};
