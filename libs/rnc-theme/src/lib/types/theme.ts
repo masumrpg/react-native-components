@@ -45,28 +45,28 @@ export interface Theme {
   };
   typography: {
     small: {
-      fontSize: number;
-      lineHeight: number;
+      fontSize: TextStyle['fontSize'];
+      lineHeight: TextStyle['lineHeight'];
       fontWeight: TextStyle['fontWeight'];
     };
     body: {
-      fontSize: number;
-      lineHeight: number;
+      fontSize: TextStyle['fontSize'];
+      lineHeight: TextStyle['lineHeight'];
       fontWeight: TextStyle['fontWeight'];
     };
     subtitle: {
-      fontSize: number;
-      lineHeight: number;
+      fontSize: TextStyle['fontSize'];
+      lineHeight: TextStyle['lineHeight'];
       fontWeight: TextStyle['fontWeight'];
     };
     title: {
-      fontSize: number;
-      lineHeight: number;
+      fontSize: TextStyle['fontSize'];
+      lineHeight: TextStyle['lineHeight'];
       fontWeight: TextStyle['fontWeight'];
     };
     heading: {
-      fontSize: number;
-      lineHeight: number;
+      fontSize: TextStyle['fontSize'];
+      lineHeight: TextStyle['lineHeight'];
       fontWeight: TextStyle['fontWeight'];
     };
   };
