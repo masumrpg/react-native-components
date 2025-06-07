@@ -61,7 +61,7 @@ const BadgeScreen: React.FC = () => {
     <ScrollView style={styles.container}>
       <View style={{ gap: 20 }}>
         {/* Basic Badge */}
-        <Badge>
+        <Badge animated={true} fadeIn={true}>
           <BadgeText>Default</BadgeText>
         </Badge>
 

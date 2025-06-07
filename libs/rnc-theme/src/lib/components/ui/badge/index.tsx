@@ -1,21 +1,32 @@
-import React from 'react';
-import { View, Text, ViewStyle, TextStyle } from 'react-native';
+import React, { forwardRef, useMemo } from 'react';
+import { ViewStyle, TextStyle, View } from 'react-native';
+import Animated, {
+  useAnimatedStyle,
+  withSpring,
+  withTiming,
+} from 'react-native-reanimated';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { resolveColor } from '../../../utils/color';
 
-interface BadgeProps {
-  children?: React.ReactNode;
-  variant?:
-    | 'default'
-    | 'primary'
-    | 'secondary'
-    | 'success'
-    | 'warning'
-    | 'error';
-  size?: 'sm' | 'md' | 'lg';
+type BadgeVariant =
+  | 'default'
+  | 'primary'
+  | 'secondary'
+  | 'success'
+  | 'warning'
+  | 'error';
+type BadgeSize = 'sm' | 'md' | 'lg';
+
+interface BaseBadgeProps {
+  variant?: BadgeVariant;
+  size?: BadgeSize;
   style?: ViewStyle;
   rounded?: boolean;
+}
+
+interface BadgeProps extends BaseBadgeProps {
+  children?: React.ReactNode;
 }
 
 interface BadgeTextProps {
@@ -29,56 +40,105 @@ interface BadgeIconProps {
   style?: ViewStyle;
 }
 
-const Badge: React.FC<BadgeProps> = ({
-  children,
-  variant = 'default',
-  size = 'md',
-  style,
-  rounded = true,
-  ...props
-}) => {
-  const styles = useThemedStyles(createBadgeStyles);
+interface AnimatedBadgeProps extends BadgeProps {
+  animated?: boolean;
+  scale?: number;
+  fadeIn?: boolean;
+}
 
-  return (
-    <View
-      style={[
+const Badge = forwardRef<Animated.View, AnimatedBadgeProps>(
+  (
+    {
+      children,
+      variant = 'default',
+      size = 'md',
+      style,
+      rounded = true,
+      animated = true,
+      scale = 1,
+      fadeIn = true,
+      ...props
+    },
+    ref
+  ) => {
+    const styles = useThemedStyles(createBadgeStyles);
+
+    const animatedStyle = useAnimatedStyle(() => {
+      if (!animated) return {};
+
+      return {
+        transform: [
+          {
+            scale: withSpring(scale, {
+              damping: 10,
+              stiffness: 100,
+            }),
+          },
+        ],
+        opacity: fadeIn ? withTiming(1, { duration: 300 }) : 1,
+      };
+    });
+
+    const containerStyle = useMemo(() => {
+      const baseStyles = [
         styles.base,
         styles[variant],
         styles[size],
         rounded && styles.rounded,
-        style,
-      ]}
-      {...props}
-    >
-      {children}
-    </View>
-  );
-};
+      ];
 
-const BadgeText: React.FC<BadgeTextProps> = ({ children, style, ...props }) => {
-  const styles = useThemedStyles(createBadgeTextStyles);
+      if (style) baseStyles.push(style);
 
-  return (
-    <Text style={[styles.text, style]} {...props}>
-      {children}
-    </Text>
-  );
-};
+      return baseStyles;
+    }, [styles, variant, size, rounded, style]);
 
-const BadgeIcon: React.FC<BadgeIconProps> = ({
-  children,
-  position = 'left',
-  style,
-  ...props
-}) => {
-  const styles = useThemedStyles(createBadgeIconStyles);
+    return (
+      <Animated.View
+        ref={ref}
+        style={[containerStyle, animatedStyle]}
+        {...props}
+      >
+        {children}
+      </Animated.View>
+    );
+  }
+);
 
-  return (
-    <View style={[styles.icon, styles[position], style]} {...props}>
-      {children}
-    </View>
-  );
-};
+const BadgeText = forwardRef<Animated.Text, BadgeTextProps>(
+  ({ children, style, ...props }, ref) => {
+    const styles = useThemedStyles(createBadgeTextStyles);
+
+    const textStyle = useMemo(() => {
+      const baseStyles = [styles.text];
+      if (style) baseStyles.push(style);
+      return baseStyles;
+    }, [styles, style]);
+
+    return (
+      <Animated.Text ref={ref} style={textStyle} {...props}>
+        {children}
+      </Animated.Text>
+    );
+  }
+);
+
+const BadgeIcon = forwardRef<View, BadgeIconProps>(
+  ({ children, position = 'left', style, ...props }, ref) => {
+    const styles = useThemedStyles(createBadgeIconStyles);
+
+    const iconStyle = useMemo(() => {
+      const baseStyles = [styles.icon, styles[position]];
+      if (style) baseStyles.push(style);
+      return baseStyles;
+    }, [styles, position, style]);
+
+    return (
+      <View ref={ref} style={iconStyle} {...props}>
+        {children}
+      </View>
+    );
+  }
+);
 
 const createBadgeStyles = (theme: Theme) => ({
   base: {
@@ -88,48 +148,48 @@ const createBadgeStyles = (theme: Theme) => ({
     paddingHorizontal: theme.spacing.sm,
     paddingVertical: theme.spacing.xs,
     borderWidth: 1,
-  },
+  } as ViewStyle,
   rounded: {
     borderRadius: theme.borderRadius.xl,
-  },
+  } as ViewStyle,
   // Variants
   default: {
     backgroundColor: theme.colors.surface,
     borderColor: theme.colors.border,
-  },
+  } as ViewStyle,
   primary: {
     backgroundColor: theme.colors.primary,
     borderColor: theme.colors.primary,
-  },
+  } as ViewStyle,
   secondary: {
     backgroundColor: theme.colors.secondary,
     borderColor: theme.colors.secondary,
-  },
+  } as ViewStyle,
   success: {
     backgroundColor: '#10B981',
     borderColor: '#10B981',
-  },
+  } as ViewStyle,
   warning: {
     backgroundColor: '#F59E0B',
     borderColor: '#F59E0B',
-  },
+  } as ViewStyle,
   error: {
     backgroundColor: '#EF4444',
     borderColor: '#EF4444',
-  },
+  } as ViewStyle,
   // Sizes
   sm: {
     paddingHorizontal: theme.spacing.xs,
     paddingVertical: 2,
-  },
+  } as ViewStyle,
   md: {
     paddingHorizontal: theme.spacing.sm,
     paddingVertical: theme.spacing.xs,
-  },
+  } as ViewStyle,
   lg: {
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm,
-  },
+  } as ViewStyle,
 });
 
 const createBadgeTextStyles = (theme: Theme) => ({
@@ -138,21 +198,26 @@ const createBadgeTextStyles = (theme: Theme) => ({
     lineHeight: theme.typography.body.lineHeight,
     fontWeight: '600' as const,
     color: resolveColor(theme, theme.colors.text, theme.colors.primary),
-  },
+  } as TextStyle,
 });
 
 const createBadgeIconStyles = (theme: Theme) => ({
   icon: {
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
-  },
+  } as ViewStyle,
   left: {
     marginRight: theme.spacing.xs,
-  },
+  } as ViewStyle,
   right: {
     marginLeft: theme.spacing.xs,
-  },
+  } as ViewStyle,
 });
+
+// Display names
+Badge.displayName = 'Badge';
+BadgeText.displayName = 'BadgeText';
+BadgeIcon.displayName = 'BadgeIcon';
 
 export {
   Badge,
@@ -161,4 +226,6 @@ export {
   type BadgeProps,
   type BadgeTextProps,
   type BadgeIconProps,
+  type BadgeVariant,
+  type BadgeSize,
 };
