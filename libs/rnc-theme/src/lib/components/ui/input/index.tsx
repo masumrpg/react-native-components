@@ -72,7 +72,7 @@ interface BaseInputProps {
 
 type InputProps = BaseInputProps & Omit<TextInputProps, 'style'>;
 
-const Input = forwardRef<React.ElementRef<typeof TextInput>, InputProps>(
+const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
   (
     {
       label,

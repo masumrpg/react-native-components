@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, forwardRef } from 'react';
 import { TouchableOpacity, ViewStyle } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -39,153 +39,178 @@ interface SwitcherLabelProps {
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
 
-const Switcher: React.FC<SwitcherProps> = ({
-  value,
-  onValueChange,
-  size = 'md',
-  variant = 'default',
-  disabled = false,
-  style,
-  trackColor,
-  thumbColor,
-  animated = true,
-}) => {
-  const { theme } = useTheme();
-  const styles = useThemedStyles(createSwitcherStyles);
+const Switcher = forwardRef<
+  React.ComponentRef<typeof TouchableOpacity>,
+  SwitcherProps
+>(
+  (
+    {
+      value,
+      onValueChange,
+      size = 'md',
+      variant = 'default',
+      disabled = false,
+      style,
+      trackColor,
+      thumbColor,
+      animated = true,
+    },
+    ref
+  ) => {
+    const { theme } = useTheme();
+    const styles = useThemedStyles(createSwitcherStyles);
 
-  // Shared values for animations
-  const switchValue = useSharedValue(value ? 1 : 0);
-  const pressScale = useSharedValue(1);
-  const thumbScale = useSharedValue(1);
+    // Shared values for animations
+    const switchValue = useSharedValue(value ? 1 : 0);
+    const pressScale = useSharedValue(1);
+    const thumbScale = useSharedValue(1);
 
-  // Update animation when value prop changes
-  useEffect(() => {
-    if (animated) {
-      switchValue.value = withSpring(value ? 1 : 0, {
-        damping: 15,
-        stiffness: 150,
-        mass: 1,
-      });
-    } else {
-      switchValue.value = value ? 1 : 0;
-    }
-  }, [value, animated, switchValue]);
-
-  // Get colors based on variant and state
-  const getTrackColors = () => {
-    const offColor = trackColor?.false || theme.colors.border;
-    let onColor = trackColor?.true;
-
-    if (!onColor) {
-      switch (variant) {
-        case 'primary':
-          onColor = theme.colors.primary;
-          break;
-        case 'success':
-          onColor = theme.colors.success;
-          break;
-        case 'warning':
-          onColor = theme.colors.warning;
-          break;
-        case 'error':
-          onColor = theme.colors.error;
-          break;
-        default:
-          onColor = '#34C759'; // iOS green
+    // Update animation when value prop changes
+    useEffect(() => {
+      if (animated) {
+        switchValue.value = withSpring(value ? 1 : 0, {
+          damping: 15,
+          stiffness: 150,
+          mass: 1,
+        });
+      } else {
+        switchValue.value = value ? 1 : 0;
       }
-    }
+    }, [value, animated, switchValue]);
 
-    return { offColor, onColor };
-  };
+    // Get colors based on variant and state
+    const getTrackColors = () => {
+      const offColor = trackColor?.false || theme.colors.border;
+      let onColor = trackColor?.true;
 
-  const { offColor, onColor } = getTrackColors();
-  const thumbColorValue = thumbColor || '#FFFFFF';
+      if (!onColor) {
+        switch (variant) {
+          case 'primary':
+            onColor = theme.colors.primary;
+            break;
+          case 'success':
+            onColor = theme.colors.success;
+            break;
+          case 'warning':
+            onColor = theme.colors.warning;
+            break;
+          case 'error':
+            onColor = theme.colors.error;
+            break;
+          default:
+            onColor = '#34C759'; // iOS green
+        }
+      }
 
-  // Animated styles
-  const trackAnimatedStyle = useAnimatedStyle(() => {
-    const backgroundColor = disabled
-      ? theme.colors.border
-      : interpolateColor(switchValue.value, [0, 1], [offColor, onColor]);
-
-    return {
-      backgroundColor,
-      opacity: disabled ? 0.5 : 1,
-      transform: [{ scale: pressScale.value }],
+      return { offColor, onColor };
     };
-  });
 
-  const thumbAnimatedStyle = useAnimatedStyle(() => {
-    const translateX = interpolate(
-      switchValue.value,
-      [0, 1],
-      [2, styles[size].width - styles[`${size}Thumb`].width - 2]
-    );
+    const { offColor, onColor } = getTrackColors();
+    const thumbColorValue = thumbColor || '#FFFFFF';
 
-    return {
-      transform: [{ translateX }, { scale: thumbScale.value }],
-      backgroundColor: disabled ? theme.colors.textSecondary : thumbColorValue,
-    };
-  });
+    // Animated styles
+    const trackAnimatedStyle = useAnimatedStyle(() => {
+      const backgroundColor = disabled
+        ? theme.colors.border
+        : interpolateColor(switchValue.value, [0, 1], [offColor, onColor]);
 
-  // Handle press with haptic-like feedback
-  const handlePress = () => {
-    if (disabled || !onValueChange) return;
-
-    // Micro-interactions for better feel
-    thumbScale.value = withSpring(0.9, { damping: 20, stiffness: 300 }, () => {
-      thumbScale.value = withSpring(1, { damping: 20, stiffness: 300 });
+      return {
+        backgroundColor,
+        opacity: disabled ? 0.5 : 1,
+        transform: [{ scale: pressScale.value }],
+      };
     });
 
-    pressScale.value = withSpring(0.95, { damping: 20, stiffness: 300 }, () => {
+    const thumbAnimatedStyle = useAnimatedStyle(() => {
+      const translateX = interpolate(
+        switchValue.value,
+        [0, 1],
+        [2, styles[size].width - styles[`${size}Thumb`].width - 2]
+      );
+
+      return {
+        transform: [{ translateX }, { scale: thumbScale.value }],
+        backgroundColor: disabled
+          ? theme.colors.textSecondary
+          : thumbColorValue,
+      };
+    });
+
+    // Handle press with haptic-like feedback
+    const handlePress = () => {
+      if (disabled || !onValueChange) return;
+
+      // Micro-interactions for better feel
+      thumbScale.value = withSpring(
+        0.9,
+        { damping: 20, stiffness: 300 },
+        () => {
+          thumbScale.value = withSpring(1, { damping: 20, stiffness: 300 });
+        }
+      );
+
+      pressScale.value = withSpring(
+        0.95,
+        { damping: 20, stiffness: 300 },
+        () => {
+          pressScale.value = withSpring(1, { damping: 20, stiffness: 300 });
+        }
+      );
+
+      // Trigger callback
+      runOnJS(onValueChange)(!value);
+    };
+
+    const handlePressIn = () => {
+      if (disabled) return;
+      pressScale.value = withSpring(0.95, { damping: 20, stiffness: 300 });
+    };
+
+    const handlePressOut = () => {
+      if (disabled) return;
       pressScale.value = withSpring(1, { damping: 20, stiffness: 300 });
-    });
+    };
 
-    // Trigger callback
-    runOnJS(onValueChange)(!value);
-  };
+    const trackStyle = [styles.track, styles[size], style];
 
-  const handlePressIn = () => {
-    if (disabled) return;
-    pressScale.value = withSpring(0.95, { damping: 20, stiffness: 300 });
-  };
+    const thumbStyle = [styles.thumb, styles[`${size}Thumb`]];
 
-  const handlePressOut = () => {
-    if (disabled) return;
-    pressScale.value = withSpring(1, { damping: 20, stiffness: 300 });
-  };
+    return (
+      <AnimatedTouchableOpacity
+        ref={ref}
+        style={[trackStyle, trackAnimatedStyle]}
+        onPress={handlePress}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        disabled={disabled}
+        activeOpacity={1}
+      >
+        <Animated.View style={[thumbStyle, thumbAnimatedStyle]} />
+      </AnimatedTouchableOpacity>
+    );
+  }
+);
 
-  const trackStyle = [styles.track, styles[size], style];
+Switcher.displayName = 'Switcher';
 
-  const thumbStyle = [styles.thumb, styles[`${size}Thumb`]];
-
-  return (
-    <AnimatedTouchableOpacity
-      style={[trackStyle, trackAnimatedStyle]}
-      onPress={handlePress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
-      disabled={disabled}
-      activeOpacity={1}
-    >
-      <Animated.View style={[thumbStyle, thumbAnimatedStyle]} />
-    </AnimatedTouchableOpacity>
-  );
-};
-
-const SwitcherLabel: React.FC<SwitcherLabelProps> = ({
-  children,
-  position = 'right',
-  style,
-  ...props
-}) => {
+const SwitcherLabel = forwardRef<
+  React.ComponentRef<typeof Animated.View>,
+  SwitcherLabelProps
+>(({ children, position = 'right', style, ...props }, ref) => {
   const styles = useThemedStyles(createSwitcherLabelStyles);
 
   return (
-    <Animated.View style={[styles.label, styles[position], style]} {...props}>
+    <Animated.View
+      ref={ref}
+      style={[styles.label, styles[position], style]}
+      {...props}
+    >
       {children}
     </Animated.View>
   );
-};
+});
+
+SwitcherLabel.displayName = 'SwitcherLabel';
 
 const createSwitcherStyles = (theme: Theme) => ({
   track: {

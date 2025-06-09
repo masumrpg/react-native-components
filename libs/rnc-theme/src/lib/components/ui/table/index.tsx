@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { View, Text, ScrollView, ViewStyle, TextStyle } from 'react-native';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
@@ -54,57 +54,60 @@ interface TableCaptionProps {
   position?: 'top' | 'bottom';
 }
 
-const Table: React.FC<TableProps> = ({
-  children,
-  style,
-  bordered = true,
-  striped = false,
-  scrollable = false,
-  ...props
-}) => {
-  const styles = useThemedStyles(createTableStyles);
+const Table = forwardRef<React.ComponentRef<typeof View>, TableProps>(
+  (
+    {
+      children,
+      style,
+      bordered = true,
+      striped = false,
+      scrollable = false,
+      ...props
+    },
+    ref
+  ) => {
+    const styles = useThemedStyles(createTableStyles);
 
-  const tableContent = (
-    <View
-      style={[
-        styles.table,
-        bordered && styles.bordered,
-        style
-      ]}
-      {...props}
-    >
-      {React.Children.map(children, (child) => {
-        if (React.isValidElement(child) && child.type === TableBody) {
-          return React.cloneElement(
-            child as React.ReactElement<TableBodyProps>,
-            { striped }
-          );
-        }
-        return child;
-      })}
-    </View>
-  );
-
-  if (scrollable) {
-    return (
-      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {tableContent}
-      </ScrollView>
+    const tableContent = (
+      <View
+        ref={ref}
+        style={[styles.table, bordered && styles.bordered, style]}
+        {...props}
+      >
+        {React.Children.map(children, (child) => {
+          if (React.isValidElement(child) && child.type === TableBody) {
+            return React.cloneElement(
+              child as React.ReactElement<TableBodyProps>,
+              { striped }
+            );
+          }
+          return child;
+        })}
+      </View>
     );
+
+    if (scrollable) {
+      return (
+        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+          {tableContent}
+        </ScrollView>
+      );
+    }
+
+    return tableContent;
   }
+);
 
-  return tableContent;
-};
+Table.displayName = 'Table';
 
-const TableHeader: React.FC<TableHeaderProps> = ({
-  children,
-  style,
-  ...props
-}) => {
+const TableHeader = forwardRef<
+  React.ComponentRef<typeof View>,
+  TableHeaderProps
+>(({ children, style, ...props }, ref) => {
   const styles = useThemedStyles(createTableHeaderStyles);
 
   return (
-    <View style={[styles.header, style]} {...props}>
+    <View ref={ref} style={[styles.header, style]} {...props}>
       {React.Children.map(children, (child) => {
         if (React.isValidElement(child) && child.type === TableRow) {
           return React.cloneElement(
@@ -116,142 +119,122 @@ const TableHeader: React.FC<TableHeaderProps> = ({
       })}
     </View>
   );
-};
+});
 
-const TableBody: React.FC<TableBodyProps> = ({
-  children,
-  style,
-  striped,
-  ...props
-}) => {
-  const styles = useThemedStyles(createTableBodyStyles);
+TableHeader.displayName = 'TableHeader';
 
-  return (
-    <View style={[styles.body, style]} {...props}>
-      {React.Children.map(children, (child, index) => {
-        if (React.isValidElement(child) && child.type === TableRow) {
-          return React.cloneElement(
-            child as React.ReactElement<TableRowProps>,
-            {
-              isEven: striped && index % 2 === 0,
-            }
-          );
-        }
-        return child;
-      })}
-    </View>
-  );
-};
+const TableBody = forwardRef<React.ComponentRef<typeof View>, TableBodyProps>(
+  ({ children, style, striped, ...props }, ref) => {
+    const styles = useThemedStyles(createTableBodyStyles);
 
-const TableFooter: React.FC<TableFooterProps> = ({
-  children,
-  style,
-  ...props
-}) => {
+    return (
+      <View ref={ref} style={[styles.body, style]} {...props}>
+        {React.Children.map(children, (child, index) => {
+          if (React.isValidElement(child) && child.type === TableRow) {
+            return React.cloneElement(
+              child as React.ReactElement<TableRowProps>,
+              {
+                isEven: striped && index % 2 === 0,
+              }
+            );
+          }
+          return child;
+        })}
+      </View>
+    );
+  }
+);
+
+TableBody.displayName = 'TableBody';
+
+const TableFooter = forwardRef<
+  React.ComponentRef<typeof View>,
+  TableFooterProps
+>(({ children, style, ...props }, ref) => {
   const styles = useThemedStyles(createTableFooterStyles);
 
   return (
-    <View style={[styles.footer, style]} {...props}>
+    <View ref={ref} style={[styles.footer, style]} {...props}>
       {children}
     </View>
   );
-};
+});
 
-const TableRow: React.FC<TableRowProps> = ({
-  children,
-  style,
-  isHeader = false,
-  isEven = false,
-  ...props
-}) => {
-  const styles = useThemedStyles(createTableRowStyles);
+TableFooter.displayName = 'TableFooter';
 
-  return (
-    <View
-      style={[
-        styles.row,
-        isHeader && styles.headerRow,
-        isEven && styles.evenRow,
-        style
-      ]}
-      {...props}
-    >
-      {children}
-    </View>
-  );
-};
+const TableRow = forwardRef<React.ComponentRef<typeof View>, TableRowProps>(
+  ({ children, style, isHeader = false, isEven = false, ...props }, ref) => {
+    const styles = useThemedStyles(createTableRowStyles);
 
-const TableHead: React.FC<TableHeadProps> = ({
-  children,
-  style,
-  align = 'left',
-  flex = 1,
-  ...props
-}) => {
-  const styles = useThemedStyles(createTableHeadStyles);
-
-  return (
-    <View style={[styles.cell, { flex }]}>
-      <Text
+    return (
+      <View
+        ref={ref}
         style={[
-          styles.headText,
-          styles[align],
-          style
+          styles.row,
+          isHeader && styles.headerRow,
+          isEven && styles.evenRow,
+          style,
         ]}
         {...props}
       >
         {children}
-      </Text>
-    </View>
-  );
-};
+      </View>
+    );
+  }
+);
 
-const TableData: React.FC<TableDataProps> = ({
-  children,
-  style,
-  align = 'left',
-  flex = 1,
-  ...props
-}) => {
-  const styles = useThemedStyles(createTableDataStyles);
+TableRow.displayName = 'TableRow';
 
-  return (
-    <View style={[styles.cell, { flex }]}>
-      <Text
-        style={[
-          styles.dataText,
-          styles[align],
-          style
-        ]}
-        {...props}
-      >
-        {children}
-      </Text>
-    </View>
-  );
-};
+const TableHead = forwardRef<React.ComponentRef<typeof View>, TableHeadProps>(
+  ({ children, style, align = 'left', flex = 1, ...props }, ref) => {
+    const styles = useThemedStyles(createTableHeadStyles);
 
-const TableCaption: React.FC<TableCaptionProps> = ({
-  children,
-  style,
-  position = 'bottom',
-  ...props
-}) => {
+    return (
+      <View ref={ref} style={[styles.cell, { flex }]}>
+        <Text style={[styles.headText, styles[align], style]} {...props}>
+          {children}
+        </Text>
+      </View>
+    );
+  }
+);
+
+TableHead.displayName = 'TableHead';
+
+const TableData = forwardRef<React.ComponentRef<typeof View>, TableDataProps>(
+  ({ children, style, align = 'left', flex = 1, ...props }, ref) => {
+    const styles = useThemedStyles(createTableDataStyles);
+
+    return (
+      <View ref={ref} style={[styles.cell, { flex }]}>
+        <Text style={[styles.dataText, styles[align], style]} {...props}>
+          {children}
+        </Text>
+      </View>
+    );
+  }
+);
+
+TableData.displayName = 'TableData';
+
+const TableCaption = forwardRef<
+  React.ComponentRef<typeof Text>,
+  TableCaptionProps
+>(({ children, style, position = 'bottom', ...props }, ref) => {
   const styles = useThemedStyles(createTableCaptionStyles);
 
   return (
     <Text
-      style={[
-        styles.caption,
-        styles[position],
-        style
-      ]}
+      ref={ref}
+      style={[styles.caption, styles[position], style]}
       {...props}
     >
       {children}
     </Text>
   );
-};
+});
+
+TableCaption.displayName = 'TableCaption';
 
 // Styles
 const createTableStyles = (theme: Theme) => ({

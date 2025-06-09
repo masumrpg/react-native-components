@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { forwardRef } from 'react';
 import { Text, TextStyle } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -34,44 +34,52 @@ interface TypographyProps {
   onPress?: () => void;
 }
 
-const Typography: React.FC<TypographyProps> = ({
-  children,
-  variant = 'body',
-  weight,
-  color,
-  align = 'left',
-  style,
-  numberOfLines,
-  ellipsizeMode,
-  selectable = false,
-  onPress,
-  ...props
-}) => {
-  const { theme } = useTheme();
-  const styles = useThemedStyles(createTypographyStyles);
+const Typography = forwardRef<React.ComponentRef<typeof Text>, TypographyProps>(
+  (
+    {
+      children,
+      variant = 'body',
+      weight,
+      color,
+      align = 'left',
+      style,
+      numberOfLines,
+      ellipsizeMode,
+      selectable = false,
+      onPress,
+      ...props
+    },
+    ref
+  ) => {
+    const { theme } = useTheme();
+    const styles = useThemedStyles(createTypographyStyles);
 
-  return (
-    <Text
-      style={[
-        styles.base,
-        styles[variant],
-        {
-          fontWeight: weight || styles[variant].fontWeight || '400',
-          color: resolveColor(theme, color, theme.colors.text),
-          textAlign: align,
-        },
-        style,
-      ]}
-      numberOfLines={numberOfLines}
-      ellipsizeMode={ellipsizeMode}
-      selectable={selectable}
-      onPress={onPress}
-      {...props}
-    >
-      {children}
-    </Text>
-  );
-};
+    return (
+      <Text
+        ref={ref}
+        style={[
+          styles.base,
+          styles[variant],
+          {
+            fontWeight: weight || styles[variant].fontWeight || '400',
+            color: resolveColor(theme, color, theme.colors.text),
+            textAlign: align,
+          },
+          style,
+        ]}
+        numberOfLines={numberOfLines}
+        ellipsizeMode={ellipsizeMode}
+        selectable={selectable}
+        onPress={onPress}
+        {...props}
+      >
+        {children}
+      </Text>
+    );
+  }
+);
+
+Typography.displayName = 'Typography';
 
 const createTypographyStyles = (theme: Theme) => ({
   base: {} as TextStyle,
@@ -139,96 +147,176 @@ const createTypographyStyles = (theme: Theme) => ({
 });
 
 // Komponen khusus untuk setiap variant
-const Heading: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="heading" weight="700" {...props} />
-);
+const Heading = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => (
+  <Typography ref={ref} variant="heading" weight="700" {...props} />
+));
 
-const Title: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="title" weight="600" {...props} />
-);
+Heading.displayName = 'Heading';
 
-const Subtitle: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="subtitle" weight="500" {...props} />
-);
+const Title = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => (
+  <Typography ref={ref} variant="title" weight="600" {...props} />
+));
 
-const Body: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="body" {...props} />
-);
+Title.displayName = 'Title';
 
-const Small: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="small" {...props} />
-);
+const Subtitle = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => (
+  <Typography ref={ref} variant="subtitle" weight="500" {...props} />
+));
+
+Subtitle.displayName = 'Subtitle';
+
+const Body = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="body" {...props} />);
+
+Body.displayName = 'Body';
+
+const Small = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="small" {...props} />);
+
+Small.displayName = 'Small';
+
+// Komponen P (paragraph) yang diminta
+const P = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="body" {...props} />);
+
+P.displayName = 'P';
 
 // Komponen H1-H6 yang diinginkan
-const H1: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h1" {...props} />
-);
+const H1 = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="h1" {...props} />);
 
-const H2: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h2" {...props} />
-);
+H1.displayName = 'H1';
 
-const H3: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h3" {...props} />
-);
+const H2 = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="h2" {...props} />);
 
-const H4: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h4" {...props} />
-);
+H2.displayName = 'H2';
 
-const H5: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h5" {...props} />
-);
+const H3 = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="h3" {...props} />);
 
-const H6: React.FC<Omit<TypographyProps, 'variant'>> = (props) => (
-  <Typography variant="h6" {...props} />
-);
+H3.displayName = 'H3';
+
+const H4 = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="h4" {...props} />);
+
+H4.displayName = 'H4';
+
+const H5 = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="h5" {...props} />);
+
+H5.displayName = 'H5';
+
+const H6 = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="h6" {...props} />);
+
+H6.displayName = 'H6';
 
 // Komponen untuk teks dengan warna semantik
-const TextPrimary: React.FC<Omit<TypographyProps, 'color'>> = (props) => {
+const TextPrimary = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'color'>
+>((props, ref) => {
   const { theme } = useTheme();
   return (
     <Typography
+      ref={ref}
       color={resolveColor(theme, 'primary', theme.colors.primary)}
       {...props}
     />
   );
-};
+});
 
-const TextSecondary: React.FC<Omit<TypographyProps, 'color'>> = (props) => {
+TextPrimary.displayName = 'TextPrimary';
+
+const TextSecondary = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'color'>
+>((props, ref) => {
   const { theme } = useTheme();
   return (
     <Typography
+      ref={ref}
       color={resolveColor(theme, 'textSecondary', theme.colors.textSecondary)}
       {...props}
     />
   );
-};
+});
 
-const TextError: React.FC<Omit<TypographyProps, 'color'>> = (props) => {
+TextSecondary.displayName = 'TextSecondary';
+
+const TextError = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'color'>
+>((props, ref) => {
   const { theme } = useTheme();
   return (
     <Typography
+      ref={ref}
       color={resolveColor(theme, 'error', theme.colors.error)}
       {...props}
     />
   );
-};
+});
 
-const TextSuccess: React.FC<Omit<TypographyProps, 'color'>> = (props) => {
-  const { theme } = useTheme();
-  return <Typography color={theme.colors.success} {...props} />;
-};
+TextError.displayName = 'TextError';
 
-const TextWarning: React.FC<Omit<TypographyProps, 'color'>> = (props) => {
+const TextSuccess = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'color'>
+>((props, ref) => {
   const { theme } = useTheme();
-  return <Typography color={theme.colors.warning} {...props} />;
-};
+  return <Typography ref={ref} color={theme.colors.success} {...props} />;
+});
 
-const TextInfo: React.FC<Omit<TypographyProps, 'color'>> = (props) => {
+TextSuccess.displayName = 'TextSuccess';
+
+const TextWarning = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'color'>
+>((props, ref) => {
   const { theme } = useTheme();
-  return <Typography color={theme.colors.info} {...props} />;
-};
+  return <Typography ref={ref} color={theme.colors.warning} {...props} />;
+});
+
+TextWarning.displayName = 'TextWarning';
+
+const TextInfo = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'color'>
+>((props, ref) => {
+  const { theme } = useTheme();
+  return <Typography ref={ref} color={theme.colors.info} {...props} />;
+});
+
+TextInfo.displayName = 'TextInfo';
 
 export {
   Typography,
@@ -237,6 +325,7 @@ export {
   Subtitle,
   Body,
   Small,
+  P,
   H1,
   H2,
   H3,

@@ -20,7 +20,7 @@ interface DividerProps {
   style?: ViewStyle;
 }
 
-const Divider = forwardRef<React.ElementRef<typeof View>, DividerProps>(
+const Divider = forwardRef<React.ComponentRef<typeof View>, DividerProps>(
   (
     {
       orientation = 'horizontal',
@@ -83,7 +83,7 @@ const createDividerStyles = (_: Theme) => ({
 
 // Shortcut components dengan margin default yang lebih baik
 const HDivider = forwardRef<
-  React.ElementRef<typeof View>,
+  React.ComponentRef<typeof View>,
   Omit<DividerProps, 'orientation'>
 >((props, ref) => (
   <Divider
@@ -97,7 +97,7 @@ const HDivider = forwardRef<
 HDivider.displayName = 'HDivider';
 
 const VDivider = forwardRef<
-  React.ElementRef<typeof View>,
+  React.ComponentRef<typeof View>,
   Omit<DividerProps, 'orientation'>
 >((props, ref) => (
   <Divider

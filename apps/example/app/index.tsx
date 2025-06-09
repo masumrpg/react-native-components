@@ -35,7 +35,7 @@ export default function HomeScreen() {
   const listLibrary: LibraryItem[] = [
     {
       id: 1,
-      title: 'Rn Theme',
+      title: 'Theme',
       path: '/theme',
       icon: <Palette size={30} color={'black'} />,
     },
