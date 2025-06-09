@@ -13,6 +13,8 @@ import {
   Button,
 } from 'rnc-theme';
 
+// FIXME bug darkmode
+
 type ThemePreset =
   | 'default'
   | 'material'

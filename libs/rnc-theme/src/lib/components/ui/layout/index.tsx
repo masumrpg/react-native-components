@@ -31,6 +31,19 @@ interface StackProps extends BaseLayoutProps {
   wrap?: boolean;
 }
 
+interface GridProps extends BaseLayoutProps {
+  columns?: number;
+  spacing?: keyof Theme['spacing'];
+  align?: 'flex-start' | 'center' | 'flex-end' | 'stretch';
+  justify?:
+    | 'flex-start'
+    | 'center'
+    | 'flex-end'
+    | 'space-between'
+    | 'space-around'
+    | 'space-evenly';
+}
+
 type CenterProps = BaseLayoutProps;
 
 interface BoxProps extends BaseLayoutProps {
@@ -308,6 +321,74 @@ const Box = forwardRef<React.ComponentRef<typeof View>, BoxProps>(
 
 Box.displayName = 'Box';
 
+// Grid - Grid Layout
+const Grid = forwardRef<React.ComponentRef<typeof View>, GridProps>(
+  (
+    {
+      children,
+      style,
+      columns = 2,
+      spacing,
+      align = 'stretch',
+      justify = 'flex-start',
+      padding,
+      margin,
+      backgroundColor,
+      borderRadius,
+      flex,
+      width,
+      height,
+      themed = false,
+      ...props
+    },
+    ref
+  ) => {
+    const { theme } = useTheme();
+    const styles = useThemedStyles(createGridStyles);
+
+    const gridStyle: ViewStyle = {
+      ...styles.base,
+      alignItems: align,
+      justifyContent: justify,
+      gap: spacing ? theme.spacing[spacing] : 0,
+      padding: padding ? theme.spacing[padding] : undefined,
+      margin: margin ? theme.spacing[margin] : undefined,
+      backgroundColor: resolveColor(
+        theme,
+        backgroundColor,
+        themed ? theme.colors.background : 'transparent'
+      ),
+      borderRadius: borderRadius ? theme.borderRadius[borderRadius] : undefined,
+      flex,
+      width,
+      height,
+    };
+
+    const childrenArray = React.Children.toArray(children);
+    const gridChildren = childrenArray.map((child, index) => {
+      const childStyle: ViewStyle = {
+        flex: 1,
+        minWidth: `${100 / columns}%`,
+        maxWidth: `${100 / columns}%`,
+      };
+
+      return (
+        <View key={index} style={childStyle}>
+          {child}
+        </View>
+      );
+    });
+
+    return (
+      <View ref={ref} style={[gridStyle, style]} {...props}>
+        {gridChildren}
+      </View>
+    );
+  }
+);
+
+Grid.displayName = 'Grid';
+
 // Styled functions untuk useThemedStyles
 const createHStackStyles = (theme: Theme) => ({
   base: {
@@ -331,6 +412,13 @@ const createCenterStyles = (theme: Theme) => ({
   base: {
     justifyContent: 'center' as const,
     alignItems: 'center' as const,
+  },
+});
+
+const createGridStyles = (theme: Theme) => ({
+  base: {
+    flexDirection: 'row' as const,
+    flexWrap: 'wrap' as const,
   },
 });
 
@@ -360,8 +448,10 @@ export {
   ZStack,
   Center,
   Box,
+  Grid,
   type StackProps,
   type CenterProps,
   type BoxProps,
   type BaseLayoutProps,
+  type GridProps,
 };
