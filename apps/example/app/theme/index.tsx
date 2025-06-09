@@ -44,6 +44,7 @@ const ThemeScreen: React.FC = () => {
   const styles = useThemedStyles(createStyles);
   const [inputText, setInputText] = useState('');
   const [selectedPreset, setSelectedPreset] = useState<ThemePreset>('default');
+  const [appliedTheme, setAppliedTheme] = useState<ThemePreset>('default'); // Track tema yang sedang aktif
 
   // Dynamic theme creators that respond to theme mode changes
   const createDynamicTheme = useCallback(
@@ -54,9 +55,19 @@ const ThemeScreen: React.FC = () => {
     [updateCustomTheme]
   );
 
+  // Improved toggle theme yang memperbarui tema aktif
   const toggleTheme = useCallback(() => {
-    setThemeMode(isDark ? 'light' : 'dark');
-  }, [isDark, setThemeMode]);
+    const newMode = isDark ? 'light' : 'dark';
+    setThemeMode(newMode);
+
+    // Jika ada tema yang sedang diterapkan (bukan default), perbarui tema tersebut
+    if (appliedTheme !== 'default') {
+      // Delay sedikit untuk memastikan themeMode sudah terupdate
+      setTimeout(() => {
+        applyThemePreset(appliedTheme);
+      }, 50);
+    }
+  }, [isDark, setThemeMode, appliedTheme]);
 
   const customThemeConfig = useMemo(
     () => (isDark: boolean) => ({
@@ -370,56 +381,41 @@ const ThemeScreen: React.FC = () => {
     []
   );
 
-  const applyThemePreset = useCallback(
+  // Helper function untuk mendapatkan theme config berdasarkan preset
+  const getThemeConfig = useCallback(
     (preset: ThemePreset) => {
-      setSelectedPreset(preset);
       switch (preset) {
         case 'custom':
-          createDynamicTheme(customThemeConfig);
-          break;
+          return customThemeConfig;
         case 'material':
-          createDynamicTheme(materialThemeConfig);
-          break;
+          return materialThemeConfig;
         case 'neon':
-          createDynamicTheme(neonThemeConfig);
-          break;
+          return neonThemeConfig;
         case 'ocean':
-          createDynamicTheme(oceanThemeConfig);
-          break;
+          return oceanThemeConfig;
         case 'sunset':
-          createDynamicTheme(sunsetThemeConfig);
-          break;
+          return sunsetThemeConfig;
         case 'forest':
-          createDynamicTheme(forestThemeConfig);
-          break;
+          return forestThemeConfig;
         case 'galaxy':
-          createDynamicTheme(galaxyThemeConfig);
-          break;
+          return galaxyThemeConfig;
         case 'vintage':
-          createDynamicTheme(vintageThemeConfig);
-          break;
+          return vintageThemeConfig;
         case 'cyberpunk':
-          createDynamicTheme(cyberpunkThemeConfig);
-          break;
+          return cyberpunkThemeConfig;
         case 'pastel':
-          createDynamicTheme(pastelThemeConfig);
-          break;
+          return pastelThemeConfig;
         case 'monochrome':
-          createDynamicTheme(monochromeThemeConfig);
-          break;
+          return monochromeThemeConfig;
         case 'autumn':
-          createDynamicTheme(autumnThemeConfig);
-          break;
+          return autumnThemeConfig;
         case 'arctic':
-          createDynamicTheme(arcticThemeConfig);
-          break;
-        case 'default':
-          resetTheme();
-          break;
+          return arcticThemeConfig;
+        default:
+          return null;
       }
     },
     [
-      createDynamicTheme,
       customThemeConfig,
       materialThemeConfig,
       neonThemeConfig,
@@ -433,8 +429,24 @@ const ThemeScreen: React.FC = () => {
       monochromeThemeConfig,
       autumnThemeConfig,
       arcticThemeConfig,
-      resetTheme,
     ]
+  );
+
+  const applyThemePreset = useCallback(
+    (preset: ThemePreset) => {
+      setSelectedPreset(preset);
+      setAppliedTheme(preset); // Track tema yang sedang aktif
+
+      if (preset === 'default') {
+        resetTheme();
+      } else {
+        const themeConfig = getThemeConfig(preset);
+        if (themeConfig) {
+          createDynamicTheme(themeConfig);
+        }
+      }
+    },
+    [createDynamicTheme, resetTheme, getThemeConfig]
   );
 
   const showAlert = useCallback(
@@ -455,11 +467,12 @@ const ThemeScreen: React.FC = () => {
     showAlert('success');
   }, [selectedPreset, applyThemePreset, showAlert]);
 
-  React.useEffect(() => {
-    if (selectedPreset !== 'default' && selectedPreset !== 'custom') {
-      applyThemePreset(selectedPreset);
-    }
-  }, [selectedPreset]);
+  // Hapus useEffect yang menyebabkan loop
+  // React.useEffect(() => {
+  //   if (selectedPreset !== 'default' && selectedPreset !== 'custom') {
+  //     applyThemePreset(selectedPreset);
+  //   }
+  // }, [selectedPreset]);
 
   return (
     <ScrollView style={styles.container}>
@@ -472,7 +485,7 @@ const ThemeScreen: React.FC = () => {
         🎨 Theme System Demo
       </Typography>
       <Typography variant="subtitle" align="center" style={styles.subtitle}>
-        Mode saat ini: {themeMode}
+        Mode saat ini: {themeMode} | Tema aktif: {appliedTheme}
       </Typography>
 
       {/* Theme Controls */}
@@ -532,7 +545,7 @@ const ThemeScreen: React.FC = () => {
             ].map(({ key, label }) => (
               <Button
                 key={key}
-                variant={selectedPreset === key ? 'primary' : 'outline'}
+                variant={appliedTheme === key ? 'primary' : 'outline'}
                 size="sm"
                 onPress={() => applyThemePreset(key as ThemePreset)}
                 style={styles.presetButton}
