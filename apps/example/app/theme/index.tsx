@@ -224,6 +224,12 @@ const ThemeScreen: React.FC = () => {
     []
   );
 
+  // Tambahkan function baru untuk apply tema yang terselected
+  const applySelectedTheme = useCallback(() => {
+    applyThemePreset(selectedPreset);
+    showAlert('success');
+  }, [selectedPreset, applyThemePreset, showAlert]);
+
   // Ganti useEffect yang dihapus dengan implementasi yang lebih aman
   React.useEffect(() => {
     // Hanya apply preset jika bukan default dan bukan saat pertama kali load
@@ -264,10 +270,17 @@ const ThemeScreen: React.FC = () => {
 
           <Button
             variant="primary"
-            onPress={() => applyThemePreset('custom')}
+            onPress={applySelectedTheme}
             style={styles.button}
           >
-            <ButtonText>Terapkan Tema Kustom</ButtonText>
+            <ButtonText>
+              {selectedPreset === 'default'
+                ? 'Reset ke Tema Default'
+                : `Terapkan Tema ${
+                    selectedPreset.charAt(0).toUpperCase() +
+                    selectedPreset.slice(1)
+                  }`}
+            </ButtonText>
           </Button>
 
           <Button
