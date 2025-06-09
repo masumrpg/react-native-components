@@ -1,15 +1,22 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
+import { ScrollView, Alert, StatusBar, View } from 'react-native';
 import {
-  View,
-  Text,
-  TouchableOpacity,
-  Switch,
-  ScrollView,
-  TextInput,
-  Alert,
-  StatusBar,
-} from 'react-native';
-import { useTheme, useThemedStyles, Theme } from 'rnc-theme';
+  useTheme,
+  useThemedStyles,
+  Theme,
+  CardHeader,
+  CardContent,
+  Card,
+  Typography,
+  Input,
+  Switcher,
+  Badge,
+  ButtonText,
+  Button,
+  BadgeText,
+} from 'rnc-theme';
+
+type ThemePreset = 'default' | 'material' | 'cupertino' | 'neon' | 'custom';
 
 const ThemeScreen: React.FC = () => {
   const {
@@ -22,14 +29,23 @@ const ThemeScreen: React.FC = () => {
   } = useTheme();
   const styles = useThemedStyles(createStyles);
   const [inputText, setInputText] = useState('');
-  const [selectedPreset, setSelectedPreset] = useState<string | null>(null);
+  const [selectedPreset, setSelectedPreset] = useState<ThemePreset>('default');
 
-  const toggleTheme = () => {
+  // Dynamic theme creators that respond to theme mode changes
+  const createDynamicTheme = useCallback(
+    (themeConfig: (isDark: boolean) => Partial<Theme>) => {
+      const dynamicTheme = themeConfig(isDark);
+      updateCustomTheme(dynamicTheme);
+    },
+    [isDark, updateCustomTheme]
+  );
+
+  const toggleTheme = useCallback(() => {
     setThemeMode(isDark ? 'light' : 'dark');
-  };
+  }, [isDark, setThemeMode]);
 
-  const customizeTheme = () => {
-    updateCustomTheme({
+  const customThemeConfig = useMemo(
+    () => (isDark: boolean) => ({
       colors: {
         primary: isDark ? '#FF6B6B' : '#4ECDC4',
         secondary: isDark ? '#FFE66D' : '#45B7D1',
@@ -48,7 +64,7 @@ const ThemeScreen: React.FC = () => {
         md: 8,
         lg: 16,
         xl: 24,
-        full: 9999, // Added missing 'full' property
+        full: 9999,
       },
       spacing: {
         xs: 4,
@@ -56,14 +72,14 @@ const ThemeScreen: React.FC = () => {
         md: 16,
         lg: 24,
         xl: 32,
-        xxl: 48, // Menambahkan xxl yang diperlukan
+        xxl: 48,
       },
-    });
-    setSelectedPreset('custom');
-  };
+    }),
+    []
+  );
 
-  const applyMaterialTheme = () => {
-    updateCustomTheme({
+  const materialThemeConfig = useMemo(
+    () => (isDark: boolean) => ({
       colors: {
         primary: '#6200EE',
         secondary: '#03DAC6',
@@ -82,7 +98,7 @@ const ThemeScreen: React.FC = () => {
         md: 4,
         lg: 8,
         xl: 12,
-        full: 9999, // Added missing 'full' property
+        full: 9999,
       },
       spacing: {
         xs: 4,
@@ -92,12 +108,12 @@ const ThemeScreen: React.FC = () => {
         xl: 32,
         xxl: 48,
       },
-    });
-    setSelectedPreset('material');
-  };
+    }),
+    []
+  );
 
-  const applyCupertinoTheme = () => {
-    updateCustomTheme({
+  const cupertinoThemeConfig = useMemo(
+    () => (isDark: boolean) => ({
       colors: {
         primary: '#007AFF',
         secondary: '#5856D6',
@@ -116,7 +132,7 @@ const ThemeScreen: React.FC = () => {
         md: 10,
         lg: 14,
         xl: 20,
-        full: 9999, // Added missing 'full' property
+        full: 9999,
       },
       spacing: {
         xs: 4,
@@ -126,12 +142,12 @@ const ThemeScreen: React.FC = () => {
         xl: 32,
         xxl: 48,
       },
-    });
-    setSelectedPreset('cupertino');
-  };
+    }),
+    []
+  );
 
-  const applyNeonTheme = () => {
-    updateCustomTheme({
+  const neonThemeConfig = useMemo(
+    () => (isDark: boolean) => ({
       colors: {
         primary: '#00FFFF',
         secondary: '#FF00FF',
@@ -150,7 +166,7 @@ const ThemeScreen: React.FC = () => {
         md: 4,
         lg: 8,
         xl: 16,
-        full: 9999, // Added missing 'full' property
+        full: 9999,
       },
       spacing: {
         xs: 4,
@@ -160,266 +176,284 @@ const ThemeScreen: React.FC = () => {
         xl: 32,
         xxl: 48,
       },
-    });
-    setSelectedPreset('neon');
-  };
+    }),
+    []
+  );
 
-  const showAlert = (type: 'success' | 'error' | 'warning' | 'info') => {
-    const messages = {
-      success: 'Operasi berhasil!',
-      error: 'Terjadi kesalahan!',
-      warning: 'Peringatan: Periksa input Anda!',
-      info: 'Informasi: Tema telah diperbarui!',
-    };
-    Alert.alert('Notifikasi', messages[type]);
-  };
+  const applyThemePreset = useCallback(
+    (preset: ThemePreset) => {
+      setSelectedPreset(preset);
+      switch (preset) {
+        case 'custom':
+          createDynamicTheme(customThemeConfig);
+          break;
+        case 'material':
+          createDynamicTheme(materialThemeConfig);
+          break;
+        case 'cupertino':
+          createDynamicTheme(cupertinoThemeConfig);
+          break;
+        case 'neon':
+          createDynamicTheme(neonThemeConfig);
+          break;
+        case 'default':
+          resetTheme();
+          break;
+      }
+    },
+    [
+      createDynamicTheme,
+      customThemeConfig,
+      materialThemeConfig,
+      cupertinoThemeConfig,
+      neonThemeConfig,
+      resetTheme,
+    ]
+  );
+
+  const showAlert = useCallback(
+    (type: 'success' | 'error' | 'warning' | 'info') => {
+      const messages = {
+        success: 'Operasi berhasil!',
+        error: 'Terjadi kesalahan!',
+        warning: 'Peringatan: Periksa input Anda!',
+        info: 'Informasi: Tema telah diperbarui!',
+      };
+      Alert.alert('Notifikasi', messages[type]);
+    },
+    []
+  );
+
+  // Remove this problematic useEffect that causes infinite loop
+  // React.useEffect(() => {
+  //   if (selectedPreset !== 'default') {
+  //     applyThemePreset(selectedPreset);
+  //   }
+  // }, [isDark, selectedPreset, applyThemePreset]);
 
   return (
     <ScrollView style={styles.container}>
       <StatusBar
         barStyle={isDark ? 'light-content' : 'dark-content'}
-        backgroundColor={styles.container.backgroundColor}
+        backgroundColor={theme.colors.background}
       />
 
-      <Text style={styles.title}>🎨 Theme System Demo</Text>
-      <Text style={styles.subtitle}>Mode saat ini: {themeMode}</Text>
+      <Typography variant="heading" align="center" style={styles.title}>
+        🎨 Theme System Demo
+      </Typography>
+      <Typography variant="subtitle" align="center" style={styles.subtitle}>
+        Mode saat ini: {themeMode}
+      </Typography>
 
       {/* Theme Controls */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>🎛️ Kontrol Tema</Text>
+      <Card style={styles.card}>
+        <CardHeader title="🎛️ Kontrol Tema" />
+        <CardContent>
+          <View style={styles.row}>
+            <Typography variant="body">Mode Gelap</Typography>
+            <Switcher value={isDark} onValueChange={toggleTheme} />
+          </View>
 
-        <View style={styles.row}>
-          <Text style={styles.label}>Mode Gelap</Text>
-          <Switch value={isDark} onValueChange={toggleTheme} />
-        </View>
+          <Button
+            variant="primary"
+            onPress={() => applyThemePreset('custom')}
+            style={styles.button}
+          >
+            <ButtonText>Terapkan Tema Kustom</ButtonText>
+          </Button>
 
-        <TouchableOpacity style={styles.button} onPress={customizeTheme}>
-          <Text style={styles.buttonText}>Terapkan Tema Kustom</Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[styles.button, styles.secondaryButton]}
-          onPress={resetTheme}
-        >
-          <Text style={[styles.buttonText, styles.secondaryButtonText]}>
-            Reset Tema
-          </Text>
-        </TouchableOpacity>
-      </View>
+          <Button
+            variant="outline"
+            onPress={() => applyThemePreset('default')}
+            style={styles.button}
+          >
+            <ButtonText>Reset Tema</ButtonText>
+          </Button>
+        </CardContent>
+      </Card>
 
       {/* Theme Presets */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>🎭 Preset Tema</Text>
-
-        <View style={styles.presetGrid}>
-          <TouchableOpacity
-            style={[
-              styles.presetButton,
-              selectedPreset === 'material' && styles.selectedPreset,
-            ]}
-            onPress={applyMaterialTheme}
-          >
-            <Text style={styles.presetText}>Material</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.presetButton,
-              selectedPreset === 'cupertino' && styles.selectedPreset,
-            ]}
-            onPress={applyCupertinoTheme}
-          >
-            <Text style={styles.presetText}>Cupertino</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.presetButton,
-              selectedPreset === 'neon' && styles.selectedPreset,
-            ]}
-            onPress={applyNeonTheme}
-          >
-            <Text style={styles.presetText}>Neon</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.presetButton,
-              selectedPreset === 'custom' && styles.selectedPreset,
-            ]}
-            onPress={customizeTheme}
-          >
-            <Text style={styles.presetText}>Kustom</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+      <Card style={styles.card}>
+        <CardHeader title="🎭 Preset Tema" />
+        <CardContent>
+          <View style={styles.presetGrid}>
+            {[
+              { key: 'default', label: 'Default' },
+              { key: 'material', label: 'Material' },
+              { key: 'cupertino', label: 'Cupertino' },
+              { key: 'neon', label: 'Neon' },
+              { key: 'custom', label: 'Kustom' },
+            ].map(({ key, label }) => (
+              <Button
+                key={key}
+                variant={selectedPreset === key ? 'primary' : 'outline'}
+                size="sm"
+                onPress={() => applyThemePreset(key as ThemePreset)}
+                style={styles.presetButton}
+              >
+                <ButtonText>{label}</ButtonText>
+              </Button>
+            ))}
+          </View>
+        </CardContent>
+      </Card>
 
       {/* Color Palette */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>🎨 Palet Warna</Text>
-        <View style={styles.colorsGrid}>
-          <View style={styles.colorItem}>
-            <View style={[styles.colorBox, styles.primary]} />
-            <Text style={styles.colorLabel}>Primary</Text>
+      <Card style={styles.card}>
+        <CardHeader title="🎨 Palet Warna" />
+        <CardContent>
+          <View style={styles.colorsGrid}>
+            {[
+              { key: 'primary', label: 'Primary', color: theme.colors.primary },
+              {
+                key: 'secondary',
+                label: 'Secondary',
+                color: theme.colors.secondary,
+              },
+              { key: 'success', label: 'Success', color: theme.colors.success },
+              { key: 'error', label: 'Error', color: theme.colors.error },
+              { key: 'warning', label: 'Warning', color: theme.colors.warning },
+              { key: 'info', label: 'Info', color: theme.colors.info },
+            ].map(({ key, label, color }) => (
+              <View key={key} style={styles.colorItem}>
+                <View style={[styles.colorBox, { backgroundColor: color }]} />
+                <Typography variant="small" align="center">
+                  {label}
+                </Typography>
+              </View>
+            ))}
           </View>
-          <View style={styles.colorItem}>
-            <View style={[styles.colorBox, styles.secondary]} />
-            <Text style={styles.colorLabel}>Secondary</Text>
-          </View>
-          <View style={styles.colorItem}>
-            <View style={[styles.colorBox, styles.success]} />
-            <Text style={styles.colorLabel}>Success</Text>
-          </View>
-          <View style={styles.colorItem}>
-            <View style={[styles.colorBox, styles.error]} />
-            <Text style={styles.colorLabel}>Error</Text>
-          </View>
-          <View style={styles.colorItem}>
-            <View style={[styles.colorBox, styles.warning]} />
-            <Text style={styles.colorLabel}>Warning</Text>
-          </View>
-          <View style={styles.colorItem}>
-            <View style={[styles.colorBox, styles.info]} />
-            <Text style={styles.colorLabel}>Info</Text>
-          </View>
-        </View>
-      </View>
+        </CardContent>
+      </Card>
 
       {/* Typography Showcase */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>📝 Tipografi</Text>
-        <Text style={styles.headingText}>Heading - Lorem Ipsum</Text>
-        <Text style={styles.subtitleText}>Subtitle - Dolor sit amet</Text>
-        <Text style={styles.bodyText}>
-          Body - Consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua.
-        </Text>
-        <Text style={styles.smallText}>Small - Ut enim ad minim veniam</Text>
-      </View>
+      <Card style={styles.card}>
+        <CardHeader title="📝 Tipografi" />
+        <CardContent>
+          <Typography variant="heading" style={styles.marginBottom}>
+            Heading - Lorem Ipsum
+          </Typography>
+          <Typography variant="subtitle" style={styles.marginBottom}>
+            Subtitle - Dolor sit amet
+          </Typography>
+          <Typography variant="body" style={styles.marginBottom}>
+            Body - Consectetur adipiscing elit, sed do eiusmod tempor incididunt
+            ut labore et dolore magna aliqua.
+          </Typography>
+          <Typography variant="small">
+            Small - Ut enim ad minim veniam
+          </Typography>
+        </CardContent>
+      </Card>
 
       {/* Interactive Components */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>🔧 Komponen Interaktif</Text>
+      <Card style={styles.card}>
+        <CardHeader title="🔧 Komponen Interaktif" />
+        <CardContent>
+          <Input
+            placeholder="Masukkan teks di sini..."
+            value={inputText}
+            onChangeText={setInputText}
+            style={styles.marginBottom}
+          />
 
-        <TextInput
-          style={styles.textInput}
-          placeholder="Masukkan teks di sini..."
-          placeholderTextColor={styles.textInput.color}
-          value={inputText}
-          onChangeText={setInputText}
-        />
+          <View style={styles.buttonGrid}>
+            <Button
+              variant="success"
+              size="sm"
+              onPress={() => showAlert('success')}
+              style={styles.actionButton}
+            >
+              <ButtonText>✅ Success</ButtonText>
+            </Button>
 
-        <View style={styles.buttonGrid}>
-          <TouchableOpacity
-            style={[styles.actionButton, styles.successButton]}
-            onPress={() => showAlert('success')}
-          >
-            <Text style={styles.actionButtonText}>✅ Success</Text>
-          </TouchableOpacity>
+            <Button
+              variant="error"
+              size="sm"
+              onPress={() => showAlert('error')}
+              style={styles.actionButton}
+            >
+              <ButtonText>❌ Error</ButtonText>
+            </Button>
 
-          <TouchableOpacity
-            style={[styles.actionButton, styles.errorButton]}
-            onPress={() => showAlert('error')}
-          >
-            <Text style={styles.actionButtonText}>❌ Error</Text>
-          </TouchableOpacity>
+            <Button
+              variant="warning"
+              size="sm"
+              onPress={() => showAlert('warning')}
+              style={styles.actionButton}
+            >
+              <ButtonText>
+                ⚠️ Warning
+              </ButtonText>
+            </Button>
 
-          <TouchableOpacity
-            style={[styles.actionButton, styles.warningButton]}
-            onPress={() => showAlert('warning')}
-          >
-            <Text style={styles.actionButtonText}>⚠️ Warning</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[styles.actionButton, styles.infoButton]}
-            onPress={() => showAlert('info')}
-          >
-            <Text style={styles.actionButtonText}>ℹ️ Info</Text>
-          </TouchableOpacity>
-        </View>
-      </View>
+            <Button
+              variant="info"
+              size="sm"
+              onPress={() => showAlert('info')}
+              style={styles.actionButton}
+            >
+              <ButtonText>ℹ️ Info</ButtonText>
+            </Button>
+          </View>
+        </CardContent>
+      </Card>
 
       {/* Border Radius Showcase */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>📐 Border Radius</Text>
-        <View style={styles.radiusGrid}>
-          <View style={styles.radiusItem}>
-            <View
-              style={[
-                styles.radiusBox,
-                { borderRadius: theme.borderRadius.sm },
-              ]}
-            />
-            <Text style={styles.radiusLabel}>
-              Small ({theme.borderRadius.sm}px)
-            </Text>
+      <Card style={styles.card}>
+        <CardHeader title="📐 Border Radius" />
+        <CardContent>
+          <View style={styles.radiusGrid}>
+            {[
+              { key: 'sm', value: theme.borderRadius.sm },
+              { key: 'md', value: theme.borderRadius.md },
+              { key: 'lg', value: theme.borderRadius.lg },
+              { key: 'xl', value: theme.borderRadius.xl },
+              { key: 'full', value: theme.borderRadius.full },
+            ].map(({ key, value }) => (
+              <View key={key} style={styles.radiusItem}>
+                <View
+                  style={[
+                    styles.radiusBox,
+                    { borderRadius: value === 9999 ? 30 : value },
+                  ]}
+                />
+                <Typography variant="small" align="center">
+                  {key.toUpperCase()} ({value}px)
+                </Typography>
+              </View>
+            ))}
           </View>
-          <View style={styles.radiusItem}>
-            <View
-              style={[
-                styles.radiusBox,
-                { borderRadius: theme.borderRadius.md },
-              ]}
-            />
-            <Text style={styles.radiusLabel}>
-              Medium ({theme.borderRadius.md}px)
-            </Text>
-          </View>
-          <View style={styles.radiusItem}>
-            <View
-              style={[
-                styles.radiusBox,
-                { borderRadius: theme.borderRadius.lg },
-              ]}
-            />
-            <Text style={styles.radiusLabel}>
-              Large ({theme.borderRadius.lg}px)
-            </Text>
-          </View>
-          <View style={styles.radiusItem}>
-            <View
-              style={[
-                styles.radiusBox,
-                { borderRadius: theme.borderRadius.xl },
-              ]}
-            />
-            <Text style={styles.radiusLabel}>
-              XLarge ({theme.borderRadius.xl}px)
-            </Text>
-          </View>
-          <View style={styles.radiusItem}>
-            <View
-              style={[
-                styles.radiusBox,
-                { borderRadius: theme.borderRadius.full },
-              ]}
-            />
-            <Text style={styles.radiusLabel}>
-              Full ({theme.borderRadius.full}px)
-            </Text>
-          </View>
-        </View>
-      </View>
+        </CardContent>
+      </Card>
 
       {/* Spacing Showcase */}
-      <View style={styles.card}>
-        <Text style={styles.cardTitle}>📏 Spacing</Text>
-        <View style={styles.spacingContainer}>
-          <View style={[styles.spacingBox, { margin: theme.spacing.xs }]}>
-            <Text style={styles.spacingText}>XS ({theme.spacing.xs}px)</Text>
+      <Card style={styles.card}>
+        <CardHeader title="📏 Spacing" />
+        <CardContent>
+          <View style={styles.spacingContainer}>
+            {[
+              { key: 'xs', value: theme.spacing.xs },
+              { key: 'sm', value: theme.spacing.sm },
+              { key: 'md', value: theme.spacing.md },
+              { key: 'lg', value: theme.spacing.lg },
+            ].map(({ key, value }) => (
+              <Badge
+                key={key}
+                variant="default"
+                style={{
+                  ...styles.spacingBox,
+                  margin: value,
+                }}
+              >
+                <BadgeText>
+                  {key.toUpperCase()} ({value}px)
+                </BadgeText>
+              </Badge>
+            ))}
           </View>
-          <View style={[styles.spacingBox, { margin: theme.spacing.sm }]}>
-            <Text style={styles.spacingText}>SM ({theme.spacing.sm}px)</Text>
-          </View>
-          <View style={[styles.spacingBox, { margin: theme.spacing.md }]}>
-            <Text style={styles.spacingText}>MD ({theme.spacing.md}px)</Text>
-          </View>
-          <View style={[styles.spacingBox, { margin: theme.spacing.lg }]}>
-            <Text style={styles.spacingText}>LG ({theme.spacing.lg}px)</Text>
-          </View>
-        </View>
-      </View>
+        </CardContent>
+      </Card>
     </ScrollView>
   );
 };
@@ -431,37 +465,14 @@ const createStyles = (theme: Theme) => ({
     padding: theme.spacing.md,
   },
   title: {
-    fontSize: theme.typography.heading.fontSize,
-    lineHeight: theme.typography.heading.lineHeight,
-    color: theme.colors.text,
-    fontWeight: 'bold' as const,
     marginBottom: theme.spacing.sm,
-    textAlign: 'center' as const,
   },
   subtitle: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.textSecondary,
     marginBottom: theme.spacing.lg,
-    textAlign: 'center' as const,
+    color: theme.colors.textSecondary,
   },
   card: {
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.lg,
-    padding: theme.spacing.md,
     marginBottom: theme.spacing.lg,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    shadowColor: theme.colors.text,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  cardTitle: {
-    fontSize: theme.typography.subtitle.fontSize,
-    color: theme.colors.text,
-    fontWeight: '600' as const,
-    marginBottom: theme.spacing.md,
   },
   row: {
     flexDirection: 'row' as const,
@@ -469,58 +480,18 @@ const createStyles = (theme: Theme) => ({
     alignItems: 'center' as const,
     marginBottom: theme.spacing.md,
   },
-  label: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.text,
-  },
   button: {
-    backgroundColor: theme.colors.primary,
-    borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.md,
-    alignItems: 'center' as const,
     marginBottom: theme.spacing.sm,
   },
-  buttonText: {
-    color: '#FFFFFF',
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
-  },
-  secondaryButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  secondaryButtonText: {
-    color: theme.colors.text,
-  },
-
-  // Preset Styles
   presetGrid: {
     flexDirection: 'row' as const,
     flexWrap: 'wrap' as const,
     justifyContent: 'space-between' as const,
   },
   presetButton: {
-    backgroundColor: theme.colors.surface,
-    borderWidth: 2,
-    borderColor: theme.colors.border,
-    borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.sm,
-    width: '48%' as const, // Menggunakan const assertion
-    alignItems: 'center' as const,
+    width: '48%' as const,
     marginBottom: theme.spacing.sm,
   },
-  selectedPreset: {
-    borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.primary + '20',
-  },
-  presetText: {
-    color: theme.colors.text,
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '500' as const,
-  },
-
-  // Color Palette Styles
   colorsGrid: {
     flexDirection: 'row' as const,
     flexWrap: 'wrap' as const,
@@ -539,68 +510,8 @@ const createStyles = (theme: Theme) => ({
     borderWidth: 1,
     borderColor: theme.colors.border,
   },
-  colorLabel: {
-    fontSize: theme.typography.small.fontSize, // Menggunakan 'small' bukan 'caption'
-    color: theme.colors.textSecondary,
-    textAlign: 'center' as const,
-  },
-  primary: {
-    backgroundColor: theme.colors.primary,
-  },
-  secondary: {
-    backgroundColor: theme.colors.secondary,
-  },
-  success: {
-    backgroundColor: theme.colors.success,
-  },
-  error: {
-    backgroundColor: theme.colors.error,
-  },
-  warning: {
-    backgroundColor: theme.colors.warning,
-  },
-  info: {
-    backgroundColor: theme.colors.info,
-  },
-
-  // Typography Styles
-  headingText: {
-    fontSize: theme.typography.heading.fontSize,
-    lineHeight: theme.typography.heading.lineHeight,
-    color: theme.colors.text,
-    fontWeight: 'bold' as const,
+  marginBottom: {
     marginBottom: theme.spacing.sm,
-  },
-  subtitleText: {
-    fontSize: theme.typography.subtitle.fontSize,
-    lineHeight: theme.typography.subtitle.lineHeight,
-    color: theme.colors.text,
-    fontWeight: '600' as const,
-    marginBottom: theme.spacing.sm,
-  },
-  bodyText: {
-    fontSize: theme.typography.body.fontSize,
-    lineHeight: theme.typography.body.lineHeight,
-    color: theme.colors.text,
-    marginBottom: theme.spacing.sm,
-  },
-  smallText: {
-    fontSize: theme.typography.small.fontSize, // Menggunakan 'small' bukan 'caption'
-    lineHeight: theme.typography.small.lineHeight,
-    color: theme.colors.textSecondary,
-    fontStyle: 'italic' as const,
-  },
-
-  // Interactive Components
-  textInput: {
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.md,
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.text,
-    backgroundColor: theme.colors.background,
-    marginBottom: theme.spacing.md,
   },
   buttonGrid: {
     flexDirection: 'row' as const,
@@ -608,31 +519,9 @@ const createStyles = (theme: Theme) => ({
     justifyContent: 'space-between' as const,
   },
   actionButton: {
-    borderRadius: theme.borderRadius.md,
-    padding: theme.spacing.sm,
     width: '48%' as const,
-    alignItems: 'center' as const,
     marginBottom: theme.spacing.sm,
   },
-  actionButtonText: {
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
-    color: '#FFFFFF',
-  },
-  successButton: {
-    backgroundColor: theme.colors.success,
-  },
-  errorButton: {
-    backgroundColor: theme.colors.error,
-  },
-  warningButton: {
-    backgroundColor: theme.colors.warning,
-  },
-  infoButton: {
-    backgroundColor: theme.colors.info,
-  },
-
-  // Border Radius Showcase
   radiusGrid: {
     flexDirection: 'row' as const,
     flexWrap: 'wrap' as const,
@@ -649,28 +538,11 @@ const createStyles = (theme: Theme) => ({
     backgroundColor: theme.colors.primary,
     marginBottom: theme.spacing.xs,
   },
-  radiusLabel: {
-    fontSize: theme.typography.small.fontSize,
-    color: theme.colors.textSecondary,
-    textAlign: 'center' as const,
-  },
-
-  // Spacing Showcase
   spacingContainer: {
     alignItems: 'center' as const,
   },
   spacingBox: {
-    backgroundColor: theme.colors.primary + '30',
-    borderWidth: 1,
-    borderColor: theme.colors.primary,
-    borderRadius: theme.borderRadius.sm,
-    padding: theme.spacing.sm,
     marginBottom: theme.spacing.sm,
-  },
-  spacingText: {
-    fontSize: theme.typography.small.fontSize,
-    color: theme.colors.text,
-    textAlign: 'center' as const,
   },
 });
 
