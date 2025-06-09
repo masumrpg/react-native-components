@@ -37,7 +37,7 @@ const ThemeScreen: React.FC = () => {
       const dynamicTheme = themeConfig(isDark);
       updateCustomTheme(dynamicTheme);
     },
-    [isDark, updateCustomTheme]
+    [updateCustomTheme] // Hapus isDark dari dependency!
   );
 
   const toggleTheme = useCallback(() => {
@@ -224,12 +224,20 @@ const ThemeScreen: React.FC = () => {
     []
   );
 
-  // Remove this problematic useEffect that causes infinite loop
+  // Ganti useEffect yang dihapus dengan implementasi yang lebih aman
+  React.useEffect(() => {
+    // Hanya apply preset jika bukan default dan bukan saat pertama kali load
+    if (selectedPreset !== 'default' && selectedPreset !== 'custom') {
+      applyThemePreset(selectedPreset);
+    }
+  }, [selectedPreset]); // Hanya depend pada selectedPreset, bukan isDark
+
+  // HAPUS useEffect ini yang menyebabkan infinite loop:
   // React.useEffect(() => {
-  //   if (selectedPreset !== 'default') {
-  //     applyThemePreset(selectedPreset);
+  //   if (selectedPreset === 'custom') {
+  //     createDynamicTheme(customThemeConfig);
   //   }
-  // }, [isDark, selectedPreset, applyThemePreset]);
+  // }, [isDark, selectedPreset, createDynamicTheme, customThemeConfig]);
 
   return (
     <ScrollView style={styles.container}>
@@ -382,9 +390,7 @@ const ThemeScreen: React.FC = () => {
               onPress={() => showAlert('warning')}
               style={styles.actionButton}
             >
-              <ButtonText>
-                ⚠️ Warning
-              </ButtonText>
+              <ButtonText>⚠️ Warning</ButtonText>
             </Button>
 
             <Button
