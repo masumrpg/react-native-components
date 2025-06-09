@@ -72,7 +72,7 @@ interface BaseInputProps {
 
 type InputProps = BaseInputProps & Omit<TextInputProps, 'style'>;
 
-const Input = forwardRef<TextInput, InputProps>(
+const Input = forwardRef<React.ElementRef<typeof TextInput>, InputProps>(
   (
     {
       label,
@@ -111,7 +111,7 @@ const Input = forwardRef<TextInput, InputProps>(
     const [isFocused, setIsFocused] = useState(false);
     const [inputValue, setInputValue] = useState(value ?? '');
 
-    // Animated values
+    // Animation values
     const focusAnimation = useSharedValue(0);
     const errorAnimation = useSharedValue(0);
     const borderAnimation = useSharedValue(0);
@@ -640,16 +640,16 @@ const createStyles = (theme: Theme) => ({
     fontWeight: '400' as const,
   } as TextStyle,
   textInputSm: {
-    fontSize: theme.typography.small.fontSize,
-    lineHeight: theme.typography.small.fontSize * 1.3,
+    fontSize: theme.typography.small?.fontSize ?? 14,
+    lineHeight: (theme.typography.small?.fontSize ?? 14) * 1.3,
   } as TextStyle,
   textInputMd: {
-    fontSize: theme.typography.body.fontSize,
-    lineHeight: theme.typography.body.fontSize * 1.3,
+    fontSize: theme.typography.body?.fontSize ?? 16,
+    lineHeight: (theme.typography.body?.fontSize ?? 16) * 1.3,
   } as TextStyle,
   textInputLg: {
-    fontSize: theme.typography.subtitle.fontSize,
-    lineHeight: theme.typography.subtitle.fontSize * 1.3,
+    fontSize: theme.typography.subtitle?.fontSize ?? 18,
+    lineHeight: (theme.typography.subtitle?.fontSize ?? 18) * 1.3,
   } as TextStyle,
   // Icons
   leftIcon: {

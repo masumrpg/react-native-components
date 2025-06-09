@@ -46,7 +46,10 @@ interface AnimatedBadgeProps extends BadgeProps {
   fadeIn?: boolean;
 }
 
-const Badge = forwardRef<Animated.View, AnimatedBadgeProps>(
+const Badge = forwardRef<
+  React.ComponentRef<typeof Animated.View>,
+  AnimatedBadgeProps
+>(
   (
     {
       children,
@@ -104,25 +107,26 @@ const Badge = forwardRef<Animated.View, AnimatedBadgeProps>(
   }
 );
 
-const BadgeText = forwardRef<Animated.Text, BadgeTextProps>(
-  ({ children, style, ...props }, ref) => {
-    const styles = useThemedStyles(createBadgeTextStyles);
+const BadgeText = forwardRef<
+  React.ComponentRef<typeof Animated.View>,
+  BadgeTextProps
+>(({ children, style, ...props }, ref) => {
+  const styles = useThemedStyles(createBadgeTextStyles);
 
-    const textStyle = useMemo(() => {
-      const baseStyles = [styles.text];
-      if (style) baseStyles.push(style);
-      return baseStyles;
-    }, [styles, style]);
+  const textStyle = useMemo(() => {
+    const baseStyles = [styles.text];
+    if (style) baseStyles.push(style);
+    return baseStyles;
+  }, [styles, style]);
 
-    return (
-      <Animated.Text ref={ref} style={textStyle} {...props}>
-        {children}
-      </Animated.Text>
-    );
-  }
-);
+  return (
+    <Animated.Text ref={ref} style={textStyle} {...props}>
+      {children}
+    </Animated.Text>
+  );
+});
 
-const BadgeIcon = forwardRef<View, BadgeIconProps>(
+const BadgeIcon = forwardRef<React.ComponentRef<typeof View>, BadgeIconProps>(
   ({ children, position = 'left', style, ...props }, ref) => {
     const styles = useThemedStyles(createBadgeIconStyles);
 

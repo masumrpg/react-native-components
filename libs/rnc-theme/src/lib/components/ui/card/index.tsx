@@ -62,7 +62,7 @@ const createCardStyles = (theme: Theme) => ({
 });
 
 // Components
-const Card = forwardRef<View, CardProps>(
+const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
   (
     {
       children,
@@ -107,28 +107,29 @@ const Card = forwardRef<View, CardProps>(
   }
 );
 
-const CardContent = forwardRef<View, CardContentProps>(
-  ({ children, style, padding = 'sm', ...props }, ref) => {
-    const { theme } = useTheme();
+const CardContent = forwardRef<
+  React.ComponentRef<typeof View>,
+  CardContentProps
+>(({ children, style, padding = 'sm', ...props }, ref) => {
+  const { theme } = useTheme();
 
-    return (
-      <View
-        ref={ref}
-        style={[
-          {
-            padding: theme.spacing[padding],
-          },
-          style,
-        ]}
-        {...props}
-      >
-        {children}
-      </View>
-    );
-  }
-);
+  return (
+    <View
+      ref={ref}
+      style={[
+        {
+          padding: theme.spacing[padding],
+        },
+        style,
+      ]}
+      {...props}
+    >
+      {children}
+    </View>
+  );
+});
 
-const CardFooter = forwardRef<View, CardFooterProps>(
+const CardFooter = forwardRef<React.ComponentRef<typeof View>, CardFooterProps>(
   (
     {
       children,
@@ -164,7 +165,7 @@ const CardFooter = forwardRef<View, CardFooterProps>(
   }
 );
 
-const CardHeader = forwardRef<View, CardHeaderProps>(
+const CardHeader = forwardRef<React.ComponentRef<typeof View>, CardHeaderProps>(
   (
     {
       title,

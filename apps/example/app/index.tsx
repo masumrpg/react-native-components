@@ -117,14 +117,16 @@ export default function HomeScreen() {
     <ScrollView>
       <View style={styles.container}>
         <View style={styles.gridContainer}>
-          {listLibrary.map((item) => (
-            <Link href={item.path} key={item.id} asChild>
-              <TouchableOpacity style={styles.gridItem}>
-                {item.icon}
-                <Text style={styles.gridItemText}>{item.title}</Text>
-              </TouchableOpacity>
-            </Link>
-          ))}
+          {listLibrary
+            .sort((a, b) => a.title.localeCompare(b.title))
+            .map((item) => (
+              <Link href={item.path} key={item.id} asChild>
+                <TouchableOpacity style={styles.gridItem}>
+                  {item.icon}
+                  <Text style={styles.gridItemText}>{item.title}</Text>
+                </TouchableOpacity>
+              </Link>
+            ))}
         </View>
       </View>
     </ScrollView>

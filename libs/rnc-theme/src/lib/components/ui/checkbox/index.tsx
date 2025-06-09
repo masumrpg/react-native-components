@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from 'react';
+import React, { createContext, useContext, forwardRef } from 'react';
 import {
   View,
   TouchableOpacity,
@@ -73,255 +73,251 @@ const useCheckboxGroup = () => {
   return useContext(CheckboxGroupContext);
 };
 
-const CheckboxGroup: React.FC<CheckboxGroupProps> = ({
-  children,
-  value = [],
-  onValueChange,
-  disabled = false,
-  style,
-  ...props
-}) => {
-  const styles = useThemedStyles(createCheckboxGroupStyles);
+const Checkbox = forwardRef<
+  React.ComponentRef<typeof TouchableOpacity>,
+  CheckboxProps
+>(
+  (
+    {
+      value,
+      checked: controlledChecked,
+      onCheckedChange,
+      size = 'md',
+      variant = 'default',
+      shape = 'square',
+      disabled: checkboxDisabled = false,
+      style,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    const styles = useThemedStyles(createCheckboxStyles);
+    const groupContext = useCheckboxGroup();
 
-  const contextValue: CheckboxGroupContextType = {
-    value,
-    onValueChange:
-      onValueChange ||
-      (() => {
-        /* no-op */
-      }),
-    disabled,
-  };
+    // Animation values - Improved spring configuration
+    const scale = useSharedValue(1);
+    const checkProgress = useSharedValue(0);
+    const backgroundProgress = useSharedValue(0);
+    const borderProgress = useSharedValue(0);
 
-  return (
-    <CheckboxGroupContext.Provider value={contextValue}>
-      <View style={[styles.group, style]} {...props}>
-        {children}
-      </View>
-    </CheckboxGroupContext.Provider>
-  );
-};
+    // Determine if checkbox is checked
+    const isChecked = groupContext
+      ? groupContext.value.includes(value)
+      : controlledChecked || false;
 
-const Checkbox: React.FC<CheckboxProps> = ({
-  value,
-  checked: controlledChecked,
-  onCheckedChange,
-  size = 'md',
-  variant = 'default',
-  shape = 'square',
-  disabled: checkboxDisabled = false,
-  style,
-  children,
-  ...props
-}) => {
-  const styles = useThemedStyles(createCheckboxStyles);
-  const groupContext = useCheckboxGroup();
+    // Determine if checkbox is disabled
+    const isDisabled = groupContext ? groupContext.disabled : checkboxDisabled;
 
-  // Animation values - Improved spring configuration
-  const scale = useSharedValue(1);
-  const checkProgress = useSharedValue(0);
-  const backgroundProgress = useSharedValue(0);
-  const borderProgress = useSharedValue(0);
+    // Update animations when checked state changes - Much smoother config
+    React.useEffect(() => {
+      // Super smooth spring animation untuk check mark
+      checkProgress.value = withSpring(isChecked ? 1 : 0, {
+        damping: 20,
+        stiffness: 300,
+        mass: 0.8,
+      });
 
-  // Determine if checkbox is checked
-  const isChecked = groupContext
-    ? groupContext.value.includes(value)
-    : controlledChecked || false;
+      // Faster background transition
+      backgroundProgress.value = withTiming(isChecked ? 1 : 0, {
+        duration: 150,
+      });
 
-  // Determine if checkbox is disabled
-  const isDisabled = groupContext ? groupContext.disabled : checkboxDisabled;
+      // Border animation
+      borderProgress.value = withTiming(isChecked ? 1 : 0, {
+        duration: 120,
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [isChecked]);
 
-  // Update animations when checked state changes - Much smoother config
-  React.useEffect(() => {
-    // Super smooth spring animation untuk check mark
-    checkProgress.value = withSpring(isChecked ? 1 : 0, {
-      damping: 20,
-      stiffness: 300,
-      mass: 0.8,
-    });
+    const handlePress = () => {
+      if (isDisabled) return;
 
-    // Faster background transition
-    backgroundProgress.value = withTiming(isChecked ? 1 : 0, {
-      duration: 150,
-    });
+      // Instant feedback dengan scale animation yang lebih halus
+      scale.value = withSpring(
+        0.92,
+        {
+          damping: 25,
+          stiffness: 400,
+          mass: 0.5,
+        },
+        () => {
+          scale.value = withSpring(1, {
+            damping: 20,
+            stiffness: 300,
+            mass: 0.7,
+          });
+        }
+      );
 
-    // Border animation
-    borderProgress.value = withTiming(isChecked ? 1 : 0, {
-      duration: 120,
-    });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isChecked]);
-
-  const handlePress = () => {
-    if (isDisabled) return;
-
-    // Instant feedback dengan scale animation yang lebih halus
-    scale.value = withSpring(
-      0.92,
-      {
-        damping: 25,
-        stiffness: 400,
-        mass: 0.5,
-      },
-      () => {
-        scale.value = withSpring(1, {
-          damping: 20,
-          stiffness: 300,
-          mass: 0.7,
-        });
+      if (groupContext) {
+        const newValue = isChecked
+          ? groupContext.value.filter((v) => v !== value)
+          : [...groupContext.value, value];
+        groupContext.onValueChange(newValue);
+      } else if (onCheckedChange) {
+        onCheckedChange(!isChecked);
       }
-    );
-
-    if (groupContext) {
-      const newValue = isChecked
-        ? groupContext.value.filter((v) => v !== value)
-        : [...groupContext.value, value];
-      groupContext.onValueChange(newValue);
-    } else if (onCheckedChange) {
-      onCheckedChange(!isChecked);
-    }
-  };
-
-  // Animated styles - Optimized interpolations
-  const animatedContainerStyle = useAnimatedStyle(() => {
-    return {
-      transform: [{ scale: scale.value }],
-    };
-  });
-
-  const animatedCheckboxStyle = useAnimatedStyle(() => {
-    const bgProgress = interpolate(
-      backgroundProgress.value,
-      [0, 1],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
-
-    // Get the variant colors
-    const variantBackgroundColors = {
-      default: styles.primaryBackground.backgroundColor as string,
-      primary: styles.primaryBackground.backgroundColor as string,
-      success: styles.successBackground.backgroundColor as string,
-      warning: styles.warningBackground.backgroundColor as string,
-      error: styles.errorBackground.backgroundColor as string,
     };
 
-    const variantBorderColors = {
-      default: styles.default.borderColor as string,
-      primary: styles.primary.borderColor as string,
-      success: styles.success.borderColor as string,
-      warning: styles.warning.borderColor as string,
-      error: styles.error.borderColor as string,
-    };
+    // Animated styles - Optimized interpolations
+    const animatedContainerStyle = useAnimatedStyle(() => {
+      return {
+        transform: [{ scale: scale.value }],
+      };
+    });
 
-    return {
-      backgroundColor:
-        bgProgress > 0.1 ? variantBackgroundColors[variant] : 'transparent',
-      borderColor:
-        bgProgress > 0.5
-          ? variantBackgroundColors[variant]
-          : variantBorderColors[variant],
-      borderWidth: 2,
-    };
-  });
+    const animatedCheckboxStyle = useAnimatedStyle(() => {
+      const bgProgress = interpolate(
+        backgroundProgress.value,
+        [0, 1],
+        [0, 1],
+        Extrapolation.CLAMP
+      );
 
-  const animatedCheckStyle = useAnimatedStyle(() => {
-    // Bouncy scale animation untuk check mark
-    const checkScale = interpolate(
-      checkProgress.value,
-      [0, 0.3, 0.7, 1],
-      [0, 0.2, 1.1, 1],
-      Extrapolation.CLAMP
-    );
+      // Get the variant colors
+      const variantBackgroundColors = {
+        default: styles.primaryBackground.backgroundColor as string,
+        primary: styles.primaryBackground.backgroundColor as string,
+        success: styles.successBackground.backgroundColor as string,
+        warning: styles.warningBackground.backgroundColor as string,
+        error: styles.errorBackground.backgroundColor as string,
+      };
 
-    const opacity = interpolate(
-      checkProgress.value,
-      [0, 0.2, 1],
-      [0, 0.8, 1],
-      Extrapolation.CLAMP
-    );
+      const variantBorderColors = {
+        default: styles.default.borderColor as string,
+        primary: styles.primary.borderColor as string,
+        success: styles.success.borderColor as string,
+        warning: styles.warning.borderColor as string,
+        error: styles.error.borderColor as string,
+      };
 
-    // Rotation effect untuk lebih dynamic
-    const rotation = interpolate(
-      checkProgress.value,
-      [0, 0.5, 1],
-      [0, -5, 0],
-      Extrapolation.CLAMP
-    );
+      return {
+        backgroundColor:
+          bgProgress > 0.1 ? variantBackgroundColors[variant] : 'transparent',
+        borderColor:
+          bgProgress > 0.5
+            ? variantBackgroundColors[variant]
+            : variantBorderColors[variant],
+        borderWidth: 2,
+      };
+    });
 
-    return {
-      transform: [{ scale: checkScale }, { rotate: `${rotation}deg` }],
-      opacity,
-    };
-  });
+    const animatedCheckStyle = useAnimatedStyle(() => {
+      // Bouncy scale animation untuk check mark
+      const checkScale = interpolate(
+        checkProgress.value,
+        [0, 0.3, 0.7, 1],
+        [0, 0.2, 1.1, 1],
+        Extrapolation.CLAMP
+      );
 
-  const checkboxStyle = [
-    styles.checkbox,
-    styles[size],
-    styles[variant],
-    styles[shape],
-    isDisabled && styles.disabled,
-    style,
-  ];
+      const opacity = interpolate(
+        checkProgress.value,
+        [0, 0.2, 1],
+        [0, 0.8, 1],
+        Extrapolation.CLAMP
+      );
 
-  return (
-    <TouchableOpacity
-      style={[styles.container, styles[`${size}Container`]]}
-      onPress={handlePress}
-      disabled={isDisabled}
-      activeOpacity={0.8}
-      {...props}
-    >
-      <Animated.View style={[animatedContainerStyle]}>
-        <Animated.View style={[checkboxStyle, animatedCheckboxStyle]}>
-          {/* Animated check icon with improved animation */}
-          <Animated.View style={[styles.iconContainer, animatedCheckStyle]}>
-            <CheckboxIcon size={size} variant={variant} />
+      // Rotation effect untuk lebih dynamic
+      const rotation = interpolate(
+        checkProgress.value,
+        [0, 0.5, 1],
+        [0, -5, 0],
+        Extrapolation.CLAMP
+      );
+
+      return {
+        transform: [{ scale: checkScale }, { rotate: `${rotation}deg` }],
+        opacity,
+      };
+    });
+
+    const checkboxStyle = [
+      styles.checkbox,
+      styles[size],
+      styles[variant],
+      styles[shape],
+      isDisabled && styles.disabled,
+      style,
+    ];
+
+    return (
+      <TouchableOpacity
+        ref={ref}
+        style={[styles.container, styles[`${size}Container`]]}
+        onPress={handlePress}
+        disabled={isDisabled}
+        activeOpacity={0.8}
+        {...props}
+      >
+        <Animated.View style={[animatedContainerStyle]}>
+          <Animated.View style={[checkboxStyle, animatedCheckboxStyle]}>
+            {/* Animated check icon with improved animation */}
+            <Animated.View style={[styles.iconContainer, animatedCheckStyle]}>
+              <CheckboxIcon size={size} variant={variant} />
+            </Animated.View>
           </Animated.View>
         </Animated.View>
-      </Animated.View>
 
-      {children && (
-        <CheckboxLabel disabled={isDisabled} size={size}>
-          {children}
-        </CheckboxLabel>
-      )}
-    </TouchableOpacity>
-  );
-};
-
-const CheckboxIndicator: React.FC<
-  CheckboxIndicatorProps & {
-    checked?: boolean;
-    size?: CheckboxSize;
-    variant?: CheckboxVariant;
+        {children && (
+          <CheckboxLabel disabled={isDisabled} size={size}>
+            {children}
+          </CheckboxLabel>
+        )}
+      </TouchableOpacity>
+    );
   }
-> = ({
-  children,
-  style,
-  checked = false,
-  size = 'md',
-  variant = 'default',
-  ...props
-}) => {
+);
+
+Checkbox.displayName = 'Checkbox';
+
+const CheckboxGroup = forwardRef<
+  React.ComponentRef<typeof View>,
+  CheckboxGroupProps
+>(
+  (
+    { children, value = [], onValueChange, disabled = false, style, ...props },
+    ref
+  ) => {
+    const styles = useThemedStyles(createCheckboxGroupStyles);
+
+    const contextValue: CheckboxGroupContextType = {
+      value,
+      onValueChange:
+        onValueChange ||
+        (() => {
+          /* no-op */
+        }),
+      disabled,
+    };
+
+    return (
+      <CheckboxGroupContext.Provider value={contextValue}>
+        <View ref={ref} style={[styles.group, style]} {...props}>
+          {children}
+        </View>
+      </CheckboxGroupContext.Provider>
+    );
+  }
+);
+
+CheckboxGroup.displayName = 'CheckboxGroup';
+
+const CheckboxIndicator = forwardRef<
+  React.ComponentRef<typeof View>,
+  CheckboxIndicatorProps
+>(({ children, style, ...props }, ref) => {
   const styles = useThemedStyles(createCheckboxIndicatorStyles);
 
-  if (!checked) return null;
-
   return (
-    <View
-      style={[styles.indicator, styles[size], styles[variant], style]}
-      {...props}
-    >
-      {children || (
-        <Check
-          size={size === 'sm' ? 12 : size === 'md' ? 16 : 20}
-          color="white"
-        />
-      )}
+    <View ref={ref} style={[styles.indicator, style]} {...props}>
+      {children}
     </View>
   );
-};
+});
+
+CheckboxIndicator.displayName = 'CheckboxIndicator';
 
 const CheckboxIcon: React.FC<
   CheckboxIconProps & {
@@ -342,17 +338,19 @@ const CheckboxIcon: React.FC<
   );
 };
 
-const CheckboxLabel: React.FC<
+const CheckboxLabel = forwardRef<
+  Text,
   CheckboxLabelProps & {
     disabled?: boolean;
     size?: CheckboxSize;
   }
-> = ({ children, style, disabled = false, size = 'md', ...props }) => {
+>(({ children, style, disabled = false, size = 'md', ...props }, ref) => {
   const { theme } = useTheme();
   const styles = useThemedStyles(createCheckboxLabelStyles);
 
   return (
     <Text
+      ref={ref}
       style={[
         styles.label,
         styles[size],
@@ -367,7 +365,9 @@ const CheckboxLabel: React.FC<
       {children}
     </Text>
   );
-};
+});
+
+CheckboxLabel.displayName = 'CheckboxLabel';
 
 const createCheckboxGroupStyles = (theme: Theme) => ({
   group: {
