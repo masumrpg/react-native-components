@@ -321,8 +321,9 @@ const Box = forwardRef<React.ComponentRef<typeof View>, BoxProps>(
 
 Box.displayName = 'Box';
 
-// Grid - Grid Layout
-const Grid = forwardRef<React.ComponentRef<typeof View>, GridProps>(
+// Grid - Grid Layout (Improved)
+// Grid - Grid Layout (Fixed)
+const Grid = forwardRef<React.ElementRef<typeof View>, GridProps>(
   (
     {
       children,
@@ -348,9 +349,10 @@ const Grid = forwardRef<React.ComponentRef<typeof View>, GridProps>(
 
     const gridStyle: ViewStyle = {
       ...styles.base,
+      flexDirection: 'row',
+      flexWrap: 'wrap',
       alignItems: align,
       justifyContent: justify,
-      gap: spacing ? theme.spacing[spacing] : 0,
       padding: padding ? theme.spacing[padding] : undefined,
       margin: margin ? theme.spacing[margin] : undefined,
       backgroundColor: resolveColor(
@@ -365,11 +367,18 @@ const Grid = forwardRef<React.ComponentRef<typeof View>, GridProps>(
     };
 
     const childrenArray = React.Children.toArray(children);
+    const spacingValue = spacing ? theme.spacing[spacing] : 0;
+
     const gridChildren = childrenArray.map((child, index) => {
+      const isLastRow =
+        index >=
+        childrenArray.length - (childrenArray.length % columns || columns);
+
       const childStyle: ViewStyle = {
-        flex: 1,
-        minWidth: `${100 / columns}%`,
-        maxWidth: `${100 / columns}%`,
+        flexBasis: `${100 / columns}%`,
+        paddingHorizontal: spacingValue / 2,
+        paddingVertical: spacingValue / 2,
+        marginBottom: isLastRow ? 0 : spacingValue,
       };
 
       return (
@@ -419,6 +428,7 @@ const createGridStyles = (theme: Theme) => ({
   base: {
     flexDirection: 'row' as const,
     flexWrap: 'wrap' as const,
+    marginHorizontal: 0,
   },
 });
 
