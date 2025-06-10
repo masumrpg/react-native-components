@@ -1,12 +1,6 @@
 import React, { useState, useEffect, forwardRef, useCallback } from 'react';
-import {
-  View,
-  ViewStyle,
-} from 'react-native';
-import {
-  Gesture,
-  GestureDetector,
-} from 'react-native-gesture-handler';
+import { View, ViewStyle, LayoutChangeEvent } from 'react-native';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -18,7 +12,13 @@ import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 
 type SliderSize = 'sm' | 'md' | 'lg';
-type SliderVariant = 'default' | 'primary' | 'success' | 'warning' | 'error' | 'info';
+type SliderVariant =
+  | 'default'
+  | 'primary'
+  | 'success'
+  | 'warning'
+  | 'error'
+  | 'info';
 
 interface SliderProps {
   children?: React.ReactNode;
@@ -75,34 +75,45 @@ const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
     },
     ref
   ) => {
-    const { theme } = useTheme();
     const styles = useThemedStyles(createSliderStyles);
 
-    const [internalValue, setInternalValue] = useState(controlledValue ?? defaultValue);
+    const [internalValue, setInternalValue] = useState(
+      controlledValue ?? defaultValue
+    );
     const [sliderWidth, setSliderWidth] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
 
     const currentValue = controlledValue ?? internalValue;
+
+    // Shared values
     const translateX = useSharedValue(0);
     const scale = useSharedValue(1);
+
+    // Get thumb dimensions
+    const thumbWidth = styles[`${size}Thumb`].width;
 
     // Calculate percentage and position
     const percentage = ((currentValue - min) / (max - min)) * 100;
 
     // Update position when value changes
     useEffect(() => {
-      if (sliderWidth > 0) {
-        const newPosition = (percentage / 100) * (sliderWidth - styles[`${size}Thumb`].width);
-        if (animated && !isDragging) {
-          translateX.value = withSpring(newPosition, {
-            damping: 15,
-            stiffness: 150,
-          });
+      if (sliderWidth > 0 && !isDragging) {
+        const maxTranslateX = sliderWidth - thumbWidth;
+        const newPosition = (percentage / 100) * maxTranslateX;
+
+        if (animated) {
+          translateX.value = withSpring(
+            Math.max(0, Math.min(newPosition, maxTranslateX)),
+            {
+              damping: 15,
+              stiffness: 150,
+            }
+          );
         } else {
-          translateX.value = newPosition;
+          translateX.value = Math.max(0, Math.min(newPosition, maxTranslateX));
         }
       }
-    }, [percentage, sliderWidth, animated, isDragging, size, styles, translateX]);
+    }, [percentage, sliderWidth, animated, isDragging, thumbWidth, translateX]);
 
     const updateValue = useCallback(
       (newValue: number) => {
@@ -117,6 +128,7 @@ const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
       [min, max, step, controlledValue, onValueChange]
     );
 
+    // Pan gesture
     const panGesture = Gesture.Pan()
       .onStart(() => {
         if (disabled) return;
@@ -132,15 +144,20 @@ const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
         }
       })
       .onUpdate((event) => {
-        if (disabled) return;
+        if (disabled || sliderWidth === 0) return;
 
-        const newX = translateX.value + event.translationX;
-        const maxX = sliderWidth - styles[`${size}Thumb`].width;
-        const clampedX = Math.min(Math.max(newX, 0), maxX);
+        const maxTranslateX = sliderWidth - thumbWidth;
 
-        translateX.value = clampedX;
+        // Calculate new position based on gesture
+        const newTranslateX = Math.max(
+          0,
+          Math.min(translateX.value + event.x, maxTranslateX)
+        );
+        translateX.value = newTranslateX;
 
-        const newPercentage = (clampedX / maxX) * 100;
+        // Calculate new value
+        const newPercentage =
+          maxTranslateX > 0 ? (newTranslateX / maxTranslateX) * 100 : 0;
         const newValue = min + (newPercentage / 100) * (max - min);
 
         runOnJS(updateValue)(newValue);
@@ -159,16 +176,23 @@ const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
         }
       });
 
+    // Animated styles
     const thumbAnimatedStyle = useAnimatedStyle(() => {
+      const maxTranslateX = sliderWidth - thumbWidth;
       return {
         transform: [
-          { translateX: translateX.value },
+          {
+            translateX: Math.max(
+              0,
+              Math.min(translateX.value, maxTranslateX || 0)
+            ),
+          },
           { scale: scale.value },
         ],
       };
     });
 
-    const handleLayout = (event: any) => {
+    const handleLayout = (event: LayoutChangeEvent) => {
       const { width } = event.nativeEvent.layout;
       setSliderWidth(width);
     };
@@ -237,17 +261,18 @@ const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
 
 Slider.displayName = 'Slider';
 
-const SliderTrack = forwardRef<React.ComponentRef<typeof View>, SliderTrackProps>(
-  ({ children, style, ...props }, ref) => {
-    const styles = useThemedStyles(createSliderTrackStyles);
+const SliderTrack = forwardRef<
+  React.ComponentRef<typeof View>,
+  SliderTrackProps
+>(({ children, style, ...props }, ref) => {
+  const styles = useThemedStyles(createSliderTrackStyles);
 
-    return (
-      <View ref={ref} style={[styles.track, style]} {...props}>
-        {children}
-      </View>
-    );
-  }
-);
+  return (
+    <View ref={ref} style={[styles.track, style]} {...props}>
+      {children}
+    </View>
+  );
+});
 
 SliderTrack.displayName = 'SliderTrack';
 
@@ -276,7 +301,7 @@ const SliderFilledTrack = forwardRef<
     const getVariantColor = (): string => {
       if (color) {
         if (typeof color === 'string' && color.startsWith('#')) return color;
-        return (theme.colors as any)[color] || color;
+        return (theme.colors as Record<string, string>)[color] || color;
       }
 
       switch (variant) {
@@ -340,7 +365,7 @@ const SliderThumb = forwardRef<
     const getVariantColor = (): string => {
       if (color) {
         if (typeof color === 'string' && color.startsWith('#')) return color;
-        return (theme.colors as any)[color] || color;
+        return (theme.colors as Record<string, string>)[color] || color;
       }
 
       if (disabled) {
@@ -385,7 +410,7 @@ const SliderThumb = forwardRef<
 SliderThumb.displayName = 'SliderThumb';
 
 // Styles
-const createSliderStyles = (theme: Theme) => ({
+const createSliderStyles = (_: Theme) => ({
   container: {
     width: '100%' as const,
     justifyContent: 'center' as const,
