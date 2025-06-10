@@ -136,7 +136,9 @@ export default function ModalExample() {
               marginBottom: theme.spacing.sm,
             }}
           >
-            <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
+            <Text
+              style={{ ...theme.typography.body, color: theme.colors.text }}
+            >
               Slide Animation
             </Text>
             <Switch
@@ -156,7 +158,9 @@ export default function ModalExample() {
               marginBottom: theme.spacing.md,
             }}
           >
-            <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
+            <Text
+              style={{ ...theme.typography.body, color: theme.colors.text }}
+            >
               Scale Animation
             </Text>
             <Switch
@@ -186,8 +190,9 @@ export default function ModalExample() {
         />
         <ModalContent>
           <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
-            This is the content of the modal. You can put any React Native components here.
-            The modal supports different sizes, positions, and animations.
+            This is the content of the modal. You can put any React Native
+            components here. The modal supports different sizes, positions, and
+            animations.
           </Text>
         </ModalContent>
         <ModalFooter>
@@ -204,32 +209,65 @@ export default function ModalExample() {
         </ModalFooter>
       </Modal>
 
-      {/* Confirmation Modal */}
+      {/* Confirmation Modal - Enhanced */}
       <Modal
         visible={confirmModalVisible}
         onClose={() => setConfirmModalVisible(false)}
         size="sm"
         showCloseButton={false}
+        backdropOpacity={0.6}
       >
-        <ModalHeader title="Confirm Action" />
+        <ModalHeader
+          title="Confirm Action"
+          subtitle="Please review your action carefully"
+        />
         <ModalContent>
-          <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
-            Are you sure you want to delete this item? This action cannot be undone.
+          <Text
+            style={{
+              ...theme.typography.body,
+              color: theme.colors.text,
+              lineHeight: 22,
+              marginBottom: theme.spacing.sm,
+            }}
+          >
+            Are you sure you want to delete this item?
+          </Text>
+          <Text
+            style={{
+              ...theme.typography.small,
+              color: theme.colors.textSecondary,
+              fontStyle: 'italic',
+            }}
+          >
+            This action cannot be undone.
           </Text>
         </ModalContent>
         <ModalFooter>
           <Button
             variant="outline"
             onPress={() => setConfirmModalVisible(false)}
-            style={{ marginRight: theme.spacing.sm }}
+            style={{
+              flex: 1,
+              marginRight: theme.spacing.sm,
+              borderRadius: theme.borderRadius.lg,
+            }}
           >
-            <ButtonText>Cancel</ButtonText>
+            <ButtonText style={{ fontWeight: '600' }}>Cancel</ButtonText>
           </Button>
           <Button
             variant="error"
             onPress={() => setConfirmModalVisible(false)}
+            style={{
+              flex: 1,
+              borderRadius: theme.borderRadius.lg,
+              shadowColor: '#ef4444',
+              shadowOffset: { width: 0, height: 4 },
+              shadowOpacity: 0.3,
+              shadowRadius: 8,
+              elevation: 6,
+            }}
           >
-            <ButtonText>Delete</ButtonText>
+            <ButtonText style={{ fontWeight: '700' }}>Delete</ButtonText>
           </Button>
         </ModalFooter>
       </Modal>
@@ -247,7 +285,13 @@ export default function ModalExample() {
           subtitle="This modal takes up the entire screen"
         />
         <ModalContent scrollable>
-          <Text style={{ ...theme.typography.body, color: theme.colors.text, marginBottom: theme.spacing.md }}>
+          <Text
+            style={{
+              ...theme.typography.body,
+              color: theme.colors.text,
+              marginBottom: theme.spacing.md,
+            }}
+          >
             This is a full screen modal with scrollable content.
           </Text>
           {Array.from({ length: 20 }, (_, i) => (
@@ -259,7 +303,8 @@ export default function ModalExample() {
                 marginBottom: theme.spacing.sm,
               }}
             >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
+              eiusmod tempor incididunt ut labore et dolore magna aliqua.
             </Text>
           ))}
         </ModalContent>
@@ -281,7 +326,8 @@ export default function ModalExample() {
         <ModalHeader title="Bottom Sheet" />
         <ModalContent>
           <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
-            This modal slides up from the bottom of the screen, similar to a bottom sheet.
+            This modal slides up from the bottom of the screen, similar to a
+            bottom sheet.
           </Text>
         </ModalContent>
         <ModalFooter>
@@ -305,8 +351,9 @@ export default function ModalExample() {
         />
         <ModalContent>
           <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
-            This modal demonstrates {slideAnimation ? 'slide' : 'scale'} animation.
-            You can switch between different animation types using the settings above.
+            This modal demonstrates {slideAnimation ? 'slide' : 'scale'}{' '}
+            animation. You can switch between different animation types using
+            the settings above.
           </Text>
         </ModalContent>
         <ModalFooter>

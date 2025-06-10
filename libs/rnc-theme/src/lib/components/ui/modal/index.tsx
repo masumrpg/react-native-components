@@ -74,57 +74,84 @@ interface ModalFooterProps {
 const createModalStyles = (theme: Theme) => ({
   overlay: {
     flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
+    padding: theme.spacing.lg,
   } as ViewStyle,
   container: {
     backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-    borderRadius: theme.borderRadius.lg,
-    shadowColor: resolveColor(theme, 'text', theme.colors.text),
-    shadowOffset: { width: 0, height: 4 },
+    borderRadius: theme.borderRadius.xl,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 10 },
     shadowOpacity: 0.25,
-    shadowRadius: 8,
-    elevation: 8,
+    shadowRadius: 20,
+    elevation: 15,
+    overflow: 'hidden',
+    maxWidth: '100%',
+    position: 'relative',
   } as ViewStyle,
   header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: theme.spacing.lg,
-    borderBottomWidth: 1,
-    borderBottomColor: resolveColor(theme, 'border', theme.colors.border),
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.xl,
+    paddingBottom: theme.spacing.sm, // Reduced from theme.spacing.lg
+    paddingRight: theme.spacing.xl + 50, // Extra space for close button
   } as ViewStyle,
   headerContent: {
-    flex: 1,
+    width: '100%',
   } as ViewStyle,
   title: {
     ...theme.typography.title,
+    fontSize: 20,
+    fontWeight: '700',
     color: resolveColor(theme, 'text', theme.colors.text),
     marginBottom: theme.spacing.xs,
+    lineHeight: 26,
   } as TextStyle,
   subtitle: {
-    ...theme.typography.small,
+    ...theme.typography.body,
+    fontSize: 14,
+    fontWeight: '400',
     color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
+    lineHeight: 20,
+    opacity: 0.8,
   } as TextStyle,
   closeButton: {
-    padding: theme.spacing.sm,
-    borderRadius: theme.borderRadius.md,
+    position: 'absolute',
+    top: theme.spacing.lg,
+    right: theme.spacing.lg,
+    width: 36,
+    height: 36,
+    borderRadius: 18,
     backgroundColor: resolveColor(theme, 'background', theme.colors.background),
+    justifyContent: 'center',
+    alignItems: 'center',
+    shadowColor: resolveColor(theme, 'text', theme.colors.text),
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    zIndex: 10,
   } as ViewStyle,
   closeButtonText: {
-    ...theme.typography.body,
+    fontSize: 18,
     color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
-    fontWeight: 'bold',
+    fontWeight: '600',
+    lineHeight: 18,
   } as TextStyle,
   content: {
-    padding: theme.spacing.lg,
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.sm, // Reduced from theme.spacing.lg
+    minHeight: 60,
   } as ViewStyle,
   footer: {
     flexDirection: 'row',
-    padding: theme.spacing.lg,
-    borderTopWidth: 1,
-    borderTopColor: resolveColor(theme, 'border', theme.colors.border),
+    paddingHorizontal: theme.spacing.xl,
+    paddingTop: theme.spacing.sm, // Reduced from theme.spacing.lg
+    paddingBottom: theme.spacing.xl,
+    gap: theme.spacing.md,
+    justifyContent: 'flex-end',
+    alignItems: 'center',
   } as ViewStyle,
 });
 
@@ -209,7 +236,9 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
     const styles = useThemedStyles(createModalStyles);
     const scale = useSharedValue(0);
     const opacity = useSharedValue(0);
-    const translateY = useSharedValue(position === 'bottom' ? 300 : position === 'top' ? -300 : 0);
+    const translateY = useSharedValue(
+      position === 'bottom' ? 300 : position === 'top' ? -300 : 0
+    );
 
     useEffect(() => {
       if (visible) {
@@ -242,7 +271,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
           scale.value = withTiming(0, { duration: animationDuration });
         }
       }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [visible, animation, position, animationDuration]);
 
     const animatedOverlayStyle = useAnimatedStyle(() => ({
@@ -307,16 +336,13 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
                 ]}
               >
                 {showCloseButton && (
-                  <View style={styles.header}>
-                    <View style={styles.headerContent} />
-                    <TouchableOpacity
-                      style={styles.closeButton}
-                      onPress={onClose}
-                      activeOpacity={0.7}
-                    >
-                      <Text style={styles.closeButtonText}>✕</Text>
-                    </TouchableOpacity>
-                  </View>
+                  <TouchableOpacity
+                    style={styles.closeButton}
+                    onPress={onClose}
+                    activeOpacity={0.7}
+                  >
+                    <Text style={styles.closeButtonText}>✕</Text>
+                  </TouchableOpacity>
                 )}
                 {children}
               </Animated.View>
