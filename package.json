@@ -6,7 +6,9 @@
     "create-lib": "node tools/scripts/create-lib.js",
     "start": "bunx nx start example",
     "start:clear": "bun run nx reset && bun start --clear",
-    "build": "bunx nx run-many --target=build --all"
+    "build": "node tools/scripts/build-libs.js",
+    "build:all": "bunx nx run-many --target=build --all",
+    "build:libs": "bunx nx run-many --target=build --projects=libs/*"
   },
   "private": true,
   "dependencies": {
