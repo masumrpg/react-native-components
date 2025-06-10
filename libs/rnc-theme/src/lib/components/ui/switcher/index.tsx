@@ -48,7 +48,7 @@ const Switcher = forwardRef<
       value,
       onValueChange,
       size = 'md',
-      variant = 'default',
+      variant = 'primary',
       disabled = false,
       style,
       trackColor,

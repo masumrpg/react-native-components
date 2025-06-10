@@ -16,7 +16,6 @@ export default function ModalExample() {
   const { theme } = useTheme();
   const [basicModalVisible, setBasicModalVisible] = useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
-  const [fullScreenModalVisible, setFullScreenModalVisible] = useState(false);
   const [bottomModalVisible, setBottomModalVisible] = useState(false);
   const [animatedModal, setAnimatedModal] = useState(false);
   const [slideAnimation, setSlideAnimation] = useState(false);
@@ -75,24 +74,6 @@ export default function ModalExample() {
           </Text>
           <Button onPress={() => setConfirmModalVisible(true)}>
             <ButtonText>Open Confirmation Modal</ButtonText>
-          </Button>
-        </CardContent>
-      </Card>
-
-      {/* Full Screen Modal */}
-      <Card>
-        <CardContent>
-          <Text
-            style={{
-              ...theme.typography.title,
-              color: theme.colors.text,
-              marginBottom: theme.spacing.md,
-            }}
-          >
-            Full Screen Modal
-          </Text>
-          <Button onPress={() => setFullScreenModalVisible(true)}>
-            <ButtonText>Open Full Screen Modal</ButtonText>
           </Button>
         </CardContent>
       </Card>
@@ -268,49 +249,6 @@ export default function ModalExample() {
             }}
           >
             <ButtonText style={{ fontWeight: '700' }}>Delete</ButtonText>
-          </Button>
-        </ModalFooter>
-      </Modal>
-
-      {/* Full Screen Modal */}
-      <Modal
-        visible={fullScreenModalVisible}
-        onClose={() => setFullScreenModalVisible(false)}
-        size="full"
-        animation="slide"
-        position="bottom"
-      >
-        <ModalHeader
-          title="Full Screen Modal"
-          subtitle="This modal takes up the entire screen"
-        />
-        <ModalContent scrollable>
-          <Text
-            style={{
-              ...theme.typography.body,
-              color: theme.colors.text,
-              marginBottom: theme.spacing.md,
-            }}
-          >
-            This is a full screen modal with scrollable content.
-          </Text>
-          {Array.from({ length: 20 }, (_, i) => (
-            <Text
-              key={i}
-              style={{
-                ...theme.typography.small,
-                color: theme.colors.textSecondary,
-                marginBottom: theme.spacing.sm,
-              }}
-            >
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do
-              eiusmod tempor incididunt ut labore et dolore magna aliqua.
-            </Text>
-          ))}
-        </ModalContent>
-        <ModalFooter>
-          <Button onPress={() => setFullScreenModalVisible(false)}>
-            <ButtonText>Close</ButtonText>
           </Button>
         </ModalFooter>
       </Modal>

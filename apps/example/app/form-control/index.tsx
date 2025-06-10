@@ -27,7 +27,6 @@ import {
   useTheme,
 } from 'rnc-theme';
 
-// FIXME disini ada error Text unwrap, di bagain CardContent
 
 // Simulasi react-hook-form untuk demo
 interface FormData {

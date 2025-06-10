@@ -15,6 +15,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
+import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils/color';
 import { Theme } from '../../../types/theme';
@@ -39,6 +40,12 @@ interface ModalProps {
   style?: ViewStyle;
   contentStyle?: ViewStyle;
   animationDuration?: number;
+  padding?: keyof Theme['spacing'];
+  margin?: keyof Theme['spacing'];
+  borderRadius?: keyof Theme['borderRadius'];
+  elevation?: number;
+  shadowOpacity?: number;
+  backgroundColor?: string;
 }
 
 interface ModalHeaderProps {
@@ -50,17 +57,24 @@ interface ModalHeaderProps {
   subtitleStyle?: TextStyle;
   showCloseButton?: boolean;
   onClose?: () => void;
+  padding?: keyof Theme['spacing'];
+  titleVariant?: keyof Theme['typography'];
+  subtitleVariant?: keyof Theme['typography'];
+  borderBottom?: boolean;
 }
 
 interface ModalContentProps {
   children?: React.ReactNode;
   style?: ViewStyle;
   scrollable?: boolean;
+  padding?: keyof Theme['spacing'];
 }
 
 interface ModalFooterProps {
   children?: React.ReactNode;
   style?: ViewStyle;
+  padding?: keyof Theme['spacing'];
+  showBorder?: boolean;
   justifyContent?:
     | 'flex-start'
     | 'center'
@@ -80,42 +94,16 @@ const createModalStyles = (theme: Theme) => ({
     padding: theme.spacing.lg,
   } as ViewStyle,
   container: {
+    borderWidth: 1,
+    borderColor: resolveColor(theme, 'border', theme.colors.border),
     backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-    borderRadius: theme.borderRadius.xl,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 10 },
-    shadowOpacity: 0.25,
-    shadowRadius: 20,
-    elevation: 15,
+    shadowColor: resolveColor(theme, 'text', theme.colors.text),
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
     overflow: 'hidden',
     maxWidth: '100%',
     position: 'relative',
   } as ViewStyle,
-  header: {
-    paddingHorizontal: theme.spacing.xl,
-    paddingTop: theme.spacing.xl,
-    paddingBottom: theme.spacing.sm, // Reduced from theme.spacing.lg
-    paddingRight: theme.spacing.xl + 50, // Extra space for close button
-  } as ViewStyle,
-  headerContent: {
-    width: '100%',
-  } as ViewStyle,
-  title: {
-    ...theme.typography.title,
-    fontSize: 20,
-    fontWeight: '700',
-    color: resolveColor(theme, 'text', theme.colors.text),
-    marginBottom: theme.spacing.xs,
-    lineHeight: 26,
-  } as TextStyle,
-  subtitle: {
-    ...theme.typography.body,
-    fontSize: 14,
-    fontWeight: '400',
-    color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
-    lineHeight: 20,
-    opacity: 0.8,
-  } as TextStyle,
   closeButton: {
     position: 'absolute',
     top: theme.spacing.lg,
@@ -139,20 +127,6 @@ const createModalStyles = (theme: Theme) => ({
     fontWeight: '600',
     lineHeight: 18,
   } as TextStyle,
-  content: {
-    paddingHorizontal: theme.spacing.xl,
-    paddingVertical: theme.spacing.sm, // Reduced from theme.spacing.lg
-    minHeight: 60,
-  } as ViewStyle,
-  footer: {
-    flexDirection: 'row',
-    paddingHorizontal: theme.spacing.xl,
-    paddingTop: theme.spacing.sm, // Reduced from theme.spacing.lg
-    paddingBottom: theme.spacing.xl,
-    gap: theme.spacing.md,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  } as ViewStyle,
 });
 
 const getModalSize = (size: ModalSize, position: ModalPosition) => {
@@ -229,10 +203,17 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       style,
       contentStyle,
       animationDuration = 300,
+      padding = 'md',
+      margin,
+      borderRadius = 'lg',
+      elevation = 3,
+      shadowOpacity = 0.1,
+      backgroundColor,
       ...props
     },
     ref
   ) => {
+    const { theme } = useTheme();
     const styles = useThemedStyles(createModalStyles);
     const scale = useSharedValue(0);
     const opacity = useSharedValue(0);
@@ -329,6 +310,18 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
               <Animated.View
                 style={[
                   styles.container,
+                  {
+                    backgroundColor: resolveColor(
+                      theme,
+                      backgroundColor,
+                      theme.colors.surface
+                    ),
+                    borderRadius: theme.borderRadius[borderRadius],
+                    padding: theme.spacing[padding],
+                    marginBottom: margin ? theme.spacing[margin] : undefined,
+                    shadowOpacity,
+                    elevation,
+                  },
                   modalSize,
                   contentStyle,
                   animatedContentStyle,
@@ -354,7 +347,10 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
   }
 );
 
-const ModalHeader = forwardRef<React.ComponentRef<typeof View>, ModalHeaderProps>(
+const ModalHeader = forwardRef<
+  React.ComponentRef<typeof View>,
+  ModalHeaderProps
+>(
   (
     {
       title,
@@ -365,19 +361,62 @@ const ModalHeader = forwardRef<React.ComponentRef<typeof View>, ModalHeaderProps
       subtitleStyle,
       showCloseButton = false,
       onClose,
+      padding = 'sm',
+      titleVariant = 'subtitle',
+      subtitleVariant = 'body',
+      borderBottom = false,
       ...props
     },
     ref
   ) => {
+    const { theme } = useTheme();
     const styles = useThemedStyles(createModalStyles);
 
     return (
-      <View ref={ref} style={[styles.header, style]} {...props}>
-        <View style={styles.headerContent}>
-          {title && <Text style={[styles.title, titleStyle]}>{title}</Text>}
-          {subtitle && <Text style={[styles.subtitle, subtitleStyle]}>{subtitle}</Text>}
-          {children}
-        </View>
+      <View
+        ref={ref}
+        style={[
+          {
+            padding: theme.spacing[padding],
+            borderBottomWidth: borderBottom ? 1 : 0,
+            borderBottomColor: theme.colors.border,
+          },
+          style,
+        ]}
+        {...props}
+      >
+        {title && (
+          <Text
+            style={[
+              {
+                fontSize: theme.typography[titleVariant].fontSize,
+                lineHeight: theme.typography[titleVariant].lineHeight,
+                color: theme.colors.text,
+                fontWeight: '600',
+                marginBottom: subtitle ? theme.spacing.xs : 0,
+              },
+              titleStyle,
+            ]}
+          >
+            {title}
+          </Text>
+        )}
+        {subtitle && (
+          <Text
+            style={[
+              {
+                fontSize: theme.typography[subtitleVariant].fontSize,
+                lineHeight: theme.typography[subtitleVariant].lineHeight,
+                color: theme.colors.textSecondary,
+                fontWeight: '400',
+              },
+              subtitleStyle,
+            ]}
+          >
+            {subtitle}
+          </Text>
+        )}
+        {children}
         {showCloseButton && onClose && (
           <TouchableOpacity
             style={styles.closeButton}
@@ -392,43 +431,75 @@ const ModalHeader = forwardRef<React.ComponentRef<typeof View>, ModalHeaderProps
   }
 );
 
-const ModalContent = forwardRef<React.ComponentRef<typeof View>, ModalContentProps>(
-  ({ children, style, scrollable = false, ...props }, ref) => {
-    const styles = useThemedStyles(createModalStyles);
+const ModalContent = forwardRef<
+  React.ComponentRef<typeof View>,
+  ModalContentProps
+>(({ children, style, scrollable = false, padding = 'sm', ...props }, ref) => {
+  const { theme } = useTheme();
 
-    if (scrollable) {
-      const { ScrollView } = require('react-native');
-      return (
-        <ScrollView
-          ref={ref}
-          style={[styles.content, style]}
-          showsVerticalScrollIndicator={false}
-          {...props}
-        >
-          {children}
-        </ScrollView>
-      );
-    }
-
+  if (scrollable) {
+    const { ScrollView } = require('react-native');
     return (
-      <View ref={ref} style={[styles.content, style]} {...props}>
+      <ScrollView
+        ref={ref}
+        style={[
+          {
+            padding: theme.spacing[padding],
+          },
+          style,
+        ]}
+        showsVerticalScrollIndicator={false}
+        {...props}
+      >
         {children}
-      </View>
+      </ScrollView>
     );
   }
-);
 
-const ModalFooter = forwardRef<React.ComponentRef<typeof View>, ModalFooterProps>(
-  ({ children, style, justifyContent = 'flex-end', ...props }, ref) => {
-    const styles = useThemedStyles(createModalStyles);
+  return (
+    <View
+      ref={ref}
+      style={[
+        {
+          padding: theme.spacing[padding],
+        },
+        style,
+      ]}
+      {...props}
+    >
+      {children}
+    </View>
+  );
+});
+
+const ModalFooter = forwardRef<
+  React.ComponentRef<typeof View>,
+  ModalFooterProps
+>(
+  (
+    {
+      children,
+      style,
+      padding = 'sm',
+      showBorder = false,
+      justifyContent = 'flex-end',
+      ...props
+    },
+    ref
+  ) => {
+    const { theme } = useTheme();
 
     return (
       <View
         ref={ref}
         style={[
-          styles.footer,
           {
+            padding: theme.spacing[padding],
+            borderTopWidth: showBorder ? 1 : 0,
+            borderTopColor: theme.colors.border,
+            flexDirection: 'row',
             justifyContent,
+            alignItems: 'center',
           },
           style,
         ]}
