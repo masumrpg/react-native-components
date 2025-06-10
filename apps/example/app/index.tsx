@@ -12,6 +12,7 @@ import {
   CardSim,
   CheckSquare,
   Circle,
+  CircleUser,
   GitPullRequestClosedIcon,
   LayoutDashboard,
   LetterText,
@@ -19,6 +20,7 @@ import {
   Minus,
   Palette,
   ParkingCircleOff,
+  PictureInPicture2,
   SlidersHorizontal,
   Table,
   TextCursorInput,
@@ -124,6 +126,18 @@ export default function HomeScreen() {
       title: 'Slider',
       path: '/slider',
       icon: <SlidersHorizontal size={30} color={'black'} />,
+    },
+    {
+      id: 16,
+      title: 'Avatar',
+      path: '/avatar',
+      icon: <CircleUser size={30} color={'black'} />,
+    },
+    {
+      id: 17,
+      title: 'Modal',
+      path: '/modal',
+      icon: <PictureInPicture2 size={30} color={'black'} />,
     },
   ];
 
