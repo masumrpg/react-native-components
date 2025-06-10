@@ -1,4 +1,11 @@
-import { forwardRef, useImperativeHandle, useCallback, useMemo } from 'react';
+import {
+  forwardRef,
+  useImperativeHandle,
+  useCallback,
+  useMemo,
+  useState,
+  useEffect,
+} from 'react';
 import {
   View,
   Text,
@@ -12,6 +19,7 @@ import Animated, {
   useAnimatedStyle,
   runOnJS,
   withSpring,
+  useAnimatedReaction,
 } from 'react-native-reanimated';
 import { Theme } from '../../../types/theme';
 import { useTheme } from '../../../context/ThemeContext';
@@ -131,6 +139,23 @@ const Slider = forwardRef<SliderRef, SliderProps>(
     const sliderWidth = useSharedValue(width);
     const value = useSharedValue(clamp(initialValue, min, max));
     const isDragging = useSharedValue(false);
+
+    // State for label value
+    const [labelValue, setLabelValue] = useState(clamp(initialValue, min, max));
+
+    // Sync shared value to state
+    useAnimatedReaction(
+      () => value.value,
+      (current) => {
+        runOnJS(setLabelValue)(current);
+      }
+    );
+
+    // Update on initialValue change
+    useEffect(() => {
+      value.value = clamp(initialValue, min, max);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialValue, min, max]);
 
     // Layout handler
     const handleLayout = useCallback(
@@ -284,7 +309,8 @@ const Slider = forwardRef<SliderRef, SliderProps>(
         {showLabel && (
           <Animated.View style={[styles.labelContainer, labelAnimatedStyle]}>
             <Text style={[styles.label, labelStyle]}>
-              {labelFormatter(value.value)}
+              {labelFormatter(labelValue)}{' '}
+              {/* Use state instead of shared value */}
             </Text>
           </Animated.View>
         )}
@@ -380,6 +406,36 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
     const isDraggingMin = useSharedValue(false);
     const isDraggingMax = useSharedValue(false);
     const activeThumb = useSharedValue<'min' | 'max' | null>(null);
+
+    // State for label values
+    const [minLabelValue, setMinLabelValue] = useState(
+      clamp(initialMinValue, min, max)
+    );
+    const [maxLabelValue, setMaxLabelValue] = useState(
+      clamp(initialMaxValue, min, max)
+    );
+
+    // Sync shared values to state
+    useAnimatedReaction(
+      () => minValue.value,
+      (current) => {
+        runOnJS(setMinLabelValue)(current);
+      }
+    );
+
+    useAnimatedReaction(
+      () => maxValue.value,
+      (current) => {
+        runOnJS(setMaxLabelValue)(current);
+      }
+    );
+
+    // Update on initial values change
+    useEffect(() => {
+      minValue.value = clamp(initialMinValue, min, max);
+      maxValue.value = clamp(initialMaxValue, min, max);
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [initialMinValue, initialMaxValue, min, max]);
 
     // Layout handler
     const handleLayout = useCallback(
@@ -616,14 +672,16 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
               style={[styles.labelContainer, minLabelAnimatedStyle]}
             >
               <Text style={[styles.label, labelStyle]}>
-                {labelFormatter(minValue.value)}
+                {labelFormatter(minLabelValue)}{' '}
+                {/* Use state instead of shared value */}
               </Text>
             </Animated.View>
             <Animated.View
               style={[styles.labelContainer, maxLabelAnimatedStyle]}
             >
               <Text style={[styles.label, labelStyle]}>
-                {labelFormatter(maxValue.value)}
+                {labelFormatter(maxLabelValue)}{' '}
+                {/* Use state instead of shared value */}
               </Text>
             </Animated.View>
           </>
