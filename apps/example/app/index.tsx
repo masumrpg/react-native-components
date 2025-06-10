@@ -19,6 +19,7 @@ import {
   Minus,
   Palette,
   ParkingCircleOff,
+  SlidersHorizontal,
   Table,
   TextCursorInput,
   ToggleLeft,
@@ -117,6 +118,12 @@ export default function HomeScreen() {
       title: 'Radio',
       path: '/radio',
       icon: <Circle size={30} color={'black'} />,
+    },
+    {
+      id: 15,
+      title: 'Slider',
+      path: '/slider',
+      icon: <SlidersHorizontal size={30} color={'black'} />,
     },
   ];
 
