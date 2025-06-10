@@ -321,9 +321,7 @@ const Box = forwardRef<React.ComponentRef<typeof View>, BoxProps>(
 
 Box.displayName = 'Box';
 
-// Grid - Grid Layout (Improved)
-// Grid - Grid Layout (Fixed)
-const Grid = forwardRef<React.ElementRef<typeof View>, GridProps>(
+const Grid = forwardRef<React.ComponentRef<typeof View>, GridProps>(
   (
     {
       children,
