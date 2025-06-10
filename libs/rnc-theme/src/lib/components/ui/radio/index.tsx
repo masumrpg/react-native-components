@@ -88,10 +88,8 @@ const Radio = forwardRef<
     const styles = useThemedStyles(createRadioStyles);
     const groupContext = useRadioGroup();
 
-    // Animation values
-    const scale = useSharedValue(1);
+    // Animation values - Simplified, removed excessive animations
     const dotProgress = useSharedValue(0);
-    const backgroundProgress = useSharedValue(0);
     const borderProgress = useSharedValue(0);
 
     // Determine if radio is checked
@@ -102,43 +100,24 @@ const Radio = forwardRef<
     // Determine if radio is disabled
     const isDisabled = groupContext ? groupContext.disabled : radioDisabled;
 
-    // Update animations when checked state changes
+    // Update animations when checked state changes - Simplified
     React.useEffect(() => {
       dotProgress.value = withSpring(isChecked ? 1 : 0, {
-        damping: 20,
-        stiffness: 300,
-        mass: 0.8,
-      });
-
-      backgroundProgress.value = withTiming(isChecked ? 1 : 0, {
-        duration: 150,
+        damping: 15,
+        stiffness: 200,
+        mass: 0.5,
       });
 
       borderProgress.value = withTiming(isChecked ? 1 : 0, {
-        duration: 120,
+        duration: 200,
       });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isChecked]);
 
     const handlePress = () => {
       if (isDisabled) return;
 
-      // Scale animation for feedback
-      scale.value = withSpring(
-        0.92,
-        {
-          damping: 25,
-          stiffness: 400,
-          mass: 0.5,
-        },
-        () => {
-          scale.value = withSpring(1, {
-            damping: 20,
-            stiffness: 300,
-            mass: 0.7,
-          });
-        }
-      );
-
+      // Removed scale animation - no more bouncing
       if (groupContext) {
         groupContext.onValueChange(value);
       } else if (onCheckedChange) {
@@ -146,16 +125,10 @@ const Radio = forwardRef<
       }
     };
 
-    // Animated styles
-    const animatedContainerStyle = useAnimatedStyle(() => {
-      return {
-        transform: [{ scale: scale.value }],
-      };
-    });
-
+    // Animated styles - Simplified, removed container scale animation
     const animatedRadioStyle = useAnimatedStyle(() => {
       const bgProgress = interpolate(
-        backgroundProgress.value,
+        borderProgress.value,
         [0, 1],
         [0, 1],
         Extrapolation.CLAMP
@@ -170,10 +143,7 @@ const Radio = forwardRef<
       };
 
       return {
-        borderColor:
-          bgProgress > 0.5
-            ? variantBorderColors[variant]
-            : variantBorderColors[variant],
+        borderColor: variantBorderColors[variant],
         borderWidth: bgProgress > 0.5 ? 2 : 1.5,
       };
     });
@@ -217,21 +187,19 @@ const Radio = forwardRef<
     const dotStyle = [styles.dot, styles[`${size}Dot`]];
 
     return (
-      <Animated.View style={animatedContainerStyle}>
-        <TouchableOpacity
-          ref={ref}
-          style={containerStyle}
-          onPress={handlePress}
-          disabled={isDisabled}
-          activeOpacity={0.7}
-          {...props}
-        >
-          <Animated.View style={[radioStyle, animatedRadioStyle]}>
-            <Animated.View style={[dotStyle, animatedDotStyle]} />
-          </Animated.View>
-          {children && <View style={styles.labelContainer}>{children}</View>}
-        </TouchableOpacity>
-      </Animated.View>
+      <TouchableOpacity
+        ref={ref}
+        style={containerStyle}
+        onPress={handlePress}
+        disabled={isDisabled}
+        activeOpacity={0.7}
+        {...props}
+      >
+        <Animated.View style={[radioStyle, animatedRadioStyle]}>
+          <Animated.View style={[dotStyle, animatedDotStyle]} />
+        </Animated.View>
+        {children && <View style={styles.labelContainer}>{children}</View>}
+      </TouchableOpacity>
     );
   }
 );
