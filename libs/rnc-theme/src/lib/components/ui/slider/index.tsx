@@ -6,6 +6,7 @@ import Animated, {
   useAnimatedStyle,
   withSpring,
   runOnJS,
+  withTiming,
 } from 'react-native-reanimated';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -82,6 +83,7 @@ const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
     );
     const [sliderWidth, setSliderWidth] = useState(0);
     const [isDragging, setIsDragging] = useState(false);
+    const [startPosition, setStartPosition] = useState(0);
 
     const currentValue = controlledValue ?? internalValue;
 
@@ -90,7 +92,8 @@ const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
     const scale = useSharedValue(1);
 
     // Get thumb dimensions
-    const thumbWidth = styles[`${size}Thumb`].width;
+    const thumbSize = getThumbSize(size);
+    const trackHeight = getTrackHeight(size);
 
     // Calculate percentage and position
     const percentage = ((currentValue - min) / (max - min)) * 100;
@@ -98,22 +101,30 @@ const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
     // Update position when value changes
     useEffect(() => {
       if (sliderWidth > 0 && !isDragging) {
-        const maxTranslateX = sliderWidth - thumbWidth;
+        const maxTranslateX = sliderWidth - thumbSize.width;
         const newPosition = (percentage / 100) * maxTranslateX;
 
         if (animated) {
           translateX.value = withSpring(
             Math.max(0, Math.min(newPosition, maxTranslateX)),
             {
-              damping: 15,
-              stiffness: 150,
+              damping: 20,
+              stiffness: 200,
+              mass: 0.8,
             }
           );
         } else {
           translateX.value = Math.max(0, Math.min(newPosition, maxTranslateX));
         }
       }
-    }, [percentage, sliderWidth, animated, isDragging, thumbWidth, translateX]);
+    }, [
+      percentage,
+      sliderWidth,
+      animated,
+      isDragging,
+      thumbSize.width,
+      translateX,
+    ]);
 
     const updateValue = useCallback(
       (newValue: number) => {
@@ -128,17 +139,21 @@ const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
       [min, max, step, controlledValue, onValueChange]
     );
 
-    // Pan gesture
+    // Enhanced pan gesture with better accuracy
     const panGesture = Gesture.Pan()
-      .onStart(() => {
+      .onStart((event) => {
         if (disabled) return;
 
-        scale.value = withSpring(1.2, {
-          damping: 15,
-          stiffness: 200,
+        // Enhanced scale animation
+        scale.value = withSpring(1.15, {
+          damping: 12,
+          stiffness: 250,
+          mass: 0.5,
         });
 
         runOnJS(setIsDragging)(true);
+        runOnJS(setStartPosition)(translateX.value);
+
         if (onSlidingStart) {
           runOnJS(onSlidingStart)(currentValue);
         }
@@ -146,39 +161,106 @@ const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
       .onUpdate((event) => {
         if (disabled || sliderWidth === 0) return;
 
-        const maxTranslateX = sliderWidth - thumbWidth;
+        const maxTranslateX = sliderWidth - thumbSize.width;
 
-        // Calculate new position based on gesture
+        // Improved position calculation with better sensitivity
         const newTranslateX = Math.max(
           0,
-          Math.min(translateX.value + event.x, maxTranslateX)
+          Math.min(startPosition + event.translationX, maxTranslateX)
         );
+
         translateX.value = newTranslateX;
 
-        // Calculate new value
+        // More accurate value calculation
         const newPercentage =
           maxTranslateX > 0 ? (newTranslateX / maxTranslateX) * 100 : 0;
-        const newValue = min + (newPercentage / 100) * (max - min);
+        const rawValue = min + (newPercentage / 100) * (max - min);
 
-        runOnJS(updateValue)(newValue);
+        // Apply step with better rounding
+        const steppedValue = Math.round(rawValue / step) * step;
+        const finalValue = Math.min(Math.max(steppedValue, min), max);
+
+        runOnJS(updateValue)(finalValue);
       })
       .onEnd(() => {
         if (disabled) return;
 
+        // Smooth scale return animation
         scale.value = withSpring(1, {
           damping: 15,
           stiffness: 200,
+          mass: 0.8,
         });
 
         runOnJS(setIsDragging)(false);
+
         if (onSlidingComplete) {
           runOnJS(onSlidingComplete)(currentValue);
         }
+
+        // Snap to final position with smooth animation
+        const maxTranslateX = sliderWidth - thumbSize.width;
+        const finalPercentage = ((currentValue - min) / (max - min)) * 100;
+        const finalPosition = (finalPercentage / 100) * maxTranslateX;
+
+        translateX.value = withSpring(
+          Math.max(0, Math.min(finalPosition, maxTranslateX)),
+          {
+            damping: 18,
+            stiffness: 180,
+            mass: 0.7,
+          }
+        );
       });
 
-    // Animated styles
+    // Enhanced tap gesture for direct positioning
+    const tapGesture = Gesture.Tap().onStart((event) => {
+      if (disabled || sliderWidth === 0) return;
+
+      const maxTranslateX = sliderWidth - thumbSize.width;
+      const tapX = event.x - thumbSize.width / 2; // Center the thumb on tap position
+      const clampedX = Math.max(0, Math.min(tapX, maxTranslateX));
+
+      // Calculate new value based on tap position
+      const newPercentage =
+        maxTranslateX > 0 ? (clampedX / maxTranslateX) * 100 : 0;
+      const rawValue = min + (newPercentage / 100) * (max - min);
+      const steppedValue = Math.round(rawValue / step) * step;
+      const finalValue = Math.min(Math.max(steppedValue, min), max);
+
+      // Animate to new position
+      if (animated) {
+        translateX.value = withSpring(clampedX, {
+          damping: 18,
+          stiffness: 200,
+          mass: 0.8,
+        });
+
+        // Brief scale animation for feedback
+        scale.value = withSpring(1.1, {
+          damping: 15,
+          stiffness: 300,
+        });
+
+        setTimeout(() => {
+          scale.value = withSpring(1, {
+            damping: 15,
+            stiffness: 200,
+          });
+        }, 100);
+      } else {
+        translateX.value = clampedX;
+      }
+
+      runOnJS(updateValue)(finalValue);
+    });
+
+    // Combined gesture
+    const combinedGesture = Gesture.Race(panGesture, tapGesture);
+
+    // Enhanced animated styles
     const thumbAnimatedStyle = useAnimatedStyle(() => {
-      const maxTranslateX = sliderWidth - thumbWidth;
+      const maxTranslateX = sliderWidth - thumbSize.width;
       return {
         transform: [
           {
@@ -209,51 +291,53 @@ const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
         onLayout={handleLayout}
         {...props}
       >
-        {React.Children.map(children, (child) => {
-          if (React.isValidElement(child)) {
-            if (child.type === SliderTrack) {
-              return React.cloneElement(
-                child as React.ReactElement<
-                  SliderTrackProps & {
-                    percentage?: number;
-                    variant?: SliderVariant;
-                    size?: SliderSize;
-                    trackColor?: string | keyof Theme['colors'];
-                  }
-                >,
-                {
-                  percentage,
-                  variant,
-                  size,
-                  trackColor,
-                }
-              );
-            }
-            if (child.type === SliderThumb) {
-              return (
-                <GestureDetector gesture={panGesture}>
-                  <Animated.View style={thumbAnimatedStyle}>
-                    {React.cloneElement(
-                      child as React.ReactElement<
-                        SliderThumbProps & {
-                          variant?: SliderVariant;
-                          size?: SliderSize;
-                          disabled?: boolean;
-                        }
-                      >,
-                      {
-                        variant,
-                        size,
-                        disabled,
+        <GestureDetector gesture={combinedGesture}>
+          <View style={{ flex: 1 }}>
+            {React.Children.map(children, (child) => {
+              if (React.isValidElement(child)) {
+                if (child.type === SliderTrack) {
+                  return React.cloneElement(
+                    child as React.ReactElement<
+                      SliderTrackProps & {
+                        percentage?: number;
+                        variant?: SliderVariant;
+                        size?: SliderSize;
+                        trackColor?: string | keyof Theme['colors'];
                       }
-                    )}
-                  </Animated.View>
-                </GestureDetector>
-              );
-            }
-          }
-          return child;
-        })}
+                    >,
+                    {
+                      percentage,
+                      variant,
+                      size,
+                      trackColor,
+                    }
+                  );
+                }
+                if (child.type === SliderThumb) {
+                  return (
+                    <Animated.View style={thumbAnimatedStyle}>
+                      {React.cloneElement(
+                        child as React.ReactElement<
+                          SliderThumbProps & {
+                            variant?: SliderVariant;
+                            size?: SliderSize;
+                            disabled?: boolean;
+                          }
+                        >,
+                        {
+                          variant,
+                          size,
+                          disabled,
+                        }
+                      )}
+                    </Animated.View>
+                  );
+                }
+              }
+              return child;
+            })}
+          </View>
+        </GestureDetector>
       </View>
     );
   }
@@ -327,7 +411,7 @@ const SliderFilledTrack = forwardRef<
           styles.filledTrack,
           styles[size],
           {
-            width: `${percentage}%`,
+            width: `${Math.max(0, Math.min(percentage, 100))}%`,
             backgroundColor: getVariantColor(),
           },
           style,
@@ -396,7 +480,7 @@ const SliderThumb = forwardRef<
           styles[size],
           {
             backgroundColor: getVariantColor(),
-            borderColor: getVariantColor(),
+            borderColor: '#FFFFFF',
           },
           disabled && styles.disabled,
           style,
@@ -409,7 +493,34 @@ const SliderThumb = forwardRef<
 
 SliderThumb.displayName = 'SliderThumb';
 
-// Styles
+// Helper functions
+const getThumbSize = (size: SliderSize) => {
+  switch (size) {
+    case 'sm':
+      return { width: 16, height: 16 };
+    case 'md':
+      return { width: 20, height: 20 };
+    case 'lg':
+      return { width: 24, height: 24 };
+    default:
+      return { width: 20, height: 20 };
+  }
+};
+
+const getTrackHeight = (size: SliderSize) => {
+  switch (size) {
+    case 'sm':
+      return 2;
+    case 'md':
+      return 4;
+    case 'lg':
+      return 6;
+    default:
+      return 4;
+  }
+};
+
+// Enhanced styles
 const createSliderStyles = (_: Theme) => ({
   container: {
     width: '100%' as const,
@@ -418,27 +529,18 @@ const createSliderStyles = (_: Theme) => ({
   },
   sm: {
     height: 32,
+    paddingHorizontal: 8, // Add padding for better touch area
   },
   md: {
     height: 40,
+    paddingHorizontal: 10,
   },
   lg: {
     height: 48,
+    paddingHorizontal: 12,
   },
   disabled: {
     opacity: 0.5,
-  },
-  smThumb: {
-    width: 16,
-    height: 16,
-  },
-  mdThumb: {
-    width: 20,
-    height: 20,
-  },
-  lgThumb: {
-    width: 24,
-    height: 24,
   },
 });
 
@@ -485,27 +587,25 @@ const createSliderThumbStyles = (theme: Theme) => ({
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 4,
-    elevation: 3,
-    // Positioning thumb di tengah track
+    elevation: 4,
     top: '50%' as const,
-    marginTop: -10, // Setengah dari tinggi thumb (20px / 2 = 10px untuk md)
   },
   sm: {
     width: 16,
     height: 16,
-    marginTop: -8, // 16px / 2 = 8px
+    marginTop: 4,
   },
   md: {
     width: 20,
     height: 20,
-    marginTop: -10, // 20px / 2 = 10px
+    marginTop: 6,
   },
   lg: {
     width: 24,
     height: 24,
-    marginTop: -12, // 24px / 2 = 12px
+    marginTop: 8,
   },
   disabled: {
     shadowOpacity: 0,
