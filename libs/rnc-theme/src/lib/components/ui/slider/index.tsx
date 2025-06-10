@@ -1,341 +1,339 @@
-import React, { useState, useEffect, forwardRef, useCallback } from 'react';
-import { View, ViewStyle, LayoutChangeEvent } from 'react-native';
+import { forwardRef, useImperativeHandle, useCallback, useMemo } from 'react';
+import {
+  View,
+  Text,
+  ViewStyle,
+  TextStyle,
+  LayoutChangeEvent,
+} from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  withSpring,
   runOnJS,
-  withTiming,
+  withSpring,
 } from 'react-native-reanimated';
+import { Theme } from '../../../types/theme';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import { Theme } from '../../../types/theme';
+import { resolveColor } from '../../../utils/color';
 
-type SliderSize = 'sm' | 'md' | 'lg';
-type SliderVariant =
-  | 'default'
-  | 'primary'
-  | 'success'
-  | 'warning'
-  | 'error'
-  | 'info';
+// Type definitions
+type SliderRef = {
+  setValue: (value: number) => void;
+  getValue: () => number;
+};
 
-interface SliderProps {
-  children?: React.ReactNode;
-  value?: number; // 0-100
-  defaultValue?: number;
+type RangeSliderRef = {
+  setValues: (min: number, max: number) => void;
+  getValues: () => { min: number; max: number };
+};
+
+interface BaseSliderProps {
+  width?: number;
+  height?: number;
   min?: number;
   max?: number;
   step?: number;
-  size?: SliderSize;
-  variant?: SliderVariant;
   disabled?: boolean;
+  trackColor?: string;
+  activeTrackColor?: string;
+  thumbColor?: string;
+  thumbSize?: number;
+  showLabel?: boolean;
+  showLabels?: boolean;
+  labelFormatter?: (value: number) => string;
   style?: ViewStyle;
-  trackColor?: string | keyof Theme['colors'];
+  trackStyle?: ViewStyle;
+  thumbStyle?: ViewStyle;
+  labelStyle?: TextStyle;
+}
+
+interface SliderProps extends BaseSliderProps {
+  initialValue?: number;
   onValueChange?: (value: number) => void;
   onSlidingStart?: (value: number) => void;
   onSlidingComplete?: (value: number) => void;
-  animated?: boolean;
 }
 
-interface SliderTrackProps {
-  children?: React.ReactNode;
-  style?: ViewStyle;
+interface RangeSliderProps extends BaseSliderProps {
+  initialMinValue?: number;
+  initialMaxValue?: number;
+  onValueChange?: (values: { min: number; max: number }) => void;
+  onSlidingStart?: (values: { min: number; max: number }) => void;
+  onSlidingComplete?: (values: { min: number; max: number }) => void;
+  minDistance?: number;
 }
 
-interface SliderFilledTrackProps {
-  style?: ViewStyle;
-  color?: string | keyof Theme['colors'];
-}
+// Helper functions
+const clamp = (value: number, min: number, max: number): number => {
+  'worklet';
+  return Math.min(Math.max(value, min), max);
+};
 
-interface SliderThumbProps {
-  style?: ViewStyle;
-  color?: string | keyof Theme['colors'];
-}
+const snapToStep = (value: number, step: number, min: number): number => {
+  'worklet';
+  const snapped = Math.round((value - min) / step) * step + min;
+  return snapped;
+};
 
-const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
+const valueToPosition = (
+  value: number,
+  min: number,
+  max: number,
+  width: number
+): number => {
+  'worklet';
+  return ((value - min) / (max - min)) * width;
+};
+
+const positionToValue = (
+  position: number,
+  min: number,
+  max: number,
+  width: number
+): number => {
+  'worklet';
+  return (position / width) * (max - min) + min;
+};
+
+// Slider Component
+const Slider = forwardRef<SliderRef, SliderProps>(
   (
     {
-      children,
-      value: controlledValue,
-      defaultValue = 0,
+      width = 300,
+      height = 40,
       min = 0,
       max = 100,
       step = 1,
-      size = 'md',
-      variant = 'default',
+      initialValue = min,
       disabled = false,
-      style,
       trackColor,
+      activeTrackColor,
+      thumbColor,
+      thumbSize = 20,
+      showLabel = false,
+      labelFormatter = (value) => value.toString(),
       onValueChange,
       onSlidingStart,
       onSlidingComplete,
-      animated = true,
-      ...props
+      style,
+      trackStyle,
+      thumbStyle,
+      labelStyle,
     },
     ref
   ) => {
+    const { theme } = useTheme();
     const styles = useThemedStyles(createSliderStyles);
 
-    const [internalValue, setInternalValue] = useState(
-      controlledValue ?? defaultValue
-    );
-    const [sliderWidth, setSliderWidth] = useState(0);
-    const [isDragging, setIsDragging] = useState(false);
-    const [startPosition, setStartPosition] = useState(0);
-
-    const currentValue = controlledValue ?? internalValue;
-
     // Shared values
-    const translateX = useSharedValue(0);
-    const scale = useSharedValue(1);
+    const sliderWidth = useSharedValue(width);
+    const value = useSharedValue(clamp(initialValue, min, max));
+    const isDragging = useSharedValue(false);
 
-    // Get thumb dimensions
-    const thumbSize = getThumbSize(size);
-    const trackHeight = getTrackHeight(size);
-
-    // Calculate percentage and position
-    const percentage = ((currentValue - min) / (max - min)) * 100;
-
-    // Update position when value changes
-    useEffect(() => {
-      if (sliderWidth > 0 && !isDragging) {
-        const maxTranslateX = sliderWidth - thumbSize.width;
-        const newPosition = (percentage / 100) * maxTranslateX;
-
-        if (animated) {
-          translateX.value = withSpring(
-            Math.max(0, Math.min(newPosition, maxTranslateX)),
-            {
-              damping: 20,
-              stiffness: 200,
-              mass: 0.8,
-            }
-          );
-        } else {
-          translateX.value = Math.max(0, Math.min(newPosition, maxTranslateX));
-        }
-      }
-    }, [
-      percentage,
-      sliderWidth,
-      animated,
-      isDragging,
-      thumbSize.width,
-      translateX,
-    ]);
-
-    const updateValue = useCallback(
-      (newValue: number) => {
-        const clampedValue = Math.min(Math.max(newValue, min), max);
-        const steppedValue = Math.round(clampedValue / step) * step;
-
-        if (controlledValue === undefined) {
-          setInternalValue(steppedValue);
-        }
-        onValueChange?.(steppedValue);
+    // Layout handler
+    const handleLayout = useCallback(
+      (event: LayoutChangeEvent) => {
+        sliderWidth.value = event.nativeEvent.layout.width;
       },
-      [min, max, step, controlledValue, onValueChange]
+      [sliderWidth]
     );
 
-    // Enhanced pan gesture with better accuracy
-    const panGesture = Gesture.Pan()
-      .onStart((event) => {
-        if (disabled) return;
+    // Callbacks
+    const handleValueChange = useCallback(
+      (newValue: number) => {
+        onValueChange?.(newValue);
+      },
+      [onValueChange]
+    );
 
-        // Enhanced scale animation
-        scale.value = withSpring(1.15, {
-          damping: 12,
-          stiffness: 250,
-          mass: 0.5,
-        });
+    const handleSlidingStart = useCallback(
+      (newValue: number) => {
+        onSlidingStart?.(newValue);
+      },
+      [onSlidingStart]
+    );
 
-        runOnJS(setIsDragging)(true);
-        runOnJS(setStartPosition)(translateX.value);
+    const handleSlidingComplete = useCallback(
+      (newValue: number) => {
+        onSlidingComplete?.(newValue);
+      },
+      [onSlidingComplete]
+    );
 
-        if (onSlidingStart) {
-          runOnJS(onSlidingStart)(currentValue);
-        }
-      })
-      .onUpdate((event) => {
-        if (disabled || sliderWidth === 0) return;
+    // Pan gesture
+    const panGesture = useMemo(
+      () =>
+        Gesture.Pan()
+          .enabled(!disabled)
+          .onStart(() => {
+            isDragging.value = true;
+            runOnJS(handleSlidingStart)(value.value);
+          })
+          .onUpdate((event) => {
+            const newPosition = clamp(event.x, 0, sliderWidth.value);
+            const newValue = positionToValue(
+              newPosition,
+              min,
+              max,
+              sliderWidth.value
+            );
+            const snappedValue = snapToStep(newValue, step, min);
+            const clampedValue = clamp(snappedValue, min, max);
 
-        const maxTranslateX = sliderWidth - thumbSize.width;
+            value.value = clampedValue;
+            runOnJS(handleValueChange)(clampedValue);
+          })
+          .onEnd(() => {
+            isDragging.value = false;
+            runOnJS(handleSlidingComplete)(value.value);
+          }),
+      [
+        disabled,
+        min,
+        max,
+        step,
+        sliderWidth,
+        value,
+        isDragging,
+        handleValueChange,
+        handleSlidingStart,
+        handleSlidingComplete,
+      ]
+    );
 
-        // Improved position calculation with better sensitivity
-        const newTranslateX = Math.max(
-          0,
-          Math.min(startPosition + event.translationX, maxTranslateX)
-        );
-
-        translateX.value = newTranslateX;
-
-        // More accurate value calculation
-        const newPercentage =
-          maxTranslateX > 0 ? (newTranslateX / maxTranslateX) * 100 : 0;
-        const rawValue = min + (newPercentage / 100) * (max - min);
-
-        // Apply step with better rounding
-        const steppedValue = Math.round(rawValue / step) * step;
-        const finalValue = Math.min(Math.max(steppedValue, min), max);
-
-        runOnJS(updateValue)(finalValue);
-      })
-      .onEnd(() => {
-        if (disabled) return;
-
-        // Smooth scale return animation
-        scale.value = withSpring(1, {
-          damping: 15,
-          stiffness: 200,
-          mass: 0.8,
-        });
-
-        runOnJS(setIsDragging)(false);
-
-        if (onSlidingComplete) {
-          runOnJS(onSlidingComplete)(currentValue);
-        }
-
-        // Snap to final position with smooth animation
-        const maxTranslateX = sliderWidth - thumbSize.width;
-        const finalPercentage = ((currentValue - min) / (max - min)) * 100;
-        const finalPosition = (finalPercentage / 100) * maxTranslateX;
-
-        translateX.value = withSpring(
-          Math.max(0, Math.min(finalPosition, maxTranslateX)),
-          {
-            damping: 18,
-            stiffness: 180,
-            mass: 0.7,
-          }
-        );
-      });
-
-    // Enhanced tap gesture for direct positioning
-    const tapGesture = Gesture.Tap().onStart((event) => {
-      if (disabled || sliderWidth === 0) return;
-
-      const maxTranslateX = sliderWidth - thumbSize.width;
-      const tapX = event.x - thumbSize.width / 2; // Center the thumb on tap position
-      const clampedX = Math.max(0, Math.min(tapX, maxTranslateX));
-
-      // Calculate new value based on tap position
-      const newPercentage =
-        maxTranslateX > 0 ? (clampedX / maxTranslateX) * 100 : 0;
-      const rawValue = min + (newPercentage / 100) * (max - min);
-      const steppedValue = Math.round(rawValue / step) * step;
-      const finalValue = Math.min(Math.max(steppedValue, min), max);
-
-      // Animate to new position
-      if (animated) {
-        translateX.value = withSpring(clampedX, {
-          damping: 18,
-          stiffness: 200,
-          mass: 0.8,
-        });
-
-        // Brief scale animation for feedback
-        scale.value = withSpring(1.1, {
-          damping: 15,
-          stiffness: 300,
-        });
-
-        setTimeout(() => {
-          scale.value = withSpring(1, {
-            damping: 15,
-            stiffness: 200,
-          });
-        }, 100);
-      } else {
-        translateX.value = clampedX;
-      }
-
-      runOnJS(updateValue)(finalValue);
-    });
-
-    // Combined gesture
-    const combinedGesture = Gesture.Race(panGesture, tapGesture);
-
-    // Enhanced animated styles
+    // Animated styles
     const thumbAnimatedStyle = useAnimatedStyle(() => {
-      const maxTranslateX = sliderWidth - thumbSize.width;
+      const position = valueToPosition(
+        value.value,
+        min,
+        max,
+        sliderWidth.value
+      );
+      const scale = isDragging.value ? 1.2 : 1;
+
       return {
         transform: [
-          {
-            translateX: Math.max(
-              0,
-              Math.min(translateX.value, maxTranslateX || 0)
-            ),
-          },
-          { scale: scale.value },
+          { translateX: position - thumbSize / 2 },
+          { scale: withSpring(scale) },
         ],
       };
     });
 
-    const handleLayout = (event: LayoutChangeEvent) => {
-      const { width } = event.nativeEvent.layout;
-      setSliderWidth(width);
-    };
+    const activeTrackAnimatedStyle = useAnimatedStyle(() => {
+      const position = valueToPosition(
+        value.value,
+        min,
+        max,
+        sliderWidth.value
+      );
+
+      return {
+        width: position,
+      };
+    });
+
+    const labelAnimatedStyle = useAnimatedStyle(() => {
+      const position = valueToPosition(
+        value.value,
+        min,
+        max,
+        sliderWidth.value
+      );
+      const opacity = isDragging.value ? 1 : 0;
+
+      return {
+        transform: [{ translateX: position - 150 }],
+        opacity: withSpring(opacity),
+      };
+    });
+
+    // Imperative handle
+    useImperativeHandle(
+      ref,
+      () => ({
+        setValue: (newValue: number) => {
+          const clampedValue = clamp(newValue, min, max);
+          value.value = clampedValue;
+          handleValueChange(clampedValue);
+        },
+        getValue: () => value.value,
+      }),
+      [value, min, max, handleValueChange]
+    );
+
+    // Resolved colors
+    const resolvedTrackColor = useMemo(
+      () => resolveColor(theme, trackColor, theme.colors.border),
+      [trackColor, theme]
+    );
+
+    const resolvedActiveTrackColor = useMemo(
+      () => resolveColor(theme, activeTrackColor, theme.colors.primary),
+      [activeTrackColor, theme]
+    );
+
+    const resolvedThumbColor = useMemo(
+      () => resolveColor(theme, thumbColor, theme.colors.background),
+      [thumbColor, theme]
+    );
 
     return (
-      <View
-        ref={ref}
-        style={[
-          styles.container,
-          styles[size],
-          disabled && styles.disabled,
-          style,
-        ]}
-        onLayout={handleLayout}
-        {...props}
-      >
-        <GestureDetector gesture={combinedGesture}>
-          <View style={{ flex: 1 }}>
-            {React.Children.map(children, (child) => {
-              if (React.isValidElement(child)) {
-                if (child.type === SliderTrack) {
-                  return React.cloneElement(
-                    child as React.ReactElement<
-                      SliderTrackProps & {
-                        percentage?: number;
-                        variant?: SliderVariant;
-                        size?: SliderSize;
-                        trackColor?: string | keyof Theme['colors'];
-                      }
-                    >,
-                    {
-                      percentage,
-                      variant,
-                      size,
-                      trackColor,
-                    }
-                  );
-                }
-                if (child.type === SliderThumb) {
-                  return (
-                    <Animated.View style={thumbAnimatedStyle}>
-                      {React.cloneElement(
-                        child as React.ReactElement<
-                          SliderThumbProps & {
-                            variant?: SliderVariant;
-                            size?: SliderSize;
-                            disabled?: boolean;
-                          }
-                        >,
-                        {
-                          variant,
-                          size,
-                          disabled,
-                        }
-                      )}
-                    </Animated.View>
-                  );
-                }
-              }
-              return child;
-            })}
+      <View style={[styles.container, { height }, style]}>
+        {showLabel && (
+          <Animated.View style={[styles.labelContainer, labelAnimatedStyle]}>
+            <Text style={[styles.label, labelStyle]}>
+              {labelFormatter(value.value)}
+            </Text>
+          </Animated.View>
+        )}
+
+        <GestureDetector gesture={panGesture}>
+          <View
+            style={[styles.sliderContainer, { width }]}
+            onLayout={handleLayout}
+          >
+            {/* Track */}
+            <View
+              style={[
+                styles.track,
+                {
+                  backgroundColor: resolvedTrackColor,
+                  height: 4,
+                },
+                trackStyle,
+              ]}
+            />
+
+            {/* Active Track */}
+            <Animated.View
+              style={[
+                styles.activeTrack,
+                {
+                  backgroundColor: resolvedActiveTrackColor,
+                  height: 4,
+                },
+                activeTrackAnimatedStyle,
+              ]}
+            />
+
+            {/* Thumb */}
+            <Animated.View
+              style={[
+                styles.thumb,
+                {
+                  backgroundColor: resolvedThumbColor,
+                  width: thumbSize,
+                  height: thumbSize,
+                  borderRadius: thumbSize / 2,
+                  borderWidth: 2,
+                  borderColor: resolvedActiveTrackColor,
+                },
+                thumbStyle,
+                thumbAnimatedStyle,
+              ]}
+            />
           </View>
         </GestureDetector>
       </View>
@@ -343,283 +341,423 @@ const Slider = forwardRef<React.ComponentRef<typeof View>, SliderProps>(
   }
 );
 
-Slider.displayName = 'Slider';
-
-const SliderTrack = forwardRef<
-  React.ComponentRef<typeof View>,
-  SliderTrackProps
->(({ children, style, ...props }, ref) => {
-  const styles = useThemedStyles(createSliderTrackStyles);
-
-  return (
-    <View ref={ref} style={[styles.track, style]} {...props}>
-      {children}
-    </View>
-  );
-});
-
-SliderTrack.displayName = 'SliderTrack';
-
-const SliderFilledTrack = forwardRef<
-  React.ComponentRef<typeof View>,
-  SliderFilledTrackProps & {
-    percentage?: number;
-    variant?: SliderVariant;
-    size?: SliderSize;
-  }
->(
+// RangeSlider Component
+const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
   (
     {
-      style,
-      color,
-      percentage = 0,
-      variant = 'default',
-      size = 'md',
-      ...props
-    },
-    ref
-  ) => {
-    const { theme } = useTheme();
-    const styles = useThemedStyles(createSliderFilledTrackStyles);
-
-    const getVariantColor = (): string => {
-      if (color) {
-        if (typeof color === 'string' && color.startsWith('#')) return color;
-        return (theme.colors as Record<string, string>)[color] || color;
-      }
-
-      switch (variant) {
-        case 'primary':
-          return theme.colors.primary;
-        case 'success':
-          return '#10B981';
-        case 'warning':
-          return '#F59E0B';
-        case 'error':
-          return '#EF4444';
-        case 'info':
-          return '#3B82F6';
-        default:
-          return theme.colors.primary;
-      }
-    };
-
-    return (
-      <View
-        ref={ref}
-        style={[
-          styles.filledTrack,
-          styles[size],
-          {
-            width: `${Math.max(0, Math.min(percentage, 100))}%`,
-            backgroundColor: getVariantColor(),
-          },
-          style,
-        ]}
-        {...props}
-      />
-    );
-  }
-);
-
-SliderFilledTrack.displayName = 'SliderFilledTrack';
-
-const SliderThumb = forwardRef<
-  React.ComponentRef<typeof View>,
-  SliderThumbProps & {
-    variant?: SliderVariant;
-    size?: SliderSize;
-    disabled?: boolean;
-  }
->(
-  (
-    {
-      style,
-      color,
-      variant = 'default',
-      size = 'md',
+      width = 300,
+      height = 40,
+      min = 0,
+      max = 100,
+      step = 1,
+      initialMinValue = min,
+      initialMaxValue = max,
+      minDistance = 0,
       disabled = false,
-      ...props
+      trackColor,
+      activeTrackColor,
+      thumbColor,
+      thumbSize = 20,
+      showLabels = false,
+      labelFormatter = (value) => value.toString(),
+      onValueChange,
+      onSlidingStart,
+      onSlidingComplete,
+      style,
+      trackStyle,
+      thumbStyle,
+      labelStyle,
     },
     ref
   ) => {
     const { theme } = useTheme();
-    const styles = useThemedStyles(createSliderThumbStyles);
+    const styles = useThemedStyles(createSliderStyles);
 
-    const getVariantColor = (): string => {
-      if (color) {
-        if (typeof color === 'string' && color.startsWith('#')) return color;
-        return (theme.colors as Record<string, string>)[color] || color;
-      }
+    // Shared values
+    const sliderWidth = useSharedValue(width);
+    const minValue = useSharedValue(clamp(initialMinValue, min, max));
+    const maxValue = useSharedValue(clamp(initialMaxValue, min, max));
+    const isDraggingMin = useSharedValue(false);
+    const isDraggingMax = useSharedValue(false);
+    const activeThumb = useSharedValue<'min' | 'max' | null>(null);
 
-      if (disabled) {
-        return theme.colors.border;
-      }
+    // Layout handler
+    const handleLayout = useCallback(
+      (event: LayoutChangeEvent) => {
+        sliderWidth.value = event.nativeEvent.layout.width;
+      },
+      [sliderWidth]
+    );
 
-      switch (variant) {
-        case 'primary':
-          return theme.colors.primary;
-        case 'success':
-          return '#10B981';
-        case 'warning':
-          return '#F59E0B';
-        case 'error':
-          return '#EF4444';
-        case 'info':
-          return '#3B82F6';
-        default:
-          return theme.colors.primary;
-      }
-    };
+    // Callbacks
+    const handleValueChange = useCallback(
+      (newMinValue: number, newMaxValue: number) => {
+        onValueChange?.({ min: newMinValue, max: newMaxValue });
+      },
+      [onValueChange]
+    );
+
+    const handleSlidingStart = useCallback(
+      (newMinValue: number, newMaxValue: number) => {
+        onSlidingStart?.({ min: newMinValue, max: newMaxValue });
+      },
+      [onSlidingStart]
+    );
+
+    const handleSlidingComplete = useCallback(
+      (newMinValue: number, newMaxValue: number) => {
+        onSlidingComplete?.({ min: newMinValue, max: newMaxValue });
+      },
+      [onSlidingComplete]
+    );
+
+    // Pan gesture
+    const panGesture = useMemo(
+      () =>
+        Gesture.Pan()
+          .enabled(!disabled)
+          .onStart((event) => {
+            const minPosition = valueToPosition(
+              minValue.value,
+              min,
+              max,
+              sliderWidth.value
+            );
+            const maxPosition = valueToPosition(
+              maxValue.value,
+              min,
+              max,
+              sliderWidth.value
+            );
+
+            const distanceToMin = Math.abs(event.x - minPosition);
+            const distanceToMax = Math.abs(event.x - maxPosition);
+
+            if (distanceToMin < distanceToMax) {
+              activeThumb.value = 'min';
+              isDraggingMin.value = true;
+            } else {
+              activeThumb.value = 'max';
+              isDraggingMax.value = true;
+            }
+
+            runOnJS(handleSlidingStart)(minValue.value, maxValue.value);
+          })
+          .onUpdate((event) => {
+            const newPosition = clamp(event.x, 0, sliderWidth.value);
+            const newValue = positionToValue(
+              newPosition,
+              min,
+              max,
+              sliderWidth.value
+            );
+            const snappedValue = snapToStep(newValue, step, min);
+            const clampedValue = clamp(snappedValue, min, max);
+
+            if (activeThumb.value === 'min') {
+              const maxAllowed = maxValue.value - minDistance;
+              minValue.value = clamp(clampedValue, min, maxAllowed);
+            } else if (activeThumb.value === 'max') {
+              const minAllowed = minValue.value + minDistance;
+              maxValue.value = clamp(clampedValue, minAllowed, max);
+            }
+
+            runOnJS(handleValueChange)(minValue.value, maxValue.value);
+          })
+          .onEnd(() => {
+            isDraggingMin.value = false;
+            isDraggingMax.value = false;
+            activeThumb.value = null;
+            runOnJS(handleSlidingComplete)(minValue.value, maxValue.value);
+          }),
+      [
+        disabled,
+        min,
+        max,
+        step,
+        minDistance,
+        sliderWidth,
+        minValue,
+        maxValue,
+        isDraggingMin,
+        isDraggingMax,
+        activeThumb,
+        handleValueChange,
+        handleSlidingStart,
+        handleSlidingComplete,
+      ]
+    );
+
+    // Animated styles
+    const minThumbAnimatedStyle = useAnimatedStyle(() => {
+      const position = valueToPosition(
+        minValue.value,
+        min,
+        max,
+        sliderWidth.value
+      );
+      const scale = isDraggingMin.value ? 1.2 : 1;
+
+      return {
+        transform: [
+          { translateX: position - thumbSize / 2 },
+          { scale: withSpring(scale) },
+        ],
+      };
+    });
+
+    const maxThumbAnimatedStyle = useAnimatedStyle(() => {
+      const position = valueToPosition(
+        maxValue.value,
+        min,
+        max,
+        sliderWidth.value
+      );
+      const scale = isDraggingMax.value ? 1.2 : 1;
+
+      return {
+        transform: [
+          { translateX: position - thumbSize / 2 },
+          { scale: withSpring(scale) },
+        ],
+      };
+    });
+
+    const activeTrackAnimatedStyle = useAnimatedStyle(() => {
+      const minPosition = valueToPosition(
+        minValue.value,
+        min,
+        max,
+        sliderWidth.value
+      );
+      const maxPosition = valueToPosition(
+        maxValue.value,
+        min,
+        max,
+        sliderWidth.value
+      );
+
+      return {
+        left: minPosition,
+        width: maxPosition - minPosition,
+      };
+    });
+
+    const minLabelAnimatedStyle = useAnimatedStyle(() => {
+      const position = valueToPosition(
+        minValue.value,
+        min,
+        max,
+        sliderWidth.value
+      );
+      const opacity = isDraggingMin.value ? 1 : 0;
+
+      return {
+        transform: [{ translateX: position - 150 }],
+        opacity: withSpring(opacity),
+      };
+    });
+
+    const maxLabelAnimatedStyle = useAnimatedStyle(() => {
+      const position = valueToPosition(
+        maxValue.value,
+        min,
+        max,
+        sliderWidth.value
+      );
+      const opacity = isDraggingMax.value ? 1 : 0;
+
+      return {
+        transform: [{ translateX: position - 150 }],
+        opacity: withSpring(opacity),
+      };
+    });
+
+    // Imperative handle
+    useImperativeHandle(
+      ref,
+      () => ({
+        setValues: (newMinValue: number, newMaxValue: number) => {
+          const clampedMin = clamp(newMinValue, min, max);
+          const clampedMax = clamp(newMaxValue, min, max);
+
+          if (clampedMax - clampedMin >= minDistance) {
+            minValue.value = clampedMin;
+            maxValue.value = clampedMax;
+            handleValueChange(clampedMin, clampedMax);
+          }
+        },
+        getValues: () => ({ min: minValue.value, max: maxValue.value }),
+      }),
+      [minValue, maxValue, min, max, minDistance, handleValueChange]
+    );
+
+    // Resolved colors
+    const resolvedTrackColor = useMemo(
+      () => resolveColor(theme, trackColor, theme.colors.border),
+      [trackColor, theme]
+    );
+
+    const resolvedActiveTrackColor = useMemo(
+      () => resolveColor(theme, activeTrackColor, theme.colors.primary),
+      [activeTrackColor, theme]
+    );
+
+    const resolvedThumbColor = useMemo(
+      () => resolveColor(theme, thumbColor, theme.colors.background),
+      [thumbColor, theme]
+    );
 
     return (
-      <View
-        ref={ref}
-        style={[
-          styles.thumb,
-          styles[size],
-          {
-            backgroundColor: getVariantColor(),
-            borderColor: '#FFFFFF',
-          },
-          disabled && styles.disabled,
-          style,
-        ]}
-        {...props}
-      />
+      <View style={[styles.container, { height }, style]}>
+        {showLabels && (
+          <>
+            <Animated.View
+              style={[styles.labelContainer, minLabelAnimatedStyle]}
+            >
+              <Text style={[styles.label, labelStyle]}>
+                {labelFormatter(minValue.value)}
+              </Text>
+            </Animated.View>
+            <Animated.View
+              style={[styles.labelContainer, maxLabelAnimatedStyle]}
+            >
+              <Text style={[styles.label, labelStyle]}>
+                {labelFormatter(maxValue.value)}
+              </Text>
+            </Animated.View>
+          </>
+        )}
+
+        <GestureDetector gesture={panGesture}>
+          <View
+            style={[styles.sliderContainer, { width }]}
+            onLayout={handleLayout}
+          >
+            {/* Track */}
+            <View
+              style={[
+                styles.track,
+                {
+                  backgroundColor: resolvedTrackColor,
+                  height: 4,
+                },
+                trackStyle,
+              ]}
+            />
+
+            {/* Active Track */}
+            <Animated.View
+              style={[
+                styles.activeTrack,
+                {
+                  backgroundColor: resolvedActiveTrackColor,
+                  height: 4,
+                },
+                activeTrackAnimatedStyle,
+              ]}
+            />
+
+            {/* Min Thumb */}
+            <Animated.View
+              style={[
+                styles.thumb,
+                {
+                  backgroundColor: resolvedThumbColor,
+                  width: thumbSize,
+                  height: thumbSize,
+                  borderRadius: thumbSize / 2,
+                  borderWidth: 2,
+                  borderColor: resolvedActiveTrackColor,
+                },
+                thumbStyle,
+                minThumbAnimatedStyle,
+              ]}
+            />
+
+            {/* Max Thumb */}
+            <Animated.View
+              style={[
+                styles.thumb,
+                {
+                  backgroundColor: resolvedThumbColor,
+                  width: thumbSize,
+                  height: thumbSize,
+                  borderRadius: thumbSize / 2,
+                  borderWidth: 2,
+                  borderColor: resolvedActiveTrackColor,
+                },
+                thumbStyle,
+                maxThumbAnimatedStyle,
+              ]}
+            />
+          </View>
+        </GestureDetector>
+      </View>
     );
   }
 );
 
-SliderThumb.displayName = 'SliderThumb';
-
-// Helper functions
-const getThumbSize = (size: SliderSize) => {
-  switch (size) {
-    case 'sm':
-      return { width: 16, height: 16 };
-    case 'md':
-      return { width: 20, height: 20 };
-    case 'lg':
-      return { width: 24, height: 24 };
-    default:
-      return { width: 20, height: 20 };
-  }
-};
-
-const getTrackHeight = (size: SliderSize) => {
-  switch (size) {
-    case 'sm':
-      return 2;
-    case 'md':
-      return 4;
-    case 'lg':
-      return 6;
-    default:
-      return 4;
-  }
-};
-
-// Enhanced styles
-const createSliderStyles = (_: Theme) => ({
+// Styles
+const createSliderStyles = (theme: Theme) => ({
   container: {
-    width: '100%' as const,
-    justifyContent: 'center' as const,
-    position: 'relative' as const,
-  },
-  sm: {
-    height: 32,
-    paddingHorizontal: 8, // Add padding for better touch area
-  },
-  md: {
+    justifyContent: 'center',
+    alignItems: 'center',
+  } as ViewStyle,
+  sliderContainer: {
     height: 40,
-    paddingHorizontal: 10,
-  },
-  lg: {
-    height: 48,
-    paddingHorizontal: 12,
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-});
-
-const createSliderTrackStyles = (theme: Theme) => ({
+    justifyContent: 'center',
+    position: 'relative',
+  } as ViewStyle,
   track: {
-    position: 'absolute' as const,
+    position: 'absolute',
     left: 0,
     right: 0,
-    height: 4,
-    backgroundColor: theme.colors.border,
-    borderRadius: theme.borderRadius.full,
-    top: '50%' as const,
-    marginTop: -2,
-  },
-});
-
-const createSliderFilledTrackStyles = (theme: Theme) => ({
-  filledTrack: {
-    position: 'absolute' as const,
-    left: 0,
-    top: 0,
-    bottom: 0,
-    borderRadius: theme.borderRadius.full,
-  },
-  sm: {
-    height: 2,
-  },
-  md: {
-    height: 4,
-  },
-  lg: {
-    height: 6,
-  },
-});
-
-const createSliderThumbStyles = (theme: Theme) => ({
+    borderRadius: 2,
+  } as ViewStyle,
+  activeTrack: {
+    position: 'absolute',
+    borderRadius: 2,
+  } as ViewStyle,
   thumb: {
-    position: 'absolute' as const,
-    borderRadius: 50,
-    borderWidth: 2,
-    borderColor: '#FFFFFF',
-    shadowColor: '#000000',
+    position: 'absolute',
+    // shadowColor: theme.colors.shadow,
     shadowOffset: {
       width: 0,
       height: 2,
     },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
-    top: '50%' as const,
-  },
-  sm: {
-    width: 16,
-    height: 16,
-    marginTop: 4,
-  },
-  md: {
-    width: 20,
-    height: 20,
-    marginTop: 6,
-  },
-  lg: {
-    width: 24,
-    height: 24,
-    marginTop: 8,
-  },
-  disabled: {
-    shadowOpacity: 0,
-    elevation: 0,
-  },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  } as ViewStyle,
+  labelContainer: {
+    position: 'absolute',
+    top: -30,
+    backgroundColor: theme.colors.surface,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
+    borderRadius: 4,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+    width: 50,
+    alignItems: 'center',
+  } as ViewStyle,
+  label: {
+    fontSize: 12,
+    color: theme.colors.text,
+    fontWeight: '500',
+  } as TextStyle,
 });
+
+// Set display names
+Slider.displayName = 'Slider';
+RangeSlider.displayName = 'RangeSlider';
 
 export {
   Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
+  RangeSlider,
   type SliderProps,
-  type SliderTrackProps,
-  type SliderFilledTrackProps,
-  type SliderThumbProps,
+  type RangeSliderProps,
+  type RangeSliderRef,
+  type SliderRef,
 };

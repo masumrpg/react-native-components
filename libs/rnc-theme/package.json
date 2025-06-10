@@ -51,6 +51,7 @@
     "react": ">=19",
     "react-native": ">=0.79.3",
     "react-native-reanimated": ">=3",
+    "react-native-gesture-handler": ">=2",
     "@react-native-async-storage/async-storage": ">=2",
     "lucide-react-native": ">=0.513.0"
   },

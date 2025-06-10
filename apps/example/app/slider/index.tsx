@@ -1,280 +1,139 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { ScrollView } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import {
   Slider,
-  SliderTrack,
-  SliderFilledTrack,
-  SliderThumb,
-  Typography,
+  RangeSlider,
   VStack,
   Card,
-  CardContent,
+  Typography,
+  useThemedStyles,
+  Theme,
 } from 'rnc-theme';
 
-export default function SliderExample() {
-  const [basicValue, setBasicValue] = useState(30);
-  const [primaryValue, setPrimaryValue] = useState(50);
-  const [successValue, setSuccessValue] = useState(70);
-  const [warningValue, setWarningValue] = useState(40);
-  const [errorValue, setErrorValue] = useState(60);
-  const [infoValue, setInfoValue] = useState(80);
-  const [disabledValue, setDisabledValue] = useState(25);
-  const [customRangeValue, setCustomRangeValue] = useState(150);
-  const [stepValue, setStepValue] = useState(50);
+export default function SliderScreen() {
+  const styles = useThemedStyles(createStyles);
+  const [sliderValue, setSliderValue] = useState(50);
+  const [rangeValues, setRangeValues] = useState({ min: 20, max: 80 });
+  const [customSliderValue, setCustomSliderValue] = useState(25);
 
   return (
-    <GestureHandlerRootView>
-      <ScrollView style={styles.container}>
-        <VStack spacing="lg" padding="md">
-          <Typography variant="heading" align="center">
-            Slider Component Examples
+    <GestureHandlerRootView style={styles.container}>
+      <ScrollView contentContainerStyle={styles.content}>
+        <VStack spacing="lg">
+          <Typography variant="title" style={styles.title}>
+            Slider Examples
           </Typography>
 
           {/* Basic Slider */}
-          <Card>
-            <CardContent>
-              <VStack spacing="md">
-                <Typography variant="subtitle">Basic Slider</Typography>
-                <Typography variant="body" color="#666">
-                  Value: {basicValue}
-                </Typography>
-                <Slider
-                  value={basicValue}
-                  onValueChange={setBasicValue}
-                  onSlidingStart={(value) => console.log('Start:', value)}
-                  onSlidingComplete={(value) => console.log('Complete:', value)}
-                >
-                  <SliderTrack>
-                    <SliderFilledTrack />
-                  </SliderTrack>
-                  <SliderThumb />
-                </Slider>
-              </VStack>
-            </CardContent>
+          <Card style={styles.card}>
+            <VStack spacing="md">
+              <Typography variant="subtitle" style={styles.sectionTitle}>
+                Basic Slider
+              </Typography>
+              <Typography variant="body" style={styles.valueText}>
+                Value: {sliderValue}
+              </Typography>
+              <Slider
+                initialValue={sliderValue}
+                min={0}
+                max={100}
+                step={1}
+                onValueChange={setSliderValue}
+                showLabel={true}
+                width={300}
+              />
+            </VStack>
           </Card>
 
-          {/* Variants */}
-          <Card>
-            <CardContent>
-              <VStack spacing="md">
-                <Typography variant="subtitle">Variants</Typography>
-
-                <VStack spacing="sm">
-                  <Typography variant="body">
-                    Primary ({primaryValue})
-                  </Typography>
-                  <Slider
-                    variant="primary"
-                    value={primaryValue}
-                    onValueChange={setPrimaryValue}
-                  >
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </VStack>
-
-                <VStack spacing="sm">
-                  <Typography variant="body">
-                    Success ({successValue})
-                  </Typography>
-                  <Slider
-                    variant="success"
-                    value={successValue}
-                    onValueChange={setSuccessValue}
-                  >
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </VStack>
-
-                <VStack spacing="sm">
-                  <Typography variant="body">
-                    Warning ({warningValue})
-                  </Typography>
-                  <Slider
-                    variant="warning"
-                    value={warningValue}
-                    onValueChange={setWarningValue}
-                  >
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </VStack>
-
-                <VStack spacing="sm">
-                  <Typography variant="body">Error ({errorValue})</Typography>
-                  <Slider
-                    variant="error"
-                    value={errorValue}
-                    onValueChange={setErrorValue}
-                  >
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </VStack>
-
-                <VStack spacing="sm">
-                  <Typography variant="body">Info ({infoValue})</Typography>
-                  <Slider
-                    variant="info"
-                    value={infoValue}
-                    onValueChange={setInfoValue}
-                  >
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </VStack>
-              </VStack>
-            </CardContent>
+          {/* Custom Styled Slider */}
+          <Card style={styles.card}>
+            <VStack spacing="md">
+              <Typography variant="subtitle" style={styles.sectionTitle}>
+                Custom Styled Slider
+              </Typography>
+              <Typography variant="body" style={styles.valueText}>
+                Value: {customSliderValue}
+              </Typography>
+              <Slider
+                initialValue={customSliderValue}
+                min={0}
+                max={50}
+                step={5}
+                onValueChange={setCustomSliderValue}
+                showLabel={true}
+                width={300}
+                thumbSize={24}
+                activeTrackColor="#FF6B6B"
+                trackColor="#E0E0E0"
+                thumbColor="#FFFFFF"
+                labelFormatter={(value) => `${value}%`}
+              />
+            </VStack>
           </Card>
 
-          {/* Sizes */}
-          <Card>
-            <CardContent>
-              <VStack spacing="md">
-                <Typography variant="subtitle">Sizes</Typography>
-
-                <VStack spacing="sm">
-                  <Typography variant="body">Small</Typography>
-                  <Slider size="sm" variant="primary" defaultValue={30}>
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </VStack>
-
-                <VStack spacing="sm">
-                  <Typography variant="body">Medium (Default)</Typography>
-                  <Slider size="md" variant="primary" defaultValue={50}>
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </VStack>
-
-                <VStack spacing="sm">
-                  <Typography variant="body">Large</Typography>
-                  <Slider size="lg" variant="primary" defaultValue={70}>
-                    <SliderTrack>
-                      <SliderFilledTrack />
-                    </SliderTrack>
-                    <SliderThumb />
-                  </Slider>
-                </VStack>
-              </VStack>
-            </CardContent>
+          {/* Range Slider */}
+          <Card style={styles.card}>
+            <VStack spacing="md">
+              <Typography variant="subtitle" style={styles.sectionTitle}>
+                Range Slider
+              </Typography>
+              <Typography variant="body" style={styles.valueText}>
+                Range: {rangeValues.min} - {rangeValues.max}
+              </Typography>
+              <RangeSlider
+                initialMinValue={rangeValues.min}
+                initialMaxValue={rangeValues.max}
+                min={0}
+                max={100}
+                step={5}
+                minDistance={10}
+                onValueChange={setRangeValues}
+                showLabels={true}
+                width={300}
+                labelFormatter={(value) => `${value}`}
+              />
+            </VStack>
           </Card>
 
-          {/* Disabled State */}
-          <Card>
-            <CardContent>
-              <VStack spacing="md">
-                <Typography variant="subtitle">Disabled State</Typography>
-                <Typography variant="body" color="#666">
-                  Value: {disabledValue}
-                </Typography>
-                <Slider
-                  disabled
-                  value={disabledValue}
-                  onValueChange={setDisabledValue}
-                >
-                  <SliderTrack>
-                    <SliderFilledTrack />
-                  </SliderTrack>
-                  <SliderThumb />
-                </Slider>
-              </VStack>
-            </CardContent>
+          {/* Disabled Slider */}
+          <Card style={styles.card}>
+            <VStack spacing="md">
+              <Typography variant="subtitle" style={styles.sectionTitle}>
+                Disabled Slider
+              </Typography>
+              <Slider
+                initialValue={30}
+                min={0}
+                max={100}
+                disabled={true}
+                width={300}
+                trackColor="#F0F0F0"
+                activeTrackColor="#CCCCCC"
+                thumbColor="#DDDDDD"
+              />
+            </VStack>
           </Card>
 
-          {/* Custom Range */}
-          <Card>
-            <CardContent>
-              <VStack spacing="md">
-                <Typography variant="subtitle">Custom Range (0-200)</Typography>
-                <Typography variant="body" color="#666">
-                  Value: {customRangeValue}
-                </Typography>
-                <Slider
-                  min={0}
-                  max={200}
-                  value={customRangeValue}
-                  onValueChange={setCustomRangeValue}
-                  variant="success"
-                >
-                  <SliderTrack>
-                    <SliderFilledTrack />
-                  </SliderTrack>
-                  <SliderThumb />
-                </Slider>
-              </VStack>
-            </CardContent>
-          </Card>
-
-          {/* Step Value */}
-          <Card>
-            <CardContent>
-              <VStack spacing="md">
-                <Typography variant="subtitle">Step Value (10)</Typography>
-                <Typography variant="body" color="#666">
-                  Value: {stepValue}
-                </Typography>
-                <Slider
-                  step={10}
-                  value={stepValue}
-                  onValueChange={setStepValue}
-                  variant="warning"
-                >
-                  <SliderTrack>
-                    <SliderFilledTrack />
-                  </SliderTrack>
-                  <SliderThumb />
-                </Slider>
-              </VStack>
-            </CardContent>
-          </Card>
-
-          {/* Custom Colors */}
-          <Card>
-            <CardContent>
-              <VStack spacing="md">
-                <Typography variant="subtitle">Custom Colors</Typography>
-                <Slider defaultValue={60}>
-                  <SliderTrack>
-                    <SliderFilledTrack color="#9333EA" />
-                  </SliderTrack>
-                  <SliderThumb color="#9333EA" />
-                </Slider>
-              </VStack>
-            </CardContent>
-          </Card>
-
-          {/* Without Animation */}
-          <Card>
-            <CardContent>
-              <VStack spacing="md">
-                <Typography variant="subtitle">Without Animation</Typography>
-                <Slider animated={false} defaultValue={40} variant="error">
-                  <SliderTrack>
-                    <SliderFilledTrack />
-                  </SliderTrack>
-                  <SliderThumb />
-                </Slider>
-              </VStack>
-            </CardContent>
+          {/* Small Step Slider */}
+          <Card style={styles.card}>
+            <VStack spacing="md">
+              <Typography variant="subtitle" style={styles.sectionTitle}>
+                Precision Slider (0.1 step)
+              </Typography>
+              <Slider
+                initialValue={2.5}
+                min={0}
+                max={5}
+                step={0.1}
+                onValueChange={(value) =>
+                  console.log('Precision value:', value)
+                }
+                showLabel={true}
+                width={300}
+                labelFormatter={(value) => value.toFixed(1)}
+              />
+            </VStack>
           </Card>
         </VStack>
       </ScrollView>
@@ -282,9 +141,36 @@ export default function SliderExample() {
   );
 }
 
-const styles = StyleSheet.create({
+const createStyles = (theme: Theme) => ({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: theme.colors.background,
+  },
+  content: {
+    padding: theme.spacing.md,
+    paddingBottom: theme.spacing.xl,
+  },
+  title: {
+    fontSize: theme.typography.heading.fontSize,
+    fontWeight: theme.typography.heading.fontWeight,
+    color: theme.colors.text,
+    textAlign: 'center' as const,
+    marginBottom: theme.spacing.lg,
+  },
+  card: {
+    padding: theme.spacing.md,
+    alignItems: 'center' as const,
+  },
+  sectionTitle: {
+    fontSize: theme.typography.subtitle.fontSize,
+    fontWeight: theme.typography.subtitle.fontWeight,
+    color: theme.colors.text,
+    textAlign: 'center' as const,
+  },
+  valueText: {
+    fontSize: theme.typography.body.fontSize,
+    color: theme.colors.textSecondary,
+    fontFamily: 'monospace',
+    textAlign: 'center' as const,
   },
 });
