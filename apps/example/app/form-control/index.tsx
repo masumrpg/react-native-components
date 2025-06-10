@@ -141,7 +141,7 @@ export default function FormControlExample() {
     >
       <Text
         style={{
-          ...theme.typography.h1,
+          ...theme.typography.heading,
           color: theme.colors.text,
           marginBottom: theme.spacing.lg,
         }}
@@ -154,7 +154,7 @@ export default function FormControlExample() {
         <CardHeader>
           <Text
             style={{
-              ...theme.typography.h3,
+              ...theme.typography.title,
               color: theme.colors.text,
             }}
           >
@@ -163,10 +163,7 @@ export default function FormControlExample() {
         </CardHeader>
         <CardContent style={{ gap: theme.spacing.lg }}>
           {/* Email Field */}
-          <FormControl
-            state={errors.email ? 'error' : 'default'}
-            required
-          >
+          <FormControl state={errors.email ? 'error' : 'default'} required>
             <FormControlLabel>
               <FormControlLabelText>Email Address</FormControlLabelText>
             </FormControlLabel>
@@ -174,9 +171,9 @@ export default function FormControlExample() {
               placeholder="Enter your email"
               value={formData.email}
               onChangeText={(text) => {
-                setFormData(prev => ({ ...prev, email: text }));
+                setFormData((prev) => ({ ...prev, email: text }));
                 if (errors.email) {
-                  setErrors(prev => ({ ...prev, email: undefined }));
+                  setErrors((prev) => ({ ...prev, email: undefined }));
                 }
               }}
               keyboardType="email-address"
@@ -189,17 +186,12 @@ export default function FormControlExample() {
             </FormControlHelper>
             <FormControlError>
               <FormControlErrorIcon />
-              <FormControlErrorText>
-                {errors.email}
-              </FormControlErrorText>
+              <FormControlErrorText>{errors.email}</FormControlErrorText>
             </FormControlError>
           </FormControl>
 
           {/* Password Field */}
-          <FormControl
-            state={errors.password ? 'error' : 'default'}
-            required
-          >
+          <FormControl state={errors.password ? 'error' : 'default'} required>
             <FormControlLabel>
               <FormControlLabelText>Password</FormControlLabelText>
             </FormControlLabel>
@@ -207,9 +199,9 @@ export default function FormControlExample() {
               placeholder="Enter your password"
               value={formData.password}
               onChangeText={(text) => {
-                setFormData(prev => ({ ...prev, password: text }));
+                setFormData((prev) => ({ ...prev, password: text }));
                 if (errors.password) {
-                  setErrors(prev => ({ ...prev, password: undefined }));
+                  setErrors((prev) => ({ ...prev, password: undefined }));
                 }
               }}
               secureTextEntry
@@ -221,9 +213,7 @@ export default function FormControlExample() {
             </FormControlHelper>
             <FormControlError>
               <FormControlErrorIcon />
-              <FormControlErrorText>
-                {errors.password}
-              </FormControlErrorText>
+              <FormControlErrorText>{errors.password}</FormControlErrorText>
             </FormControlError>
           </FormControl>
 
@@ -239,9 +229,12 @@ export default function FormControlExample() {
               placeholder="Confirm your password"
               value={formData.confirmPassword}
               onChangeText={(text) => {
-                setFormData(prev => ({ ...prev, confirmPassword: text }));
+                setFormData((prev) => ({ ...prev, confirmPassword: text }));
                 if (errors.confirmPassword) {
-                  setErrors(prev => ({ ...prev, confirmPassword: undefined }));
+                  setErrors((prev) => ({
+                    ...prev,
+                    confirmPassword: undefined,
+                  }));
                 }
               }}
               secureTextEntry
@@ -260,7 +253,7 @@ export default function FormControlExample() {
               value="newsletter"
               checked={formData.newsletter}
               onCheckedChange={(checked) => {
-                setFormData(prev => ({ ...prev, newsletter: checked }));
+                setFormData((prev) => ({ ...prev, newsletter: checked }));
               }}
             >
               <CheckboxIndicator>
@@ -280,19 +273,16 @@ export default function FormControlExample() {
           </FormControl>
 
           {/* Gender Radio Group */}
-          <FormControl
-            state={errors.gender ? 'error' : 'default'}
-            required
-          >
+          <FormControl state={errors.gender ? 'error' : 'default'} required>
             <FormControlLabel>
               <FormControlLabelText>Gender</FormControlLabelText>
             </FormControlLabel>
             <RadioGroup
               value={formData.gender}
               onValueChange={(value) => {
-                setFormData(prev => ({ ...prev, gender: value }));
+                setFormData((prev) => ({ ...prev, gender: value }));
                 if (errors.gender) {
-                  setErrors(prev => ({ ...prev, gender: undefined }));
+                  setErrors((prev) => ({ ...prev, gender: undefined }));
                 }
               }}
             >
@@ -302,7 +292,12 @@ export default function FormControlExample() {
                     <RadioIcon />
                   </RadioIndicator>
                   <RadioLabel>
-                    <Text style={{ ...theme.typography.body1, color: theme.colors.text }}>
+                    <Text
+                      style={{
+                        ...theme.typography.body,
+                        color: theme.colors.text,
+                      }}
+                    >
                       Male
                     </Text>
                   </RadioLabel>
@@ -312,7 +307,12 @@ export default function FormControlExample() {
                     <RadioIcon />
                   </RadioIndicator>
                   <RadioLabel>
-                    <Text style={{ ...theme.typography.body1, color: theme.colors.text }}>
+                    <Text
+                      style={{
+                        ...theme.typography.body,
+                        color: theme.colors.text,
+                      }}
+                    >
                       Female
                     </Text>
                   </RadioLabel>
@@ -322,7 +322,12 @@ export default function FormControlExample() {
                     <RadioIcon />
                   </RadioIndicator>
                   <RadioLabel>
-                    <Text style={{ ...theme.typography.body1, color: theme.colors.text }}>
+                    <Text
+                      style={{
+                        ...theme.typography.body,
+                        color: theme.colors.text,
+                      }}
+                    >
                       Other
                     </Text>
                   </RadioLabel>
@@ -331,24 +336,24 @@ export default function FormControlExample() {
             </RadioGroup>
             <FormControlError>
               <FormControlErrorIcon />
-              <FormControlErrorText>
-                {errors.gender}
-              </FormControlErrorText>
+              <FormControlErrorText>{errors.gender}</FormControlErrorText>
             </FormControlError>
-          </FormControl>
+          </FormControl>;
 
-          {/* Age Slider */}
+          {
+            /* Age Slider */
+          }
           <FormControl>
             <FormControlLabel>
               <FormControlLabelText>Age: {formData.age}</FormControlLabelText>
             </FormControlLabel>
             <Slider
-              value={formData.age}
+              initialValue={formData.age}
               onValueChange={(value) => {
-                setFormData(prev => ({ ...prev, age: value }));
+                setFormData((prev) => ({ ...prev, age: value }));
               }}
-              minimumValue={18}
-              maximumValue={100}
+              min={18}
+              max={100}
               step={1}
             />
             <FormControlHelper>
@@ -356,7 +361,7 @@ export default function FormControlExample() {
                 Select your age (18-100 years).
               </FormControlHelperText>
             </FormControlHelper>
-          </FormControl>
+          </FormControl>;
 
           {/* Notifications Switcher */}
           <FormControl>
@@ -369,7 +374,9 @@ export default function FormControlExample() {
             >
               <View style={{ flex: 1 }}>
                 <FormControlLabel>
-                  <FormControlLabelText>Push Notifications</FormControlLabelText>
+                  <FormControlLabelText>
+                    Push Notifications
+                  </FormControlLabelText>
                 </FormControlLabel>
                 <FormControlHelper>
                   <FormControlHelperText>
@@ -380,7 +387,7 @@ export default function FormControlExample() {
               <Switcher
                 value={formData.notifications}
                 onValueChange={(value) => {
-                  setFormData(prev => ({ ...prev, notifications: value }));
+                  setFormData((prev) => ({ ...prev, notifications: value }));
                 }}
               />
             </View>
@@ -404,7 +411,7 @@ export default function FormControlExample() {
         <CardHeader>
           <Text
             style={{
-              ...theme.typography.h3,
+              ...theme.typography.title,
               color: theme.colors.text,
             }}
           >
@@ -455,7 +462,7 @@ export default function FormControlExample() {
         <CardHeader>
           <Text
             style={{
-              ...theme.typography.h3,
+              ...theme.typography.title,
               color: theme.colors.text,
             }}
           >
