@@ -140,6 +140,7 @@ const createFormControlStyles = (theme: Theme) => ({
   errorContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    columnGap: theme.spacing.xs,
   } as ViewStyle,
   errorIcon: {
     marginRight: theme.spacing.xs / 2, // Reduced spacing
