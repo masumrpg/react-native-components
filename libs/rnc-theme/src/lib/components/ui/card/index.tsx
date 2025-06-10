@@ -67,7 +67,7 @@ const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
     {
       children,
       style,
-      padding = 'sm',
+      padding = 'md',
       margin,
       borderRadius = 'lg',
       elevation = 3,
