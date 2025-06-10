@@ -4,6 +4,7 @@ import { Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import { ThemeProvider as MyTheme } from 'rnc-theme';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
 import { StatusBar } from 'expo-status-bar';
@@ -65,16 +66,18 @@ function RootLayoutNav() {
   return (
     <MyTheme defaultTheme="system">
       <StatusBar style={pathName === '/scroll-to-hide' ? 'light' : 'dark'} />
-      <Stack
-        screenOptions={{
-          title: formattedTitle,
-          headerTitleAlign: 'center',
-          headerBackTitle: 'Back',
-          headerShown: isNonHeaderPath ? false : true,
-        }}
-      >
-        <Stack.Screen name="index" />
-      </Stack>
+      <GestureHandlerRootView>
+        <Stack
+          screenOptions={{
+            title: formattedTitle,
+            headerTitleAlign: 'center',
+            headerBackTitle: 'Back',
+            headerShown: isNonHeaderPath ? false : true,
+          }}
+        >
+          <Stack.Screen name="index" />
+        </Stack>
+      </GestureHandlerRootView>
     </MyTheme>
   );
 }

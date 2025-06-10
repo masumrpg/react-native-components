@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { ScrollView, View } from 'react-native';
 import {
   Slider,
   RangeSlider,
@@ -18,7 +17,7 @@ export default function SliderScreen() {
   const [customSliderValue, setCustomSliderValue] = useState(25);
 
   return (
-    <GestureHandlerRootView style={styles.container}>
+    <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
         <VStack spacing="lg">
           <Typography variant="title" style={styles.title}>
@@ -137,7 +136,7 @@ export default function SliderScreen() {
           </Card>
         </VStack>
       </ScrollView>
-    </GestureHandlerRootView>
+    </View>
   );
 }
 

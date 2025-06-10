@@ -9,6 +9,7 @@ import {
 import { Href, Link } from 'expo-router';
 import {
   Badge,
+  BookPlus,
   CardSim,
   CheckSquare,
   Circle,
@@ -138,6 +139,12 @@ export default function HomeScreen() {
       title: 'Modal',
       path: '/modal',
       icon: <PictureInPicture2 size={30} color={'black'} />,
+    },
+    {
+      id: 18,
+      title: 'Form Control',
+      path: '/form-control',
+      icon: <BookPlus size={30} color={'black'} />,
     },
   ];
 

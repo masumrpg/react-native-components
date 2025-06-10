@@ -14,3 +14,4 @@ export * from './radio';
 export * from './slider';
 export * from './avatar';
 export * from './modal';
+export * from './form-control';
