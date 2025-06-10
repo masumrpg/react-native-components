@@ -1,328 +1,199 @@
 import React, { useState } from 'react';
-import { ScrollView } from 'react-native';
-import {
-  Radio,
-  RadioGroup,
-  RadioIndicator,
-  RadioIcon,
-  RadioLabel,
-  VStack,
-  HStack,
-  Typography,
-  Card,
-} from 'rnc-theme';
-import { Circle } from 'lucide-react-native';
+import { View, ScrollView, StyleSheet } from 'react-native';
+import { RadioGroup, Radio, RadioLabel, Typography } from 'rnc-theme';
 
-export default function RadioScreen() {
-  // Individual radio states
-  const [selectedGender, setSelectedGender] = useState('male');
-  const [selectedTheme, setSelectedTheme] = useState('light');
-  const [selectedSize, setSelectedSize] = useState('medium');
+export default function RadioExample() {
+  const [selectedValue, setSelectedValue] = useState('option1');
+  const [selectedSize, setSelectedSize] = useState('md');
+  const [selectedVariant, setSelectedVariant] = useState('primary');
   const [selectedPayment, setSelectedPayment] = useState('credit');
-  const [selectedNotification, setSelectedNotification] = useState('email');
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
-      <VStack spacing="lg" style={{ padding: 16 }}>
-        <Typography variant="title" style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 8 }}>
+    <ScrollView style={styles.container}>
+      <View style={styles.section}>
+        <Typography variant="h2" style={styles.title}>
           Radio Button Examples
         </Typography>
+      </View>
 
-        {/* Basic Radio Group */}
-        <Card style={{ padding: 16 }}>
-          <VStack spacing="md">
-            <Typography variant="subtitle" style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>
-              Basic Radio Group
-            </Typography>
-            <Typography variant="body" style={{ color: '#666', marginBottom: 12 }}>
-              Selected: {selectedGender}
-            </Typography>
+      {/* Basic Radio Group */}
+      <View style={styles.section}>
+        <Typography variant="h3" style={styles.sectionTitle}>
+          Basic Radio Group
+        </Typography>
+        <RadioGroup value={selectedValue} onValueChange={setSelectedValue}>
+          <Radio value="option1">
+            <RadioLabel>Option 1</RadioLabel>
+          </Radio>
+          <Radio value="option2">
+            <RadioLabel>Option 2</RadioLabel>
+          </Radio>
+          <Radio value="option3">
+            <RadioLabel>Option 3</RadioLabel>
+          </Radio>
+        </RadioGroup>
+        <Typography variant="body" style={styles.selectedText}>
+          Selected: {selectedValue}
+        </Typography>
+      </View>
 
-            <RadioGroup value={selectedGender} onValueChange={setSelectedGender}>
-              <VStack spacing="sm">
-                <Radio value="male">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Male</RadioLabel>
-                </Radio>
+      {/* Different Sizes */}
+      <View style={styles.section}>
+        <Typography variant="h3" style={styles.sectionTitle}>
+          Different Sizes
+        </Typography>
+        <RadioGroup value={selectedSize} onValueChange={setSelectedSize}>
+          <Radio value="sm" size="sm">
+            <RadioLabel size="sm">Small Radio</RadioLabel>
+          </Radio>
+          <Radio value="md" size="md">
+            <RadioLabel size="md">Medium Radio</RadioLabel>
+          </Radio>
+          <Radio value="lg" size="lg">
+            <RadioLabel size="lg">Large Radio</RadioLabel>
+          </Radio>
+        </RadioGroup>
+      </View>
 
-                <Radio value="female">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Female</RadioLabel>
-                </Radio>
+      {/* Different Variants */}
+      <View style={styles.section}>
+        <Typography variant="h3" style={styles.sectionTitle}>
+          Different Variants
+        </Typography>
+        <RadioGroup value={selectedVariant} onValueChange={setSelectedVariant}>
+          <Radio value="default" variant="default">
+            <RadioLabel>Default</RadioLabel>
+          </Radio>
+          <Radio value="primary" variant="primary">
+            <RadioLabel>Primary</RadioLabel>
+          </Radio>
+          <Radio value="success" variant="success">
+            <RadioLabel>Success</RadioLabel>
+          </Radio>
+          <Radio value="warning" variant="warning">
+            <RadioLabel>Warning</RadioLabel>
+          </Radio>
+          <Radio value="error" variant="error">
+            <RadioLabel>Error</RadioLabel>
+          </Radio>
+        </RadioGroup>
+      </View>
 
-                <Radio value="other">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Other</RadioLabel>
-                </Radio>
-              </VStack>
-            </RadioGroup>
-          </VStack>
-        </Card>
+      {/* Disabled State */}
+      <View style={styles.section}>
+        <Typography variant="h3" style={styles.sectionTitle}>
+          Disabled State
+        </Typography>
+        <RadioGroup value="disabled1" disabled>
+          <Radio value="disabled1">
+            <RadioLabel>Disabled Selected</RadioLabel>
+          </Radio>
+          <Radio value="disabled2">
+            <RadioLabel>Disabled Unselected</RadioLabel>
+          </Radio>
+        </RadioGroup>
+      </View>
 
-        {/* Variants */}
-        <Card style={{ padding: 16 }}>
-          <VStack spacing="md">
-            <Typography variant="subtitle" style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>
-              Variants
-            </Typography>
-            <Typography variant="body" style={{ color: '#666', marginBottom: 12 }}>
-              Selected: {selectedTheme}
-            </Typography>
+      {/* Real World Example - Payment Method */}
+      <View style={styles.section}>
+        <Typography variant="h3" style={styles.sectionTitle}>
+          Payment Method Selection
+        </Typography>
+        <RadioGroup value={selectedPayment} onValueChange={setSelectedPayment}>
+          <Radio value="credit" variant="primary">
+            <View style={styles.paymentOption}>
+              <RadioLabel>Credit Card</RadioLabel>
+              <Typography variant="body" style={styles.paymentDescription}>
+                Pay with your credit or debit card
+              </Typography>
+            </View>
+          </Radio>
+          <Radio value="paypal" variant="primary">
+            <View style={styles.paymentOption}>
+              <RadioLabel>PayPal</RadioLabel>
+              <Typography variant="body" style={styles.paymentDescription}>
+                Pay with your PayPal account
+              </Typography>
+            </View>
+          </Radio>
+          <Radio value="bank" variant="primary">
+            <View style={styles.paymentOption}>
+              <RadioLabel>Bank Transfer</RadioLabel>
+              <Typography variant="body" style={styles.paymentDescription}>
+                Direct bank transfer
+              </Typography>
+            </View>
+          </Radio>
+          <Radio value="crypto" variant="primary">
+            <View style={styles.paymentOption}>
+              <RadioLabel>Cryptocurrency</RadioLabel>
+              <Typography variant="body" style={styles.paymentDescription}>
+                Pay with Bitcoin or Ethereum
+              </Typography>
+            </View>
+          </Radio>
+        </RadioGroup>
+        <Typography variant="body" style={styles.selectedText}>
+          Selected Payment: {selectedPayment}
+        </Typography>
+      </View>
 
-            <RadioGroup value={selectedTheme} onValueChange={setSelectedTheme}>
-              <VStack spacing="sm">
-                <Radio value="light" variant="primary">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Light Theme</RadioLabel>
-                </Radio>
-
-                <Radio value="dark" variant="success">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Dark Theme</RadioLabel>
-                </Radio>
-
-                <Radio value="auto" variant="warning">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Auto Theme</RadioLabel>
-                </Radio>
-
-                <Radio value="custom" variant="error">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Custom Theme</RadioLabel>
-                </Radio>
-              </VStack>
-            </RadioGroup>
-          </VStack>
-        </Card>
-
-        {/* Sizes */}
-        <Card style={{ padding: 16 }}>
-          <VStack spacing="md">
-            <Typography variant="subtitle" style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>
-              Sizes
-            </Typography>
-            <Typography variant="body" style={{ color: '#666', marginBottom: 12 }}>
-              Selected: {selectedSize}
-            </Typography>
-
-            <RadioGroup value={selectedSize} onValueChange={setSelectedSize}>
-              <VStack spacing="sm">
-                <Radio value="small" size="sm" variant="primary">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Small Radio</RadioLabel>
-                </Radio>
-
-                <Radio value="medium" size="md" variant="primary">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Medium Radio</RadioLabel>
-                </Radio>
-
-                <Radio value="large" size="lg" variant="primary">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Large Radio</RadioLabel>
-                </Radio>
-              </VStack>
-            </RadioGroup>
-          </VStack>
-        </Card>
-
-        {/* Horizontal Layout */}
-        <Card style={{ padding: 16 }}>
-          <VStack spacing="md">
-            <Typography variant="subtitle" style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>
-              Horizontal Layout
-            </Typography>
-            <Typography variant="body" style={{ color: '#666', marginBottom: 12 }}>
-              Selected: {selectedPayment}
-            </Typography>
-
-            <RadioGroup value={selectedPayment} onValueChange={setSelectedPayment}>
-              <HStack spacing="lg" style={{ flexWrap: 'wrap' }}>
-                <Radio value="credit" variant="primary">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Credit Card</RadioLabel>
-                </Radio>
-
-                <Radio value="debit" variant="success">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Debit Card</RadioLabel>
-                </Radio>
-
-                <Radio value="paypal" variant="warning">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>PayPal</RadioLabel>
-                </Radio>
-
-                <Radio value="bank" variant="info">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <RadioLabel>Bank Transfer</RadioLabel>
-                </Radio>
-              </HStack>
-            </RadioGroup>
-          </VStack>
-        </Card>
-
-        {/* Disabled State */}
-        <Card style={{ padding: 16 }}>
-          <VStack spacing="md">
-            <Typography variant="subtitle" style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>
-              Disabled State
-            </Typography>
-
-            <VStack spacing="sm">
-              <Radio value="enabled" variant="primary">
-                <RadioIndicator>
-                  <RadioIcon />
-                </RadioIndicator>
-                <RadioLabel>Enabled Radio</RadioLabel>
-              </Radio>
-
-              <Radio value="disabled" disabled variant="primary">
-                <RadioIndicator>
-                  <RadioIcon />
-                </RadioIndicator>
-                <RadioLabel>Disabled Radio</RadioLabel>
-              </Radio>
-
-              <Radio value="disabled-selected" disabled variant="primary" checked>
-                <RadioIndicator>
-                  <RadioIcon />
-                </RadioIndicator>
-                <RadioLabel>Disabled Selected</RadioLabel>
-              </Radio>
-            </VStack>
-          </VStack>
-        </Card>
-
-        {/* Custom Icon */}
-        <Card style={{ padding: 16 }}>
-          <VStack spacing="md">
-            <Typography variant="subtitle" style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>
-              Custom Icon
-            </Typography>
-            <Typography variant="body" style={{ color: '#666', marginBottom: 12 }}>
-              Selected: {selectedNotification}
-            </Typography>
-
-            <RadioGroup value={selectedNotification} onValueChange={setSelectedNotification}>
-              <VStack spacing="sm">
-                <Radio value="email" variant="primary">
-                  <RadioIndicator>
-                    <RadioIcon>
-                      <Circle size={8} color="white" fill="white" />
-                    </RadioIcon>
-                  </RadioIndicator>
-                  <RadioLabel>Email Notifications</RadioLabel>
-                </Radio>
-
-                <Radio value="sms" variant="success">
-                  <RadioIndicator>
-                    <RadioIcon>
-                      <Circle size={8} color="white" fill="white" />
-                    </RadioIcon>
-                  </RadioIndicator>
-                  <RadioLabel>SMS Notifications</RadioLabel>
-                </Radio>
-
-                <Radio value="push" variant="warning">
-                  <RadioIndicator>
-                    <RadioIcon>
-                      <Circle size={8} color="white" fill="white" />
-                    </RadioIcon>
-                  </RadioIndicator>
-                  <RadioLabel>Push Notifications</RadioLabel>
-                </Radio>
-
-                <Radio value="none" variant="error">
-                  <RadioIndicator>
-                    <RadioIcon>
-                      <Circle size={8} color="white" fill="white" />
-                    </RadioIcon>
-                  </RadioIndicator>
-                  <RadioLabel>No Notifications</RadioLabel>
-                </Radio>
-              </VStack>
-            </RadioGroup>
-          </VStack>
-        </Card>
-
-        {/* Complex Example */}
-        <Card style={{ padding: 16 }}>
-          <VStack spacing="md">
-            <Typography variant="subtitle" style={{ fontSize: 18, fontWeight: '600', marginBottom: 8 }}>
-              Complex Example
-            </Typography>
-            <Typography variant="body" style={{ color: '#666', marginBottom: 12 }}>
-              Choose your subscription plan
-            </Typography>
-
-            <RadioGroup value="pro" onValueChange={() => {}}>
-              <VStack spacing="md">
-                <Radio value="free" variant="default">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <VStack spacing="xs" style={{ marginLeft: 12, flex: 1 }}>
-                    <Typography variant="subtitle" style={{ fontWeight: '600' }}>Free Plan</Typography>
-                    <Typography variant="body" style={{ fontSize: 12, color: '#666' }}>Basic features, limited usage</Typography>
-                    <Typography variant="body" style={{ fontSize: 14, fontWeight: '600', color: '#2196F3' }}>$0/month</Typography>
-                  </VStack>
-                </Radio>
-
-                <Radio value="pro" variant="primary">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <VStack spacing="xs" style={{ marginLeft: 12, flex: 1 }}>
-                    <Typography variant="subtitle" style={{ fontWeight: '600' }}>Pro Plan</Typography>
-                    <Typography variant="body" style={{ fontSize: 12, color: '#666' }}>Advanced features, unlimited usage</Typography>
-                    <Typography variant="body" style={{ fontSize: 14, fontWeight: '600', color: '#4CAF50' }}>$19/month</Typography>
-                  </VStack>
-                </Radio>
-
-                <Radio value="enterprise" variant="warning">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
-                  <VStack spacing="xs" style={{ marginLeft: 12, flex: 1 }}>
-                    <Typography variant="subtitle" style={{ fontWeight: '600' }}>Enterprise Plan</Typography>
-                    <Typography variant="body" style={{ fontSize: 12, color: '#666' }}>Custom solutions, priority support</Typography>
-                    <Typography variant="body" style={{ fontSize: 14, fontWeight: '600', color: '#FF9800' }}>Contact us</Typography>
-                  </VStack>
-                </Radio>
-              </VStack>
-            </RadioGroup>
-          </VStack>
-        </Card>
-      </VStack>
+      {/* Individual Radio (without group) */}
+      <View style={styles.section}>
+        <Typography variant="h3" style={styles.sectionTitle}>
+          Individual Radio (without group)
+        </Typography>
+        <Radio
+          value="individual"
+          checked={true}
+          onCheckedChange={(checked) =>
+            console.log('Individual radio:', checked)
+          }
+        >
+          <RadioLabel>Standalone Radio</RadioLabel>
+        </Radio>
+      </View>
     </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  section: {
+    backgroundColor: 'white',
+    margin: 16,
+    padding: 16,
+    borderRadius: 8,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  title: {
+    textAlign: 'center',
+    marginBottom: 8,
+  },
+  sectionTitle: {
+    marginBottom: 16,
+    color: '#333',
+  },
+  selectedText: {
+    marginTop: 12,
+    fontStyle: 'italic',
+    color: '#666',
+  },
+  paymentOption: {
+    flex: 1,
+  },
+  paymentDescription: {
+    color: '#666',
+    marginTop: 2,
+  },
+});

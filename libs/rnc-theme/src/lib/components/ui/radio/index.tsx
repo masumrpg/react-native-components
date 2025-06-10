@@ -67,7 +67,10 @@ const useRadioGroup = () => {
   return useContext(RadioGroupContext);
 };
 
-const Radio = forwardRef<React.ComponentRef<typeof TouchableOpacity>, RadioProps>(
+const Radio = forwardRef<
+  React.ComponentRef<typeof TouchableOpacity>,
+  RadioProps
+>(
   (
     {
       value,
@@ -85,7 +88,7 @@ const Radio = forwardRef<React.ComponentRef<typeof TouchableOpacity>, RadioProps
     const styles = useThemedStyles(createRadioStyles);
     const groupContext = useRadioGroup();
 
-    // Animation values - Improved spring configuration
+    // Animation values
     const scale = useSharedValue(1);
     const dotProgress = useSharedValue(0);
     const backgroundProgress = useSharedValue(0);
@@ -99,31 +102,27 @@ const Radio = forwardRef<React.ComponentRef<typeof TouchableOpacity>, RadioProps
     // Determine if radio is disabled
     const isDisabled = groupContext ? groupContext.disabled : radioDisabled;
 
-    // Update animations when checked state changes - Much smoother config
+    // Update animations when checked state changes
     React.useEffect(() => {
-      // Super smooth spring animation untuk dot
       dotProgress.value = withSpring(isChecked ? 1 : 0, {
         damping: 20,
         stiffness: 300,
         mass: 0.8,
       });
 
-      // Faster background transition
       backgroundProgress.value = withTiming(isChecked ? 1 : 0, {
         duration: 150,
       });
 
-      // Border animation
       borderProgress.value = withTiming(isChecked ? 1 : 0, {
         duration: 120,
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isChecked]);
 
     const handlePress = () => {
       if (isDisabled) return;
 
-      // Instant feedback dengan scale animation yang lebih halus
+      // Scale animation for feedback
       scale.value = withSpring(
         0.92,
         {
@@ -141,14 +140,13 @@ const Radio = forwardRef<React.ComponentRef<typeof TouchableOpacity>, RadioProps
       );
 
       if (groupContext) {
-        // Radio hanya bisa select satu, jadi langsung set value
         groupContext.onValueChange(value);
       } else if (onCheckedChange) {
         onCheckedChange(!isChecked);
       }
     };
 
-    // Animated styles - Optimized interpolations
+    // Animated styles
     const animatedContainerStyle = useAnimatedStyle(() => {
       return {
         transform: [{ scale: scale.value }],
@@ -163,15 +161,6 @@ const Radio = forwardRef<React.ComponentRef<typeof TouchableOpacity>, RadioProps
         Extrapolation.CLAMP
       );
 
-      // Get the variant colors
-      const variantBackgroundColors = {
-        default: styles.primaryBackground.backgroundColor as string,
-        primary: styles.primaryBackground.backgroundColor as string,
-        success: styles.successBackground.backgroundColor as string,
-        warning: styles.warningBackground.backgroundColor as string,
-        error: styles.errorBackground.backgroundColor as string,
-      };
-
       const variantBorderColors = {
         default: styles.default.borderColor as string,
         primary: styles.primary.borderColor as string,
@@ -181,150 +170,113 @@ const Radio = forwardRef<React.ComponentRef<typeof TouchableOpacity>, RadioProps
       };
 
       return {
-        backgroundColor:
-          bgProgress > 0.1 ? variantBackgroundColors[variant] : 'transparent',
         borderColor:
           bgProgress > 0.5
-            ? variantBackgroundColors[variant]
+            ? variantBorderColors[variant]
             : variantBorderColors[variant],
-        borderWidth: 2,
+        borderWidth: bgProgress > 0.5 ? 2 : 1.5,
       };
     });
 
     const animatedDotStyle = useAnimatedStyle(() => {
       const dotScale = interpolate(
         dotProgress.value,
-        [0, 0.5, 1],
-        [0, 0.8, 1],
+        [0, 1],
+        [0, 1],
         Extrapolation.CLAMP
       );
 
-      const dotOpacity = interpolate(
-        dotProgress.value,
-        [0, 0.3, 1],
-        [0, 0.7, 1],
-        Extrapolation.CLAMP
-      );
+      const variantColors = {
+        default: styles.primaryBackground.backgroundColor as string,
+        primary: styles.primaryBackground.backgroundColor as string,
+        success: styles.successBackground.backgroundColor as string,
+        warning: styles.warningBackground.backgroundColor as string,
+        error: styles.errorBackground.backgroundColor as string,
+      };
 
       return {
         transform: [{ scale: dotScale }],
-        opacity: dotOpacity,
+        backgroundColor: variantColors[variant],
       };
     });
 
+    const containerStyle = [
+      styles.container,
+      styles[`${size}Container`],
+      isDisabled && styles.disabled,
+      style,
+    ];
+
+    const radioStyle = [
+      styles.radio,
+      styles[size],
+      styles[variant],
+      isDisabled && styles.disabled,
+    ];
+
+    const dotStyle = [styles.dot, styles[`${size}Dot`]];
+
     return (
-      <Animated.View style={[animatedContainerStyle]}>
+      <Animated.View style={animatedContainerStyle}>
         <TouchableOpacity
           ref={ref}
-          style={[
-            styles.container,
-            styles[`${size}Container`],
-            isDisabled && styles.disabled,
-            style,
-          ]}
+          style={containerStyle}
           onPress={handlePress}
           disabled={isDisabled}
           activeOpacity={0.7}
           {...props}
         >
-          <Animated.View
-            style={[
-              styles.radio,
-              styles[size],
-              styles[variant],
-              animatedRadioStyle,
-            ]}
-          >
-            {React.Children.map(children, (child) => {
-              if (
-                React.isValidElement(child) &&
-                child.type === RadioIndicator
-              ) {
-                return React.cloneElement(
-                  child as React.ReactElement<
-                    RadioIndicatorProps & {
-                      size?: RadioSize;
-                      variant?: RadioVariant;
-                      animatedStyle?: Animated.AnimateStyle<ViewStyle>;
-                    }
-                  >,
-                  {
-                    size,
-                    variant,
-                    animatedStyle: animatedDotStyle,
-                  }
-                );
-              }
-              if (
-                React.isValidElement(child) &&
-                child.type === RadioLabel
-              ) {
-                return React.cloneElement(
-                  child as React.ReactElement<
-                    RadioLabelProps & {
-                      size?: RadioSize;
-                      disabled?: boolean;
-                    }
-                  >,
-                  {
-                    size,
-                    disabled: isDisabled,
-                  }
-                );
-              }
-              return child;
-            })}
+          <Animated.View style={[radioStyle, animatedRadioStyle]}>
+            <Animated.View style={[dotStyle, animatedDotStyle]} />
           </Animated.View>
+          {children && <View style={styles.labelContainer}>{children}</View>}
         </TouchableOpacity>
       </Animated.View>
     );
   }
 );
 
-Radio.displayName = 'Radio';
+const RadioGroup: React.FC<RadioGroupProps> = ({
+  children,
+  value = '',
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  onValueChange = () => {},
+  disabled = false,
+  style,
+  ...props
+}) => {
+  const styles = useThemedStyles(createRadioGroupStyles);
 
-const RadioGroup = forwardRef<React.ComponentRef<typeof View>, RadioGroupProps>(
-  ({ children, value = '', onValueChange, disabled = false, style }, ref) => {
-    const contextValue: RadioGroupContextType = {
-      value,
-      // eslint-disable-next-line @typescript-eslint/no-empty-function
-      onValueChange: onValueChange || (() => {}),
-      disabled,
-    };
+  const contextValue: RadioGroupContextType = {
+    value,
+    onValueChange,
+    disabled,
+  };
 
-    return (
-      <RadioGroupContext.Provider value={contextValue}>
-        <View ref={ref} style={style}>
-          {children}
-        </View>
-      </RadioGroupContext.Provider>
-    );
-  }
-);
-
-RadioGroup.displayName = 'RadioGroup';
+  return (
+    <RadioGroupContext.Provider value={contextValue}>
+      <View style={[styles.group, style]} {...props}>
+        {children}
+      </View>
+    </RadioGroupContext.Provider>
+  );
+};
 
 const RadioIndicator: React.FC<
   RadioIndicatorProps & {
     size?: RadioSize;
     variant?: RadioVariant;
-    animatedStyle?: Animated.AnimateStyle<ViewStyle>;
   }
-> = ({ children, style, size = 'md', variant = 'default', animatedStyle }) => {
+> = ({ children, style, size = 'md', variant = 'default', ...props }) => {
   const styles = useThemedStyles(createRadioIndicatorStyles);
 
   return (
-    <Animated.View
-      style={[
-        styles.indicator,
-        styles[size],
-        styles[variant],
-        animatedStyle,
-        style,
-      ]}
+    <View
+      style={[styles.indicator, styles[size], styles[variant], style]}
+      {...props}
     >
       {children}
-    </Animated.View>
+    </View>
   );
 };
 
@@ -335,6 +287,7 @@ const RadioIcon: React.FC<
   }
 > = ({ icon, style, size = 'md', variant = 'default', ...props }) => {
   const dotSize = size === 'sm' ? 6 : size === 'md' ? 8 : 10;
+  const iconColor = 'white';
 
   return (
     <View
@@ -347,7 +300,7 @@ const RadioIcon: React.FC<
             width: dotSize,
             height: dotSize,
             borderRadius: dotSize / 2,
-            backgroundColor: 'white',
+            backgroundColor: iconColor,
           }}
         />
       )}
@@ -358,50 +311,52 @@ const RadioIcon: React.FC<
 const RadioLabel: React.FC<
   RadioLabelProps & {
     size?: RadioSize;
-    disabled?: boolean;
   }
-> = ({ children, style, size = 'md', disabled = false, ...props }) => {
+> = ({ children, style, size = 'md', ...props }) => {
   const styles = useThemedStyles(createRadioLabelStyles);
+  const groupContext = useRadioGroup();
+
+  const labelStyle = [
+    styles.label,
+    styles[size],
+    groupContext?.disabled && styles.disabled,
+    style,
+  ];
 
   return (
-    <Text
-      style={[
-        styles.label,
-        styles[size],
-        disabled && styles.disabled,
-        style,
-      ]}
-      {...props}
-    >
+    <Text style={labelStyle} {...props}>
       {children}
     </Text>
   );
 };
 
 // Styles
+const createRadioGroupStyles = (theme: Theme) => ({
+  group: {
+    gap: theme.spacing.sm,
+  },
+});
+
 const createRadioStyles = (theme: Theme) => ({
   container: {
     flexDirection: 'row' as const,
     alignItems: 'center' as const,
-    paddingHorizontal: theme.spacing.xs,
     gap: theme.spacing.sm,
   },
   radio: {
-    borderWidth: 2,
+    borderWidth: 1.5,
     borderRadius: 50, // Always circular for radio
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
-    position: 'relative' as const,
+    backgroundColor: 'transparent',
   },
-  indicator: {
-    position: 'absolute' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: 'center' as const,
+  dot: {
+    borderRadius: 50,
+    backgroundColor: 'transparent',
+  },
+  labelContainer: {
+    flex: 1,
     justifyContent: 'center' as const,
-    zIndex: 1,
   },
   disabled: {
     opacity: 0.5,
@@ -438,7 +393,7 @@ const createRadioStyles = (theme: Theme) => ({
   errorBackground: {
     backgroundColor: theme.colors.error,
   },
-  // Sizes - Perfect circles
+  // Sizes
   sm: {
     width: 18,
     height: 18,
@@ -451,7 +406,20 @@ const createRadioStyles = (theme: Theme) => ({
     width: 26,
     height: 26,
   },
-  // Container sizes - Proper alignment
+  // Dot sizes
+  smDot: {
+    width: 8,
+    height: 8,
+  },
+  mdDot: {
+    width: 10,
+    height: 10,
+  },
+  lgDot: {
+    width: 12,
+    height: 12,
+  },
+  // Container sizes
   smContainer: {
     minHeight: 32,
     paddingVertical: 4,
@@ -475,7 +443,7 @@ const createRadioIndicatorStyles = (theme: Theme) => ({
     bottom: 0,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
-    borderRadius: 50, // Always circular
+    borderRadius: 50,
   },
   // Variants
   default: {
