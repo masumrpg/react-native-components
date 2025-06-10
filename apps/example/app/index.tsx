@@ -11,6 +11,7 @@ import {
   Badge,
   CardSim,
   CheckSquare,
+  Circle,
   GitPullRequestClosedIcon,
   LayoutDashboard,
   LetterText,
@@ -110,6 +111,12 @@ export default function HomeScreen() {
       title: 'Switcher',
       path: '/switcher',
       icon: <ToggleLeft size={30} color={'black'} />,
+    },
+    {
+      id: 14,
+      title: 'Radio',
+      path: '/radio',
+      icon: <Circle size={30} color={'black'} />,
     },
   ];
 
