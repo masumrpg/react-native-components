@@ -21,8 +21,6 @@ import {
   CheckboxLabel,
   Radio,
   RadioGroup,
-  RadioIndicator,
-  RadioIcon,
   RadioLabel,
   Slider,
   Switcher,
@@ -84,7 +82,10 @@ export default function FormControlExample() {
     return undefined;
   };
 
-  const validateConfirmPassword = (confirmPassword: string, password: string): string | undefined => {
+  const validateConfirmPassword = (
+    confirmPassword: string,
+    password: string
+  ): string | undefined => {
     if (!confirmPassword) return 'Please confirm your password';
     if (confirmPassword !== password) {
       return 'Passwords do not match';
@@ -105,12 +106,15 @@ export default function FormControlExample() {
     const newErrors: FormErrors = {
       email: validateEmail(formData.email),
       password: validatePassword(formData.password),
-      confirmPassword: validateConfirmPassword(formData.confirmPassword, formData.password),
+      confirmPassword: validateConfirmPassword(
+        formData.confirmPassword,
+        formData.password
+      ),
       gender: validateGender(formData.gender),
     };
 
     // Remove undefined errors
-    Object.keys(newErrors).forEach(key => {
+    Object.keys(newErrors).forEach((key) => {
       if (newErrors[key as keyof FormErrors] === undefined) {
         delete newErrors[key as keyof FormErrors];
       }
@@ -163,7 +167,7 @@ export default function FormControlExample() {
             User Registration Form
           </Text>
         </CardHeader>
-        <CardContent style={{ gap: theme.spacing.lg }}>
+        <CardContent style={{ gap: theme.spacing.md }}>
           {/* Email Field */}
           <FormControl state={errors.email ? 'error' : 'default'} required>
             <FormControlLabel>
@@ -191,7 +195,6 @@ export default function FormControlExample() {
               <FormControlErrorText>{errors.email}</FormControlErrorText>
             </FormControlError>
           </FormControl>
-
           {/* Password Field */}
           <FormControl state={errors.password ? 'error' : 'default'} required>
             <FormControlLabel>
@@ -218,7 +221,6 @@ export default function FormControlExample() {
               <FormControlErrorText>{errors.password}</FormControlErrorText>
             </FormControlError>
           </FormControl>
-
           {/* Confirm Password Field */}
           <FormControl
             state={errors.confirmPassword ? 'error' : 'default'}
@@ -248,7 +250,6 @@ export default function FormControlExample() {
               </FormControlErrorText>
             </FormControlError>
           </FormControl>
-
           {/* Newsletter Checkbox */}
           <FormControl>
             <Checkbox
@@ -273,7 +274,6 @@ export default function FormControlExample() {
               </FormControlHelperText>
             </FormControlHelper>
           </FormControl>
-
           {/* Gender Radio Group */}
           <FormControl state={errors.gender ? 'error' : 'default'} required>
             <FormControlLabel>
@@ -290,9 +290,6 @@ export default function FormControlExample() {
             >
               <View style={{ gap: theme.spacing.sm }}>
                 <Radio value="male">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
                   <RadioLabel>
                     <Text
                       style={{
@@ -305,9 +302,6 @@ export default function FormControlExample() {
                   </RadioLabel>
                 </Radio>
                 <Radio value="female">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
                   <RadioLabel>
                     <Text
                       style={{
@@ -320,9 +314,6 @@ export default function FormControlExample() {
                   </RadioLabel>
                 </Radio>
                 <Radio value="other">
-                  <RadioIndicator>
-                    <RadioIcon />
-                  </RadioIndicator>
                   <RadioLabel>
                     <Text
                       style={{
@@ -340,11 +331,8 @@ export default function FormControlExample() {
               <FormControlErrorIcon />
               <FormControlErrorText>{errors.gender}</FormControlErrorText>
             </FormControlError>
-          </FormControl>;
-
-          {
-            /* Age Slider */
-          }
+          </FormControl>
+          {/* Age Slider */}
           <FormControl>
             <FormControlLabel>
               <FormControlLabelText>Age: {formData.age}</FormControlLabelText>
@@ -363,8 +351,7 @@ export default function FormControlExample() {
                 Select your age (18-100 years).
               </FormControlHelperText>
             </FormControlHelper>
-          </FormControl>;
-
+          </FormControl>
           {/* Notifications Switcher */}
           <FormControl>
             <View
@@ -394,7 +381,6 @@ export default function FormControlExample() {
               />
             </View>
           </FormControl>
-
           {/* Submit Button */}
           <Button
             onPress={handleSubmit}

@@ -9,7 +9,12 @@ export default function InputScreen() {
 
   return (
     <View
-      style={{ flex: 1, padding: 16, backgroundColor: theme.colors.background }}
+      style={{
+        flex: 1,
+        padding: 16,
+        backgroundColor: theme.colors.background,
+        gap: 16,
+      }}
     >
       <Input
         label="Email"

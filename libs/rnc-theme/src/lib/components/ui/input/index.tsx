@@ -536,7 +536,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
 
 const createStyles = (theme: Theme) => ({
   container: {
-    marginBottom: theme.spacing.md,
+    marginBottom: 0,
   } as ViewStyle,
   label: {
     marginBottom: theme.spacing.xs,

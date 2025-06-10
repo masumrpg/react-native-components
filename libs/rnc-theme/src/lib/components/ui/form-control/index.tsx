@@ -125,13 +125,14 @@ const createFormControlStyles = (theme: Theme) => ({
   helperContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginTop: theme.spacing.xs / 2, // Reduced from xs to xs/2
   } as ViewStyle,
   helperText: {
     ...theme.typography.small,
     color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
     flex: 1,
-    lineHeight: theme.typography.small.fontSize * 1.3, // Tighter line height
+    lineHeight: theme.typography.small?.fontSize
+      ? theme.typography.small.fontSize * 1.3
+      : 16,
   } as TextStyle,
   helperTextDisabled: {
     opacity: 0.6,
@@ -139,17 +140,17 @@ const createFormControlStyles = (theme: Theme) => ({
   errorContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    marginTop: theme.spacing.xs / 2, // Reduced from xs to xs/2
   } as ViewStyle,
   errorIcon: {
     marginRight: theme.spacing.xs / 2, // Reduced spacing
-    marginTop: 1, // Reduced from 2 to 1
   } as ViewStyle,
   errorText: {
     ...theme.typography.small,
     color: resolveColor(theme, 'error', theme.colors.error),
     flex: 1,
-    lineHeight: theme.typography.small.fontSize * 1.3, // Tighter line height
+    lineHeight: theme.typography.small?.fontSize
+      ? theme.typography.small.fontSize * 1.3
+      : 16,
   } as TextStyle,
   requiredIndicator: {
     color: resolveColor(theme, 'error', theme.colors.error),
