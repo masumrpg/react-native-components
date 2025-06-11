@@ -205,7 +205,7 @@ export default function ComboboxScreen() {
           clearable
           placeholder="Search and select languages"
           helperText="Combine all features together"
-          maxDropdownHeight={150}
+          maxDropdownHeight={450}
         />
       </View>
     </ScrollView>
