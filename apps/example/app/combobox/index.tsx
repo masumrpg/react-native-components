@@ -113,14 +113,12 @@ export default function ComboboxScreen() {
 
         <Combobox
           label="Outline Variant"
-          variant="outline"
           options={countries.slice(0, 5)}
           placeholder="Outline style"
         />
 
         <Combobox
           label="Filled Variant"
-          variant="filled"
           options={countries.slice(0, 5)}
           placeholder="Filled style"
         />

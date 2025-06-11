@@ -37,7 +37,7 @@ const SPRING_CONFIG = {
 } as const;
 
 // Types
-type ComboboxVariant = 'default' | 'outline' | 'filled';
+// type ComboboxVariant = 'default' | 'outline' | 'filled';
 type ComboboxSize = 'sm' | 'md' | 'lg';
 type ComboboxState = 'default' | 'error' | 'success' | 'warning' | 'disabled';
 
@@ -50,7 +50,7 @@ interface ComboboxOption {
 interface BaseComboboxProps {
   label?: string;
   placeholder?: string;
-  variant?: ComboboxVariant;
+  // variant?: ComboboxVariant;
   size?: ComboboxSize;
   state?: ComboboxState;
   helperText?: string;
@@ -75,7 +75,7 @@ interface BaseComboboxProps {
   maxDropdownHeight?: number;
   closeOnSelect?: boolean;
   backgroundColor?: string;
-  padding?: keyof Theme['spacing'];
+  // padding?: keyof Theme['spacing'];
   elevation?: number;
   shadowOpacity?: number;
 }
@@ -341,7 +341,6 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
     {
       label,
       placeholder = 'Select an option...',
-      variant = 'outline',
       size = 'md',
       state = 'default',
       helperText,
@@ -355,7 +354,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
       value,
       onValueChange,
       onSearchChange,
-      borderRadius = 'md', // Ubah dari 'lg' ke 'md'
+      borderRadius = 'md',
       style,
       inputStyle,
       labelStyle,
@@ -366,7 +365,6 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
       maxDropdownHeight = 250,
       closeOnSelect = true,
       backgroundColor,
-      padding = 'md',
       elevation = 3,
       shadowOpacity = 0.1,
     },

@@ -30,6 +30,7 @@ export default function InputScreen() {
         required
       />
       <Input
+        variant="floating"
         label="Search"
         leftIcon={<SearchIcon />}
         rightIcon={<X />}
