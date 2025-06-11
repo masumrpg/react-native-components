@@ -50,7 +50,6 @@ export default function ComboboxScreen() {
   const { theme } = useTheme();
   const [selectedCountry, setSelectedCountry] = useState<string>('');
   const [selectedFruits, setSelectedFruits] = useState<string[]>([]);
-  const [selectedLanguage, setSelectedLanguage] = useState<string>('');
   const [searchableValue, setSearchableValue] = useState<string>('');
 
   return (

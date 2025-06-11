@@ -1,11 +1,4 @@
-import React, {
-  useState,
-  forwardRef,
-  useCallback,
-  useMemo,
-  useEffect,
-  useRef,
-} from 'react';
+import { useState, forwardRef, useCallback, useMemo, useRef } from 'react';
 import {
   View,
   Text,
@@ -16,6 +9,7 @@ import {
   Modal,
   Pressable,
   TextInput,
+  Dimensions,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -23,12 +17,11 @@ import Animated, {
   withTiming,
   withSpring,
   interpolate,
-  runOnJS,
 } from 'react-native-reanimated';
 import { useTheme } from '../../../context/ThemeContext';
 import { Theme } from '../../../types/theme';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import { ChevronDown, Check, Search, X } from 'lucide-react-native';
+import { ChevronDown, Check, X } from 'lucide-react-native';
 
 // Animation constants
 const ANIMATION_DURATION = 250;
@@ -112,7 +105,12 @@ const Combobox = forwardRef<View, ComboboxProps>(
     const { theme } = useTheme();
     const [isOpen, setIsOpen] = useState(false);
     const [searchText, setSearchText] = useState('');
-    const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
+    const [dropdownPosition, setDropdownPosition] = useState({
+      top: 0,
+      left: 0,
+      width: 0,
+      showAbove: false,
+    });
 
     const triggerRef = useRef<View>(null);
     const dropdownAnimation = useSharedValue(0);
@@ -122,7 +120,7 @@ const Combobox = forwardRef<View, ComboboxProps>(
     // Filter options based on search
     const filteredOptions = useMemo(() => {
       if (!searchable || !searchText) return options;
-      return options.filter(option =>
+      return options.filter((option) =>
         option.label.toLowerCase().includes(searchText.toLowerCase())
       );
     }, [options, searchText, searchable]);
@@ -131,7 +129,7 @@ const Combobox = forwardRef<View, ComboboxProps>(
     const selectedOptions = useMemo(() => {
       if (!value) return [];
       const values = Array.isArray(value) ? value : [value];
-      return options.filter(option => values.includes(option.value));
+      return options.filter((option) => values.includes(option.value));
     }, [value, options]);
 
     // Display text
@@ -160,15 +158,34 @@ const Combobox = forwardRef<View, ComboboxProps>(
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingHorizontal: size === 'sm' ? theme.spacing.md : size === 'lg' ? theme.spacing.lg : theme.spacing.md + 2,
-        paddingVertical: size === 'sm' ? theme.spacing.sm : size === 'lg' ? theme.spacing.md : theme.spacing.sm + 4,
+        paddingHorizontal:
+          size === 'sm'
+            ? theme.spacing.md
+            : size === 'lg'
+            ? theme.spacing.lg
+            : theme.spacing.md + 2,
+        paddingVertical:
+          size === 'sm'
+            ? theme.spacing.sm
+            : size === 'lg'
+            ? theme.spacing.md
+            : theme.spacing.sm + 4,
         borderRadius: theme.borderRadius[borderRadius],
-        backgroundColor: variant === 'filled' ? theme.colors.surface :
-                        variant === 'outline' ? theme.colors.surface : 'transparent',
+        backgroundColor:
+          variant === 'filled'
+            ? theme.colors.surface
+            : variant === 'outline'
+            ? theme.colors.surface
+            : 'transparent',
         borderWidth: variant === 'outline' ? 2 : 0,
-        borderColor: state === 'error' ? theme.colors.error :
-                    state === 'success' ? theme.colors.success :
-                    isOpen ? theme.colors.primary : theme.colors.border,
+        borderColor:
+          state === 'error'
+            ? theme.colors.error
+            : state === 'success'
+            ? theme.colors.success
+            : isOpen
+            ? theme.colors.primary
+            : theme.colors.border,
         opacity: disabled ? 0.6 : 1,
         shadowColor: isOpen ? theme.colors.primary : 'transparent',
         shadowOffset: { width: 0, height: 2 },
@@ -179,9 +196,17 @@ const Combobox = forwardRef<View, ComboboxProps>(
       },
       triggerText: {
         flex: 1,
-        fontSize: size === 'sm' ? theme.sizes.sm : size === 'lg' ? theme.sizes.lg : theme.sizes.md,
+        fontSize:
+          size === 'sm'
+            ? theme.sizes.sm
+            : size === 'lg'
+            ? theme.sizes.lg
+            : theme.sizes.md,
         fontWeight: selectedOptions.length > 0 ? '500' : '400',
-        color: selectedOptions.length > 0 ? theme.colors.text : theme.colors.textSecondary,
+        color:
+          selectedOptions.length > 0
+            ? theme.colors.text
+            : theme.colors.textSecondary,
         letterSpacing: 0.1,
       },
       chevron: {
@@ -196,7 +221,8 @@ const Combobox = forwardRef<View, ComboboxProps>(
       },
       helperText: {
         fontSize: theme.sizes.sm,
-        color: state === 'error' ? theme.colors.error : theme.colors.textSecondary,
+        color:
+          state === 'error' ? theme.colors.error : theme.colors.textSecondary,
         marginTop: theme.spacing.sm,
         fontWeight: '400',
       },
@@ -225,7 +251,10 @@ const Combobox = forwardRef<View, ComboboxProps>(
         color: theme.colors.text,
         paddingVertical: theme.spacing.sm,
         paddingHorizontal: theme.spacing.md,
-        borderRadius: theme.borderRadius[borderRadius === 'xl' ? 'lg' : borderRadius === 'lg' ? 'md' : 'sm'],
+        borderRadius:
+          theme.borderRadius[
+            borderRadius === 'xl' ? 'lg' : borderRadius === 'lg' ? 'md' : 'sm'
+          ],
         backgroundColor: theme.colors.surface,
         fontWeight: '400',
         minHeight: 44,
@@ -280,17 +309,34 @@ const Combobox = forwardRef<View, ComboboxProps>(
       if (disabled) return;
 
       // Scale animation for modern feel
-      scaleAnimation.value = withSpring(0.98, { damping: 20, stiffness: 300 }, () => {
-        scaleAnimation.value = withSpring(1, { damping: 20, stiffness: 300 });
-      });
+      scaleAnimation.value = withSpring(
+        0.98,
+        { damping: 20, stiffness: 300 },
+        () => {
+          scaleAnimation.value = withSpring(1, { damping: 20, stiffness: 300 });
+        }
+      );
 
       if (!isOpen) {
-        // Measure trigger position
+        // Measure trigger position and determine dropdown direction
         triggerRef.current?.measure((x, y, width, height, pageX, pageY) => {
+          const screenHeight = Dimensions.get('window').height;
+          const dropdownHeight = Math.min(
+            maxDropdownHeight,
+            filteredOptions.length * 50 + (searchable ? 60 : 20)
+          );
+          const spaceBelow = screenHeight - (pageY + height);
+          const spaceAbove = pageY;
+
+          // Show above if there's not enough space below and more space above
+          const showAbove =
+            spaceBelow < dropdownHeight + 20 && spaceAbove > spaceBelow;
+
           setDropdownPosition({
-            top: pageY + height + 8,
+            top: showAbove ? pageY - dropdownHeight - 8 : pageY + height + 8,
             left: pageX,
             width: width,
+            showAbove: showAbove,
           });
         });
       }
@@ -303,40 +349,65 @@ const Combobox = forwardRef<View, ComboboxProps>(
         });
         chevronAnimation.value = withSpring(isOpen ? 0 : 1, SPRING_CONFIG);
       }
-    }, [isOpen, disabled, animationEnabled, dropdownAnimation, chevronAnimation, scaleAnimation]);
+    }, [
+      isOpen,
+      disabled,
+      animationEnabled,
+      dropdownAnimation,
+      chevronAnimation,
+      scaleAnimation,
+      maxDropdownHeight,
+      filteredOptions.length,
+      searchable,
+    ]);
 
-    const handleOptionSelect = useCallback((option: ComboboxOption) => {
-      if (option.disabled) return;
+    const handleOptionSelect = useCallback(
+      (option: ComboboxOption) => {
+        if (option.disabled) return;
 
-      let newValue: string | string[];
+        let newValue: string | string[];
 
-      if (multiple) {
-        const currentValues = Array.isArray(value) ? value : [];
-        if (currentValues.includes(option.value)) {
-          newValue = currentValues.filter(v => v !== option.value);
+        if (multiple) {
+          const currentValues = Array.isArray(value) ? value : [];
+          if (currentValues.includes(option.value)) {
+            newValue = currentValues.filter((v) => v !== option.value);
+          } else {
+            newValue = [...currentValues, option.value];
+          }
         } else {
-          newValue = [...currentValues, option.value];
+          newValue = option.value;
+          setIsOpen(false);
+          if (animationEnabled) {
+            dropdownAnimation.value = withTiming(0, {
+              duration: ANIMATION_DURATION,
+            });
+            chevronAnimation.value = withSpring(0, SPRING_CONFIG);
+          }
         }
-      } else {
-        newValue = option.value;
-        setIsOpen(false);
-        if (animationEnabled) {
-          dropdownAnimation.value = withTiming(0, { duration: ANIMATION_DURATION });
-          chevronAnimation.value = withSpring(0, SPRING_CONFIG);
-        }
-      }
 
-      onValueChange?.(newValue);
-    }, [value, multiple, onValueChange, animationEnabled, dropdownAnimation, chevronAnimation]);
+        onValueChange?.(newValue);
+      },
+      [
+        value,
+        multiple,
+        onValueChange,
+        animationEnabled,
+        dropdownAnimation,
+        chevronAnimation,
+      ]
+    );
 
     const handleClear = useCallback(() => {
       onValueChange?.(multiple ? [] : '');
     }, [multiple, onValueChange]);
 
-    const handleSearchChange = useCallback((text: string) => {
-      setSearchText(text);
-      onSearchChange?.(text);
-    }, [onSearchChange]);
+    const handleSearchChange = useCallback(
+      (text: string) => {
+        setSearchText(text);
+        onSearchChange?.(text);
+      },
+      [onSearchChange]
+    );
 
     const triggerAnimatedStyle = useAnimatedStyle(() => ({
       transform: [{ scale: scaleAnimation.value }],
@@ -357,18 +428,25 @@ const Combobox = forwardRef<View, ComboboxProps>(
           scaleY: interpolate(dropdownAnimation.value, [0, 1], [0.9, 1]),
         },
         {
-          translateY: interpolate(dropdownAnimation.value, [0, 1], [-10, 0]),
+          translateY: interpolate(
+            dropdownAnimation.value,
+            [0, 1],
+            [dropdownPosition.showAbove ? 10 : -10, 0]
+          ),
         },
       ],
     }));
 
     const iconSize = size === 'sm' ? 18 : size === 'lg' ? 24 : 20;
 
-    const isSelected = useCallback((option: ComboboxOption) => {
-      if (!value) return false;
-      const values = Array.isArray(value) ? value : [value];
-      return values.includes(option.value);
-    }, [value]);
+    const isSelected = useCallback(
+      (option: ComboboxOption) => {
+        if (!value) return false;
+        const values = Array.isArray(value) ? value : [value];
+        return values.includes(option.value);
+      },
+      [value]
+    );
 
     return (
       <View style={[styles.container, style]} ref={ref}>
@@ -401,8 +479,21 @@ const Combobox = forwardRef<View, ComboboxProps>(
               </TouchableOpacity>
             )}
 
-            <Animated.View style={[styles.chevron, animationEnabled ? chevronAnimatedStyle : {}]}>
-              <ChevronDown size={iconSize} color={theme.colors.textSecondary} />
+            <Animated.View
+              style={[
+                styles.chevron,
+                animationEnabled ? chevronAnimatedStyle : {},
+              ]}
+            >
+              <ChevronDown
+                size={iconSize}
+                color={theme.colors.textSecondary}
+                style={{
+                  transform: [
+                    { rotate: dropdownPosition.showAbove ? '180deg' : '0deg' },
+                  ],
+                }}
+              />
             </Animated.View>
           </TouchableOpacity>
         </Animated.View>
@@ -427,6 +518,7 @@ const Combobox = forwardRef<View, ComboboxProps>(
                   top: dropdownPosition.top,
                   left: dropdownPosition.left,
                   width: dropdownPosition.width,
+                  maxHeight: maxDropdownHeight,
                 },
                 dropdownStyle,
                 animationEnabled ? dropdownAnimatedStyle : {},
@@ -445,7 +537,10 @@ const Combobox = forwardRef<View, ComboboxProps>(
                 </View>
               )}
 
-              <ScrollView style={styles.optionsList} showsVerticalScrollIndicator={false}>
+              <ScrollView
+                style={styles.optionsList}
+                showsVerticalScrollIndicator={false}
+              >
                 {filteredOptions.map((option, index) => {
                   const selected = isSelected(option);
                   return (
@@ -464,7 +559,11 @@ const Combobox = forwardRef<View, ComboboxProps>(
                       <Text style={styles.optionText}>{option.label}</Text>
                       {selected && (
                         <View style={styles.checkIcon}>
-                          <Check size={iconSize - 4} color="white" strokeWidth={2.5} />
+                          <Check
+                            size={iconSize - 4}
+                            color="white"
+                            strokeWidth={2.5}
+                          />
                         </View>
                       )}
                     </TouchableOpacity>
@@ -474,7 +573,7 @@ const Combobox = forwardRef<View, ComboboxProps>(
                 {filteredOptions.length === 0 && (
                   <View style={styles.emptyState}>
                     <Text style={styles.emptyText}>
-                      {searchText ? 'No matching options found' : 'No options available'}
+                      {searchText ? 'No options found' : 'No options available'}
                     </Text>
                   </View>
                 )}
