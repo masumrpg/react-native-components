@@ -20,16 +20,8 @@ import {
   useWindowDimensions,
   Platform,
   InteractionManager,
+  Animated,
 } from 'react-native';
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  withTiming,
-  withSpring,
-  interpolate,
-  runOnJS,
-  cancelAnimation,
-} from 'react-native-reanimated';
 import { useTheme } from '../../../context/ThemeContext';
 import { Theme } from '../../../types/theme';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -39,9 +31,9 @@ import { ChevronDown, Check, X } from 'lucide-react-native';
 // Animation constants
 const ANIMATION_DURATION = 250;
 const SPRING_CONFIG = {
-  damping: Platform.OS === 'android' ? 20 : 15,
-  stiffness: Platform.OS === 'android' ? 120 : 150,
-  mass: 1,
+  tension: Platform.OS === 'android' ? 120 : 150,
+  friction: Platform.OS === 'android' ? 8 : 7,
+  useNativeDriver: true,
 } as const;
 
 // Types
@@ -423,18 +415,17 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [windowDimensions, screenDimensions]);
 
-    // Animation values
-    const dropdownAnimation = useSharedValue(0);
-    const chevronAnimation = useSharedValue(0);
-    const scaleAnimation = useSharedValue(1);
-    const opacity = useSharedValue(0);
+    // Animation values - Changed to Animated.Value
+    const dropdownAnimation = useRef(new Animated.Value(0)).current;
+    const chevronAnimation = useRef(new Animated.Value(0)).current;
+    const scaleAnimation = useRef(new Animated.Value(1)).current;
+    const opacity = useRef(new Animated.Value(0)).current;
 
     // Initialize animation values
     const initializeAnimationValues = useCallback(() => {
-      // ('worklet');
-      dropdownAnimation.value = 0;
-      opacity.value = 0;
-      chevronAnimation.value = isOpen ? 1 : 0;
+      dropdownAnimation.setValue(0);
+      opacity.setValue(0);
+      chevronAnimation.setValue(isOpen ? 1 : 0);
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
@@ -511,13 +502,20 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
       setIsOpen(true);
 
       // Scale animation for modern feel
-      scaleAnimation.value = withSpring(
-        0.98,
-        { damping: 20, stiffness: 300 },
-        () => {
-          scaleAnimation.value = withSpring(1, { damping: 20, stiffness: 300 });
-        }
-      );
+      Animated.sequence([
+        Animated.spring(scaleAnimation, {
+          toValue: 0.98,
+          tension: 300,
+          friction: 20,
+          useNativeDriver: true,
+        }),
+        Animated.spring(scaleAnimation, {
+          toValue: 1,
+          tension: 300,
+          friction: 20,
+          useNativeDriver: true,
+        }),
+      ]).start();
 
       initializeAnimationValues();
 
@@ -532,25 +530,30 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
           safeSetState(() => setIsModalReady(true));
 
           // Start animations
-          opacity.value = withTiming(1, {
+          Animated.timing(opacity, {
+            toValue: 1,
             duration: ANIMATION_DURATION * 0.8,
-          });
+            useNativeDriver: true,
+          }).start();
 
           setTimeout(
             () => {
               if (!mountedRef.current) return;
 
-              dropdownAnimation.value = withSpring(
-                1,
-                SPRING_CONFIG,
-                (finished) => {
-                  if (finished) {
-                    runOnJS(onAnimationComplete)(true);
-                  }
+              Animated.parallel([
+                Animated.spring(dropdownAnimation, {
+                  toValue: 1,
+                  ...SPRING_CONFIG,
+                }),
+                Animated.spring(chevronAnimation, {
+                  toValue: 1,
+                  ...SPRING_CONFIG,
+                }),
+              ]).start((finished) => {
+                if (finished) {
+                  onAnimationComplete(true);
                 }
-              );
-
-              chevronAnimation.value = withSpring(1, SPRING_CONFIG);
+              });
             },
             Platform.OS === 'android' ? 100 : 50
           );
@@ -580,20 +583,26 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
           ? ANIMATION_DURATION * 0.6
           : ANIMATION_DURATION * 0.8;
 
-      dropdownAnimation.value = withTiming(0, { duration: exitDuration });
-      chevronAnimation.value = withSpring(0, SPRING_CONFIG);
-
-      opacity.value = withTiming(
-        0,
-        {
+      Animated.parallel([
+        Animated.timing(dropdownAnimation, {
+          toValue: 0,
           duration: exitDuration,
-        },
-        (finished) => {
-          if (finished) {
-            runOnJS(onAnimationComplete)(false);
-          }
+          useNativeDriver: true,
+        }),
+        Animated.spring(chevronAnimation, {
+          toValue: 0,
+          ...SPRING_CONFIG,
+        }),
+        Animated.timing(opacity, {
+          toValue: 0,
+          duration: exitDuration,
+          useNativeDriver: true,
+        }),
+      ]).start((finished) => {
+        if (finished) {
+          onAnimationComplete(false);
         }
-      );
+      });
       // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [onAnimationComplete]);
 
@@ -670,45 +679,50 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
         }
-        cancelAnimation(dropdownAnimation);
-        cancelAnimation(chevronAnimation);
-        cancelAnimation(scaleAnimation);
-        cancelAnimation(opacity);
+        dropdownAnimation.stopAnimation();
+        chevronAnimation.stopAnimation();
+        scaleAnimation.stopAnimation();
+        opacity.stopAnimation();
       };
     }, [dropdownAnimation, chevronAnimation, scaleAnimation, opacity]);
 
-    // Animated styles
-    const triggerAnimatedStyle = useAnimatedStyle(() => ({
-      transform: [{ scale: scaleAnimation.value }],
-    }));
+    // Animated styles - Changed to use Animated.View interpolation
+    const triggerAnimatedStyle = {
+      transform: [{ scale: scaleAnimation }],
+    };
 
-    const chevronAnimatedStyle = useAnimatedStyle(() => ({
+    const chevronAnimatedStyle = {
       transform: [
         {
-          rotate: `${interpolate(chevronAnimation.value, [0, 1], [0, 180])}deg`,
+          rotate: chevronAnimation.interpolate({
+            inputRange: [0, 1],
+            outputRange: ['0deg', '180deg'],
+          }),
         },
       ],
-    }));
+    };
 
-    const overlayAnimatedStyle = useAnimatedStyle(() => ({
-      opacity: opacity.value,
-    }));
+    const overlayAnimatedStyle = {
+      opacity: opacity,
+    };
 
-    const dropdownAnimatedStyle = useAnimatedStyle(() => ({
-      opacity: dropdownAnimation.value,
+    const dropdownAnimatedStyle = {
+      opacity: dropdownAnimation,
       transform: [
         {
-          scaleY: interpolate(dropdownAnimation.value, [0, 1], [0.9, 1]),
+          scaleY: dropdownAnimation.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0.9, 1],
+          }),
         },
         {
-          translateY: interpolate(
-            dropdownAnimation.value,
-            [0, 1],
-            [dropdownPosition.showAbove ? 10 : -10, 0]
-          ),
+          translateY: dropdownAnimation.interpolate({
+            inputRange: [0, 1],
+            outputRange: [dropdownPosition.showAbove ? 10 : -10, 0],
+          }),
         },
       ],
-    }));
+    };
 
     // Computed styles
     const triggerStyle = [
@@ -803,7 +817,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
               helperTextStyle,
             ]}
           >
-            {errorText || helperText}
+            {state === 'error' ? errorText : helperText}
           </Text>
         )}
 
@@ -812,12 +826,18 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
             visible={shouldShowModal}
             transparent
             animationType="none"
-            statusBarTranslucent={Platform.OS === 'android'}
-            hardwareAccelerated={Platform.OS === 'android'}
             onRequestClose={hideDropdown}
+            statusBarTranslucent
           >
-            <Animated.View style={[styles.overlay, overlayAnimatedStyle]}>
-              <Pressable style={{ flex: 1 }} onPress={handleBackdropPress}>
+            <Animated.View
+              style={[styles.overlay, overlayAnimatedStyle]}
+              pointerEvents={isModalReady ? 'auto' : 'none'}
+            >
+              <Pressable
+                style={{ flex: 1 }}
+                onPress={handleBackdropPress}
+                disabled={!isModalReady}
+              >
                 <Animated.View
                   style={[
                     styles.modalContent,
@@ -826,79 +846,72 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
                       left: dropdownPosition.left,
                       width: dropdownPosition.width,
                       maxHeight: maxDropdownHeight,
+                      elevation,
+                      shadowOpacity,
                       backgroundColor: resolveColor(
                         theme,
                         backgroundColor,
                         theme.colors.surface
                       ),
-                      borderRadius: theme.borderRadius[borderRadius],
-                      shadowOpacity: Platform.OS === 'ios' ? shadowOpacity : 0,
-                      elevation: Platform.OS === 'android' ? elevation : 0,
                     },
                     dropdownStyle,
                     animationEnabled ? dropdownAnimatedStyle : {},
                   ]}
+                  pointerEvents="box-none"
                 >
                   {searchable && (
                     <View style={styles.searchContainer}>
                       <TextInput
                         style={styles.searchInput}
-                        placeholder="Search options..."
+                        placeholder="Search..."
                         placeholderTextColor={theme.colors.textSecondary}
                         value={searchText}
                         onChangeText={handleSearchChange}
-                        autoFocus
+                        autoFocus={false}
                       />
                     </View>
                   )}
 
                   <ScrollView
-                    style={[
-                      styles.optionsList,
-                      { maxHeight: maxDropdownHeight - (searchable ? 80 : 0) },
-                    ]}
+                    style={styles.optionsList}
                     contentContainerStyle={styles.optionsScrollContainer}
                     showsVerticalScrollIndicator={false}
-                    nestedScrollEnabled={Platform.OS === 'android'}
                     keyboardShouldPersistTaps="handled"
                   >
-                    {filteredOptions.map((option) => {
-                      const selected = isSelected(option);
-                      return (
-                        <TouchableOpacity
-                          key={option.value}
-                          style={[
-                            styles.option,
-                            selected && styles.optionSelected,
-                            option.disabled && styles.optionDisabled,
-                            optionStyle,
-                          ]}
-                          onPress={() => handleOptionSelect(option)}
-                          disabled={option.disabled}
-                          activeOpacity={0.8}
-                        >
-                          <Text style={styles.optionText}>{option.label}</Text>
-                          {selected && (
-                            <View style={styles.checkIcon}>
-                              <Check
-                                size={sizeStyles.iconSize - 4}
-                                color="white"
-                                strokeWidth={2.5}
-                              />
-                            </View>
-                          )}
-                        </TouchableOpacity>
-                      );
-                    })}
-
-                    {filteredOptions.length === 0 && (
+                    {filteredOptions.length === 0 ? (
                       <View style={styles.emptyState}>
                         <Text style={styles.emptyText}>
-                          {searchText
-                            ? 'No options found'
-                            : 'No options available'}
+                          {searchText ? 'No results found' : 'No options available'}
                         </Text>
                       </View>
+                    ) : (
+                      filteredOptions.map((option, index) => {
+                        const selected = isSelected(option);
+                        return (
+                          <TouchableOpacity
+                            key={`${option.value}-${index}`}
+                            style={[
+                              styles.option,
+                              selected && styles.optionSelected,
+                              option.disabled && styles.optionDisabled,
+                              optionStyle,
+                            ]}
+                            onPress={() => handleOptionSelect(option)}
+                            disabled={option.disabled}
+                            activeOpacity={0.7}
+                          >
+                            <Text style={styles.optionText}>{option.label}</Text>
+                            {selected && (
+                              <View style={styles.checkIcon}>
+                                <Check
+                                  size={sizeStyles.iconSize - 6}
+                                  color={theme.colors.surface}
+                                />
+                              </View>
+                            )}
+                          </TouchableOpacity>
+                        );
+                      })
                     )}
                   </ScrollView>
                 </Animated.View>
@@ -911,33 +924,8 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
   }
 );
 
-// Specialized variants
-const ComboboxMultiple = forwardRef<
-  React.ComponentRef<typeof View>,
-  Omit<ComboboxProps, 'multiple'>
->((props, ref) => {
-  return <Combobox ref={ref} {...props} multiple />;
-});
-
-const ComboboxSearchable = forwardRef<
-  React.ComponentRef<typeof View>,
-  Omit<ComboboxProps, 'searchable'>
->((props, ref) => {
-  return <Combobox ref={ref} {...props} searchable />;
-});
-
-// Display names
 Combobox.displayName = 'Combobox';
-ComboboxMultiple.displayName = 'ComboboxMultiple';
-ComboboxSearchable.displayName = 'ComboboxSearchable';
 
-export {
-  Combobox,
-  ComboboxMultiple,
-  ComboboxSearchable,
-  type ComboboxProps,
-  type ComboboxOption,
-  type ComboboxVariant,
-  type ComboboxSize,
-  type ComboboxState,
-};
+
+export {Combobox};
+export type { ComboboxProps, ComboboxOption };

@@ -1,13 +1,6 @@
 import React, { useState } from 'react';
 import { View, ScrollView } from 'react-native';
-import {
-  Combobox,
-  ComboboxMultiple,
-  ComboboxSearchable,
-  Typography,
-  useTheme,
-  type ComboboxOption,
-} from 'rnc-theme';
+import { Combobox, Typography, useTheme, type ComboboxOption } from 'rnc-theme';
 
 const countries: ComboboxOption[] = [
   { label: 'Indonesia', value: 'id' },
@@ -83,12 +76,13 @@ export default function ComboboxScreen() {
         <Typography variant="title" weight="semibold">
           Multiple Selection
         </Typography>
-        <ComboboxMultiple
+        <Combobox
           label="Favorite Fruits"
           placeholder="Select fruits"
           options={fruits}
           value={selectedFruits}
           onValueChange={(value) => setSelectedFruits(value as string[])}
+          multiple
           clearable
           helperText="You can select multiple fruits"
         />
@@ -99,12 +93,13 @@ export default function ComboboxScreen() {
         <Typography variant="title" weight="semibold">
           Searchable Combobox
         </Typography>
-        <ComboboxSearchable
+        <Combobox
           label="Programming Language"
           placeholder="Search and select a language"
           options={programmingLanguages}
           value={searchableValue}
           onValueChange={(value) => setSearchableValue(value as string)}
+          searchable
           clearable
           helperText="Type to search for programming languages"
         />
