@@ -33,8 +33,6 @@ import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils/color';
 import { Theme } from '../../../types/theme';
 
-// const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
-
 // Types
 type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
 type ModalPosition = 'center' | 'top' | 'bottom';

@@ -19,7 +19,6 @@ import {
   Dimensions,
   useWindowDimensions,
   Platform,
-  StatusBar,
   InteractionManager,
 } from 'react-native';
 import Animated, {
@@ -188,15 +187,8 @@ const createComboboxStyles = (theme: Theme) => ({
   } as TextStyle,
 
   overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
+    flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    ...(Platform.OS === 'android' && {
-      paddingTop: StatusBar.currentHeight || 0,
-    }),
   } as ViewStyle,
 
   modalContent: {
@@ -236,7 +228,11 @@ const createComboboxStyles = (theme: Theme) => ({
   } as ViewStyle,
 
   optionsList: {
-    maxHeight: 250,
+    flexGrow: 1,
+  } as ViewStyle,
+
+  optionsScrollContainer: {
+    paddingBottom: Platform.OS === 'android' ? 8 : 0,
   } as ViewStyle,
 
   option: {
@@ -318,7 +314,7 @@ const getSizeStyles = (size: ComboboxSize, theme: Theme) => {
   return sizeMap[size];
 };
 
-// Dropdown positioning utility
+// Fixed dropdown positioning utility for Android
 const getDropdownPosition = (
   triggerLayout: {
     x: number;
@@ -331,15 +327,18 @@ const getDropdownPosition = (
   dropdownHeight: number,
   screenHeight: number
 ) => {
-  const spaceBelow =
-    screenHeight - (triggerLayout.pageY + triggerLayout.height);
-  const spaceAbove = triggerLayout.pageY;
+  // Adjust pageY to account for status bar on Android
+  const adjustedPageY =
+    Platform.OS === 'android' ? triggerLayout.pageY : triggerLayout.pageY;
+
+  const spaceBelow = screenHeight - (adjustedPageY + triggerLayout.height);
+  const spaceAbove = adjustedPageY;
   const showAbove = spaceBelow < dropdownHeight + 20 && spaceAbove > spaceBelow;
 
   return {
     top: showAbove
-      ? triggerLayout.pageY - dropdownHeight - 8
-      : triggerLayout.pageY + triggerLayout.height + 8,
+      ? adjustedPageY - dropdownHeight - 8
+      : adjustedPageY + triggerLayout.height + 8,
     left: triggerLayout.pageX,
     width: triggerLayout.width,
     showAbove,
@@ -412,14 +411,16 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
       const fallbackHeight = 667;
 
       if (Platform.OS === 'android') {
+        // For Android, use window height which excludes status bar
         return {
-          height: screenDimensions.height || fallbackHeight,
+          height: windowDimensions.height || fallbackHeight,
         };
       }
 
       return {
         height: windowDimensions.height || fallbackHeight,
       };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [windowDimensions, screenDimensions]);
 
     // Animation values
@@ -430,11 +431,11 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
 
     // Initialize animation values
     const initializeAnimationValues = useCallback(() => {
-      'worklet';
+      // ('worklet');
       dropdownAnimation.value = 0;
       opacity.value = 0;
       chevronAnimation.value = isOpen ? 1 : 0;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isOpen]);
 
     // Filter options based on search
@@ -555,7 +556,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
           );
         }, readyDelay);
       });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
       disabled,
       filteredOptions.length,
@@ -593,7 +594,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
           }
         }
       );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [onAnimationComplete]);
 
     // Handle toggle
@@ -815,8 +816,8 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
             hardwareAccelerated={Platform.OS === 'android'}
             onRequestClose={hideDropdown}
           >
-            <Pressable style={styles.overlay} onPress={handleBackdropPress}>
-              <Animated.View style={overlayAnimatedStyle}>
+            <Animated.View style={[styles.overlay, overlayAnimatedStyle]}>
+              <Pressable style={{ flex: 1 }} onPress={handleBackdropPress}>
                 <Animated.View
                   style={[
                     styles.modalContent,
@@ -856,7 +857,10 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
                       styles.optionsList,
                       { maxHeight: maxDropdownHeight - (searchable ? 80 : 0) },
                     ]}
+                    contentContainerStyle={styles.optionsScrollContainer}
                     showsVerticalScrollIndicator={false}
+                    nestedScrollEnabled={Platform.OS === 'android'}
+                    keyboardShouldPersistTaps="handled"
                   >
                     {filteredOptions.map((option) => {
                       const selected = isSelected(option);
@@ -898,8 +902,8 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
                     )}
                   </ScrollView>
                 </Animated.View>
-              </Animated.View>
-            </Pressable>
+              </Pressable>
+            </Animated.View>
           </RNModal>
         )}
       </View>
