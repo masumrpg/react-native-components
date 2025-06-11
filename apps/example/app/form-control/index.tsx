@@ -195,7 +195,7 @@ export default function FormControlExample() {
         backgroundColor: theme.colors.background,
       }}
       contentContainerStyle={{
-        padding: theme.spacing.lg,
+        padding: theme.spacing.md,
         gap: theme.spacing.lg,
       }}
     >
@@ -373,7 +373,6 @@ export default function FormControlExample() {
               }}
               searchable
               clearable
-              variant="filled"
             />
             <FormControlHelper>
               <FormControlHelperText>
@@ -603,7 +602,6 @@ export default function FormControlExample() {
             <Combobox
               placeholder="Filled combobox"
               options={hobbyOptions}
-              variant="filled"
               searchable
             />
           </FormControl>
@@ -615,7 +613,6 @@ export default function FormControlExample() {
             <Combobox
               placeholder="Default combobox"
               options={hobbyOptions}
-              variant="default"
               searchable
             />
           </FormControl>

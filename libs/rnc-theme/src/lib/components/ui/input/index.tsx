@@ -279,11 +279,16 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       return {
         borderColor,
         transform: [{ scale: scaleAnimation.value }],
-        shadowColor: theme.colors.primary,
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity,
-        shadowRadius,
-        elevation: Platform.OS === 'android' ? elevation : 0,
+        ...(Platform.OS === 'ios'
+          ? {
+              shadowColor: theme.colors.primary,
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity,
+              shadowRadius,
+            }
+          : {
+              elevation,
+            }),
       };
     }, [animationEnabled, theme.colors, disabled, hasError, state]);
 

@@ -843,13 +843,18 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
                       left: dropdownPosition.left,
                       width: dropdownPosition.width,
                       maxHeight: maxDropdownHeight,
-                      elevation,
-                      shadowOpacity,
                       backgroundColor: resolveColor(
                         theme,
                         backgroundColor,
                         theme.colors.surface
                       ),
+                      ...(Platform.OS === 'android'
+                        ? {
+                            elevation,
+                          }
+                        : {
+                            shadowOpacity,
+                          }),
                     },
                     dropdownStyle,
                     animationEnabled ? dropdownAnimatedStyle : {},
