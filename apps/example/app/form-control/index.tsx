@@ -24,9 +24,9 @@ import {
   RadioLabel,
   Slider,
   Switcher,
+  Combobox,
   useTheme,
 } from 'rnc-theme';
-
 
 // Simulasi react-hook-form untuk demo
 interface FormData {
@@ -37,6 +37,9 @@ interface FormData {
   gender: string;
   age: number;
   notifications: boolean;
+  country: string;
+  hobbies: string[];
+  skills: string;
 }
 
 interface FormErrors {
@@ -47,7 +50,50 @@ interface FormErrors {
   gender?: string;
   age?: string;
   notifications?: string;
+  country?: string;
+  hobbies?: string;
+  skills?: string;
 }
+
+// Data untuk combobox
+const countryOptions = [
+  { label: 'Indonesia', value: 'id' },
+  { label: 'United States', value: 'us' },
+  { label: 'United Kingdom', value: 'uk' },
+  { label: 'Canada', value: 'ca' },
+  { label: 'Australia', value: 'au' },
+  { label: 'Germany', value: 'de' },
+  { label: 'France', value: 'fr' },
+  { label: 'Japan', value: 'jp' },
+  { label: 'South Korea', value: 'kr' },
+  { label: 'Singapore', value: 'sg' },
+];
+
+const hobbyOptions = [
+  { label: 'Reading', value: 'reading' },
+  { label: 'Gaming', value: 'gaming' },
+  { label: 'Sports', value: 'sports' },
+  { label: 'Music', value: 'music' },
+  { label: 'Cooking', value: 'cooking' },
+  { label: 'Traveling', value: 'traveling' },
+  { label: 'Photography', value: 'photography' },
+  { label: 'Art', value: 'art' },
+  { label: 'Writing', value: 'writing' },
+  { label: 'Dancing', value: 'dancing' },
+];
+
+const skillOptions = [
+  { label: 'JavaScript', value: 'javascript' },
+  { label: 'TypeScript', value: 'typescript' },
+  { label: 'React', value: 'react' },
+  { label: 'React Native', value: 'react-native' },
+  { label: 'Node.js', value: 'nodejs' },
+  { label: 'Python', value: 'python' },
+  { label: 'Java', value: 'java' },
+  { label: 'Swift', value: 'swift' },
+  { label: 'Kotlin', value: 'kotlin' },
+  { label: 'Flutter', value: 'flutter' },
+];
 
 export default function FormControlExample() {
   const { theme } = useTheme();
@@ -59,6 +105,9 @@ export default function FormControlExample() {
     gender: '',
     age: 25,
     notifications: false,
+    country: '',
+    hobbies: [],
+    skills: '',
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -97,6 +146,11 @@ export default function FormControlExample() {
     return undefined;
   };
 
+  const validateCountry = (country: string): string | undefined => {
+    if (!country) return 'Please select your country';
+    return undefined;
+  };
+
   // Handle form submission
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -110,6 +164,7 @@ export default function FormControlExample() {
         formData.password
       ),
       gender: validateGender(formData.gender),
+      country: validateCountry(formData.country),
     };
 
     // Remove undefined errors
@@ -248,6 +303,83 @@ export default function FormControlExample() {
                 {errors.confirmPassword}
               </FormControlErrorText>
             </FormControlError>
+          </FormControl>
+          {/* Country Combobox */}
+          <FormControl state={errors.country ? 'error' : 'default'} required>
+            <FormControlLabel>
+              <FormControlLabelText>Country</FormControlLabelText>
+            </FormControlLabel>
+            <Combobox
+              placeholder="Select your country"
+              options={countryOptions}
+              value={formData.country}
+              onValueChange={(value) => {
+                setFormData((prev) => ({ ...prev, country: value as string }));
+                if (errors.country) {
+                  setErrors((prev) => ({ ...prev, country: undefined }));
+                }
+              }}
+              searchable
+              clearable
+            />
+            <FormControlHelper>
+              <FormControlHelperText>
+                Select the country where you currently reside.
+              </FormControlHelperText>
+            </FormControlHelper>
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>{errors.country}</FormControlErrorText>
+            </FormControlError>
+          </FormControl>
+          {/* Hobbies Multiple Combobox */}
+          <FormControl>
+            <FormControlLabel>
+              <FormControlLabelText>
+                Hobbies (Multiple Selection)
+              </FormControlLabelText>
+            </FormControlLabel>
+            <Combobox
+              placeholder="Select your hobbies"
+              options={hobbyOptions}
+              value={formData.hobbies}
+              onValueChange={(value) => {
+                setFormData((prev) => ({
+                  ...prev,
+                  hobbies: value as string[],
+                }));
+              }}
+              multiple
+              searchable
+              clearable
+            />
+            <FormControlHelper>
+              <FormControlHelperText>
+                You can select multiple hobbies that interest you.
+              </FormControlHelperText>
+            </FormControlHelper>
+          </FormControl>
+          {/* Skills Combobox with Search */}
+          <FormControl>
+            <FormControlLabel>
+              <FormControlLabelText>Primary Skill</FormControlLabelText>
+            </FormControlLabel>
+            <Combobox
+              placeholder="Search and select your primary skill"
+              options={skillOptions}
+              value={formData.skills}
+              onValueChange={(value) => {
+                setFormData((prev) => ({ ...prev, skills: value as string }));
+              }}
+              searchable
+              clearable
+              variant="filled"
+            />
+            <FormControlHelper>
+              <FormControlHelperText>
+                Choose your strongest technical skill.
+              </FormControlHelperText>
+            </FormControlHelper>
           </FormControl>
           {/* Newsletter Checkbox */}
           <FormControl>
@@ -390,6 +522,167 @@ export default function FormControlExample() {
               {isSubmitting ? 'Submitting...' : 'Create Account'}
             </ButtonText>
           </Button>
+        </CardContent>
+      </Card>
+
+      {/* Combobox Examples */}
+      <Card>
+        <CardHeader>
+          <Text
+            style={{
+              ...theme.typography.title,
+              color: theme.colors.text,
+            }}
+          >
+            Combobox Examples
+          </Text>
+        </CardHeader>
+        <CardContent style={{ gap: theme.spacing.lg }}>
+          {/* Basic Combobox */}
+          <FormControl>
+            <FormControlLabel>
+              <FormControlLabelText>Basic Combobox</FormControlLabelText>
+            </FormControlLabel>
+            <Combobox
+              placeholder="Select an option"
+              options={[
+                { label: 'Option 1', value: 'option1' },
+                { label: 'Option 2', value: 'option2' },
+                { label: 'Option 3', value: 'option3' },
+              ]}
+            />
+            <FormControlHelper>
+              <FormControlHelperText>
+                Basic single selection combobox.
+              </FormControlHelperText>
+            </FormControlHelper>
+          </FormControl>
+
+          {/* Searchable Combobox */}
+          <FormControl>
+            <FormControlLabel>
+              <FormControlLabelText>Searchable Combobox</FormControlLabelText>
+            </FormControlLabel>
+            <Combobox
+              placeholder="Search countries..."
+              options={countryOptions}
+              searchable
+              clearable
+            />
+            <FormControlHelper>
+              <FormControlHelperText>
+                Type to search through options.
+              </FormControlHelperText>
+            </FormControlHelper>
+          </FormControl>
+
+          {/* Multiple Selection */}
+          <FormControl>
+            <FormControlLabel>
+              <FormControlLabelText>Multiple Selection</FormControlLabelText>
+            </FormControlLabel>
+            <Combobox
+              placeholder="Select multiple skills"
+              options={skillOptions}
+              multiple
+              searchable
+              clearable
+            />
+            <FormControlHelper>
+              <FormControlHelperText>
+                Select multiple options at once.
+              </FormControlHelperText>
+            </FormControlHelper>
+          </FormControl>
+
+          {/* Different Variants */}
+          <FormControl>
+            <FormControlLabel>
+              <FormControlLabelText>Filled Variant</FormControlLabelText>
+            </FormControlLabel>
+            <Combobox
+              placeholder="Filled combobox"
+              options={hobbyOptions}
+              variant="filled"
+              searchable
+            />
+          </FormControl>
+
+          <FormControl>
+            <FormControlLabel>
+              <FormControlLabelText>Default Variant</FormControlLabelText>
+            </FormControlLabel>
+            <Combobox
+              placeholder="Default combobox"
+              options={hobbyOptions}
+              variant="default"
+              searchable
+            />
+          </FormControl>
+
+          {/* Different Sizes */}
+          <FormControl size="sm">
+            <FormControlLabel>
+              <FormControlLabelText>Small Size</FormControlLabelText>
+            </FormControlLabel>
+            <Combobox
+              placeholder="Small combobox"
+              options={countryOptions.slice(0, 5)}
+              size="sm"
+            />
+          </FormControl>
+
+          <FormControl size="lg">
+            <FormControlLabel>
+              <FormControlLabelText>Large Size</FormControlLabelText>
+            </FormControlLabel>
+            <Combobox
+              placeholder="Large combobox"
+              options={countryOptions.slice(0, 5)}
+              size="lg"
+            />
+          </FormControl>
+
+          {/* Error State */}
+          <FormControl state="error">
+            <FormControlLabel>
+              <FormControlLabelText>Error State</FormControlLabelText>
+            </FormControlLabel>
+            <Combobox
+              placeholder="Select an option"
+              options={[
+                { label: 'Option 1', value: 'option1' },
+                { label: 'Option 2', value: 'option2' },
+              ]}
+              state="error"
+            />
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>
+                This field is required.
+              </FormControlErrorText>
+            </FormControlError>
+          </FormControl>
+
+          {/* Disabled State */}
+          <FormControl state="disabled">
+            <FormControlLabel>
+              <FormControlLabelText>Disabled State</FormControlLabelText>
+            </FormControlLabel>
+            <Combobox
+              placeholder="Disabled combobox"
+              options={[
+                { label: 'Option 1', value: 'option1' },
+                { label: 'Option 2', value: 'option2' },
+              ]}
+              disabled
+            />
+            <FormControlHelper>
+              <FormControlHelperText>
+                This combobox is disabled.
+              </FormControlHelperText>
+            </FormControlHelper>
+          </FormControl>
         </CardContent>
       </Card>
 
