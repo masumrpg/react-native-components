@@ -84,9 +84,7 @@ type ComboboxProps = BaseComboboxProps;
 
 // Styles factory following Modal pattern
 const createComboboxStyles = (theme: Theme) => ({
-  container: {
-    marginBottom: theme.spacing.md,
-  } as ViewStyle,
+  container: {} as ViewStyle,
 
   label: {
     fontSize: theme.typography.body.fontSize,
@@ -337,6 +335,7 @@ const getDropdownPosition = (
   };
 };
 
+// Ubah default borderRadius dari 'lg' ke 'md'
 const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
   (
     {
@@ -356,7 +355,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
       value,
       onValueChange,
       onSearchChange,
-      borderRadius = 'lg',
+      borderRadius = 'md', // Ubah dari 'lg' ke 'md'
       style,
       inputStyle,
       labelStyle,
@@ -881,7 +880,9 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
                     {filteredOptions.length === 0 ? (
                       <View style={styles.emptyState}>
                         <Text style={styles.emptyText}>
-                          {searchText ? 'No results found' : 'No options available'}
+                          {searchText
+                            ? 'No results found'
+                            : 'No options available'}
                         </Text>
                       </View>
                     ) : (
@@ -900,7 +901,9 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
                             disabled={option.disabled}
                             activeOpacity={0.7}
                           >
-                            <Text style={styles.optionText}>{option.label}</Text>
+                            <Text style={styles.optionText}>
+                              {option.label}
+                            </Text>
                             {selected && (
                               <View style={styles.checkIcon}>
                                 <Check
