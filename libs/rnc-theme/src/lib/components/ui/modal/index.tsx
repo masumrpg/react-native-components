@@ -523,6 +523,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
     const animatedContentStyle = useAnimatedStyle(() => {
       const baseStyle = {
         opacity: Math.max(opacity.value, 0),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transform: [] as any[],
       };
 
