@@ -287,8 +287,8 @@ const getSizeStyles = (size: ComboboxSize, theme: Theme) => {
     },
     md: {
       padding: {
-        horizontal: theme.spacing.md + 2,
-        vertical: theme.spacing.sm + 4,
+        horizontal: theme.spacing.md,
+        vertical: theme.spacing.sm,
       },
       fontSize: theme.typography.body.fontSize,
       minHeight: 48,
