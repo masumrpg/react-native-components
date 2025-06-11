@@ -1,4 +1,11 @@
-import React, { forwardRef, useEffect } from 'react';
+import React, {
+  forwardRef,
+  useEffect,
+  useMemo,
+  useCallback,
+  useRef,
+  useState,
+} from 'react';
 import {
   Modal as RNModal,
   View,
@@ -8,19 +15,25 @@ import {
   ViewStyle,
   TextStyle,
   Dimensions,
+  useWindowDimensions,
+  Platform,
+  StatusBar,
+  InteractionManager,
 } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withSpring,
   withTiming,
+  runOnJS,
+  cancelAnimation,
 } from 'react-native-reanimated';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils/color';
 import { Theme } from '../../../types/theme';
 
-const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
+// const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 // Types
 type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
@@ -85,13 +98,22 @@ interface ModalFooterProps {
 }
 
 // Styles
+// Optimized styles with Android-specific fixes
 const createModalStyles = (theme: Theme) => ({
   overlay: {
-    flex: 1,
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
     padding: theme.spacing.lg,
+    // Android-specific fixes
+    ...(Platform.OS === 'android' && {
+      paddingTop: (StatusBar.currentHeight || 0) + theme.spacing.lg,
+    }),
   } as ViewStyle,
   container: {
     borderWidth: 1,
@@ -102,7 +124,12 @@ const createModalStyles = (theme: Theme) => ({
     shadowRadius: 4,
     overflow: 'hidden',
     maxWidth: '100%',
-    position: 'relative',
+    // Remove position: 'relative' to fix Android positioning
+    alignSelf: 'center',
+    // Android-specific optimizations
+    ...(Platform.OS === 'android' && {
+      elevation: 8, // Higher elevation for better visibility
+    }),
   } as ViewStyle,
   closeButton: {
     position: 'absolute',
@@ -129,30 +156,45 @@ const createModalStyles = (theme: Theme) => ({
   } as TextStyle,
 });
 
-const getModalSize = (size: ModalSize, position: ModalPosition) => {
-  const baseWidth = screenWidth * 0.9;
+// Optimized modal size calculation with better Android support
+const getModalSize = (
+  size: ModalSize,
+  screenWidth: number,
+  screenHeight: number
+) => {
+  // Use more conservative sizing for Android
+  const safeAreaMultiplier = Platform.OS === 'android' ? 0.85 : 0.9;
+  const baseWidth = screenWidth * safeAreaMultiplier;
   const baseHeight = screenHeight * 0.8;
+
+  // Ensure minimum dimensions for Android
+  const minWidth = Platform.OS === 'android' ? 280 : 300;
+  const minHeight = Platform.OS === 'android' ? 200 : 250;
 
   switch (size) {
     case 'sm':
       return {
-        width: Math.min(baseWidth, 400),
-        maxHeight: baseHeight * 0.6,
+        width: Math.max(Math.min(baseWidth, 400), minWidth),
+        maxHeight: Math.max(baseHeight * 0.6, minHeight),
+        minWidth,
       };
     case 'md':
       return {
-        width: Math.min(baseWidth, 500),
-        maxHeight: baseHeight * 0.7,
+        width: Math.max(Math.min(baseWidth, 500), minWidth),
+        maxHeight: Math.max(baseHeight * 0.7, minHeight),
+        minWidth,
       };
     case 'lg':
       return {
-        width: Math.min(baseWidth, 600),
-        maxHeight: baseHeight * 0.8,
+        width: Math.max(Math.min(baseWidth, 600), minWidth),
+        maxHeight: Math.max(baseHeight * 0.8, minHeight),
+        minWidth,
       };
     case 'xl':
       return {
-        width: Math.min(baseWidth, 800),
-        maxHeight: baseHeight * 0.9,
+        width: Math.max(Math.min(baseWidth, 800), minWidth),
+        maxHeight: Math.max(baseHeight * 0.9, minHeight),
+        minWidth,
       };
     case 'full':
       return {
@@ -161,33 +203,38 @@ const getModalSize = (size: ModalSize, position: ModalPosition) => {
       };
     default:
       return {
-        width: Math.min(baseWidth, 500),
-        maxHeight: baseHeight * 0.7,
+        width: Math.max(Math.min(baseWidth, 500), minWidth),
+        maxHeight: Math.max(baseHeight * 0.7, minHeight),
+        minWidth,
       };
   }
 };
 
+// Optimized position calculation
 const getModalPosition = (position: ModalPosition): ViewStyle => {
+  const androidPadding = Platform.OS === 'android' ? 20 : 50;
+
   switch (position) {
     case 'top':
       return {
         justifyContent: 'flex-start' as const,
-        paddingTop: 50,
+        paddingTop: androidPadding,
       };
     case 'bottom':
       return {
         justifyContent: 'flex-end' as const,
-        paddingBottom: 50,
+        paddingBottom: androidPadding,
       };
     case 'center':
     default:
       return {
         justifyContent: 'center' as const,
+        alignItems: 'center' as const,
       };
   }
 };
 
-// Components
+// FIXED MODAL COMPONENT
 const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
   (
     {
@@ -196,7 +243,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       children,
       size = 'md',
       position = 'center',
-      animation = 'scale',
+      animation = 'slide',
       closeOnBackdrop = true,
       showCloseButton = true,
       backdropOpacity = 0.5,
@@ -213,88 +260,312 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
     },
     ref
   ) => {
+    // State management untuk race condition fix
+    const [isModalReady, setIsModalReady] = useState(false);
+    const [shouldShowModal, setShouldShowModal] = useState(false);
+
+    // Refs untuk tracking
+    const isAnimatingRef = useRef(false);
+    const mountedRef = useRef(true);
+    const visibleRef = useRef(visible);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+    // Screen dimensions dengan proper handling
+    const windowDimensions = useWindowDimensions();
+    const screenDimensions = Dimensions.get('screen');
+
+    const { width: screenWidth, height: screenHeight } = useMemo(() => {
+      // Pastikan dimensi selalu valid
+      const fallbackWidth = 375;
+      const fallbackHeight = 667;
+
+      if (Platform.OS === 'android') {
+        return {
+          width: screenDimensions.width || fallbackWidth,
+          height: screenDimensions.height || fallbackHeight,
+        };
+      }
+
+      return {
+        width: windowDimensions.width || fallbackWidth,
+        height: windowDimensions.height || fallbackHeight,
+      };
+    }, [windowDimensions, screenDimensions]);
+
     const { theme } = useTheme();
     const styles = useThemedStyles(createModalStyles);
+
+    // Animation values dengan proper initialization
     const scale = useSharedValue(0);
     const opacity = useSharedValue(0);
-    const translateY = useSharedValue(
-      position === 'bottom' ? 300 : position === 'top' ? -300 : 0
-    );
+    const translateY = useSharedValue(0);
 
-    useEffect(() => {
-      if (visible) {
-        opacity.value = withTiming(1, { duration: animationDuration });
+    // Initialize animation values berdasarkan position
+    const initializeAnimationValues = useCallback(() => {
+      'worklet';
+      scale.value = animation === 'scale' ? 0.1 : 1; // Prevent 0 scale
+      opacity.value = 0;
 
-        if (animation === 'scale') {
-          scale.value = withSpring(1, {
-            damping: 15,
-            stiffness: 150,
-          });
-        } else if (animation === 'slide') {
-          translateY.value = withSpring(0, {
-            damping: 15,
-            stiffness: 150,
-          });
-        } else {
-          scale.value = withTiming(1, { duration: animationDuration });
+      if (animation === 'slide') {
+        switch (position) {
+          case 'bottom':
+            translateY.value = screenHeight * 0.5;
+            break;
+          case 'top':
+            translateY.value = -screenHeight * 0.5;
+            break;
+          default:
+            translateY.value = 0;
         }
       } else {
-        opacity.value = withTiming(0, { duration: animationDuration });
-
-        if (animation === 'scale') {
-          scale.value = withTiming(0, { duration: animationDuration });
-        } else if (animation === 'slide') {
-          translateY.value = withTiming(
-            position === 'bottom' ? 300 : position === 'top' ? -300 : 0,
-            { duration: animationDuration }
-          );
-        } else {
-          scale.value = withTiming(0, { duration: animationDuration });
-        }
+        translateY.value = 0;
       }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [visible, animation, position, animationDuration]);
+    }, [animation, position, screenHeight]);
 
-    const animatedOverlayStyle = useAnimatedStyle(() => ({
-      opacity: opacity.value,
-    }));
+    // Memoized calculations
+    const modalSize = useMemo(
+      () => getModalSize(size, screenWidth, screenHeight),
+      [size, screenWidth, screenHeight]
+    );
+
+    const modalPosition = useMemo(() => getModalPosition(position), [position]);
+
+    // Safe state updater
+    const safeSetState = useCallback((setter: () => void) => {
+      if (mountedRef.current) {
+        setter();
+      }
+    }, []);
+
+    // Animation completion handler
+    const onAnimationComplete = useCallback(
+      (isOpening: boolean) => {
+        isAnimatingRef.current = false;
+
+        if (!isOpening && mountedRef.current) {
+          // Delay hiding modal untuk memastikan animation selesai
+          timeoutRef.current = setTimeout(() => {
+            safeSetState(() => setShouldShowModal(false));
+          }, 50);
+        }
+      },
+      [safeSetState]
+    );
+
+    // Show modal dengan proper sequencing
+    const showModal = useCallback(() => {
+      if (!mountedRef.current || isAnimatingRef.current) return;
+
+      // Reset state
+      isAnimatingRef.current = true;
+      setIsModalReady(false);
+      setShouldShowModal(true);
+
+      // Initialize animation values
+      initializeAnimationValues();
+
+      // Wait for modal to be rendered
+      InteractionManager.runAfterInteractions(() => {
+        if (!mountedRef.current) return;
+
+        // Additional delay untuk Android
+        const readyDelay = Platform.OS === 'android' ? 100 : 50;
+
+        setTimeout(() => {
+          if (!mountedRef.current) return;
+
+          safeSetState(() => setIsModalReady(true));
+
+          // Start animations
+          const springConfig = {
+            damping: Platform.OS === 'android' ? 20 : 15,
+            stiffness: Platform.OS === 'android' ? 120 : 150,
+            mass: 1,
+          };
+
+          // Backdrop animation
+          opacity.value = withTiming(1, {
+            duration: animationDuration * 0.8,
+          });
+
+          // Content animation
+          const contentDelay = Platform.OS === 'android' ? 150 : 100;
+
+          setTimeout(() => {
+            if (!mountedRef.current) return;
+
+            if (animation === 'scale') {
+              scale.value = withSpring(1, springConfig, (finished) => {
+                if (finished) {
+                  runOnJS(onAnimationComplete)(true);
+                }
+              });
+            } else if (animation === 'slide') {
+              translateY.value = withSpring(0, springConfig, (finished) => {
+                if (finished) {
+                  runOnJS(onAnimationComplete)(true);
+                }
+              });
+            } else {
+              // fade animation
+              scale.value = withTiming(
+                1,
+                {
+                  duration: animationDuration,
+                },
+                (finished) => {
+                  if (finished) {
+                    runOnJS(onAnimationComplete)(true);
+                  }
+                }
+              );
+            }
+          }, contentDelay);
+        }, readyDelay);
+      });
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+      animation,
+      animationDuration,
+      initializeAnimationValues,
+      onAnimationComplete,
+      safeSetState,
+    ]);
+
+    // Hide modal
+    const hideModal = useCallback(() => {
+      if (!mountedRef.current || isAnimatingRef.current) return;
+
+      isAnimatingRef.current = true;
+
+      const exitDuration =
+        Platform.OS === 'android'
+          ? animationDuration * 0.6
+          : animationDuration * 0.8;
+
+      // Content animation out
+      if (animation === 'scale') {
+        scale.value = withTiming(0.1, { duration: exitDuration });
+      } else if (animation === 'slide') {
+        const exitTranslateY =
+          position === 'bottom'
+            ? screenHeight * 0.5
+            : position === 'top'
+            ? -screenHeight * 0.5
+            : 0;
+        translateY.value = withTiming(exitTranslateY, {
+          duration: exitDuration,
+        });
+      } else {
+        scale.value = withTiming(0.1, { duration: exitDuration });
+      }
+
+      // Backdrop animation out
+      opacity.value = withTiming(
+        0,
+        {
+          duration: exitDuration,
+        },
+        (finished) => {
+          if (finished) {
+            runOnJS(onAnimationComplete)(false);
+          }
+        }
+      );
+
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [
+      animation,
+      animationDuration,
+      onAnimationComplete,
+      position,
+      screenHeight,
+    ]);
+
+    // Handle visibility changes
+    useEffect(() => {
+      visibleRef.current = visible;
+
+      // Clear any pending timeouts
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
+      }
+
+      if (visible) {
+        showModal();
+      } else {
+        hideModal();
+      }
+    }, [visible, showModal, hideModal]);
+
+    // Cleanup
+    useEffect(() => {
+      return () => {
+        mountedRef.current = false;
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+        }
+        cancelAnimation(scale);
+        cancelAnimation(opacity);
+        cancelAnimation(translateY);
+      };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Animated styles
+    const animatedOverlayStyle = useAnimatedStyle(
+      () => ({
+        opacity: opacity.value,
+      }),
+      []
+    );
 
     const animatedContentStyle = useAnimatedStyle(() => {
       const baseStyle = {
-        opacity: opacity.value,
+        opacity: Math.max(opacity.value, 0),
+        transform: [] as any[],
       };
 
       if (animation === 'scale') {
-        return {
-          ...baseStyle,
-          transform: [{ scale: scale.value }],
-        };
+        // Ensure minimum scale untuk prevent invisible modal
+        const scaleValue = Math.max(scale.value, 0.01);
+        baseStyle.transform.push({ scale: scaleValue });
       } else if (animation === 'slide') {
-        return {
-          ...baseStyle,
-          transform: [{ translateY: translateY.value }],
-        };
+        baseStyle.transform.push({ translateY: translateY.value });
       }
 
       return baseStyle;
-    });
+    }, [animation]);
 
-    const modalSize = getModalSize(size, position);
-    const modalPosition = getModalPosition(position);
-
-    const handleBackdropPress = () => {
-      if (closeOnBackdrop) {
+    // Event handlers
+    const handleBackdropPress = useCallback(() => {
+      if (closeOnBackdrop && !isAnimatingRef.current && isModalReady) {
         onClose();
       }
-    };
+    }, [closeOnBackdrop, onClose, isModalReady]);
+
+    const handleClosePress = useCallback(() => {
+      if (!isAnimatingRef.current && isModalReady) {
+        onClose();
+      }
+    }, [onClose, isModalReady]);
+
+    // Don't render until modal should be shown
+    if (!shouldShowModal) {
+      return null;
+    }
 
     return (
       <RNModal
         ref={ref}
-        visible={visible}
+        visible={shouldShowModal}
         transparent
         animationType="none"
-        statusBarTranslucent
+        statusBarTranslucent={Platform.OS === 'android'}
+        hardwareAccelerated={Platform.OS === 'android'}
+        onRequestClose={handleClosePress}
         {...props}
       >
         <TouchableWithoutFeedback onPress={handleBackdropPress}>
@@ -319,8 +590,8 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
                     borderRadius: theme.borderRadius[borderRadius],
                     padding: theme.spacing[padding],
                     marginBottom: margin ? theme.spacing[margin] : undefined,
-                    shadowOpacity,
-                    elevation,
+                    shadowOpacity: Platform.OS === 'ios' ? shadowOpacity : 0,
+                    elevation: Platform.OS === 'android' ? elevation : 0,
                   },
                   modalSize,
                   contentStyle,
@@ -331,8 +602,10 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
                 {showCloseButton && (
                   <TouchableOpacity
                     style={styles.closeButton}
-                    onPress={onClose}
+                    onPress={handleClosePress}
                     activeOpacity={0.7}
+                    hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
+                    disabled={!isModalReady}
                   >
                     <Text style={styles.closeButtonText}>✕</Text>
                   </TouchableOpacity>

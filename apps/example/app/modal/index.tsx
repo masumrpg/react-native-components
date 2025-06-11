@@ -197,6 +197,7 @@ export default function ModalExample() {
         size="sm"
         showCloseButton={false}
         backdropOpacity={0.6}
+        animation="scale"
       >
         <ModalHeader
           title="Confirm Action"

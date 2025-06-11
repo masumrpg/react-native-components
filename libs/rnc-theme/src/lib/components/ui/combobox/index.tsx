@@ -1,4 +1,10 @@
-import { useState, forwardRef, useCallback, useMemo, useRef } from 'react';
+import React, {
+  useState,
+  forwardRef,
+  useCallback,
+  useMemo,
+  useRef,
+} from 'react';
 import {
   View,
   Text,
@@ -71,7 +77,7 @@ interface BaseComboboxProps {
 
 type ComboboxProps = BaseComboboxProps;
 
-const Combobox = forwardRef<View, ComboboxProps>(
+const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
   (
     {
       label,
@@ -587,17 +593,19 @@ const Combobox = forwardRef<View, ComboboxProps>(
 );
 
 // Specialized Combobox variants
-const ComboboxMultiple = forwardRef<View, Omit<ComboboxProps, 'multiple'>>(
-  (props, ref) => {
-    return <Combobox ref={ref} {...props} multiple />;
-  }
-);
+const ComboboxMultiple = forwardRef<
+  React.ComponentRef<typeof View>,
+  Omit<ComboboxProps, 'multiple'>
+>((props, ref) => {
+  return <Combobox ref={ref} {...props} multiple />;
+});
 
-const ComboboxSearchable = forwardRef<View, Omit<ComboboxProps, 'searchable'>>(
-  (props, ref) => {
-    return <Combobox ref={ref} {...props} searchable />;
-  }
-);
+const ComboboxSearchable = forwardRef<
+  React.ComponentRef<typeof View>,
+  Omit<ComboboxProps, 'searchable'>
+>((props, ref) => {
+  return <Combobox ref={ref} {...props} searchable />;
+});
 
 // Display names
 Combobox.displayName = 'Combobox';
