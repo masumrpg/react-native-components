@@ -17,6 +17,7 @@ import {
   GitPullRequestClosedIcon,
   LayoutDashboard,
   LetterText,
+  List,
   Loader,
   Minus,
   Palette,
@@ -145,6 +146,12 @@ export default function HomeScreen() {
       title: 'Form Control',
       path: '/form-control',
       icon: <BookPlus size={30} color={'black'} />,
+    },
+    {
+      id: 19,
+      title: 'Combobox',
+      path: '/combobox',
+      icon: <List size={30} color={'black'} />,
     },
   ];
 
