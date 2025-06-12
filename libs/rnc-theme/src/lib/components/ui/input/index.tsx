@@ -258,6 +258,8 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
           return `${theme.colors.primary}40`;
         case 'secondary':
           return `${theme.colors.secondary}40`;
+        case 'outline':
+          return 'transparent';
         case 'ghost':
           return 'transparent';
         case 'success':
@@ -433,7 +435,31 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       if (hasError) {
         baseStyle.push({ color: theme.colors.error });
       } else if (isFocused) {
-        baseStyle.push({ color: theme.colors.primary });
+        switch (variant) {
+          case 'primary':
+            baseStyle.push({ color: theme.colors.primary });
+            break;
+          case 'secondary':
+            baseStyle.push({ color: theme.colors.secondary });
+            break;
+          case 'success':
+            baseStyle.push({ color: theme.colors.success });
+            break;
+          case 'error':
+            baseStyle.push({ color: theme.colors.error });
+            break;
+          case 'warning':
+            baseStyle.push({ color: theme.colors.warning });
+            break;
+          case 'info':
+            baseStyle.push({ color: theme.colors.info });
+            break;
+          case 'destructive':
+            baseStyle.push({ color: theme.colors.destructive });
+            break;
+          default:
+            baseStyle.push({ color: theme.colors.primary });
+        }
       }
 
       switch (size) {
@@ -729,55 +755,37 @@ const createStyles = (theme: Theme) =>
     } as ViewStyle,
     // Updated Variants
     default: {
-      borderWidth: 1,
-      backgroundColor: `${theme.colors.background}99`,
+      borderWidth: 1.5,
     } as ViewStyle,
     primary: {
       borderWidth: 1.5,
-      backgroundColor: theme.colors.primary,
-      borderColor: `${theme.colors.background}99`,
     } as ViewStyle,
     secondary: {
       borderWidth: 1.5,
-      backgroundColor: `${theme.colors.secondary}99`,
-      borderColor: `${theme.colors.secondary}99`,
     } as ViewStyle,
     outline: {
       borderWidth: 1.5,
-      backgroundColor: 'transparent',
     } as ViewStyle,
     filled: {
       borderWidth: 0,
-      backgroundColor: `${theme.colors.background}99`,
     } as ViewStyle,
     ghost: {
       borderWidth: 0,
-      backgroundColor: 'transparent',
     } as ViewStyle,
     success: {
       borderWidth: 1.5,
-      backgroundColor: `${theme.colors.success}99`,
-      borderColor: `${theme.colors.success}99`,
     } as ViewStyle,
     error: {
       borderWidth: 1.5,
-      backgroundColor: `${theme.colors.error}99`,
-      borderColor: `${theme.colors.error}99`,
     } as ViewStyle,
     warning: {
       borderWidth: 1.5,
-      backgroundColor: `${theme.colors.warning}99`,
-      borderColor: `${theme.colors.warning}99`,
     } as ViewStyle,
     info: {
       borderWidth: 1.5,
-      backgroundColor: `${theme.colors.info}99`,
-      borderColor: `${theme.colors.info}99`,
     } as ViewStyle,
     destructive: {
       borderWidth: 1.5,
-      backgroundColor: `${theme.colors.destructive}99`,
-      borderColor: `${theme.colors.destructive}99`,
     } as ViewStyle,
     // Updated Sizes
     sizeXs: {

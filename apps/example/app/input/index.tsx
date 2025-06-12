@@ -198,6 +198,58 @@ export default function InputScreen() {
         state="success"
         helperText="Everything looks good!"
       />
+
+      {/* Section Title */}
+      <Text
+        style={{
+          fontSize: 16,
+          fontWeight: '600',
+          marginTop: 16,
+          marginBottom: 8,
+        }}
+      >
+        Size Variants
+      </Text>
+
+      {/* Extra Small Size */}
+      <Input
+        label="Extra Small Input"
+        placeholder="Size: xs"
+        size="xs"
+        leftIcon={<Info size={16} color={theme.colors.textSecondary} />}
+      />
+
+      {/* Small Size */}
+      <Input
+        label="Small Input"
+        placeholder="Size: sm"
+        size="sm"
+        leftIcon={<Info size={18} color={theme.colors.textSecondary} />}
+      />
+
+      {/* Medium Size (Default) */}
+      <Input
+        label="Medium Input"
+        placeholder="Size: md (default)"
+        size="md"
+        leftIcon={<Info size={20} color={theme.colors.textSecondary} />}
+      />
+
+      {/* Large Size */}
+      <Input
+        label="Large Input"
+        placeholder="Size: lg"
+        size="lg"
+        leftIcon={<Info size={22} color={theme.colors.textSecondary} />}
+      />
+
+      {/* Extra Large Size */}
+      <Input
+        label="Extra Large Input"
+        placeholder="Size: xl"
+        size="xl"
+        leftIcon={<Info size={24} color={theme.colors.textSecondary} />}
+      />
     </ScrollView>
   );
 }
