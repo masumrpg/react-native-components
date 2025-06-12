@@ -475,7 +475,24 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       }
 
       return baseStyle;
-    }, [styles, labelStyle, hasError, isFocused, theme.colors, size]);
+    }, [
+      styles.label,
+      styles.labelSm,
+      styles.labelLg,
+      styles.labelMd,
+      labelStyle,
+      hasError,
+      isFocused,
+      size,
+      theme.colors.error,
+      theme.colors.primary,
+      theme.colors.secondary,
+      theme.colors.success,
+      theme.colors.warning,
+      theme.colors.info,
+      theme.colors.destructive,
+      variant,
+    ]);
 
     const renderLabel = useCallback(() => {
       if (!label) return null;
