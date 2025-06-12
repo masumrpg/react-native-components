@@ -69,7 +69,7 @@ interface BaseButtonProps {
   disabled?: boolean;
   loading?: boolean;
   style?: ViewStyle;
-  borderRadius?: keyof Theme['borderRadius'];
+  borderRadius?: keyof Theme['components']['borderRadius'];
   fullWidth?: boolean;
   component?: ButtonComponent;
   animationEnabled?: boolean;
@@ -461,7 +461,7 @@ const Button = forwardRef<ButtonRef, ButtonProps>(
         ...styles.base,
         ...styles[variant],
         ...styles[size],
-        borderRadius: theme.borderRadius[borderRadius],
+        borderRadius: theme.components.borderRadius[borderRadius],
         ...(fullWidth && { width: '100%' }),
         ...(style as ViewStyle),
       }),
@@ -469,7 +469,7 @@ const Button = forwardRef<ButtonRef, ButtonProps>(
         styles,
         variant,
         size,
-        theme.borderRadius,
+        theme.components.borderRadius,
         borderRadius,
         fullWidth,
         style,

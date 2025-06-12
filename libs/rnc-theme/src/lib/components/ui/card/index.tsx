@@ -4,9 +4,16 @@ import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils/color';
 import { Theme } from '../../../types/theme';
+import {
+  ComponentState,
+  BaseFormComponentProps,
+  ComponentVariant,
+} from '../../../types/ui';
 
-// Types
-interface CardProps extends React.ComponentPropsWithoutRef<typeof View> {
+type CardVariant = ComponentVariant;
+
+interface BaseCardProps
+  extends Omit<BaseFormComponentProps, 'onFocus' | 'onBlur'> {
   children?: React.ReactNode;
   style?: ViewStyle;
   padding?: keyof Theme['spacing'];
@@ -15,7 +22,10 @@ interface CardProps extends React.ComponentPropsWithoutRef<typeof View> {
   elevation?: number;
   shadowOpacity?: number;
   backgroundColor?: string;
+  variant?: CardVariant; // Update variant type
 }
+
+type CardProps = BaseCardProps & React.ComponentPropsWithoutRef<typeof View>;
 
 interface CardContentProps extends React.ComponentPropsWithoutRef<typeof View> {
   children?: React.ReactNode;
@@ -51,17 +61,125 @@ interface CardHeaderProps extends React.ComponentPropsWithoutRef<typeof View> {
 }
 
 // Styles
-const createCardStyles = (theme: Theme) => ({
-  base: {
-    borderWidth: 1,
-    borderColor: resolveColor(theme, 'border', theme.colors.border),
-    shadowColor: resolveColor(theme, 'text', theme.colors.text),
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
-  },
-});
+type StateStylesType = {
+  [K in ComponentState as `state${Capitalize<K>}`]: ViewStyle;
+};
 
-// Components
+const createStyles = (theme: Theme) =>
+  ({
+    container: {
+      marginBottom: 0,
+    } as ViewStyle,
+    base: {
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      backgroundColor: theme.colors.surface,
+      position: 'relative',
+    } as ViewStyle,
+    // Updated Variants
+    default: {
+      borderWidth: 1.5,
+      borderColor: theme.colors.border,
+      backgroundColor: theme.colors.surface,
+    } as ViewStyle,
+    primary: {
+      borderWidth: 1.5,
+      borderColor: theme.colors.primary,
+      backgroundColor: `${theme.colors.primary}10`,
+    } as ViewStyle,
+    secondary: {
+      borderWidth: 1.5,
+      borderColor: theme.colors.secondary,
+      backgroundColor: `${theme.colors.secondary}10`,
+    } as ViewStyle,
+    outline: {
+      borderWidth: 1.5,
+      borderColor: theme.colors.border,
+      backgroundColor: 'transparent',
+    } as ViewStyle,
+    ghost: {
+      borderWidth: 0,
+      backgroundColor: 'transparent',
+    } as ViewStyle,
+    filled: {
+      borderWidth: 0,
+      backgroundColor: theme.colors.background,
+    } as ViewStyle,
+    success: {
+      borderWidth: 1.5,
+      borderColor: theme.colors.success,
+      backgroundColor: `${theme.colors.success}10`,
+    } as ViewStyle,
+    error: {
+      borderWidth: 1.5,
+      borderColor: theme.colors.error,
+      backgroundColor: `${theme.colors.error}10`,
+    } as ViewStyle,
+    warning: {
+      borderWidth: 1.5,
+      borderColor: theme.colors.warning,
+      backgroundColor: `${theme.colors.warning}10`,
+    } as ViewStyle,
+    info: {
+      borderWidth: 1.5,
+      borderColor: theme.colors.info,
+      backgroundColor: `${theme.colors.info}10`,
+    } as ViewStyle,
+    destructive: {
+      borderWidth: 1.5,
+      borderColor: theme.colors.destructive,
+      backgroundColor: `${theme.colors.destructive}10`,
+    } as ViewStyle,
+    // Sizes
+    sizeXs: {
+      padding: theme.spacing.xs,
+      minHeight: 32,
+    } as ViewStyle,
+    sizeSm: {
+      padding: theme.spacing.sm,
+      minHeight: 36,
+    } as ViewStyle,
+    sizeMd: {
+      padding: theme.spacing.md,
+      minHeight: 42,
+    } as ViewStyle,
+    sizeLg: {
+      padding: theme.spacing.lg,
+      minHeight: 48,
+    } as ViewStyle,
+    sizeXl: {
+      padding: theme.spacing.xl,
+      minHeight: 56,
+    } as ViewStyle,
+    // States
+    stateDefault: {} as ViewStyle,
+    stateFocus: {
+      borderWidth: 2,
+    } as ViewStyle,
+    stateActive: {
+      borderWidth: 2,
+      opacity: 0.9,
+    } as ViewStyle,
+    stateDisabled: {
+      opacity: 0.6,
+      pointerEvents: 'none',
+    } as ViewStyle,
+    stateLoading: {
+      opacity: 0.8,
+    } as ViewStyle,
+    stateError: {
+      borderColor: theme.colors.error,
+    } as ViewStyle,
+    stateSuccess: {
+      borderColor: theme.colors.success,
+    } as ViewStyle,
+    stateWarning: {
+      borderColor: theme.colors.warning,
+    } as ViewStyle,
+  } as const satisfies Record<string, ViewStyle> &
+    StateStylesType &
+    Record<CardVariant, ViewStyle>);
+
 const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
   (
     {
@@ -73,34 +191,57 @@ const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
       elevation = 3,
       shadowOpacity = 0.1,
       backgroundColor,
+      variant = 'default',
+      size = 'md',
+      disabled = false,
       ...props
     },
     ref
   ) => {
     const { theme } = useTheme();
-    const styles = useThemedStyles(createCardStyles);
+    const styles = useThemedStyles(createStyles);
+
+    const getSizeStyles = (): ViewStyle => {
+      switch (size) {
+        case 'xs':
+          return styles.sizeXs;
+        case 'sm':
+          return styles.sizeSm;
+        case 'lg':
+          return styles.sizeLg;
+        case 'xl':
+          return styles.sizeXl;
+        default:
+          return styles.sizeMd;
+      }
+    };
+
+    const cardStyles: ViewStyle[] = [
+      styles.base,
+      styles[variant as CardVariant], // Add type assertion here
+      getSizeStyles(),
+      {
+        backgroundColor: resolveColor(
+          theme,
+          backgroundColor,
+          theme.colors.surface
+        ),
+        borderRadius: theme.components.borderRadius[borderRadius],
+        shadowOpacity,
+        elevation: disabled ? 0 : elevation,
+      },
+    ];
+
+    if (disabled) {
+      cardStyles.push(styles.stateDisabled);
+    }
+
+    if (style) {
+      cardStyles.push(style);
+    }
 
     return (
-      <View
-        ref={ref}
-        style={[
-          styles.base,
-          {
-            backgroundColor: resolveColor(
-              theme,
-              backgroundColor,
-              theme.colors.surface
-            ),
-            borderRadius: theme.components.borderRadius[borderRadius],
-            padding: theme.spacing[padding],
-            marginBottom: margin ? theme.spacing[margin] : undefined,
-            shadowOpacity,
-            elevation,
-          },
-          style,
-        ]}
-        {...props}
-      >
+      <View ref={ref} style={cardStyles} {...props}>
         {children}
       </View>
     );
