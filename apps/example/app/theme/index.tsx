@@ -849,10 +849,19 @@ const ThemeScreen: React.FC = () => {
     (preset: ThemePreset) => {
       setAppliedTheme(preset);
       setPreviewTheme(null);
-      setIsDarkModeDisabled(false); // Re-enable dark mode toggle
-      previewThemePreset(preset);
+      setIsDarkModeDisabled(false);
+
+      if (preset === 'default') {
+        resetTheme();
+      } else {
+        const themeConfig = getThemeConfig(preset);
+        if (themeConfig) {
+          // Pass preset name DAN config function ke updateCustomTheme
+          updateCustomTheme(themeConfig(isDark), preset, themeConfig);
+        }
+      }
     },
-    [previewThemePreset]
+    [isDark, resetTheme, getThemeConfig, updateCustomTheme]
   );
 
   // Fungsi cancel preview

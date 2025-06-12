@@ -4,6 +4,7 @@ import React, {
   useEffect,
   useState,
   ReactNode,
+  useCallback,
 } from 'react';
 import { Appearance, ColorSchemeName } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -14,8 +15,9 @@ interface ThemeContextType {
   theme: Theme;
   themeMode: ThemeMode;
   isDark: boolean;
+  activePreset?: string;
   setThemeMode: (mode: ThemeMode) => void;
-  updateCustomTheme: (customTheme: Partial<Theme>) => void;
+  updateCustomTheme: (customTheme: Partial<Theme>, preset?: string, presetConfig?: (isDark: boolean) => Partial<Theme>) => void;
   resetTheme: () => void;
 }
 
@@ -50,9 +52,24 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 }) => {
   const [themeMode, setThemeModeState] = useState<ThemeMode>(defaultTheme);
   const [customTheme, setCustomTheme] = useState<Partial<Theme> | undefined>();
+  const [activePreset, setActivePreset] = useState<string | undefined>();
+  const [presetConfig, setPresetConfig] = useState<((isDark: boolean) => Partial<Theme>) | undefined>();
   const [systemColorScheme, setSystemColorScheme] = useState<ColorSchemeName>(
     Appearance.getColorScheme()
   );
+
+  // Determine if dark mode should be active
+  const isDark = themeMode === 'dark' || (themeMode === 'system' && systemColorScheme === 'dark');
+
+  // Auto-regenerate theme when mode changes and there's an active preset
+  useEffect(() => {
+    if (activePreset && presetConfig) {
+      const newCustomTheme = presetConfig(isDark);
+      setCustomTheme(newCustomTheme);
+      // Update storage with new generated theme
+      saveThemeToStorage(themeMode, newCustomTheme, activePreset);
+    }
+  }, [isDark, themeMode, activePreset, presetConfig]);
 
   // Load theme from storage on mount
   useEffect(() => {
@@ -73,6 +90,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
         const config: ThemeConfig = JSON.parse(storedConfig);
         setThemeModeState(config.mode);
         setCustomTheme(config.customTheme);
+        setActivePreset(config.activePreset);
+        // Note: presetConfig function tidak bisa disimpan di storage,
+        // jadi harus di-set ulang dari theme screen
       }
     } catch (error) {
       console.warn('Failed to load theme from storage:', error);
@@ -81,10 +101,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   const saveThemeToStorage = async (
     mode: ThemeMode,
-    customTheme?: Partial<Theme>
+    customTheme?: Partial<Theme>,
+    preset?: string
   ) => {
     try {
-      const config: ThemeConfig = { mode, customTheme };
+      const config: ThemeConfig = { mode, customTheme, activePreset: preset };
       await AsyncStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(config));
     } catch (error) {
       console.warn('Failed to save theme to storage:', error);
@@ -93,24 +114,28 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   const setThemeMode = (mode: ThemeMode) => {
     setThemeModeState(mode);
-    saveThemeToStorage(mode, customTheme);
+    // Jangan save di sini, biarkan useEffect yang handle regeneration
   };
 
-  const updateCustomTheme = (newCustomTheme: Partial<Theme>) => {
-    const updatedCustomTheme = { ...customTheme, ...newCustomTheme };
-    setCustomTheme(updatedCustomTheme);
-    saveThemeToStorage(themeMode, updatedCustomTheme);
-  };
+  const updateCustomTheme = useCallback((
+    newCustomTheme: Partial<Theme>, 
+    preset?: string, 
+    newPresetConfig?: (isDark: boolean) => Partial<Theme>
+  ) => {
+    setCustomTheme(newCustomTheme);
+    setActivePreset(preset);
+    if (newPresetConfig) {
+      setPresetConfig(() => newPresetConfig); // Wrap in function to avoid stale closure
+    }
+    saveThemeToStorage(themeMode, newCustomTheme, preset);
+  }, [themeMode]);
 
   const resetTheme = () => {
     setCustomTheme(undefined);
-    saveThemeToStorage(themeMode, undefined);
+    setActivePreset(undefined);
+    setPresetConfig(undefined);
+    saveThemeToStorage(themeMode, undefined, undefined);
   };
-
-  // Determine if dark mode should be active
-  const isDark =
-    themeMode === 'dark' ||
-    (themeMode === 'system' && systemColorScheme === 'dark');
 
   // Get base theme
   const baseTheme = isDark ? darkTheme : lightTheme;
@@ -126,6 +151,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     theme,
     themeMode,
     isDark,
+    activePreset,
     setThemeMode,
     updateCustomTheme,
     resetTheme,

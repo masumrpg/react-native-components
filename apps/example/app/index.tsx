@@ -27,6 +27,7 @@ import {
   Table,
   TextCursorInput,
   ToggleLeft,
+  ToggleRight,
 } from 'lucide-react-native';
 import { ReactElement } from 'react';
 
@@ -152,6 +153,12 @@ export default function HomeScreen() {
       title: 'Combobox',
       path: '/combobox',
       icon: <List size={30} color={'black'} />,
+    },
+    {
+      id: 20,
+      title: 'Toggle',
+      path: '/toggle',
+      icon: <ToggleRight size={30} color={'black'} />,
     },
   ];
 
