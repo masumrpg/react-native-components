@@ -32,14 +32,7 @@ import { Theme } from '../../../types/theme';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { ComponentState, BaseFormComponentProps } from '../../../types/ui';
 import { Eye, EyeOff, Search } from 'lucide-react-native';
-
-// Animation constants
-const ANIMATION_DURATION = 200;
-const SPRING_CONFIG = {
-  damping: 15,
-  stiffness: 150,
-  mass: 1,
-} as const;
+import { ANIMATION_CONSTANTS } from '../../../constants/ui';
 
 interface BaseInputProps
   extends Omit<BaseFormComponentProps, 'onFocus' | 'onBlur'> {
@@ -150,7 +143,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         if (animated && isFloatingVariant) {
           labelAnimation.value = withSpring(
             text.length > 0 ? 1 : 0,
-            SPRING_CONFIG
+            ANIMATION_CONSTANTS.SPRING_CONFIG.DEFAULT
           );
         }
       },
@@ -164,16 +157,22 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
 
         if (animated) {
           focusAnimation.value = withTiming(1, {
-            duration: ANIMATION_DURATION,
+            duration: ANIMATION_CONSTANTS.DURATION.NORMAL,
           });
-          borderAnimation.value = withSpring(1, SPRING_CONFIG);
+          borderAnimation.value = withSpring(
+            1,
+            ANIMATION_CONSTANTS.SPRING_CONFIG.DEFAULT
+          );
           scaleAnimation.value = withSpring(1.02, {
-            ...SPRING_CONFIG,
+            ...ANIMATION_CONSTANTS.SPRING_CONFIG.DEFAULT,
             stiffness: 200,
           });
 
           if (isFloatingVariant) {
-            labelAnimation.value = withSpring(1, SPRING_CONFIG);
+            labelAnimation.value = withSpring(
+              1,
+              ANIMATION_CONSTANTS.SPRING_CONFIG.DEFAULT
+            );
           }
         }
       },
@@ -196,13 +195,22 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
 
         if (animated) {
           focusAnimation.value = withTiming(0, {
-            duration: ANIMATION_DURATION,
+            duration: ANIMATION_CONSTANTS.DURATION.NORMAL,
           });
-          borderAnimation.value = withSpring(0, SPRING_CONFIG);
-          scaleAnimation.value = withSpring(1, SPRING_CONFIG);
+          borderAnimation.value = withSpring(
+            0,
+            ANIMATION_CONSTANTS.SPRING_CONFIG.DEFAULT
+          );
+          scaleAnimation.value = withSpring(
+            1,
+            ANIMATION_CONSTANTS.SPRING_CONFIG.DEFAULT
+          );
 
           if (isFloatingVariant && !hasValue) {
-            labelAnimation.value = withSpring(0, SPRING_CONFIG);
+            labelAnimation.value = withSpring(
+              0,
+              ANIMATION_CONSTANTS.SPRING_CONFIG.DEFAULT
+            );
           }
         }
       },
@@ -223,7 +231,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
     useEffect(() => {
       if (animated) {
         errorAnimation.value = withTiming(hasError ? 1 : 0, {
-          duration: ANIMATION_DURATION,
+          duration: ANIMATION_CONSTANTS.DURATION.NORMAL,
           easing: Easing.out(Easing.cubic),
         });
       }
@@ -236,7 +244,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         if (animated && isFloatingVariant) {
           labelAnimation.value = withSpring(
             value.length > 0 ? 1 : 0,
-            SPRING_CONFIG
+            ANIMATION_CONSTANTS.SPRING_CONFIG.DEFAULT
           );
         }
       }
