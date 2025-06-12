@@ -80,7 +80,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
     {
       label,
       placeholder,
-      variant = 'outline',
+      variant = 'default',
       size = 'md',
       state = 'default',
       helperText,
@@ -244,8 +244,29 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
 
     const getBackgroundColor = useCallback((): string => {
       if (disabled) return theme.colors.background;
-      if (variant === 'filled') return theme.colors.surface;
-      return theme.colors.surface;
+
+      switch (variant) {
+        case 'primary':
+          return `${theme.colors.primary}40`;
+        case 'secondary':
+          return `${theme.colors.secondary}40`;
+        case 'outline':
+          return 'transparent';
+        case 'ghost':
+          return 'transparent';
+        case 'success':
+          return `${theme.colors.success}40`;
+        case 'error':
+          return `${theme.colors.error}40`;
+        case 'warning':
+          return `${theme.colors.warning}40`;
+        case 'info':
+          return `${theme.colors.info}40`;
+        case 'destructive':
+          return `${theme.colors.destructive}40`;
+        default:
+          return theme.colors.surface;
+      }
     }, [disabled, variant, theme.colors]);
 
     // Animated styles with proper typing
@@ -810,7 +831,6 @@ const createStyles = (theme: Theme) =>
       marginLeft: theme.spacing.sm,
       justifyContent: 'center' as const,
       alignItems: 'center' as const,
-      padding: theme.spacing.xs,
     } as ViewStyle,
     // Helper Text
     helperContainer: {

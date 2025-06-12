@@ -136,7 +136,6 @@ export default function InputScreen() {
       <Input
         label="Password Input"
         placeholder="Enter your password"
-        variant="outline"
         isPasswordInput
         helperText="Must be at least 8 characters"
       />
@@ -147,7 +146,6 @@ export default function InputScreen() {
         onChangeText={setSearchValue}
         placeholder="Search..."
         isSearchInput
-        variant="filled"
         rightIcon={
           searchValue ? (
             <X size={20} color={theme.colors.textSecondary} />
@@ -164,7 +162,6 @@ export default function InputScreen() {
         numberOfLines={4}
         maxLength={500}
         showCharacterCount
-        variant="outline"
       />
 
       {/* Section Title */}
@@ -184,7 +181,6 @@ export default function InputScreen() {
         label="Disabled Input"
         placeholder="This input is disabled"
         disabled
-        variant="outline"
       />
 
       {/* Error State */}
@@ -193,7 +189,6 @@ export default function InputScreen() {
         placeholder="This input has an error"
         state="error"
         error="This field is required"
-        variant="outline"
       />
 
       {/* Success State */}
@@ -201,7 +196,6 @@ export default function InputScreen() {
         label="Success State"
         placeholder="This input is valid"
         state="success"
-        variant="outline"
         helperText="Everything looks good!"
       />
     </ScrollView>
