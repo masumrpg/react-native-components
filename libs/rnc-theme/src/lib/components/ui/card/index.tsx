@@ -10,7 +10,6 @@ import {
 } from '../../../types/ui';
 import { getBackgroundColor, getSizeStyles } from '../../../utils';
 
-type CardVariant = ComponentVariant;
 
 interface BaseCardProps
   extends Omit<BaseFormComponentProps, 'onFocus' | 'onBlur'> {
@@ -22,7 +21,6 @@ interface BaseCardProps
   elevation?: number;
   shadowOpacity?: number;
   backgroundColor?: string;
-  variant?: CardVariant;
 }
 
 type CardProps = BaseCardProps & React.ComponentPropsWithoutRef<typeof View>;
@@ -38,13 +36,7 @@ interface CardFooterProps extends React.ComponentPropsWithoutRef<typeof View> {
   style?: ViewStyle;
   padding?: keyof Theme['spacing'];
   showBorder?: boolean;
-  justifyContent?:
-    | 'flex-start'
-    | 'center'
-    | 'flex-end'
-    | 'space-between'
-    | 'space-around'
-    | 'space-evenly';
+  justifyContent?: ViewStyle['justifyContent'];
 }
 
 interface CardHeaderProps extends React.ComponentPropsWithoutRef<typeof View> {
@@ -178,7 +170,7 @@ const createStyles = (theme: Theme) =>
     } as ViewStyle,
   } as const satisfies Record<string, ViewStyle> &
     StateStylesType &
-    Record<CardVariant, ViewStyle>);
+    Record<ComponentVariant, ViewStyle>);
 
 const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
   (
