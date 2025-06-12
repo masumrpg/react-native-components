@@ -22,22 +22,40 @@ const resolveColor = (
   return theme.colors[color];
 };
 
-const getBackgroundColor = (
+const getVariantColor = (
   variant: ComponentVariant,
   colors: Theme['colors'],
-  disabled?: boolean
+  disabled?: boolean,
+  isSolid?: boolean
 ): string => {
   if (disabled) return colors.background;
+
+  if (isSolid) {
+    switch (variant) {
+      case 'primary':
+        return colors.primary;
+      case 'secondary':
+        return colors.secondary;
+      case 'success':
+        return colors.success;
+      case 'error':
+        return colors.error;
+      case 'warning':
+        return colors.warning;
+      case 'info':
+        return colors.info;
+      case 'destructive':
+        return colors.destructive;
+      default:
+        return colors.surface;
+    }
+  }
 
   switch (variant) {
     case 'primary':
       return `${colors.primary}40`;
     case 'secondary':
       return `${colors.secondary}40`;
-    case 'outline':
-      return 'transparent';
-    case 'ghost':
-      return 'transparent';
     case 'success':
       return `${colors.success}40`;
     case 'error':
@@ -53,7 +71,16 @@ const getBackgroundColor = (
   }
 };
 
-const getSizeStyles = (size: ComponentSize, styles: { sizeXs: ViewStyle; sizeSm: ViewStyle; sizeLg: ViewStyle; sizeXl: ViewStyle; sizeMd: ViewStyle; }): ViewStyle => {
+const getSizeStyles = (
+  size: ComponentSize,
+  styles: {
+    sizeXs: ViewStyle;
+    sizeSm: ViewStyle;
+    sizeLg: ViewStyle;
+    sizeXl: ViewStyle;
+    sizeMd: ViewStyle;
+  }
+): ViewStyle => {
   switch (size) {
     case 'xs':
       return styles.sizeXs;
@@ -68,4 +95,4 @@ const getSizeStyles = (size: ComponentSize, styles: { sizeXs: ViewStyle; sizeSm:
   }
 };
 
-export { resolveColor, getBackgroundColor, getSizeStyles };
+export { resolveColor, getVariantColor as getBackgroundColor, getSizeStyles };

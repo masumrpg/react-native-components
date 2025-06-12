@@ -37,7 +37,6 @@ type BaseComponentProps = {
   size?: ComponentSize;
   disabled?: boolean;
   style?: ViewStyle;
-  testID?: string;
 };
 
 type AnimatedComponentProps = BaseComponentProps & {

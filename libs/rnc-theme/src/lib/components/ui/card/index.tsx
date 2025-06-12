@@ -5,41 +5,38 @@ import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import {
   ComponentState,
-  BaseFormComponentProps,
+  BaseComponentProps,
   ComponentVariant,
 } from '../../../types/ui';
 import { getBackgroundColor, getSizeStyles } from '../../../utils';
 
-
-interface BaseCardProps
-  extends Omit<BaseFormComponentProps, 'onFocus' | 'onBlur'> {
+type BaseCardProps = BaseComponentProps & {
   children?: React.ReactNode;
-  style?: ViewStyle;
   padding?: keyof Theme['spacing'];
   margin?: keyof Theme['spacing'];
   borderRadius?: keyof Theme['components']['borderRadius'];
   elevation?: number;
   shadowOpacity?: number;
   backgroundColor?: string;
-}
+};
 
 type CardProps = BaseCardProps & React.ComponentPropsWithoutRef<typeof View>;
 
-interface CardContentProps extends React.ComponentPropsWithoutRef<typeof View> {
+type CardContentProps = React.ComponentPropsWithoutRef<typeof View> & {
   children?: React.ReactNode;
   style?: ViewStyle;
   padding?: keyof Theme['spacing'];
-}
+};
 
-interface CardFooterProps extends React.ComponentPropsWithoutRef<typeof View> {
+type CardFooterProps = React.ComponentPropsWithoutRef<typeof View> & {
   children?: React.ReactNode;
   style?: ViewStyle;
   padding?: keyof Theme['spacing'];
   showBorder?: boolean;
   justifyContent?: ViewStyle['justifyContent'];
-}
+};
 
-interface CardHeaderProps extends React.ComponentPropsWithoutRef<typeof View> {
+type CardHeaderProps = React.ComponentPropsWithoutRef<typeof View> & {
   title?: string;
   subtitle?: string;
   children?: React.ReactNode;
@@ -50,7 +47,7 @@ interface CardHeaderProps extends React.ComponentPropsWithoutRef<typeof View> {
   titleVariant?: keyof Theme['typography'];
   subtitleVariant?: keyof Theme['typography'];
   borderBottom?: boolean;
-}
+};
 
 // Styles
 type StateStylesType = {
@@ -200,7 +197,7 @@ const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
       {
         backgroundColor:
           backgroundColor ??
-          getBackgroundColor(variant, theme.colors, disabled),
+          getBackgroundColor(variant, theme.colors, disabled, true),
         borderRadius: theme.components.borderRadius[borderRadius],
         shadowOpacity,
         elevation: disabled ? 0 : elevation,
