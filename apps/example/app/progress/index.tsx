@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, ScrollView, TouchableOpacity } from 'react-native';
+import { Text, ScrollView, TouchableOpacity } from 'react-native';
 import {
   Progress,
   ProgressFilledTrack,
@@ -237,7 +237,7 @@ const createStyles = (theme: Theme) => ({
   overallCard: {
     padding: theme.spacing.lg,
     marginBottom: theme.spacing.xl,
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: theme.components.borderRadius.lg,
     backgroundColor: theme.colors.surface,
     borderWidth: 1,
     borderColor: theme.colors.border,
@@ -258,7 +258,7 @@ const createStyles = (theme: Theme) => ({
     backgroundColor: theme.colors.primary,
     paddingVertical: theme.spacing.sm,
     paddingHorizontal: theme.spacing.md,
-    borderRadius: theme.borderRadius.md,
+    borderRadius: theme.components.borderRadius.md,
     marginTop: theme.spacing.md,
     alignSelf: 'center' as const,
   },
@@ -268,7 +268,7 @@ const createStyles = (theme: Theme) => ({
   },
   taskCard: {
     padding: theme.spacing.md,
-    borderRadius: theme.borderRadius.md,
+    borderRadius: theme.components.borderRadius.md,
     backgroundColor: theme.colors.surface,
     borderWidth: 1,
     borderColor: theme.colors.border,
@@ -299,7 +299,7 @@ const createStyles = (theme: Theme) => ({
   summaryCard: {
     padding: theme.spacing.lg,
     marginTop: theme.spacing.xl,
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: theme.components.borderRadius.lg,
     backgroundColor: theme.colors.surface,
     borderWidth: 1,
     borderColor: theme.colors.border,

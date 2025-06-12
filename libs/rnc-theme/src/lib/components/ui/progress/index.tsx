@@ -196,7 +196,7 @@ ProgressFilledTrack.displayName = 'ProgressFilledTrack';
 const createProgressStyles = (theme: Theme) => ({
   container: {
     width: '100%' as const,
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.components.borderRadius.full,
     overflow: 'hidden' as const,
   },
   sm: {
@@ -213,7 +213,7 @@ const createProgressStyles = (theme: Theme) => ({
 const createProgressFilledTrackStyles = (theme: Theme) => ({
   filledTrack: {
     height: '100%' as const,
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.components.borderRadius.full,
   },
   animated: {
     // Styles for animated version are handled by useAnimatedStyle

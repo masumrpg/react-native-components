@@ -130,7 +130,7 @@ const createStyles = (theme: Theme) => ({
   button: {
     backgroundColor: theme.colors.primary,
     padding: theme.spacing.md,
-    borderRadius: theme.borderRadius.md,
+    borderRadius: theme.components.borderRadius.md,
     alignItems: 'center' as const,
     minHeight: 50,
     justifyContent: 'center' as const,
@@ -172,7 +172,7 @@ const createStyles = (theme: Theme) => ({
     alignItems: 'center' as const,
     padding: theme.spacing.md,
     backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.md,
+    borderRadius: theme.components.borderRadius.md,
   },
   inlineText: {
     fontSize: theme.typography.body.fontSize,
@@ -191,7 +191,7 @@ const createStyles = (theme: Theme) => ({
   overlayContent: {
     backgroundColor: theme.colors.surface,
     padding: theme.spacing.xl,
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: theme.components.borderRadius.lg,
     alignItems: 'center' as const,
     gap: theme.spacing.md,
   },

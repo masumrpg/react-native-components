@@ -214,7 +214,7 @@ SwitcherLabel.displayName = 'SwitcherLabel';
 
 const createSwitcherStyles = (theme: Theme) => ({
   track: {
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.components.borderRadius.full,
     justifyContent: 'center' as const,
     position: 'relative' as const,
     // iOS-like styling
@@ -225,7 +225,7 @@ const createSwitcherStyles = (theme: Theme) => ({
     elevation: 1,
   },
   thumb: {
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.components.borderRadius.full,
     position: 'absolute' as const,
     // Enhanced iOS-like shadow
     shadowColor: '#000',

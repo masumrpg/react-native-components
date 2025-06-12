@@ -58,7 +58,7 @@ const ButtonScreen: React.FC = () => {
       justifyContent: 'space-between' as const,
       padding: theme.spacing.md,
       backgroundColor: theme.colors.surface,
-      borderRadius: theme.borderRadius.md,
+      borderRadius: theme.components.borderRadius.md,
       marginBottom: theme.spacing.lg,
     },
     themeText: {

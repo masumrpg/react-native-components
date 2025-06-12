@@ -244,7 +244,7 @@ const createTableStyles = (theme: Theme) => ({
   bordered: {
     borderWidth: 1,
     borderColor: theme.colors.border,
-    borderRadius: theme.borderRadius.md,
+    borderRadius: theme.components.borderRadius.md,
   },
 });
 

@@ -53,7 +53,7 @@ interface ModalProps {
   animationDuration?: number;
   padding?: keyof Theme['spacing'];
   margin?: keyof Theme['spacing'];
-  borderRadius?: keyof Theme['borderRadius'];
+  borderRadius?: keyof Theme['components']['borderRadius'];
   elevation?: number;
   shadowOpacity?: number;
   backgroundColor?: string;
@@ -586,7 +586,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
                       backgroundColor,
                       theme.colors.surface
                     ),
-                    borderRadius: theme.borderRadius[borderRadius],
+                    borderRadius: theme.components.borderRadius[borderRadius],
                     padding: theme.spacing[padding],
                     marginBottom: margin ? theme.spacing[margin] : undefined,
                     shadowOpacity: Platform.OS === 'ios' ? shadowOpacity : 0,

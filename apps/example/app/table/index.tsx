@@ -392,7 +392,7 @@ const createStyles = (theme: Theme) => ({
   searchInput: {
     backgroundColor: theme.colors.surface,
     padding: theme.spacing.md,
-    borderRadius: theme.borderRadius.md,
+    borderRadius: theme.components.borderRadius.md,
     fontSize: theme.typography.body.fontSize,
     color: theme.colors.text,
     borderWidth: 1,
@@ -406,7 +406,7 @@ const createStyles = (theme: Theme) => ({
   filterButton: {
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm,
-    borderRadius: theme.borderRadius.md,
+    borderRadius: theme.components.borderRadius.md,
     backgroundColor: theme.colors.surface,
     borderWidth: 1,
     borderColor: theme.colors.border,

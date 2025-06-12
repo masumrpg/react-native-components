@@ -231,7 +231,7 @@ export default function ModalExample() {
             style={{
               flex: 1,
               marginRight: theme.spacing.sm,
-              borderRadius: theme.borderRadius.lg,
+              borderRadius: theme.components.borderRadius.lg,
             }}
           >
             <ButtonText style={{ fontWeight: '600' }}>Cancel</ButtonText>
@@ -241,7 +241,7 @@ export default function ModalExample() {
             onPress={() => setConfirmModalVisible(false)}
             style={{
               flex: 1,
-              borderRadius: theme.borderRadius.lg,
+              borderRadius: theme.components.borderRadius.lg,
               shadowColor: '#ef4444',
               shadowOffset: { width: 0, height: 4 },
               shadowOpacity: 0.3,
