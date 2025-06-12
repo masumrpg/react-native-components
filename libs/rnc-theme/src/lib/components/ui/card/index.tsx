@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, useCallback } from 'react';
 import { Text, TextStyle, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -78,7 +78,7 @@ const createStyles = (theme: Theme) =>
     } as ViewStyle,
     // Updated Variants
     default: {
-      borderWidth: 1.5,
+      borderWidth: 1,
       borderColor: theme.colors.border,
       backgroundColor: theme.colors.surface,
     } as ViewStyle,
@@ -216,16 +216,39 @@ const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
       }
     };
 
+    const getBackgroundColor = useCallback((): string => {
+      if (disabled) return theme.colors.background;
+
+      switch (variant) {
+        case 'primary':
+          return `${theme.colors.primary}40`;
+        case 'secondary':
+          return `${theme.colors.secondary}40`;
+        case 'outline':
+          return 'transparent';
+        case 'ghost':
+          return 'transparent';
+        case 'success':
+          return `${theme.colors.success}40`;
+        case 'error':
+          return `${theme.colors.error}40`;
+        case 'warning':
+          return `${theme.colors.warning}40`;
+        case 'info':
+          return `${theme.colors.info}40`;
+        case 'destructive':
+          return `${theme.colors.destructive}40`;
+        default:
+          return theme.colors.surface;
+      }
+    }, [disabled, variant, theme.colors]);
+
     const cardStyles: ViewStyle[] = [
       styles.base,
       styles[variant as CardVariant], // Add type assertion here
       getSizeStyles(),
       {
-        backgroundColor: resolveColor(
-          theme,
-          backgroundColor,
-          theme.colors.surface
-        ),
+        backgroundColor: backgroundColor ?? getBackgroundColor(),
         borderRadius: theme.components.borderRadius[borderRadius],
         shadowOpacity,
         elevation: disabled ? 0 : elevation,

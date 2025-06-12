@@ -772,7 +772,7 @@ const createStyles = (theme: Theme) =>
     } as ViewStyle,
     // Updated Variants
     default: {
-      borderWidth: 1.5,
+      borderWidth: 1,
     } as ViewStyle,
     primary: {
       borderWidth: 1.5,

@@ -1,307 +1,317 @@
 import React from 'react';
-import { ScrollView, StyleSheet, TextStyle } from 'react-native';
+import { ScrollView, StyleSheet, View } from 'react-native';
 import {
   Card,
   CardContent,
-  CardHeader,
   CardFooter,
-  Typography,
+  CardHeader,
   Button,
+  Typography,
   ButtonText,
+  ButtonIcon,
+  useTheme,
 } from 'rnc-theme';
+import { MaterialIcons } from '@expo/vector-icons';
 
 const CardScreen = () => {
+  const { theme } = useTheme();
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      {/* Section Titles */}
-      <Typography variant="h6" style={styles.sectionTitle}>
-        Variants
-      </Typography>
-
-      {/* Basic Variants */}
-      <Card variant="default" margin="md">
-        <CardHeader
-          title="Default"
-          subtitle="With header and footer"
-          borderBottom
-        />
+      {/* 1. Simplest Card */}
+      <Card margin="md">
         <CardContent>
-          <Typography>Default variant with surface background</Typography>
+          <Typography>Simple card with just content.</Typography>
         </CardContent>
-        <CardFooter showBorder>
-          <Button size="sm" variant="ghost">
-            <ButtonText>Cancel</ButtonText>
-          </Button>
-          <Button size="sm" variant="primary">
-            <ButtonText>Submit</ButtonText>
-          </Button>
-        </CardFooter>
       </Card>
 
-      <Card variant="filled" margin="md">
-        <CardHeader title="Filled" subtitle="No border style" borderBottom />
+      {/* 2. Basic Card with Header */}
+      <Card margin="md">
+        <CardHeader title="Basic Card" />
         <CardContent>
-          <Typography>Filled variant with no border</Typography>
+          <Typography>A card with header and content.</Typography>
         </CardContent>
-        <CardFooter showBorder>
-          <Button size="sm" variant="outline">
-            <ButtonText>Action</ButtonText>
-          </Button>
-        </CardFooter>
       </Card>
 
-      <Card variant="outline" margin="md">
-        <CardHeader
-          title="Outline"
-          subtitle="Transparent background"
-          borderBottom
-        />
-        <CardContent>
-          <Typography>Outline variant with transparent background</Typography>
-        </CardContent>
-        <CardFooter showBorder justifyContent="flex-end">
-          <Button size="sm" variant="primary">
-            <ButtonText>Action</ButtonText>
-          </Button>
-        </CardFooter>
-      </Card>
-
-      <Card variant="ghost" margin="md">
-        <CardHeader title="Ghost" />
+      {/* 3. Standard Card */}
+      <Card margin="md">
+        <CardHeader title="Standard Card" subtitle="With header and footer" />
         <CardContent>
           <Typography>
-            Ghost variant with no border and transparent bg
+            This is a standard card layout with all basic features.
           </Typography>
         </CardContent>
-      </Card>
-
-      {/* Color Variants */}
-      <Card variant="primary" margin="md">
-        <CardHeader
-          title="Primary"
-          subtitle="With themed colors"
-          borderBottom
-        />
-        <CardContent>
-          <Typography>Primary variant with theme color</Typography>
-        </CardContent>
-        <CardFooter showBorder>
-          <Button size="sm" variant="outline">
-            <ButtonText>Cancel</ButtonText>
-          </Button>
+        <CardFooter>
           <Button size="sm" variant="primary">
-            <ButtonText>Confirm</ButtonText>
+            <ButtonText>Action</ButtonText>
           </Button>
         </CardFooter>
       </Card>
 
-      <Card variant="secondary" margin="md">
-        <CardHeader title="Secondary" />
+      {/* 4. Interactive Card */}
+      <Card margin="md" style={styles.interactiveCard} elevation={2}>
+        <CardHeader title="Interactive Card" subtitle="With multiple actions" />
         <CardContent>
-          <Typography>Secondary variant with theme color</Typography>
+          <Typography style={styles.mb8}>Primary content area with:</Typography>
+          <View style={styles.bulletPoints}>
+            <MaterialIcons name="check-circle" size={16} color="green" />
+            <Typography style={styles.bulletText}>
+              Multiple action buttons
+            </Typography>
+          </View>
+          <View style={styles.bulletPoints}>
+            <MaterialIcons name="check-circle" size={16} color="green" />
+            <Typography style={styles.bulletText}>Custom styling</Typography>
+          </View>
+        </CardContent>
+        <CardFooter justifyContent="space-between">
+          <Button variant="ghost" size="sm">
+            <ButtonText>Cancel</ButtonText>
+          </Button>
+          <View style={styles.footerButtons}>
+            <Button variant="outline" size="sm" style={styles.mr8}>
+              <ButtonText>Save</ButtonText>
+            </Button>
+            <Button variant="primary" size="sm">
+              <ButtonText>Submit</ButtonText>
+            </Button>
+          </View>
+        </CardFooter>
+      </Card>
+
+      {/* 5. Complex Card */}
+      <Card
+        margin="md"
+        backgroundColor={theme.colors.primary}
+        borderRadius="xl"
+        elevation={5}
+        shadowOpacity={0.2}
+      >
+        <CardHeader
+          title="Complex Card"
+          subtitle="Advanced usage example"
+          titleStyle={styles.lightText}
+          subtitleStyle={styles.lightText}
+        />
+        <CardContent padding="lg">
+          <View style={styles.complexContent}>
+            <View style={styles.statsContainer}>
+              <View style={styles.statItem}>
+                <Typography style={styles.statNumber}>128</Typography>
+                <Typography style={styles.lightStatLabel}>Views</Typography>
+              </View>
+              <View style={styles.statItem}>
+                <Typography style={styles.statNumber}>47</Typography>
+                <Typography style={styles.lightStatLabel}>Likes</Typography>
+              </View>
+              <View style={styles.statItem}>
+                <Typography style={styles.statNumber}>12</Typography>
+                <Typography style={styles.lightStatLabel}>Comments</Typography>
+              </View>
+            </View>
+            <Typography style={styles.lightTextWithMargin}>
+              Advanced card with custom styling, statistics, and multiple
+              interactive elements.
+            </Typography>
+          </View>
+        </CardContent>
+        <CardFooter
+          padding="lg"
+          style={styles.complexFooter}
+          justifyContent="space-between"
+        >
+          <Button variant="ghost" size="sm" style={styles.lightButton}>
+            <ButtonIcon
+              icon={<MaterialIcons name="share" size={16} color="#fff" />}
+            />
+            <ButtonText style={styles.lightText}>Share</ButtonText>
+          </Button>
+          <Button variant="outline" size="sm" style={styles.lightButton}>
+            <ButtonIcon
+              icon={<MaterialIcons name="favorite" size={16} color="#fff" />}
+            />
+            <Typography style={styles.lightText}>Like</Typography>
+          </Button>
+        </CardFooter>
+      </Card>
+
+      {/* Additional Examples Section */}
+      <Typography variant="h6" style={styles.sectionTitleWithMargin}>
+        Advanced Examples
+      </Typography>
+
+      {/* Default */}
+      <Card elevation={5} margin="md" borderRadius="xl">
+        <CardHeader title="Primary Card" subtitle="High elevation example" />
+        <CardContent>
+          <Typography>Primary variant with increased elevation</Typography>
+        </CardContent>
+        <CardFooter>
+          <Button size="sm" variant="primary">
+            <ButtonText>Action</ButtonText>
+          </Button>
+        </CardFooter>
+      </Card>
+
+      {/* Outline */}
+      <Card variant="outline" elevation={5} margin="md" borderRadius="xl">
+        <CardHeader title="Primary Card" subtitle="High elevation example" />
+        <CardContent>
+          <Typography>Primary variant with increased elevation</Typography>
+        </CardContent>
+        <CardFooter>
+          <Button size="sm" variant="primary">
+            <ButtonText>Action</ButtonText>
+          </Button>
+        </CardFooter>
+      </Card>
+
+      {/* Primary with High Elevation */}
+      <Card variant="primary" elevation={5} margin="md" borderRadius="xl">
+        <CardHeader title="Primary Card" subtitle="High elevation example" />
+        <CardContent>
+          <Typography>Primary variant with increased elevation</Typography>
+        </CardContent>
+        <CardFooter>
+          <Button size="sm" variant="primary">
+            <ButtonText>Action</ButtonText>
+          </Button>
+        </CardFooter>
+      </Card>
+
+      {/* Secondary with Custom Padding */}
+      <Card variant="secondary" margin="md" padding="lg">
+        <CardHeader
+          title="Secondary Card"
+          subtitle="Custom padding"
+          padding="lg"
+        />
+        <CardContent padding="xl">
+          <Typography>Secondary variant with larger padding</Typography>
+        </CardContent>
+        <CardFooter padding="lg">
+          <Button size="sm" variant="secondary">
+            <ButtonText>Action</ButtonText>
+          </Button>
+        </CardFooter>
+      </Card>
+
+      {/* Ghost Card with Icon */}
+      <Card variant="ghost" margin="md">
+        <CardHeader title="Ghost Card" subtitle="Transparent styling" />
+        <CardContent>
+          <View style={styles.iconContainer}>
+            <MaterialIcons name="lightbulb" size={24} color="orange" />
+            <Typography style={styles.ml8}>
+              Ghost variant with transparent background
+            </Typography>
+          </View>
         </CardContent>
       </Card>
 
-      {/* State Variants */}
-      <Card variant="success" margin="md">
-        <CardHeader
-          title="Success State"
-          subtitle="Operation completed"
-          borderBottom
-        />
+      {/* Success Card with Actions */}
+      <Card variant="success" margin="md" borderRadius="lg" elevation={2}>
+        <CardHeader title="Success Status" subtitle="Task completed" />
         <CardContent>
-          <Typography>Success state with positive message</Typography>
+          <View style={styles.iconContainer}>
+            <MaterialIcons name="check-circle" size={24} color="green" />
+            <Typography style={styles.ml8}>Operation successful!</Typography>
+          </View>
         </CardContent>
-        <CardFooter showBorder justifyContent="flex-end">
+        <CardFooter justifyContent="flex-end">
           <Button size="sm" variant="success">
+            <ButtonIcon
+              icon={
+                <MaterialIcons name="arrow-forward" size={18} color="white" />
+              }
+            />
             <ButtonText>Continue</ButtonText>
           </Button>
         </CardFooter>
       </Card>
 
-      <Card variant="error" margin="md">
-        <CardHeader
-          title="Error State"
-          subtitle="Something went wrong"
-          borderBottom
-        />
+      {/* Error Card with Actions */}
+      <Card variant="error" margin="md" borderRadius="lg" elevation={2}>
+        <CardHeader title="Error Status" subtitle="Action failed" />
         <CardContent>
-          <Typography>Error state with error message</Typography>
+          <View style={styles.iconContainer}>
+            <MaterialIcons name="error" size={24} color="red" />
+            <Typography style={styles.ml8}>Something went wrong!</Typography>
+          </View>
         </CardContent>
-        <CardFooter showBorder justifyContent="space-between">
+        <CardFooter justifyContent="space-between">
           <Button size="sm" variant="ghost">
+            <ButtonIcon
+              icon={<MaterialIcons name="arrow-back" size={18} color="red" />}
+            />
             <ButtonText>Back</ButtonText>
           </Button>
           <Button size="sm" variant="error">
+            <ButtonIcon
+              icon={<MaterialIcons name="refresh" size={18} color="white" />}
+            />
             <ButtonText>Retry</ButtonText>
           </Button>
         </CardFooter>
       </Card>
 
-      <Card variant="warning" margin="md">
-        <CardHeader title="Warning" />
+      {/* Info Card with Custom Shadow */}
+      <Card variant="info" margin="md" shadowOpacity={0.2} elevation={3}>
+        <CardHeader title="Information" subtitle="With custom shadow" />
         <CardContent>
-          <Typography>Warning variant</Typography>
+          <View style={styles.iconContainer}>
+            <MaterialIcons name="info" size={24} color="blue" />
+            <Typography style={styles.ml8}>
+              Important information here
+            </Typography>
+          </View>
         </CardContent>
       </Card>
 
-      <Card variant="info" margin="md">
-        <CardHeader title="Info" />
+      {/* Warning Card */}
+      <Card variant="warning" margin="md" borderRadius="sm">
+        <CardHeader title="Warning" subtitle="Action required" />
         <CardContent>
-          <Typography>Info variant</Typography>
+          <View style={styles.iconContainer}>
+            <MaterialIcons name="warning" size={24} color="orange" />
+            <Typography style={styles.ml8}>
+              Please review this information
+            </Typography>
+          </View>
         </CardContent>
-      </Card>
-
-      <Card variant="destructive" margin="md">
-        <CardHeader title="Destructive" />
-        <CardContent>
-          <Typography>Destructive variant</Typography>
-        </CardContent>
-      </Card>
-
-      <Typography variant="h6" style={styles.sectionTitleWithMargin}>
-        Sizes
-      </Typography>
-      <Card size="xs" margin="md">
-        <CardHeader title="Extra Small" subtitle="Compact size" />
-        <CardContent>
-          <Typography>Minimal content for XS size</Typography>
-        </CardContent>
-        <CardFooter showBorder justifyContent="flex-end">
-          <Button size="xs">
-            <ButtonText>Action</ButtonText>
+        <CardFooter justifyContent="flex-end">
+          <Button size="sm" variant="warning">
+            <ButtonText>Review</ButtonText>
           </Button>
         </CardFooter>
       </Card>
 
-      <Card size="sm" margin="md">
-        <CardHeader title="Small" />
-        <CardContent>
-          <Typography>Small size card</Typography>
-        </CardContent>
-      </Card>
-
-      <Card size="md" margin="md">
-        <CardHeader title="Medium" />
-        <CardContent>
-          <Typography>Medium size card (default)</Typography>
-        </CardContent>
-      </Card>
-
-      <Card size="lg" margin="md">
-        <CardHeader title="Large" />
-        <CardContent>
-          <Typography>Large size card</Typography>
-        </CardContent>
-      </Card>
-
-      <Card size="xl" margin="md">
+      {/* Filled Card with Stats */}
+      <Card
+        variant="filled"
+        margin="md"
+        backgroundColor={theme.colors.secondary}
+      >
         <CardHeader
-          title="Extra Large"
-          subtitle="Maximum size option"
-          borderBottom
+          title="Statistics"
+          subtitle="Monthly overview"
+          titleStyle={styles.lightText}
+          subtitleStyle={styles.lightText}
         />
         <CardContent>
-          <Typography>Spacious content area for XL size</Typography>
-        </CardContent>
-        <CardFooter showBorder justifyContent="space-between">
-          <Button size="xl" variant="ghost">
-            <ButtonText>Cancel</ButtonText>
-          </Button>
-          <Button size="xl" variant="primary">
-            <ButtonText>Confirm</ButtonText>
-          </Button>
-        </CardFooter>
-      </Card>
-
-      <Typography variant="h6" style={styles.sectionTitleWithMargin}>
-        States
-      </Typography>
-      <Card disabled margin="md">
-        <CardHeader title="Disabled State" />
-        <CardContent>
-          <Typography>Disabled card state</Typography>
-        </CardContent>
-      </Card>
-
-      <Typography variant="h6" style={styles.sectionTitleWithMargin}>
-        Border Radius
-      </Typography>
-      <Card borderRadius="xs" margin="md">
-        <CardHeader title="No Border Radius" />
-        <CardContent>
-          <Typography>Card with no border radius</Typography>
-        </CardContent>
-      </Card>
-
-      <Card borderRadius="sm" margin="md">
-        <CardHeader title="Small Border Radius" />
-        <CardContent>
-          <Typography>Card with small border radius</Typography>
-        </CardContent>
-      </Card>
-
-      <Card borderRadius="md" margin="md">
-        <CardHeader title="Medium Border Radius" />
-        <CardContent>
-          <Typography>Card with medium border radius</Typography>
-        </CardContent>
-      </Card>
-
-      <Card borderRadius="lg" margin="md">
-        <CardHeader title="Large Border Radius" />
-        <CardContent>
-          <Typography>Card with large border radius</Typography>
-        </CardContent>
-      </Card>
-
-      <Card borderRadius="xl" margin="md">
-        <CardHeader title="Extra Large Border Radius" />
-        <CardContent>
-          <Typography>Card with extra large border radius</Typography>
-        </CardContent>
-      </Card>
-
-      <Typography variant="h6" style={styles.sectionTitleWithMargin}>
-        Elevation
-      </Typography>
-      <Card elevation={0} margin="md">
-        <CardHeader title="No Elevation" />
-        <CardContent>
-          <Typography>Card with no elevation</Typography>
-        </CardContent>
-      </Card>
-
-      <Card elevation={1} margin="md">
-        <CardHeader title="Low Elevation" />
-        <CardContent>
-          <Typography>Card with low elevation</Typography>
-        </CardContent>
-      </Card>
-
-      <Card elevation={3} margin="md">
-        <CardHeader title="Medium Elevation" />
-        <CardContent>
-          <Typography>Card with medium elevation</Typography>
-        </CardContent>
-      </Card>
-
-      <Card elevation={5} margin="md">
-        <CardHeader title="High Elevation" />
-        <CardContent>
-          <Typography>Card with high elevation</Typography>
-        </CardContent>
-      </Card>
-
-      <Typography variant="h6" style={styles.sectionTitleWithMargin}>
-        Custom Background
-      </Typography>
-      <Card backgroundColor="primary" margin="md">
-        <CardHeader title="Custom Background" titleStyle={styles.lightText} />
-        <CardContent>
-          <Typography style={styles.lightText}>
-            Card with custom background color
-          </Typography>
+          <View style={styles.statsGrid}>
+            <View style={styles.statsItem}>
+              <Typography style={styles.statsLabel}>New Users</Typography>
+              <Typography style={styles.statsValue}>1,234</Typography>
+            </View>
+            <View style={styles.statsItem}>
+              <Typography style={styles.statsLabel}>Active</Typography>
+              <Typography style={styles.statsValue}>891</Typography>
+            </View>
+            <View style={styles.statsItem}>
+              <Typography style={styles.statsLabel}>Revenue</Typography>
+              <Typography style={styles.statsValue}>$12.4k</Typography>
+            </View>
+          </View>
         </CardContent>
       </Card>
     </ScrollView>
@@ -311,24 +321,104 @@ const CardScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
+    backgroundColor: '#f9f9f9' as const,
   },
   content: {
     padding: 16,
     gap: 16,
   },
-  sectionTitle: {
-    marginBottom: 16,
-    fontWeight: '600',
-  } as TextStyle,
-  sectionTitleWithMargin: {
-    marginTop: 24,
-    marginBottom: 16,
-    fontWeight: '600',
-  } as TextStyle,
   lightText: {
+    color: '#ffffff' as const,
+  },
+  interactiveCard: {
+    borderColor: '#e2e8f0' as const,
+  },
+  bulletPoints: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    marginBottom: 4,
+  },
+  bulletText: {
+    marginLeft: 8,
+  },
+  footerButtons: {
+    flexDirection: 'row' as const,
+  },
+  mr8: {
+    marginRight: 8,
+  },
+  mb8: {
+    marginBottom: 8,
+  },
+  mt16: {
+    marginTop: 16,
+  },
+  complexContent: {
+    paddingVertical: 8,
+  },
+  statsContainer: {
+    flexDirection: 'row' as const,
+    justifyContent: 'space-around' as const,
+    paddingVertical: 8,
+  },
+  statItem: {
+    alignItems: 'center' as const,
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: 'bold' as const,
+    color: '#ffffff' as const,
+  },
+  statLabel: {
+    fontSize: 12,
+    opacity: 0.8,
+  },
+  // Combined styles untuk menghindari array
+  lightStatLabel: {
+    color: '#ffffff' as const,
+    fontSize: 12,
+    opacity: 0.8,
+  },
+  lightTextWithMargin: {
+    color: '#ffffff' as const,
+    marginTop: 16,
+  },
+  complexFooter: {},
+  lightButton: {
+    borderColor: 'rgba(255,255,255,0.3)' as const,
+  },
+  iconContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  ml8: {
+    marginLeft: 8,
+  },
+  statsGrid: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    paddingVertical: 16,
+  },
+  statsItem: {
+    alignItems: 'center',
+  },
+  statsLabel: {
+    fontSize: 12,
+    color: 'rgba(255,255,255,0.7)',
+    marginBottom: 4,
+  },
+  statsValue: {
+    fontSize: 20,
+    fontWeight: 'bold',
     color: '#ffffff',
-  } as TextStyle,
+  },
+  sectionTitleWithMargin: {
+    marginTop: 32,
+    marginBottom: 16,
+    fontSize: 20,
+    fontWeight: '600',
+    color: '#000000',
+  },
 });
 
 export default CardScreen;
