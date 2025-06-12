@@ -1,4 +1,4 @@
-import React, { forwardRef } from 'react';
+import React, { forwardRef, createContext, useContext } from 'react';
 import { Text, TextStyle, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -169,6 +169,11 @@ const createStyles = (theme: Theme) =>
     StateStylesType &
     Record<ComponentVariant, ViewStyle>);
 
+// Tambahkan Context untuk Card variant
+const CardContext = createContext<{ variant: ComponentVariant }>({
+  variant: 'default',
+});
+
 const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
   (
     {
@@ -213,9 +218,11 @@ const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
     }
 
     return (
-      <View ref={ref} style={cardStyles} {...props}>
-        {children}
-      </View>
+      <CardContext.Provider value={{ variant }}>
+        <View ref={ref} style={cardStyles} {...props}>
+          {children}
+        </View>
+      </CardContext.Provider>
     );
   }
 );
@@ -278,6 +285,34 @@ const CardFooter = forwardRef<React.ComponentRef<typeof View>, CardFooterProps>(
   }
 );
 
+// Helper function untuk menentukan warna teks berdasarkan variant
+const getTextColor = (
+  variant: ComponentVariant,
+  theme: Theme
+): { title: string; subtitle: string } => {
+  const darkVariants = [
+    'primary',
+    'secondary',
+    'success',
+    'error',
+    'warning',
+    'info',
+    'filled',
+  ];
+
+  if (darkVariants.includes(variant)) {
+    return {
+      title: '#ffffff',
+      subtitle: 'rgba(255, 255, 255, 0.8)',
+    };
+  }
+
+  return {
+    title: theme.colors.text,
+    subtitle: theme.colors.textSecondary,
+  };
+};
+
 const CardHeader = forwardRef<React.ComponentRef<typeof View>, CardHeaderProps>(
   (
     {
@@ -296,6 +331,8 @@ const CardHeader = forwardRef<React.ComponentRef<typeof View>, CardHeaderProps>(
     ref
   ) => {
     const { theme } = useTheme();
+    const { variant } = useContext(CardContext);
+    const textColors = getTextColor(variant, theme);
 
     return (
       <View
@@ -316,7 +353,7 @@ const CardHeader = forwardRef<React.ComponentRef<typeof View>, CardHeaderProps>(
               {
                 fontSize: theme.typography[titleVariant].fontSize,
                 lineHeight: theme.typography[titleVariant].lineHeight,
-                color: theme.colors.text,
+                color: textColors.title,
                 fontWeight: '600',
                 marginBottom: subtitle ? theme.spacing.xs : 0,
               },
@@ -332,7 +369,7 @@ const CardHeader = forwardRef<React.ComponentRef<typeof View>, CardHeaderProps>(
               {
                 fontSize: theme.typography[subtitleVariant].fontSize,
                 lineHeight: theme.typography[subtitleVariant].lineHeight,
-                color: theme.colors.textSecondary,
+                color: textColors.subtitle,
                 fontWeight: '400',
               },
               subtitleStyle,

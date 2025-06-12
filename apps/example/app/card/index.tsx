@@ -154,9 +154,9 @@ const CardScreen = () => {
 
       {/* Outline */}
       <Card variant="outline" elevation={5} margin="md" borderRadius="xl">
-        <CardHeader title="Primary Card" subtitle="High elevation example" />
+        <CardHeader title="Outline Card" subtitle="High elevation example" />
         <CardContent>
-          <Typography>Primary variant with increased elevation</Typography>
+          <Typography>Outline variant with increased elevation</Typography>
         </CardContent>
         <CardFooter>
           <Button size="sm" variant="primary">
@@ -167,9 +167,16 @@ const CardScreen = () => {
 
       {/* Primary with High Elevation */}
       <Card variant="primary" elevation={5} margin="md" borderRadius="xl">
-        <CardHeader title="Primary Card" subtitle="High elevation example" />
+        <CardHeader
+          title="Primary Card"
+          subtitle="High elevation example"
+          titleStyle={styles.lightText}
+          subtitleStyle={styles.lightText}
+        />
         <CardContent>
-          <Typography>Primary variant with increased elevation</Typography>
+          <Typography style={styles.lightText}>
+            Primary variant with increased elevation
+          </Typography>
         </CardContent>
         <CardFooter>
           <Button size="sm" variant="primary">
@@ -184,9 +191,13 @@ const CardScreen = () => {
           title="Secondary Card"
           subtitle="Custom padding"
           padding="lg"
+          titleStyle={styles.lightText}
+          subtitleStyle={styles.lightText}
         />
         <CardContent padding="xl">
-          <Typography>Secondary variant with larger padding</Typography>
+          <Typography style={styles.lightText}>
+            Secondary variant with larger padding
+          </Typography>
         </CardContent>
         <CardFooter padding="lg">
           <Button size="sm" variant="secondary">
@@ -210,7 +221,12 @@ const CardScreen = () => {
 
       {/* Success Card with Actions */}
       <Card variant="success" margin="md" borderRadius="lg" elevation={2}>
-        <CardHeader title="Success Status" subtitle="Task completed" />
+        <CardHeader
+          title="Success Status"
+          subtitle="Task completed"
+          titleStyle={styles.lightText}
+          subtitleStyle={styles.lightText}
+        />
         <CardContent>
           <View style={styles.iconContainer}>
             <MaterialIcons name="check-circle" size={24} color="green" />
@@ -231,7 +247,12 @@ const CardScreen = () => {
 
       {/* Error Card with Actions */}
       <Card variant="error" margin="md" borderRadius="lg" elevation={2}>
-        <CardHeader title="Error Status" subtitle="Action failed" />
+        <CardHeader
+          title="Error Status"
+          subtitle="Action failed"
+          titleStyle={styles.lightText}
+          subtitleStyle={styles.lightText}
+        />
         <CardContent>
           <View style={styles.iconContainer}>
             <MaterialIcons name="error" size={24} color="red" />
@@ -256,7 +277,12 @@ const CardScreen = () => {
 
       {/* Info Card with Custom Shadow */}
       <Card variant="info" margin="md" shadowOpacity={0.2} elevation={3}>
-        <CardHeader title="Information" subtitle="With custom shadow" />
+        <CardHeader
+          title="Information"
+          subtitle="With custom shadow"
+          titleStyle={styles.lightText}
+          subtitleStyle={styles.lightText}
+        />
         <CardContent>
           <View style={styles.iconContainer}>
             <MaterialIcons name="info" size={24} color="blue" />
@@ -269,7 +295,12 @@ const CardScreen = () => {
 
       {/* Warning Card */}
       <Card variant="warning" margin="md" borderRadius="sm">
-        <CardHeader title="Warning" subtitle="Action required" />
+        <CardHeader
+          title="Warning"
+          subtitle="Action required"
+          titleStyle={styles.lightText}
+          subtitleStyle={styles.lightText}
+        />
         <CardContent>
           <View style={styles.iconContainer}>
             <MaterialIcons name="warning" size={24} color="orange" />
