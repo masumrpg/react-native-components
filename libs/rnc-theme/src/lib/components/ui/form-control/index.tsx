@@ -7,7 +7,7 @@ import {
 } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import { resolveColor } from '../../../utils/color';
+import { resolveColor } from '../../../utils';
 import { Theme } from '../../../types/theme';
 import { AlertCircle } from 'lucide-react-native';
 

@@ -1,14 +1,14 @@
-import React, { forwardRef, useCallback } from 'react';
+import React, { forwardRef } from 'react';
 import { Text, TextStyle, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import { resolveColor } from '../../../utils/color';
 import { Theme } from '../../../types/theme';
 import {
   ComponentState,
   BaseFormComponentProps,
   ComponentVariant,
 } from '../../../types/ui';
+import { getBackgroundColor, getSizeStyles } from '../../../utils';
 
 type CardVariant = ComponentVariant;
 
@@ -22,7 +22,7 @@ interface BaseCardProps
   elevation?: number;
   shadowOpacity?: number;
   backgroundColor?: string;
-  variant?: CardVariant; // Update variant type
+  variant?: CardVariant;
 }
 
 type CardProps = BaseCardProps & React.ComponentPropsWithoutRef<typeof View>;
@@ -201,54 +201,14 @@ const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
     const { theme } = useTheme();
     const styles = useThemedStyles(createStyles);
 
-    const getSizeStyles = (): ViewStyle => {
-      switch (size) {
-        case 'xs':
-          return styles.sizeXs;
-        case 'sm':
-          return styles.sizeSm;
-        case 'lg':
-          return styles.sizeLg;
-        case 'xl':
-          return styles.sizeXl;
-        default:
-          return styles.sizeMd;
-      }
-    };
-
-    const getBackgroundColor = useCallback((): string => {
-      if (disabled) return theme.colors.background;
-
-      switch (variant) {
-        case 'primary':
-          return `${theme.colors.primary}40`;
-        case 'secondary':
-          return `${theme.colors.secondary}40`;
-        case 'outline':
-          return 'transparent';
-        case 'ghost':
-          return 'transparent';
-        case 'success':
-          return `${theme.colors.success}40`;
-        case 'error':
-          return `${theme.colors.error}40`;
-        case 'warning':
-          return `${theme.colors.warning}40`;
-        case 'info':
-          return `${theme.colors.info}40`;
-        case 'destructive':
-          return `${theme.colors.destructive}40`;
-        default:
-          return theme.colors.surface;
-      }
-    }, [disabled, variant, theme.colors]);
-
     const cardStyles: ViewStyle[] = [
       styles.base,
-      styles[variant as CardVariant], // Add type assertion here
-      getSizeStyles(),
+      styles[variant],
+      getSizeStyles(size, styles),
       {
-        backgroundColor: backgroundColor ?? getBackgroundColor(),
+        backgroundColor:
+          backgroundColor ??
+          getBackgroundColor(variant, theme.colors, disabled),
         borderRadius: theme.components.borderRadius[borderRadius],
         shadowOpacity,
         elevation: disabled ? 0 : elevation,

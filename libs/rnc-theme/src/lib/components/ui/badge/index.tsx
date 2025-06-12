@@ -7,7 +7,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-import { resolveColor } from '../../../utils/color';
+import { resolveColor } from '../../../utils';
 
 type BadgeVariant =
   | 'default'
@@ -154,7 +154,7 @@ const createBadgeStyles = (theme: Theme) => ({
     borderWidth: 1,
   } as ViewStyle,
   rounded: {
-    borderRadius: theme.borderRadius.xl,
+    borderRadius: theme.components.borderRadius.xl,
   } as ViewStyle,
   // Variants
   default: {

@@ -18,7 +18,7 @@ import Animated, {
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-import { resolveColor } from '../../../utils/color';
+import { resolveColor } from '../../../utils';
 import { User } from 'lucide-react-native';
 
 // Types
@@ -161,7 +161,10 @@ const Avatar = forwardRef<React.ComponentRef<typeof View>, AvatarProps>(
       const baseStyle = {
         width: sizeConfig.size,
         height: sizeConfig.size,
-        borderRadius: shape === 'circle' ? sizeConfig.size / 2 : theme.borderRadius.md,
+        borderRadius:
+          shape === 'circle'
+            ? sizeConfig.size / 2
+            : theme.components.borderRadius.md,
         borderWidth,
         borderColor: resolveColor(theme, borderColor, theme.colors.border),
       };
@@ -192,7 +195,10 @@ const Avatar = forwardRef<React.ComponentRef<typeof View>, AvatarProps>(
               {
                 width: sizeConfig.size,
                 height: sizeConfig.size,
-                borderRadius: shape === 'circle' ? sizeConfig.size / 2 : theme.borderRadius.md,
+                borderRadius:
+                  shape === 'circle'
+                    ? sizeConfig.size / 2
+                    : theme.components.borderRadius.md,
               },
               imageStyle,
             ]}

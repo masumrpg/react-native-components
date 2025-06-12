@@ -10,7 +10,7 @@ import Animated, {
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-import { resolveColor } from '../../../utils/color';
+import { resolveColor } from '../../../utils';
 
 interface SpinnerProps {
   size?: 'sm' | 'md' | 'lg' | number;

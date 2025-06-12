@@ -33,6 +33,7 @@ import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { ComponentState, BaseFormComponentProps } from '../../../types/ui';
 import { Eye, EyeOff, Search } from 'lucide-react-native';
 import { ANIMATION_CONSTANTS } from '../../../constants/ui';
+import { getBackgroundColor, getSizeStyles } from '../../../utils';
 
 interface BaseInputProps
   extends Omit<BaseFormComponentProps, 'onFocus' | 'onBlur'> {
@@ -250,33 +251,6 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       }
     }, [value, inputValue, animated, isFloatingVariant, labelAnimation]);
 
-    const getBackgroundColor = useCallback((): string => {
-      if (disabled) return theme.colors.background;
-
-      switch (variant) {
-        case 'primary':
-          return `${theme.colors.primary}40`;
-        case 'secondary':
-          return `${theme.colors.secondary}40`;
-        case 'outline':
-          return 'transparent';
-        case 'ghost':
-          return 'transparent';
-        case 'success':
-          return `${theme.colors.success}40`;
-        case 'error':
-          return `${theme.colors.error}40`;
-        case 'warning':
-          return `${theme.colors.warning}40`;
-        case 'info':
-          return `${theme.colors.info}40`;
-        case 'destructive':
-          return `${theme.colors.destructive}40`;
-        default:
-          return theme.colors.surface;
-      }
-    }, [disabled, variant, theme.colors]);
-
     // Animated styles with proper typing
     const animatedContainerStyle = useAnimatedStyle(() => {
       if (!animated) return {};
@@ -363,21 +337,6 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         transform: [{ translateY }],
       };
     }, [animated]);
-
-    const getSizeStyles = useCallback((): ViewStyle => {
-      switch (size) {
-        case 'xs':
-          return styles.sizeXs;
-        case 'sm':
-          return styles.sizeSm;
-        case 'lg':
-          return styles.sizeLg;
-        case 'xl':
-          return styles.sizeXl;
-        default:
-          return styles.sizeMd;
-      }
-    }, [size, styles]);
 
     const getTextInputStyles = useCallback((): TextStyle[] => {
       const baseStyle: TextStyle[] = [
@@ -564,9 +523,9 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       const baseStyles: ViewStyle[] = [
         styles.inputContainer,
         styles[variant],
-        getSizeStyles(),
+        getSizeStyles(size, styles),
         {
-          backgroundColor: getBackgroundColor(),
+          backgroundColor: getBackgroundColor(variant, theme.colors, disabled),
           borderRadius: theme.components.borderRadius[borderRadius],
         },
       ];
@@ -592,13 +551,14 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
     }, [
       styles,
       variant,
-      getSizeStyles,
-      getBackgroundColor,
+      size,
+      theme.colors,
       theme.components.borderRadius,
+      disabled,
       borderRadius,
+      isTextAreaInput,
       state,
       style,
-      isTextAreaInput,
     ]);
 
     // Add password visibility state

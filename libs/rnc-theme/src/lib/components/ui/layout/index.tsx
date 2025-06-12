@@ -3,7 +3,7 @@ import { DimensionValue, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-import { resolveColor } from '../../../utils/color';
+import { resolveColor } from '../../../utils';
 
 interface BaseLayoutProps {
   children?: React.ReactNode;
@@ -11,7 +11,7 @@ interface BaseLayoutProps {
   padding?: keyof Theme['spacing'];
   margin?: keyof Theme['spacing'];
   backgroundColor?: string | keyof Theme['colors'];
-  borderRadius?: keyof Theme['borderRadius'];
+  borderRadius?: keyof Theme['components']['borderRadius'];
   flex?: number;
   width?: DimensionValue | undefined;
   height?: DimensionValue | undefined;
@@ -92,7 +92,9 @@ const HStack = forwardRef<React.ComponentRef<typeof View>, StackProps>(
         backgroundColor,
         themed ? theme.colors.background : 'transparent'
       ),
-      borderRadius: borderRadius ? theme.borderRadius[borderRadius] : undefined,
+      borderRadius: borderRadius
+        ? theme.components.borderRadius[borderRadius]
+        : undefined,
       flex,
       width,
       height,
@@ -146,7 +148,9 @@ const VStack = forwardRef<React.ComponentRef<typeof View>, StackProps>(
         backgroundColor,
         themed ? theme.colors.background : 'transparent'
       ),
-      borderRadius: borderRadius ? theme.borderRadius[borderRadius] : undefined,
+      borderRadius: borderRadius
+        ? theme.components.borderRadius[borderRadius]
+        : undefined,
       flex,
       width,
       height,
@@ -192,7 +196,9 @@ const ZStack = forwardRef<React.ComponentRef<typeof View>, BaseLayoutProps>(
         backgroundColor,
         themed ? theme.colors.background : 'transparent'
       ),
-      borderRadius: borderRadius ? theme.borderRadius[borderRadius] : undefined,
+      borderRadius: borderRadius
+        ? theme.components.borderRadius[borderRadius]
+        : undefined,
       flex,
       width,
       height,
@@ -238,7 +244,9 @@ const Center = forwardRef<React.ComponentRef<typeof View>, CenterProps>(
         backgroundColor,
         themed ? theme.colors.background : 'transparent'
       ),
-      borderRadius: borderRadius ? theme.borderRadius[borderRadius] : undefined,
+      borderRadius: borderRadius
+        ? theme.components.borderRadius[borderRadius]
+        : undefined,
       flex,
       width,
       height,
@@ -301,7 +309,9 @@ const Box = forwardRef<React.ComponentRef<typeof View>, BoxProps>(
         backgroundColor,
         themed ? theme.colors.surface : 'transparent'
       ),
-      borderRadius: borderRadius ? theme.borderRadius[borderRadius] : undefined,
+      borderRadius: borderRadius
+        ? theme.components.borderRadius[borderRadius]
+        : undefined,
       borderWidth: borderWidth || undefined,
       borderColor: resolveColor(theme, borderColor, theme.colors.border),
       shadowOpacity: shadowOpacity || undefined,
@@ -358,7 +368,9 @@ const Grid = forwardRef<React.ComponentRef<typeof View>, GridProps>(
         backgroundColor,
         themed ? theme.colors.background : 'transparent'
       ),
-      borderRadius: borderRadius ? theme.borderRadius[borderRadius] : undefined,
+      borderRadius: borderRadius
+        ? theme.components.borderRadius[borderRadius]
+        : undefined,
       flex,
       width,
       height,
@@ -437,7 +449,7 @@ const createBoxStyles = (theme: Theme) => ({
   },
   card: {
     backgroundColor: theme.colors.surface,
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: theme.components.borderRadius.lg,
     padding: theme.spacing.md,
     shadowColor: theme.colors.text,
     shadowOffset: { width: 0, height: 2 },

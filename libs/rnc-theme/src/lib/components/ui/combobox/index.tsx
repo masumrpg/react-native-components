@@ -25,7 +25,7 @@ import {
 import { useTheme } from '../../../context/ThemeContext';
 import { Theme } from '../../../types/theme';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import { resolveColor } from '../../../utils/color';
+import { resolveColor } from '../../../utils';
 import { ChevronDown, Check, X } from 'lucide-react-native';
 import {
   ComponentSize,

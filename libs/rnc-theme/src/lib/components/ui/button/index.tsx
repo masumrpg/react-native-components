@@ -27,7 +27,7 @@ import Animated, {
 import { Theme } from '../../../types/theme';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import { resolveColor } from '../../../utils/color';
+import { resolveColor } from '../../../utils';
 import { Spinner } from '../spinner';
 
 // Animated components

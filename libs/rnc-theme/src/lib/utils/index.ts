@@ -1,0 +1,71 @@
+import { ComponentSize, ComponentVariant } from '../types/ui';
+import { Theme } from '../types/theme';
+import { ViewStyle } from 'react-native';
+
+const resolveColor = (
+  theme: Theme,
+  color: string | keyof Theme['colors'] | undefined,
+  fallback: string
+): string => {
+  if (!color) return fallback;
+
+  if (typeof color === 'string') {
+    if (color.startsWith('#')) return color;
+
+    if (color in theme.colors) {
+      return theme.colors[color as keyof Theme['colors']];
+    }
+
+    return color;
+  }
+
+  return theme.colors[color];
+};
+
+const getBackgroundColor = (
+  variant: ComponentVariant,
+  colors: Theme['colors'],
+  disabled?: boolean
+): string => {
+  if (disabled) return colors.background;
+
+  switch (variant) {
+    case 'primary':
+      return `${colors.primary}40`;
+    case 'secondary':
+      return `${colors.secondary}40`;
+    case 'outline':
+      return 'transparent';
+    case 'ghost':
+      return 'transparent';
+    case 'success':
+      return `${colors.success}40`;
+    case 'error':
+      return `${colors.error}40`;
+    case 'warning':
+      return `${colors.warning}40`;
+    case 'info':
+      return `${colors.info}40`;
+    case 'destructive':
+      return `${colors.destructive}40`;
+    default:
+      return colors.surface;
+  }
+};
+
+const getSizeStyles = (size: ComponentSize, styles: { sizeXs: ViewStyle; sizeSm: ViewStyle; sizeLg: ViewStyle; sizeXl: ViewStyle; sizeMd: ViewStyle; }): ViewStyle => {
+  switch (size) {
+    case 'xs':
+      return styles.sizeXs;
+    case 'sm':
+      return styles.sizeSm;
+    case 'lg':
+      return styles.sizeLg;
+    case 'xl':
+      return styles.sizeXl;
+    default:
+      return styles.sizeMd;
+  }
+};
+
+export { resolveColor, getBackgroundColor, getSizeStyles };

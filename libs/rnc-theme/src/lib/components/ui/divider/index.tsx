@@ -2,7 +2,7 @@ import React, { forwardRef } from 'react';
 import { View, ViewStyle, DimensionValue } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import { resolveColor } from '../../../utils/color';
+import { resolveColor } from '../../../utils';
 import { Theme } from '../../../types/theme';
 
 interface DividerProps {

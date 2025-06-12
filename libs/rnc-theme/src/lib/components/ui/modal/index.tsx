@@ -30,7 +30,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import { resolveColor } from '../../../utils/color';
+import { resolveColor } from '../../../utils';
 import { Theme } from '../../../types/theme';
 
 // Types
