@@ -30,11 +30,7 @@ import Animated, {
 import { useTheme } from '../../../context/ThemeContext';
 import { Theme } from '../../../types/theme';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import {
-  ComponentSize,
-  ComponentState,
-  ComponentVariant,
-} from '../../../types/ui';
+import { ComponentState, BaseFormComponentProps } from '../../../types/ui';
 import { Eye, EyeOff, Search } from 'lucide-react-native';
 
 // Animation constants
@@ -45,29 +41,21 @@ const SPRING_CONFIG = {
   mass: 1,
 } as const;
 
-interface BaseInputProps {
+interface BaseInputProps
+  extends Omit<BaseFormComponentProps, 'onFocus' | 'onBlur'> {
   label?: string;
-  placeholder?: string;
-  variant?: ComponentVariant;
-  size?: ComponentSize;
   state?: ComponentState;
-  helperText?: string;
-  errorText?: string;
   leftIcon?: React.ReactNode;
   rightIcon?: React.ReactNode;
   onRightIconPress?: () => void;
-  required?: boolean;
-  disabled?: boolean;
   multiline?: boolean;
   numberOfLines?: number;
   maxLength?: number;
   showCharacterCount?: boolean;
   borderRadius?: keyof Theme['components']['borderRadius'];
-  style?: ViewStyle;
   inputStyle?: TextStyle;
   labelStyle?: TextStyle;
   helperTextStyle?: TextStyle;
-  animationEnabled?: boolean;
   floatingLabel?: boolean;
 
   // Add new type flags
@@ -78,9 +66,14 @@ interface BaseInputProps {
   // Password specific props
   showPasswordIcon?: React.ReactNode;
   hidePasswordIcon?: React.ReactNode;
+
+  // Override base props with correct types for React Native TextInput
+  onFocus?: (event: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+  onBlur?: (event: NativeSyntheticEvent<TextInputFocusEventData>) => void;
 }
 
-type InputProps = BaseInputProps & Omit<TextInputProps, 'style'>;
+type InputProps = BaseInputProps &
+  Omit<TextInputProps, 'style' | 'onFocus' | 'onBlur'>;
 
 const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
   (
@@ -91,12 +84,13 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       size = 'md',
       state = 'default',
       helperText,
-      errorText,
+      error,
       leftIcon,
       rightIcon,
       onRightIconPress,
       required = false,
       disabled = false,
+      readOnly = false,
       multiline = false,
       numberOfLines = 1,
       maxLength,
@@ -107,9 +101,11 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       labelStyle,
       helperTextStyle,
       value,
-      onChangeText,
-      animationEnabled = true,
+      defaultValue,
+      onChange,
+      animated = true,
       floatingLabel = false,
+      autoFocus = false,
       onFocus,
       onBlur,
       isPasswordInput = false,
@@ -117,6 +113,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       isTextAreaInput = false,
       showPasswordIcon,
       hidePasswordIcon,
+      testID,
       ...props
     },
     ref
@@ -124,18 +121,18 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
     const { theme } = useTheme();
     const styles = useThemedStyles(createStyles);
     const [isFocused, setIsFocused] = useState(false);
-    const [inputValue, setInputValue] = useState(value ?? '');
+    const [inputValue, setInputValue] = useState(value ?? defaultValue ?? '');
 
     // Animation values
     const focusAnimation = useSharedValue(0);
     const errorAnimation = useSharedValue(0);
     const borderAnimation = useSharedValue(0);
-    const labelAnimation = useSharedValue(value ? 1 : 0);
+    const labelAnimation = useSharedValue(value || defaultValue ? 1 : 0);
     const scaleAnimation = useSharedValue(1);
 
     const hasError = useMemo(
-      () => state === 'error' || Boolean(errorText),
-      [state, errorText]
+      () => state === 'error' || Boolean(error),
+      [state, error]
     );
     const hasValue = useMemo(() => inputValue.length > 0, [inputValue]);
     const isFloatingVariant = useMemo(() => floatingLabel, [floatingLabel]);
@@ -148,16 +145,16 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
     const handleChangeText = useCallback(
       (text: string) => {
         setInputValue(text);
-        onChangeText?.(text);
+        onChange?.(text);
 
-        if (animationEnabled && isFloatingVariant) {
+        if (animated && isFloatingVariant) {
           labelAnimation.value = withSpring(
             text.length > 0 ? 1 : 0,
             SPRING_CONFIG
           );
         }
       },
-      [onChangeText, animationEnabled, isFloatingVariant, labelAnimation]
+      [onChange, animated, isFloatingVariant, labelAnimation]
     );
 
     const handleFocus = useCallback(
@@ -165,7 +162,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         runOnJS(setFocusedJS)(true);
         onFocus?.(event);
 
-        if (animationEnabled) {
+        if (animated) {
           focusAnimation.value = withTiming(1, {
             duration: ANIMATION_DURATION,
           });
@@ -182,7 +179,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       },
       [
         onFocus,
-        animationEnabled,
+        animated,
         focusAnimation,
         borderAnimation,
         scaleAnimation,
@@ -197,7 +194,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         runOnJS(setFocusedJS)(false);
         onBlur?.(event);
 
-        if (animationEnabled) {
+        if (animated) {
           focusAnimation.value = withTiming(0, {
             duration: ANIMATION_DURATION,
           });
@@ -211,7 +208,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       },
       [
         onBlur,
-        animationEnabled,
+        animated,
         focusAnimation,
         borderAnimation,
         scaleAnimation,
@@ -224,32 +221,26 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
 
     // Update error animation when error state changes
     useEffect(() => {
-      if (animationEnabled) {
+      if (animated) {
         errorAnimation.value = withTiming(hasError ? 1 : 0, {
           duration: ANIMATION_DURATION,
           easing: Easing.out(Easing.cubic),
         });
       }
-    }, [hasError, animationEnabled, errorAnimation]);
+    }, [hasError, animated, errorAnimation]);
 
     // Update input value when prop changes
     useEffect(() => {
       if (value !== undefined && value !== inputValue) {
         setInputValue(value);
-        if (animationEnabled && isFloatingVariant) {
+        if (animated && isFloatingVariant) {
           labelAnimation.value = withSpring(
             value.length > 0 ? 1 : 0,
             SPRING_CONFIG
           );
         }
       }
-    }, [
-      value,
-      inputValue,
-      animationEnabled,
-      isFloatingVariant,
-      labelAnimation,
-    ]);
+    }, [value, inputValue, animated, isFloatingVariant, labelAnimation]);
 
     const getBackgroundColor = useCallback((): string => {
       if (disabled) return theme.colors.background;
@@ -259,7 +250,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
 
     // Animated styles with proper typing
     const animatedContainerStyle = useAnimatedStyle(() => {
-      if (!animationEnabled) return {};
+      if (!animated) return {};
 
       const currentStateColor = (() => {
         if (disabled) return theme.colors.textSecondary;
@@ -313,10 +304,10 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
               elevation,
             }),
       };
-    }, [animationEnabled, theme.colors, disabled, hasError, state]);
+    }, [animated, theme.colors, disabled, hasError, state]);
 
     const animatedLabelStyle = useAnimatedStyle(() => {
-      if (!animationEnabled || !isFloatingVariant) return {};
+      if (!animated || !isFloatingVariant) return {};
 
       const translateY = interpolate(labelAnimation.value, [0, 1], [0, -28]);
       const scale = interpolate(labelAnimation.value, [0, 1], [1, 0.8]);
@@ -330,10 +321,10 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         transform: [{ translateY }, { scale }],
         color,
       };
-    }, [animationEnabled, isFloatingVariant, theme.colors]);
+    }, [animated, isFloatingVariant, theme.colors]);
 
     const animatedErrorStyle = useAnimatedStyle(() => {
-      if (!animationEnabled) return {};
+      if (!animated) return {};
 
       const opacity = errorAnimation.value;
       const translateY = interpolate(errorAnimation.value, [0, 1], [10, 0]);
@@ -342,7 +333,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         opacity,
         transform: [{ translateY }],
       };
-    }, [animationEnabled]);
+    }, [animated]);
 
     const getSizeStyles = useCallback((): ViewStyle => {
       switch (size) {
@@ -446,11 +437,11 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
     ]);
 
     const renderHelperText = useCallback(() => {
-      const text = errorText || helperText;
+      const text = error || helperText;
       if (!text && !showCharacterCount) return null;
 
-      const HelperContainer = animationEnabled ? Animated.View : View;
-      const helperAnimatedStyle = animationEnabled ? animatedErrorStyle : {};
+      const HelperContainer = animated ? Animated.View : View;
+      const helperAnimatedStyle = animated ? animatedErrorStyle : {};
 
       return (
         <HelperContainer style={[styles.helperContainer, helperAnimatedStyle]}>
@@ -458,7 +449,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
             <Text
               style={[
                 styles.helperText,
-                errorText && styles.errorText,
+                error && styles.errorText,
                 helperTextStyle,
               ].filter(Boolean)}
             >
@@ -473,12 +464,12 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         </HelperContainer>
       );
     }, [
-      errorText,
+      error,
       helperText,
       showCharacterCount,
       maxLength,
       inputValue.length,
-      animationEnabled,
+      animated,
       animatedErrorStyle,
       styles,
       helperTextStyle,
@@ -490,6 +481,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         styles[variant],
         getSizeStyles(),
         {
+          backgroundColor: getBackgroundColor(),
           borderRadius: theme.components.borderRadius[borderRadius],
         },
       ];
@@ -592,13 +584,11 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       [getSpecializedInputProps]
     );
 
-    const ContainerComponent = animationEnabled ? Animated.View : View;
-    const containerAnimatedStyle = animationEnabled
-      ? animatedContainerStyle
-      : null;
+    const ContainerComponent = animated ? Animated.View : View;
+    const containerAnimatedStyle = animated ? animatedContainerStyle : null;
 
     return (
-      <View style={styles.container}>
+      <View style={styles.container} testID={testID}>
         {!isFloatingVariant && renderLabel()}
         <ContainerComponent
           style={[inputContainerStyle, containerAnimatedStyle]}
@@ -620,7 +610,8 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
             onChangeText={handleChangeText}
             onFocus={handleFocus}
             onBlur={handleBlur}
-            editable={!disabled}
+            editable={!disabled && !readOnly}
+            autoFocus={autoFocus}
             {...specializedProps}
             {...props}
           />
@@ -741,7 +732,7 @@ const createStyles = (theme: Theme) =>
     // Updated Sizes
     sizeXs: {
       paddingHorizontal: theme.spacing.xs,
-      paddingVertical: theme.spacing.xs, // Change from xxs to xs
+      paddingVertical: theme.spacing.xs,
       minHeight: 32,
     } as ViewStyle,
     sizeSm: {

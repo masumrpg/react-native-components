@@ -192,7 +192,7 @@ export default function InputScreen() {
         label="Error State"
         placeholder="This input has an error"
         state="error"
-        errorText="This field is required"
+        error="This field is required"
         variant="outline"
       />
 
