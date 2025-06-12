@@ -28,9 +28,9 @@ const mergeThemes = (baseTheme: Theme, customTheme?: Partial<Theme>): Theme => {
 
   return {
     colors: { ...baseTheme.colors, ...customTheme.colors },
-    sizes: { ...baseTheme.sizes, ...customTheme.sizes },
+    fontSizes: { ...baseTheme.fontSizes, ...customTheme.fontSizes },
     spacing: { ...baseTheme.spacing, ...customTheme.spacing },
-    borderRadius: { ...baseTheme.borderRadius, ...customTheme.borderRadius },
+    components: { ...baseTheme.components, ...customTheme.components },
     typography: { ...baseTheme.typography, ...customTheme.typography },
   };
 };

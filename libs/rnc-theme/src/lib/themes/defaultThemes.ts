@@ -13,8 +13,11 @@ export const lightTheme: Theme = {
     warning: '#FF9500',
     success: '#34C759',
     info: '#5AC8FA',
+    muted: '#8E8E93',
+    accent: '#FF2D92',
+    destructive: '#FF3B30',
   },
-  sizes: {
+  fontSizes: {
     xs: 12,
     sm: 14,
     md: 16,
@@ -30,14 +33,32 @@ export const lightTheme: Theme = {
     xl: 32,
     xxl: 48,
   },
-  borderRadius: {
-    sm: 6,
-    md: 10,
-    lg: 14,
-    xl: 20,
-    full: 40,
+  components: {
+    height: {
+      xs: 32,
+      sm: 36,
+      md: 40,
+      lg: 44,
+      xl: 48,
+    },
+    padding: {
+      xs: 8,
+      sm: 12,
+      md: 16,
+      lg: 20,
+      xl: 24,
+    },
+    borderRadius: {
+      xs: 4,
+      sm: 6,
+      md: 8,
+      lg: 10,
+      xl: 12,
+      full: 9999,
+    },
   },
   typography: {
+    caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
     small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
     body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
     subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
@@ -49,16 +70,12 @@ export const lightTheme: Theme = {
 export const darkTheme: Theme = {
   ...lightTheme,
   colors: {
-    primary: '#007AFF',
-    secondary: '#5856D6',
+    ...lightTheme.colors,
     background: '#000000',
     surface: '#1C1C1E',
     text: '#FFFFFF',
     textSecondary: '#8E8E93',
     border: '#38383A',
-    error: '#FF3B30',
-    warning: '#FF9500',
-    success: '#34C759',
-    info: '#5AC8FA',
+    muted: '#48484A',
   },
 };

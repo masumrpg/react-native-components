@@ -27,19 +27,19 @@ import { Theme } from '../../../types/theme';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils/color';
 import { ChevronDown, Check, X } from 'lucide-react-native';
+import {
+  ComponentSize,
+  ComponentState,
+  ComponentVariant,
+} from '../../../types/ui';
+import { ANIMATION_CONSTANTS } from '../../../constants/ui';
 
 // Animation constants
-const ANIMATION_DURATION = 250;
 const SPRING_CONFIG = {
   tension: Platform.OS === 'android' ? 120 : 150,
   friction: Platform.OS === 'android' ? 8 : 7,
   useNativeDriver: true,
 } as const;
-
-// Types
-// type ComboboxVariant = 'default' | 'outline' | 'filled';
-type ComboboxSize = 'sm' | 'md' | 'lg';
-type ComboboxState = 'default' | 'error' | 'success' | 'warning' | 'disabled';
 
 interface ComboboxOption {
   label: string;
@@ -47,12 +47,12 @@ interface ComboboxOption {
   disabled?: boolean;
 }
 
-interface BaseComboboxProps {
+type BaseComboboxProps = {
   label?: string;
   placeholder?: string;
-  // variant?: ComboboxVariant;
-  size?: ComboboxSize;
-  state?: ComboboxState;
+  variant?: ComponentVariant;
+  size?: ComponentSize;
+  state?: ComponentState;
   helperText?: string;
   errorText?: string;
   required?: boolean;
@@ -64,7 +64,7 @@ interface BaseComboboxProps {
   value?: string | string[];
   onValueChange?: (value: string | string[]) => void;
   onSearchChange?: (search: string) => void;
-  borderRadius?: keyof Theme['borderRadius'];
+  borderRadius?: keyof Theme['components']['borderRadius'];
   style?: ViewStyle;
   inputStyle?: TextStyle;
   labelStyle?: TextStyle;
@@ -75,10 +75,10 @@ interface BaseComboboxProps {
   maxDropdownHeight?: number;
   closeOnSelect?: boolean;
   backgroundColor?: string;
-  // padding?: keyof Theme['spacing'];
+  padding?: keyof Theme['spacing'];
   elevation?: number;
   shadowOpacity?: number;
-}
+};
 
 type ComboboxProps = BaseComboboxProps;
 
@@ -102,7 +102,7 @@ const createComboboxStyles = (theme: Theme) => ({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: theme.components.borderRadius.lg,
     backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
     borderWidth: 1,
     borderColor: resolveColor(theme, 'border', theme.colors.border),
@@ -161,7 +161,7 @@ const createComboboxStyles = (theme: Theme) => ({
   clearButton: {
     marginLeft: theme.spacing.xs,
     padding: 6,
-    borderRadius: theme.borderRadius.sm,
+    borderRadius: theme.components.borderRadius.sm,
     backgroundColor: resolveColor(theme, 'background', theme.colors.background),
   } as ViewStyle,
 
@@ -184,7 +184,7 @@ const createComboboxStyles = (theme: Theme) => ({
   modalContent: {
     position: 'absolute',
     backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-    borderRadius: theme.borderRadius.lg,
+    borderRadius: theme.components.borderRadius.lg,
     shadowColor: resolveColor(theme, 'text', theme.colors.text),
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.15,
@@ -209,7 +209,7 @@ const createComboboxStyles = (theme: Theme) => ({
     color: theme.colors.text,
     paddingVertical: theme.spacing.sm,
     paddingHorizontal: theme.spacing.md,
-    borderRadius: theme.borderRadius.md,
+    borderRadius: theme.components.borderRadius.md,
     backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
     fontWeight: '400',
     minHeight: 44,
@@ -258,7 +258,7 @@ const createComboboxStyles = (theme: Theme) => ({
   checkIcon: {
     marginLeft: theme.spacing.sm,
     backgroundColor: theme.colors.primary,
-    borderRadius: theme.borderRadius.full,
+    borderRadius: theme.components.borderRadius.full,
     padding: 2,
   } as ViewStyle,
 
@@ -277,8 +277,14 @@ const createComboboxStyles = (theme: Theme) => ({
 });
 
 // Size configuration
-const getSizeStyles = (size: ComboboxSize, theme: Theme) => {
+const getSizeStyles = (size: ComponentSize, theme: Theme) => {
   const sizeMap = {
+    xs: {
+      padding: { horizontal: theme.spacing.sm, vertical: theme.spacing.xs },
+      fontSize: theme.typography.caption.fontSize,
+      minHeight: 32,
+      iconSize: 16,
+    },
     sm: {
       padding: { horizontal: theme.spacing.md, vertical: theme.spacing.sm },
       fontSize: theme.typography.body.fontSize,
@@ -299,6 +305,12 @@ const getSizeStyles = (size: ComboboxSize, theme: Theme) => {
       fontSize: theme.typography.subtitle.fontSize,
       minHeight: 56,
       iconSize: 24,
+    },
+    xl: {
+      padding: { horizontal: theme.spacing.xl, vertical: theme.spacing.lg },
+      fontSize: theme.typography.title.fontSize,
+      minHeight: 64,
+      iconSize: 28,
     },
   };
   return sizeMap[size];
@@ -335,12 +347,12 @@ const getDropdownPosition = (
   };
 };
 
-// Ubah default borderRadius dari 'lg' ke 'md'
 const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
   (
     {
       label,
       placeholder = 'Select an option...',
+      variant = 'default',
       size = 'md',
       state = 'default',
       helperText,
@@ -365,6 +377,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
       maxDropdownHeight = 250,
       closeOnSelect = true,
       backgroundColor,
+      padding,
       elevation = 3,
       shadowOpacity = 0.1,
     },
@@ -529,7 +542,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
           // Start animations
           Animated.timing(opacity, {
             toValue: 1,
-            duration: ANIMATION_DURATION * 0.8,
+            duration: ANIMATION_CONSTANTS.DURATION.NORMAL * 0.8,
             useNativeDriver: true,
           }).start();
 
@@ -577,8 +590,8 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
 
       const exitDuration =
         Platform.OS === 'android'
-          ? ANIMATION_DURATION * 0.6
-          : ANIMATION_DURATION * 0.8;
+          ? ANIMATION_CONSTANTS.DURATION.NORMAL * 0.6
+          : ANIMATION_CONSTANTS.DURATION.NORMAL * 0.8;
 
       Animated.parallel([
         Animated.timing(dropdownAnimation, {
@@ -732,7 +745,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
         paddingHorizontal: sizeStyles.padding.horizontal,
         paddingVertical: sizeStyles.padding.vertical,
         minHeight: sizeStyles.minHeight,
-        borderRadius: theme.borderRadius[borderRadius],
+        borderRadius: theme.components.borderRadius[borderRadius],
         backgroundColor: resolveColor(
           theme,
           backgroundColor,

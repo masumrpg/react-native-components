@@ -11,7 +11,7 @@ interface CardProps extends React.ComponentPropsWithoutRef<typeof View> {
   style?: ViewStyle;
   padding?: keyof Theme['spacing'];
   margin?: keyof Theme['spacing'];
-  borderRadius?: keyof Theme['borderRadius'];
+  borderRadius?: keyof Theme['components']['borderRadius'];
   elevation?: number;
   shadowOpacity?: number;
   backgroundColor?: string;
@@ -91,7 +91,7 @@ const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
               backgroundColor,
               theme.colors.surface
             ),
-            borderRadius: theme.borderRadius[borderRadius],
+            borderRadius: theme.components.borderRadius[borderRadius],
             padding: theme.spacing[padding],
             marginBottom: margin ? theme.spacing[margin] : undefined,
             shadowOpacity,

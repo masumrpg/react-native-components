@@ -411,7 +411,7 @@ const createCheckboxStyles = (theme: Theme) => ({
   },
   // Shapes
   square: {
-    borderRadius: theme.borderRadius.sm,
+    borderRadius: theme.components.borderRadius.sm,
   },
   round: {
     borderRadius: 50, // Large radius for circular shape
@@ -485,7 +485,7 @@ const createCheckboxIndicatorStyles = (theme: Theme) => ({
     bottom: 0,
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
-    borderRadius: theme.borderRadius.sm,
+    borderRadius: theme.components.borderRadius.sm,
   },
   // Variants
   default: {

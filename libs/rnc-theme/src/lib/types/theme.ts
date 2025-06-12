@@ -1,6 +1,6 @@
 import { TextStyle } from "react-native";
 
-export interface ThemeColors {
+type ThemeColors = {
   primary: string;
   secondary: string;
   background: string;
@@ -12,38 +12,65 @@ export interface ThemeColors {
   warning: string;
   success: string;
   info: string;
-}
+  muted: string;
+  accent: string;
+  destructive: string;
+};
 
-export interface ThemeSizes {
+type ThemeFontSizes = {
   xs: number;
   sm: number;
   md: number;
   lg: number;
   xl: number;
   xxl: number;
-}
+};
 
-export interface ThemeSpacing {
+type ThemeSpacing = {
   xs: number;
   sm: number;
   md: number;
   lg: number;
   xl: number;
   xxl: number;
-}
+};
 
-export interface Theme {
-  colors: ThemeColors;
-  sizes: ThemeSizes;
-  spacing: ThemeSpacing;
+type ThemeComponentSizes = {
+  height: {
+    xs: number;
+    sm: number;
+    md: number;
+    lg: number;
+    xl: number;
+  };
+  padding: {
+    xs: number;
+    sm: number;
+    md: number;
+    lg: number;
+    xl: number;
+  };
   borderRadius: {
+    xs: number;
     sm: number;
     md: number;
     lg: number;
     xl: number;
     full: number;
   };
+};
+
+type Theme = {
+  colors: ThemeColors;
+  fontSizes: ThemeFontSizes;
+  spacing: ThemeSpacing;
+  components: ThemeComponentSizes;
   typography: {
+    caption: {
+      fontSize: TextStyle['fontSize'];
+      lineHeight: TextStyle['lineHeight'];
+      fontWeight: TextStyle['fontWeight'];
+    };
     small: {
       fontSize: TextStyle['fontSize'];
       lineHeight: TextStyle['lineHeight'];
@@ -70,11 +97,21 @@ export interface Theme {
       fontWeight: TextStyle['fontWeight'];
     };
   };
-}
+};
 
-export type ThemeMode = 'light' | 'dark' | 'system';
+type ThemeMode = 'light' | 'dark' | 'system';
 
-export interface ThemeConfig {
+type ThemeConfig = {
   mode: ThemeMode;
   customTheme?: Partial<Theme>;
-}
+};
+
+export type {
+  ThemeColors,
+  ThemeFontSizes,
+  ThemeSpacing,
+  ThemeComponentSizes,
+  Theme,
+  ThemeMode,
+  ThemeConfig,
+};
