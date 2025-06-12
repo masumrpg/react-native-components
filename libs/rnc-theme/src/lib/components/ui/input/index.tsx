@@ -258,8 +258,6 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
           return `${theme.colors.primary}40`;
         case 'secondary':
           return `${theme.colors.secondary}40`;
-        case 'outline':
-          return 'transparent';
         case 'ghost':
           return 'transparent';
         case 'success':
@@ -288,7 +286,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         if (state === 'warning') return theme.colors.warning;
         switch (variant) {
           case 'default':
-            return theme.colors.border;
+            return theme.colors.primary;
           case 'primary':
             return theme.colors.primary;
           case 'secondary':
@@ -387,8 +385,14 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         },
       ];
 
-      if (multiline) {
-        baseStyle.push({ textAlignVertical: 'top' });
+      // FIX: Handle textAlignVertical properly for textarea vs normal input
+      if (isTextAreaInput || multiline) {
+        baseStyle.push({
+          textAlignVertical: 'top',
+          paddingTop: theme.spacing.sm, // Add top padding for better text positioning
+        });
+      } else {
+        baseStyle.push({ textAlignVertical: 'center' });
       }
 
       if (inputStyle) {
@@ -408,7 +412,16 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       }
 
       return baseStyle;
-    }, [size, styles, disabled, theme.colors, multiline, inputStyle]);
+    }, [
+      size,
+      styles,
+      disabled,
+      theme.colors,
+      multiline,
+      inputStyle,
+      isTextAreaInput,
+      theme.spacing.sm,
+    ]);
 
     const getLabelStyles = useCallback((): TextStyle[] => {
       const baseStyle: TextStyle[] = [styles.label];
@@ -515,6 +528,11 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         },
       ];
 
+      // FIX: Add specific styling for textarea
+      if (isTextAreaInput) {
+        baseStyles.push(styles.textAreaContainer);
+      }
+
       // Update state styles handling with type safety
       if (state) {
         const stateKey = `state${state.charAt(0).toUpperCase()}${state.slice(
@@ -537,6 +555,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       borderRadius,
       state,
       style,
+      isTextAreaInput,
     ]);
 
     // Add password visibility state
@@ -582,10 +601,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
         return {
           multiline: true,
           numberOfLines: numberOfLines || 4,
-          textAlignVertical: 'top' as const,
-          style: {
-            minHeight: (numberOfLines || 4) * 24,
-          },
+          // Remove the textAlignVertical from here as it's handled in getTextInputStyles
         };
       }
 
@@ -697,6 +713,11 @@ const createStyles = (theme: Theme) =>
       alignItems: 'center' as const,
       borderWidth: 1,
       position: 'relative' as const,
+    } as ViewStyle,
+    // FIX: Add specific style for textarea container
+    textAreaContainer: {
+      alignItems: 'flex-start' as const, // Change from center to flex-start for textarea
+      paddingTop: theme.spacing.sm, // Add consistent top padding
     } as ViewStyle,
     floatingLabelContainer: {
       position: 'absolute' as const,
@@ -814,7 +835,7 @@ const createStyles = (theme: Theme) =>
       flex: 1,
       padding: 0,
       margin: 0,
-      textAlignVertical: 'center' as const,
+      // Remove textAlignVertical from base style - it's handled conditionally now
       fontWeight: '400' as const,
     } as TextStyle,
     textInputSm: {
