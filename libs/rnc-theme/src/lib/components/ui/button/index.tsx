@@ -29,23 +29,18 @@ import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
 import { Spinner } from '../spinner';
+import {
+  BaseComponentProps,
+  ComponentSize,
+  ComponentVariant,
+} from '../../../types/ui';
 
 // Animated components
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
 
-// Type definitions
-type ButtonVariant =
-  | 'primary'
-  | 'secondary'
-  | 'outline'
-  | 'ghost'
-  | 'success'
-  | 'error'
-  | 'warning'
-  | 'info';
-type ButtonSize = 'sm' | 'md' | 'lg';
+
 type ButtonComponent = 'pressable' | 'touchable';
 type IconPosition = 'left' | 'right' | 'center';
 type AnimationType = 'bounce' | 'pulse' | 'shake';
@@ -62,20 +57,16 @@ interface SpringConfig {
   mass?: number;
 }
 
-interface BaseButtonProps {
+type BaseButtonProps = BaseComponentProps & {
   children?: React.ReactNode;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  disabled?: boolean;
   loading?: boolean;
-  style?: ViewStyle;
   borderRadius?: keyof Theme['components']['borderRadius'];
   fullWidth?: boolean;
   component?: ButtonComponent;
   animationEnabled?: boolean;
   pressAnimationScale?: number;
   springConfig?: SpringConfig;
-}
+};
 
 interface PressableButtonProps
   extends BaseButtonProps,
@@ -91,26 +82,18 @@ interface TouchableButtonProps
 
 type ButtonProps = PressableButtonProps | TouchableButtonProps;
 
-interface ButtonIconProps {
+type ButtonIconProps = BaseComponentProps & {
   icon?: React.ReactNode;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  disabled?: boolean;
-  style?: ViewStyle;
   position?: IconPosition;
   marginLeft?: keyof Theme['spacing'];
   marginRight?: keyof Theme['spacing'];
-}
+};
 
-interface ButtonTextProps {
+type ButtonTextProps = BaseComponentProps & {
   children: React.ReactNode;
-  variant?: ButtonVariant;
-  size?: ButtonSize;
-  disabled?: boolean;
   loading?: boolean;
-  style?: TextStyle;
   showLoadingIndicator?: boolean;
-}
+};
 
 // Style configurations
 const VARIANT_COLORS = {
@@ -120,9 +103,11 @@ const VARIANT_COLORS = {
 } as const;
 
 const SIZE_CONFIG = {
+  xs: { minHeight: 28, spinnerSize: 14 },
   sm: { minHeight: 32, spinnerSize: 16 },
   md: { minHeight: 40, spinnerSize: 20 },
   lg: { minHeight: 48, spinnerSize: 24 },
+  xl: { minHeight: 56, spinnerSize: 28 },
 } as const;
 
 const DEFAULT_SPRING_CONFIG: Required<SpringConfig> = {
@@ -179,6 +164,10 @@ const createButtonStyles = (theme: Theme) => ({
     borderWidth: 1,
   },
   // Variants
+  default: {
+    backgroundColor: theme.colors.surface,
+    borderColor: theme.colors.border,
+  },
   primary: {
     backgroundColor: resolveColor(theme, 'primary', theme.colors.primary),
     borderColor: resolveColor(theme, 'primary', theme.colors.primary),
@@ -190,6 +179,10 @@ const createButtonStyles = (theme: Theme) => ({
   outline: {
     backgroundColor: 'transparent',
     borderColor: resolveColor(theme, 'primary', theme.colors.primary),
+  },
+  filled: {
+    backgroundColor: theme.colors.surface,
+    borderColor: 'transparent',
   },
   ghost: {
     backgroundColor: 'transparent',
@@ -211,7 +204,16 @@ const createButtonStyles = (theme: Theme) => ({
     backgroundColor: resolveColor(theme, 'info', VARIANT_COLORS.info),
     borderColor: resolveColor(theme, 'info', VARIANT_COLORS.info),
   },
+  destructive: {
+    backgroundColor: theme.colors.destructive,
+    borderColor: theme.colors.destructive,
+  },
   // Sizes
+  xs: {
+    paddingHorizontal: theme.spacing.xs,
+    paddingVertical: theme.spacing.xs / 2,
+    minHeight: SIZE_CONFIG.xs.minHeight,
+  },
   sm: {
     paddingHorizontal: theme.spacing.sm,
     paddingVertical: theme.spacing.xs,
@@ -226,6 +228,11 @@ const createButtonStyles = (theme: Theme) => ({
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
     minHeight: SIZE_CONFIG.lg.minHeight,
+  },
+  xl: {
+    paddingHorizontal: theme.spacing.xl,
+    paddingVertical: theme.spacing.lg,
+    minHeight: SIZE_CONFIG.xl.minHeight,
   },
 });
 
@@ -242,15 +249,26 @@ const createButtonTextStyles = (theme: Theme) => ({
     marginRight: theme.spacing.xs,
   },
   // Variants
+  default: { color: theme.colors.text },
   primary: { color: '#FFFFFF' },
   secondary: { color: '#FFFFFF' },
   outline: { color: resolveColor(theme, 'primary', theme.colors.primary) },
+  filled: { color: theme.colors.text },
   ghost: { color: resolveColor(theme, 'text', theme.colors.text) },
   success: { color: '#FFFFFF' },
   error: { color: '#FFFFFF' },
   warning: { color: '#FFFFFF' },
   info: { color: '#FFFFFF' },
+  destructive: { color: '#FFFFFF' },
   // Sizes
+  xs: {
+    fontSize: theme.typography.small.fontSize
+      ? theme.typography.small.fontSize * 0.9
+      : theme.typography.small.fontSize,
+    lineHeight: theme.typography.small.lineHeight
+      ? theme.typography.small.lineHeight * 0.9
+      : theme.typography.small.lineHeight,
+  },
   sm: {
     fontSize: theme.typography.small.fontSize,
     lineHeight: theme.typography.small.lineHeight,
@@ -263,6 +281,14 @@ const createButtonTextStyles = (theme: Theme) => ({
     fontSize: theme.typography.subtitle.fontSize,
     lineHeight: theme.typography.subtitle.lineHeight,
   },
+  xl: {
+    fontSize: theme.typography.subtitle.fontSize
+      ? theme.typography.subtitle.fontSize * 1.1
+      : theme.typography.subtitle.fontSize,
+    lineHeight: theme.typography.subtitle.lineHeight
+      ? theme.typography.subtitle.lineHeight * 1.1
+      : theme.typography.subtitle.lineHeight,
+  },
 });
 
 const createButtonIconStyles = (theme: Theme) => ({
@@ -270,16 +296,18 @@ const createButtonIconStyles = (theme: Theme) => ({
     alignItems: 'center' as const,
     justifyContent: 'center' as const,
   },
+  xs: { width: 12, height: 12 },
   sm: { width: 16, height: 16 },
   md: { width: 20, height: 20 },
   lg: { width: 24, height: 24 },
+  xl: { width: 28, height: 28 },
 });
 
 // Helper function to clone children with props
 const cloneChildrenWithProps = (
   children: React.ReactNode,
-  variant: ButtonVariant,
-  size: ButtonSize,
+  variant: ComponentVariant,
+  size: ComponentSize,
   disabled: boolean,
   loading: boolean
 ): React.ReactNode => {

@@ -105,6 +105,10 @@ const ButtonScreen: React.FC = () => {
         <Text style={styles.sectionTitle}>Button Variants</Text>
 
         <View style={styles.buttonGrid}>
+          <Button variant="default">
+            <ButtonText variant="default">Default</ButtonText>
+          </Button>
+
           <Button variant="primary">
             <ButtonText variant="primary">Primary</ButtonText>
           </Button>
@@ -116,13 +120,17 @@ const ButtonScreen: React.FC = () => {
           <Button variant="outline">
             <ButtonText variant="outline">Outline</ButtonText>
           </Button>
+        </View>
+
+        <View style={styles.buttonGrid}>
+          <Button variant="filled">
+            <ButtonText variant="filled">Filled</ButtonText>
+          </Button>
 
           <Button variant="ghost">
             <ButtonText variant="ghost">Ghost</ButtonText>
           </Button>
-        </View>
 
-        <View style={styles.buttonGrid}>
           <Button variant="success">
             <ButtonText variant="success">Success</ButtonText>
           </Button>
@@ -130,13 +138,19 @@ const ButtonScreen: React.FC = () => {
           <Button variant="error">
             <ButtonText variant="error">Error</ButtonText>
           </Button>
+        </View>
 
+        <View style={styles.buttonGrid}>
           <Button variant="warning">
             <ButtonText variant="warning">Warning</ButtonText>
           </Button>
 
           <Button variant="info">
             <ButtonText variant="info">Info</ButtonText>
+          </Button>
+
+          <Button variant="destructive">
+            <ButtonText variant="destructive">Destructive</ButtonText>
           </Button>
         </View>
       </View>
@@ -146,6 +160,12 @@ const ButtonScreen: React.FC = () => {
         <Text style={styles.sectionTitle}>Button Sizes</Text>
 
         <View style={styles.buttonRow}>
+          <Button variant="primary" size="xs">
+            <ButtonText variant="primary" size="xs">
+              XS
+            </ButtonText>
+          </Button>
+
           <Button variant="primary" size="sm">
             <ButtonText variant="primary" size="sm">
               Small
@@ -161,6 +181,79 @@ const ButtonScreen: React.FC = () => {
           <Button variant="primary" size="lg">
             <ButtonText variant="primary" size="lg">
               Large
+            </ButtonText>
+          </Button>
+
+          <Button variant="primary" size="xl">
+            <ButtonText variant="primary" size="xl">
+              XL
+            </ButtonText>
+          </Button>
+        </View>
+      </View>
+
+      {/* New Variant Showcase */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>New Variant Showcase</Text>
+
+        <View style={styles.buttonGrid}>
+          <Button variant="default">
+            <ButtonIcon
+              icon={<Settings color={theme.colors.text} />}
+              variant="default"
+              marginRight="xs"
+            />
+            <ButtonText variant="default">Default Style</ButtonText>
+          </Button>
+
+          <Button variant="filled">
+            <ButtonIcon
+              icon={<Star color={theme.colors.text} />}
+              variant="filled"
+              marginRight="xs"
+            />
+            <ButtonText variant="filled">Filled Style</ButtonText>
+          </Button>
+
+          <Button variant="destructive">
+            <ButtonIcon
+              icon={<Trash2 color={'#fff'} />}
+              variant="destructive"
+              marginRight="xs"
+            />
+            <ButtonText variant="destructive">Destructive</ButtonText>
+          </Button>
+        </View>
+      </View>
+
+      {/* Size Comparison */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Size Comparison</Text>
+
+        <View style={styles.buttonRow}>
+          <Button variant="outline" size="xs">
+            <ButtonText variant="outline" size="xs">
+              XS
+            </ButtonText>
+          </Button>
+          <Button variant="outline" size="sm">
+            <ButtonText variant="outline" size="sm">
+              SM
+            </ButtonText>
+          </Button>
+          <Button variant="outline" size="md">
+            <ButtonText variant="outline" size="md">
+              MD
+            </ButtonText>
+          </Button>
+          <Button variant="outline" size="lg">
+            <ButtonText variant="outline" size="lg">
+              LG
+            </ButtonText>
+          </Button>
+          <Button variant="outline" size="xl">
+            <ButtonText variant="outline" size="xl">
+              XL
             </ButtonText>
           </Button>
         </View>
