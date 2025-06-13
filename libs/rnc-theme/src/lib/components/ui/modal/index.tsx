@@ -35,8 +35,6 @@ import { Theme } from '../../../types/theme';
 import { ComponentSize, ComponentVariant } from '../../../types/ui';
 
 // Types
-type ModalSize = ComponentSize;
-type ModalVariant = ComponentVariant;
 type ModalPosition = 'center' | 'top' | 'bottom';
 type ModalAnimation = 'slide' | 'fade' | 'scale';
 
@@ -44,8 +42,8 @@ interface ModalProps {
   visible: boolean;
   onClose: () => void;
   children?: React.ReactNode;
-  size?: ModalSize;
-  variant?: ModalVariant;
+  size?: ComponentSize;
+  variant?: ComponentVariant;
   position?: ModalPosition;
   animation?: ModalAnimation;
   closeOnBackdrop?: boolean;
@@ -154,7 +152,10 @@ const createModalStyles = (theme: Theme) => ({
 });
 
 // Variant styles
-const getVariantStyles = (variant: ModalVariant, theme: Theme): ViewStyle => {
+const getVariantStyles = (
+  variant: ComponentVariant,
+  theme: Theme
+): ViewStyle => {
   switch (variant) {
     case 'default':
       return {
@@ -231,7 +232,7 @@ const getVariantStyles = (variant: ModalVariant, theme: Theme): ViewStyle => {
 
 // Updated modal size calculation
 const getModalSize = (
-  size: ModalSize,
+  size: ComponentSize,
   screenWidth: number,
   screenHeight: number
 ) => {
