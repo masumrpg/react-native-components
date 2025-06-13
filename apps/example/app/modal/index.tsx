@@ -21,6 +21,61 @@ export default function ModalExample() {
   const [slideAnimation, setSlideAnimation] = useState(false);
   const [scaleAnimation, setScaleAnimation] = useState(true);
 
+  // Size showcase states
+  const [sizeModalVisible, setSizeModalVisible] = useState(false);
+  const [currentSize, setCurrentSize] = useState<
+    'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  >('md');
+
+  // Variant showcase states
+  const [variantModalVisible, setVariantModalVisible] = useState(false);
+  const [currentVariant, setCurrentVariant] = useState<
+    | 'default'
+    | 'primary'
+    | 'secondary'
+    | 'outline'
+    | 'filled'
+    | 'ghost'
+    | 'success'
+    | 'error'
+    | 'warning'
+    | 'info'
+    | 'destructive'
+  >('default');
+
+  const sizes: Array<'xs' | 'sm' | 'md' | 'lg' | 'xl'> = [
+    'xs',
+    'sm',
+    'md',
+    'lg',
+    'xl',
+  ];
+  const variants: Array<
+    | 'default'
+    | 'primary'
+    | 'secondary'
+    | 'outline'
+    | 'filled'
+    | 'ghost'
+    | 'success'
+    | 'error'
+    | 'warning'
+    | 'info'
+    | 'destructive'
+  > = [
+    'default',
+    'primary',
+    'secondary',
+    'outline',
+    'filled',
+    'ghost',
+    'success',
+    'error',
+    'warning',
+    'info',
+    'destructive',
+  ];
+
   return (
     <ScrollView
       style={{
@@ -41,6 +96,78 @@ export default function ModalExample() {
       >
         Modal Examples
       </Text>
+
+      {/* Size Comparison */}
+      <Card>
+        <CardContent>
+          <Text
+            style={{
+              ...theme.typography.title,
+              color: theme.colors.text,
+              marginBottom: theme.spacing.md,
+            }}
+          >
+            Size Comparison
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              gap: theme.spacing.sm,
+            }}
+          >
+            {sizes.map((size) => (
+              <Button
+                key={size}
+                size="sm"
+                variant="outline"
+                onPress={() => {
+                  setCurrentSize(size);
+                  setSizeModalVisible(true);
+                }}
+              >
+                <ButtonText>{size.toUpperCase()}</ButtonText>
+              </Button>
+            ))}
+          </View>
+        </CardContent>
+      </Card>
+
+      {/* Variant Showcase */}
+      <Card>
+        <CardContent>
+          <Text
+            style={{
+              ...theme.typography.title,
+              color: theme.colors.text,
+              marginBottom: theme.spacing.md,
+            }}
+          >
+            Variant Showcase
+          </Text>
+          <View
+            style={{
+              flexDirection: 'row',
+              flexWrap: 'wrap',
+              gap: theme.spacing.sm,
+            }}
+          >
+            {variants.map((variant) => (
+              <Button
+                key={variant}
+                size="sm"
+                variant={variant === 'default' ? 'primary' : 'outline'}
+                onPress={() => {
+                  setCurrentVariant(variant);
+                  setVariantModalVisible(true);
+                }}
+              >
+                <ButtonText>{variant}</ButtonText>
+              </Button>
+            ))}
+          </View>
+        </CardContent>
+      </Card>
 
       {/* Basic Modal */}
       <Card>
@@ -159,11 +286,66 @@ export default function ModalExample() {
         </CardContent>
       </Card>
 
+      {/* Size Modal */}
+      <Modal
+        visible={sizeModalVisible}
+        onClose={() => setSizeModalVisible(false)}
+        size={currentSize}
+        variant="primary"
+      >
+        <ModalHeader
+          title={`${currentSize.toUpperCase()} Size Modal`}
+          subtitle={`This modal demonstrates the ${currentSize} size`}
+        />
+        <ModalContent>
+          <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
+            This is a {currentSize} sized modal. You can see how different sizes
+            affect the modal dimensions and layout.
+          </Text>
+        </ModalContent>
+        <ModalFooter>
+          <Button onPress={() => setSizeModalVisible(false)}>
+            <ButtonText>Close</ButtonText>
+          </Button>
+        </ModalFooter>
+      </Modal>
+
+      {/* Variant Modal */}
+      <Modal
+        visible={variantModalVisible}
+        onClose={() => setVariantModalVisible(false)}
+        size="md"
+        variant={currentVariant}
+      >
+        <ModalHeader
+          title={`${
+            currentVariant.charAt(0).toUpperCase() + currentVariant.slice(1)
+          } Variant`}
+          subtitle={`This modal demonstrates the ${currentVariant} variant styling`}
+        />
+        <ModalContent>
+          <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
+            This modal uses the {currentVariant} variant. Each variant has
+            different styling including border colors, background colors, and
+            visual emphasis.
+          </Text>
+        </ModalContent>
+        <ModalFooter>
+          <Button
+            variant={currentVariant === 'destructive' ? 'error' : 'primary'}
+            onPress={() => setVariantModalVisible(false)}
+          >
+            <ButtonText>Close</ButtonText>
+          </Button>
+        </ModalFooter>
+      </Modal>
+
       {/* Basic Modal */}
       <Modal
         visible={basicModalVisible}
         onClose={() => setBasicModalVisible(false)}
         size="md"
+        variant="default"
       >
         <ModalHeader
           title="Basic Modal"
@@ -195,6 +377,7 @@ export default function ModalExample() {
         visible={confirmModalVisible}
         onClose={() => setConfirmModalVisible(false)}
         size="sm"
+        variant="destructive"
         showCloseButton={false}
         backdropOpacity={0.6}
         animation="scale"
@@ -234,10 +417,10 @@ export default function ModalExample() {
               borderRadius: theme.components.borderRadius.lg,
             }}
           >
-            <ButtonText style={{ fontWeight: '600' }}>Cancel</ButtonText>
+            <ButtonText>Cancel</ButtonText>
           </Button>
           <Button
-            variant="error"
+            variant="destructive"
             onPress={() => setConfirmModalVisible(false)}
             style={{
               flex: 1,
@@ -249,7 +432,7 @@ export default function ModalExample() {
               elevation: 6,
             }}
           >
-            <ButtonText style={{ fontWeight: '700' }}>Delete</ButtonText>
+            <ButtonText>Delete</ButtonText>
           </Button>
         </ModalFooter>
       </Modal>
@@ -259,6 +442,7 @@ export default function ModalExample() {
         visible={bottomModalVisible}
         onClose={() => setBottomModalVisible(false)}
         size="lg"
+        variant="secondary"
         position="bottom"
         animation="slide"
       >
@@ -281,6 +465,7 @@ export default function ModalExample() {
         visible={animatedModal}
         onClose={() => setAnimatedModal(false)}
         size="md"
+        variant="info"
         animation={slideAnimation ? 'slide' : 'scale'}
         position="center"
       >

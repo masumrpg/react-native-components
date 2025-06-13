@@ -32,9 +32,11 @@ import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
 import { Theme } from '../../../types/theme';
+import { ComponentSize, ComponentVariant } from '../../../types/ui';
 
 // Types
-type ModalSize = 'sm' | 'md' | 'lg' | 'xl' | 'full';
+type ModalSize = ComponentSize;
+type ModalVariant = ComponentVariant;
 type ModalPosition = 'center' | 'top' | 'bottom';
 type ModalAnimation = 'slide' | 'fade' | 'scale';
 
@@ -43,6 +45,7 @@ interface ModalProps {
   onClose: () => void;
   children?: React.ReactNode;
   size?: ModalSize;
+  variant?: ModalVariant;
   position?: ModalPosition;
   animation?: ModalAnimation;
   closeOnBackdrop?: boolean;
@@ -96,7 +99,6 @@ interface ModalFooterProps {
 }
 
 // Styles
-// Optimized styles with Android-specific fixes
 const createModalStyles = (theme: Theme) => ({
   overlay: {
     position: 'absolute',
@@ -108,7 +110,6 @@ const createModalStyles = (theme: Theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     padding: theme.spacing.lg,
-    // Android-specific fixes
     ...(Platform.OS === 'android' && {
       paddingTop: (StatusBar.currentHeight || 0) + theme.spacing.lg,
     }),
@@ -122,11 +123,9 @@ const createModalStyles = (theme: Theme) => ({
     shadowRadius: 4,
     overflow: 'hidden',
     maxWidth: '100%',
-    // Remove position: 'relative' to fix Android positioning
     alignSelf: 'center',
-    // Android-specific optimizations
     ...(Platform.OS === 'android' && {
-      elevation: 8, // Higher elevation for better visibility
+      elevation: 8,
     }),
   } as ViewStyle,
   closeButton: {
@@ -154,22 +153,102 @@ const createModalStyles = (theme: Theme) => ({
   } as TextStyle,
 });
 
-// Optimized modal size calculation with better Android support
+// Variant styles
+const getVariantStyles = (variant: ModalVariant, theme: Theme): ViewStyle => {
+  switch (variant) {
+    case 'default':
+      return {
+        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
+        borderColor: resolveColor(theme, 'border', theme.colors.border),
+      };
+    case 'primary':
+      return {
+        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
+        borderColor: resolveColor(theme, 'primary', theme.colors.primary),
+        borderWidth: 2,
+      };
+    case 'secondary':
+      return {
+        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
+        borderColor: resolveColor(theme, 'secondary', theme.colors.secondary),
+        borderWidth: 2,
+      };
+    case 'outline':
+      return {
+        backgroundColor: 'transparent',
+        borderColor: resolveColor(theme, 'border', theme.colors.border),
+        borderWidth: 2,
+      };
+    case 'filled':
+      return {
+        backgroundColor: resolveColor(theme, 'primary', theme.colors.primary),
+        borderColor: 'transparent',
+      };
+    case 'ghost':
+      return {
+        backgroundColor: 'transparent',
+        borderColor: 'transparent',
+      };
+    case 'success':
+      return {
+        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
+        borderColor: resolveColor(theme, 'success', theme.colors.success),
+        borderWidth: 2,
+      };
+    case 'error':
+      return {
+        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
+        borderColor: resolveColor(theme, 'error', theme.colors.error),
+        borderWidth: 2,
+      };
+    case 'warning':
+      return {
+        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
+        borderColor: resolveColor(theme, 'warning', theme.colors.warning),
+        borderWidth: 2,
+      };
+    case 'info':
+      return {
+        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
+        borderColor: resolveColor(theme, 'info', theme.colors.info),
+        borderWidth: 2,
+      };
+    case 'destructive':
+      return {
+        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
+        borderColor: resolveColor(theme, 'error', theme.colors.error),
+        borderWidth: 2,
+        shadowColor: resolveColor(theme, 'error', theme.colors.error),
+        shadowOpacity: 0.2,
+      };
+    default:
+      return {
+        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
+        borderColor: resolveColor(theme, 'border', theme.colors.border),
+      };
+  }
+};
+
+// Updated modal size calculation
 const getModalSize = (
   size: ModalSize,
   screenWidth: number,
   screenHeight: number
 ) => {
-  // Use more conservative sizing for Android
   const safeAreaMultiplier = Platform.OS === 'android' ? 0.85 : 0.9;
   const baseWidth = screenWidth * safeAreaMultiplier;
   const baseHeight = screenHeight * 0.8;
 
-  // Ensure minimum dimensions for Android
   const minWidth = Platform.OS === 'android' ? 280 : 300;
   const minHeight = Platform.OS === 'android' ? 200 : 250;
 
   switch (size) {
+    case 'xs':
+      return {
+        width: Math.max(Math.min(baseWidth, 320), minWidth),
+        maxHeight: Math.max(baseHeight * 0.5, minHeight),
+        minWidth,
+      };
     case 'sm':
       return {
         width: Math.max(Math.min(baseWidth, 400), minWidth),
@@ -193,11 +272,6 @@ const getModalSize = (
         width: Math.max(Math.min(baseWidth, 800), minWidth),
         maxHeight: Math.max(baseHeight * 0.9, minHeight),
         minWidth,
-      };
-    case 'full':
-      return {
-        width: screenWidth,
-        height: screenHeight,
       };
     default:
       return {
@@ -240,6 +314,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       onClose,
       children,
       size = 'md',
+      variant = 'default',
       position = 'center',
       animation = 'slide',
       closeOnBackdrop = true,
@@ -328,6 +403,11 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
     );
 
     const modalPosition = useMemo(() => getModalPosition(position), [position]);
+
+    const variantStyles = useMemo(
+      () => getVariantStyles(variant, theme),
+      [variant, theme]
+    );
 
     // Safe state updater
     const safeSetState = useCallback((setter: () => void) => {
@@ -580,12 +660,11 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
               <Animated.View
                 style={[
                   styles.container,
+                  variantStyles,
                   {
-                    backgroundColor: resolveColor(
-                      theme,
-                      backgroundColor,
-                      theme.colors.surface
-                    ),
+                    backgroundColor: backgroundColor
+                      ? resolveColor(theme, backgroundColor, backgroundColor)
+                      : variantStyles.backgroundColor,
                     borderRadius: theme.components.borderRadius[borderRadius],
                     padding: theme.spacing[padding],
                     marginBottom: margin ? theme.spacing[margin] : undefined,
