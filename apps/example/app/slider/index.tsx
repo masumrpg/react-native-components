@@ -14,7 +14,6 @@ export default function SliderScreen() {
   const styles = useThemedStyles(createStyles);
   const [sliderValue, setSliderValue] = useState(50);
   const [rangeValues, setRangeValues] = useState({ min: 20, max: 80 });
-  const [customSliderValue, setCustomSliderValue] = useState(25);
 
   return (
     <View style={styles.container}>
@@ -24,16 +23,182 @@ export default function SliderScreen() {
             Slider Examples
           </Typography>
 
-          {/* Basic Slider */}
+          {/* Size Showcase */}
           <Card style={styles.card}>
             <VStack spacing="md">
               <Typography variant="subtitle" style={styles.sectionTitle}>
-                Basic Slider
+                Sizes
+              </Typography>
+              <VStack spacing="sm">
+                <Typography variant="subtitle">Extra Small (xs)</Typography>
+                <Slider
+                  size="xs"
+                  initialValue={30}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Small (sm)</Typography>
+                <Slider
+                  size="sm"
+                  initialValue={40}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Medium (md)</Typography>
+                <Slider
+                  size="md"
+                  initialValue={50}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Large (lg)</Typography>
+                <Slider
+                  size="lg"
+                  initialValue={60}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Extra Large (xl)</Typography>
+                <Slider
+                  size="xl"
+                  initialValue={70}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+              </VStack>
+            </VStack>
+          </Card>
+
+          {/* Variant Showcase */}
+          <Card style={styles.card}>
+            <VStack spacing="md">
+              <Typography variant="subtitle" style={styles.sectionTitle}>
+                Variants
+              </Typography>
+              <VStack spacing="sm">
+                <Typography variant="subtitle">Default</Typography>
+                <Slider
+                  variant="default"
+                  initialValue={50}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Primary</Typography>
+                <Slider
+                  variant="primary"
+                  initialValue={60}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Secondary</Typography>
+                <Slider
+                  variant="secondary"
+                  initialValue={40}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Success</Typography>
+                <Slider
+                  variant="success"
+                  initialValue={75}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Error</Typography>
+                <Slider
+                  variant="error"
+                  initialValue={25}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Warning</Typography>
+                <Slider
+                  variant="warning"
+                  initialValue={80}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Info</Typography>
+                <Slider
+                  variant="info"
+                  initialValue={65}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Destructive</Typography>
+                <Slider
+                  variant="destructive"
+                  initialValue={30}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Outline</Typography>
+                <Slider
+                  variant="outline"
+                  initialValue={45}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Filled</Typography>
+                <Slider
+                  variant="filled"
+                  initialValue={55}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+
+                <Typography variant="subtitle">Ghost</Typography>
+                <Slider
+                  variant="ghost"
+                  initialValue={35}
+                  min={0}
+                  max={100}
+                  width={280}
+                />
+              </VStack>
+            </VStack>
+          </Card>
+
+          {/* Interactive Examples */}
+          <Card style={styles.card}>
+            <VStack spacing="md">
+              <Typography variant="subtitle" style={styles.sectionTitle}>
+                Interactive Slider
               </Typography>
               <Typography variant="body" style={styles.valueText}>
                 Value: {sliderValue}
               </Typography>
               <Slider
+                variant="primary"
+                size="lg"
                 initialValue={sliderValue}
                 min={0}
                 max={100}
@@ -45,33 +210,7 @@ export default function SliderScreen() {
             </VStack>
           </Card>
 
-          {/* Custom Styled Slider */}
-          <Card style={styles.card}>
-            <VStack spacing="md">
-              <Typography variant="subtitle" style={styles.sectionTitle}>
-                Custom Styled Slider
-              </Typography>
-              <Typography variant="body" style={styles.valueText}>
-                Value: {customSliderValue}
-              </Typography>
-              <Slider
-                initialValue={customSliderValue}
-                min={0}
-                max={50}
-                step={5}
-                onValueChange={setCustomSliderValue}
-                showLabel={true}
-                width={300}
-                thumbSize={24}
-                activeTrackColor="#FF6B6B"
-                trackColor="#E0E0E0"
-                thumbColor="#FFFFFF"
-                labelFormatter={(value) => `${value}%`}
-              />
-            </VStack>
-          </Card>
-
-          {/* Range Slider */}
+          {/* Range Slider Examples */}
           <Card style={styles.card}>
             <VStack spacing="md">
               <Typography variant="subtitle" style={styles.sectionTitle}>
@@ -81,6 +220,8 @@ export default function SliderScreen() {
                 Range: {rangeValues.min} - {rangeValues.max}
               </Typography>
               <RangeSlider
+                variant="success"
+                size="md"
                 initialMinValue={rangeValues.min}
                 initialMaxValue={rangeValues.max}
                 min={0}
@@ -95,42 +236,61 @@ export default function SliderScreen() {
             </VStack>
           </Card>
 
-          {/* Disabled Slider */}
+          {/* Real-world Examples */}
+          <Card style={styles.card}>
+            <VStack spacing="md">
+              <Typography variant="subtitle" style={styles.sectionTitle}>
+                Volume Control
+              </Typography>
+              <Slider
+                variant="info"
+                size="md"
+                initialValue={75}
+                min={0}
+                max={100}
+                step={5}
+                showLabel={true}
+                width={300}
+                labelFormatter={(value) => `${value}%`}
+              />
+            </VStack>
+          </Card>
+
+          <Card style={styles.card}>
+            <VStack spacing="md">
+              <Typography variant="subtitle" style={styles.sectionTitle}>
+                Price Range Filter
+              </Typography>
+              <RangeSlider
+                variant="secondary"
+                size="sm"
+                initialMinValue={100}
+                initialMaxValue={500}
+                min={0}
+                max={1000}
+                step={10}
+                minDistance={50}
+                showLabels={true}
+                width={300}
+                labelFormatter={(value) => `$${value}`}
+              />
+            </VStack>
+          </Card>
+
+          {/* Disabled State */}
           <Card style={styles.card}>
             <VStack spacing="md">
               <Typography variant="subtitle" style={styles.sectionTitle}>
                 Disabled Slider
               </Typography>
               <Slider
+                variant="default"
+                size="md"
                 initialValue={30}
                 min={0}
                 max={100}
                 disabled={true}
                 width={300}
-                trackColor="#F0F0F0"
-                activeTrackColor="#CCCCCC"
-                thumbColor="#DDDDDD"
-              />
-            </VStack>
-          </Card>
-
-          {/* Small Step Slider */}
-          <Card style={styles.card}>
-            <VStack spacing="md">
-              <Typography variant="subtitle" style={styles.sectionTitle}>
-                Precision Slider (0.1 step)
-              </Typography>
-              <Slider
-                initialValue={2.5}
-                min={0}
-                max={5}
-                step={0.1}
-                onValueChange={(value) =>
-                  console.log('Precision value:', value)
-                }
-                showLabel={true}
-                width={300}
-                labelFormatter={(value) => value.toFixed(1)}
               />
             </VStack>
           </Card>

@@ -25,6 +25,7 @@ import { Theme } from '../../../types/theme';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
+import { BaseComponentProps, ComponentSize, ComponentVariant } from '../../../types/ui';
 
 // Type definitions
 type SliderRef = {
@@ -37,13 +38,12 @@ type RangeSliderRef = {
   getValues: () => { min: number; max: number };
 };
 
-interface BaseSliderProps {
+type BaseSliderProps = BaseComponentProps & {
   width?: number;
   height?: number;
   min?: number;
   max?: number;
   step?: number;
-  disabled?: boolean;
   trackColor?: string;
   activeTrackColor?: string;
   thumbColor?: string;
@@ -51,7 +51,6 @@ interface BaseSliderProps {
   showLabel?: boolean;
   showLabels?: boolean;
   labelFormatter?: (value: number) => string;
-  style?: ViewStyle;
   trackStyle?: ViewStyle;
   thumbStyle?: ViewStyle;
   labelStyle?: TextStyle;
@@ -105,21 +104,119 @@ const positionToValue = (
   return (position / width) * (max - min) + min;
 };
 
+// Variant styling function
+const getVariantStyles = (
+  variant: ComponentVariant,
+  theme: Theme
+): { trackColor: string; activeTrackColor: string; thumbColor: string } => {
+  switch (variant) {
+    case 'primary':
+      return {
+        trackColor: theme.colors.border,
+        activeTrackColor: theme.colors.primary,
+        thumbColor: theme.colors.background,
+      };
+    case 'secondary':
+      return {
+        trackColor: theme.colors.border,
+        activeTrackColor: theme.colors.secondary,
+        thumbColor: theme.colors.background,
+      };
+    case 'success':
+      return {
+        trackColor: theme.colors.border,
+        activeTrackColor: theme.colors.success,
+        thumbColor: theme.colors.background,
+      };
+    case 'error':
+      return {
+        trackColor: theme.colors.border,
+        activeTrackColor: theme.colors.error,
+        thumbColor: theme.colors.background,
+      };
+    case 'warning':
+      return {
+        trackColor: theme.colors.border,
+        activeTrackColor: theme.colors.warning,
+        thumbColor: theme.colors.background,
+      };
+    case 'info':
+      return {
+        trackColor: theme.colors.border,
+        activeTrackColor: theme.colors.info,
+        thumbColor: theme.colors.background,
+      };
+    case 'destructive':
+      return {
+        trackColor: theme.colors.border,
+        activeTrackColor: theme.colors.destructive,
+        thumbColor: theme.colors.background,
+      };
+    case 'outline':
+      return {
+        trackColor: theme.colors.border,
+        activeTrackColor: 'transparent',
+        thumbColor: theme.colors.primary,
+      };
+    case 'filled':
+      return {
+        trackColor: `${theme.colors.primary}20`,
+        activeTrackColor: theme.colors.primary,
+        thumbColor: theme.colors.primary,
+      };
+    case 'ghost':
+      return {
+        trackColor: 'transparent',
+        activeTrackColor: `${theme.colors.primary}40`,
+        thumbColor: theme.colors.primary,
+      };
+    case 'default':
+    default:
+      return {
+        trackColor: theme.colors.border,
+        activeTrackColor: theme.colors.primary,
+        thumbColor: theme.colors.background,
+      };
+  }
+};
+
+// Size styling function
+const getSizeStyles = (
+  size: ComponentSize
+): { trackHeight: number; thumbSize: number; containerHeight: number } => {
+  switch (size) {
+    case 'xs':
+      return { trackHeight: 2, thumbSize: 14, containerHeight: 32 };
+    case 'sm':
+      return { trackHeight: 3, thumbSize: 16, containerHeight: 36 };
+    case 'md':
+      return { trackHeight: 4, thumbSize: 20, containerHeight: 40 };
+    case 'lg':
+      return { trackHeight: 5, thumbSize: 24, containerHeight: 44 };
+    case 'xl':
+      return { trackHeight: 6, thumbSize: 28, containerHeight: 48 };
+    default:
+      return { trackHeight: 4, thumbSize: 20, containerHeight: 40 };
+  }
+};
+
 // Slider Component
 const Slider = forwardRef<SliderRef, SliderProps>(
   (
     {
       width = 300,
-      height = 40,
+      height,
       min = 0,
       max = 100,
       step = 1,
       initialValue = min,
       disabled = false,
+      variant = 'default',
+      size = 'md',
       trackColor,
       activeTrackColor,
       thumbColor,
-      thumbSize = 20,
+      thumbSize,
       showLabel = false,
       labelFormatter = (value) => value.toString(),
       onValueChange,
@@ -134,6 +231,21 @@ const Slider = forwardRef<SliderRef, SliderProps>(
   ) => {
     const { theme } = useTheme();
     const styles = useThemedStyles(createSliderStyles);
+
+    // Get variant and size styles
+    const variantStyles = useMemo(
+      () => getVariantStyles(variant, theme),
+      [variant, theme]
+    );
+    const sizeStyles = useMemo(() => getSizeStyles(size), [size]);
+
+    // Use provided values or fallback to variant/size defaults
+    const finalTrackColor = trackColor || variantStyles.trackColor;
+    const finalActiveTrackColor =
+      activeTrackColor || variantStyles.activeTrackColor;
+    const finalThumbColor = thumbColor || variantStyles.thumbColor;
+    const finalThumbSize = thumbSize || sizeStyles.thumbSize;
+    const finalHeight = height || sizeStyles.containerHeight;
 
     // Shared values
     const sliderWidth = useSharedValue(width);
@@ -240,7 +352,7 @@ const Slider = forwardRef<SliderRef, SliderProps>(
 
       return {
         transform: [
-          { translateX: position - thumbSize / 2 },
+          { translateX: position - finalThumbSize / 2 },
           { scale: withSpring(scale) },
         ],
       };
@@ -290,27 +402,26 @@ const Slider = forwardRef<SliderRef, SliderProps>(
 
     // Resolved colors
     const resolvedTrackColor = useMemo(
-      () => resolveColor(theme, trackColor, theme.colors.border),
-      [trackColor, theme]
+      () => resolveColor(theme, finalTrackColor, theme.colors.border),
+      [finalTrackColor, theme]
     );
 
     const resolvedActiveTrackColor = useMemo(
-      () => resolveColor(theme, activeTrackColor, theme.colors.primary),
-      [activeTrackColor, theme]
+      () => resolveColor(theme, finalActiveTrackColor, theme.colors.primary),
+      [finalActiveTrackColor, theme]
     );
 
     const resolvedThumbColor = useMemo(
-      () => resolveColor(theme, thumbColor, theme.colors.background),
-      [thumbColor, theme]
+      () => resolveColor(theme, finalThumbColor, theme.colors.background),
+      [finalThumbColor, theme]
     );
 
     return (
-      <View style={[styles.container, { height }, style]}>
+      <View style={[styles.container, { height: finalHeight }, style]}>
         {showLabel && (
           <Animated.View style={[styles.labelContainer, labelAnimatedStyle]}>
             <Text style={[styles.label, labelStyle]}>
-              {labelFormatter(labelValue)}{' '}
-              {/* Use state instead of shared value */}
+              {labelFormatter(labelValue)}
             </Text>
           </Animated.View>
         )}
@@ -326,7 +437,7 @@ const Slider = forwardRef<SliderRef, SliderProps>(
                 styles.track,
                 {
                   backgroundColor: resolvedTrackColor,
-                  height: 4,
+                  height: sizeStyles.trackHeight,
                 },
                 trackStyle,
               ]}
@@ -338,7 +449,7 @@ const Slider = forwardRef<SliderRef, SliderProps>(
                 styles.activeTrack,
                 {
                   backgroundColor: resolvedActiveTrackColor,
-                  height: 4,
+                  height: sizeStyles.trackHeight,
                 },
                 activeTrackAnimatedStyle,
               ]}
@@ -350,9 +461,9 @@ const Slider = forwardRef<SliderRef, SliderProps>(
                 styles.thumb,
                 {
                   backgroundColor: resolvedThumbColor,
-                  width: thumbSize,
-                  height: thumbSize,
-                  borderRadius: thumbSize / 2,
+                  width: finalThumbSize,
+                  height: finalThumbSize,
+                  borderRadius: finalThumbSize / 2,
                   borderWidth: 2,
                   borderColor: resolvedActiveTrackColor,
                 },
@@ -367,12 +478,12 @@ const Slider = forwardRef<SliderRef, SliderProps>(
   }
 );
 
-// RangeSlider Component
+// RangeSlider Component - Similar updates applied
 const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
   (
     {
       width = 300,
-      height = 40,
+      height,
       min = 0,
       max = 100,
       step = 1,
@@ -380,10 +491,12 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
       initialMaxValue = max,
       minDistance = 0,
       disabled = false,
+      variant = 'default',
+      size = 'md',
       trackColor,
       activeTrackColor,
       thumbColor,
-      thumbSize = 20,
+      thumbSize,
       showLabels = false,
       labelFormatter = (value) => value.toString(),
       onValueChange,
@@ -398,6 +511,21 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
   ) => {
     const { theme } = useTheme();
     const styles = useThemedStyles(createSliderStyles);
+
+    // Get variant and size styles
+    const variantStyles = useMemo(
+      () => getVariantStyles(variant, theme),
+      [variant, theme]
+    );
+    const sizeStyles = useMemo(() => getSizeStyles(size), [size]);
+
+    // Use provided values or fallback to variant/size defaults
+    const finalTrackColor = trackColor || variantStyles.trackColor;
+    const finalActiveTrackColor =
+      activeTrackColor || variantStyles.activeTrackColor;
+    const finalThumbColor = thumbColor || variantStyles.thumbColor;
+    const finalThumbSize = thumbSize || sizeStyles.thumbSize;
+    const finalHeight = height || sizeStyles.containerHeight;
 
     // Shared values
     const sliderWidth = useSharedValue(width);
@@ -556,7 +684,7 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
 
       return {
         transform: [
-          { translateX: position - thumbSize / 2 },
+          { translateX: position - finalThumbSize / 2 },
           { scale: withSpring(scale) },
         ],
       };
@@ -573,7 +701,7 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
 
       return {
         transform: [
-          { translateX: position - thumbSize / 2 },
+          { translateX: position - finalThumbSize / 2 },
           { scale: withSpring(scale) },
         ],
       };
@@ -636,52 +764,47 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
         setValues: (newMinValue: number, newMaxValue: number) => {
           const clampedMin = clamp(newMinValue, min, max);
           const clampedMax = clamp(newMaxValue, min, max);
-
-          if (clampedMax - clampedMin >= minDistance) {
-            minValue.value = clampedMin;
-            maxValue.value = clampedMax;
-            handleValueChange(clampedMin, clampedMax);
-          }
+          minValue.value = clampedMin;
+          maxValue.value = clampedMax;
+          handleValueChange(clampedMin, clampedMax);
         },
         getValues: () => ({ min: minValue.value, max: maxValue.value }),
       }),
-      [minValue, maxValue, min, max, minDistance, handleValueChange]
+      [minValue, maxValue, min, max, handleValueChange]
     );
 
     // Resolved colors
     const resolvedTrackColor = useMemo(
-      () => resolveColor(theme, trackColor, theme.colors.border),
-      [trackColor, theme]
+      () => resolveColor(theme, finalTrackColor, theme.colors.border),
+      [finalTrackColor, theme]
     );
 
     const resolvedActiveTrackColor = useMemo(
-      () => resolveColor(theme, activeTrackColor, theme.colors.primary),
-      [activeTrackColor, theme]
+      () => resolveColor(theme, finalActiveTrackColor, theme.colors.primary),
+      [finalActiveTrackColor, theme]
     );
 
     const resolvedThumbColor = useMemo(
-      () => resolveColor(theme, thumbColor, theme.colors.background),
-      [thumbColor, theme]
+      () => resolveColor(theme, finalThumbColor, theme.colors.background),
+      [finalThumbColor, theme]
     );
 
     return (
-      <View style={[styles.container, { height }, style]}>
+      <View style={[styles.container, { height: finalHeight }, style]}>
         {showLabels && (
           <>
             <Animated.View
               style={[styles.labelContainer, minLabelAnimatedStyle]}
             >
               <Text style={[styles.label, labelStyle]}>
-                {labelFormatter(minLabelValue)}{' '}
-                {/* Use state instead of shared value */}
+                {labelFormatter(minLabelValue)}
               </Text>
             </Animated.View>
             <Animated.View
               style={[styles.labelContainer, maxLabelAnimatedStyle]}
             >
               <Text style={[styles.label, labelStyle]}>
-                {labelFormatter(maxLabelValue)}{' '}
-                {/* Use state instead of shared value */}
+                {labelFormatter(maxLabelValue)}
               </Text>
             </Animated.View>
           </>
@@ -698,7 +821,7 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
                 styles.track,
                 {
                   backgroundColor: resolvedTrackColor,
-                  height: 4,
+                  height: sizeStyles.trackHeight,
                 },
                 trackStyle,
               ]}
@@ -710,7 +833,7 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
                 styles.activeTrack,
                 {
                   backgroundColor: resolvedActiveTrackColor,
-                  height: 4,
+                  height: sizeStyles.trackHeight,
                 },
                 activeTrackAnimatedStyle,
               ]}
@@ -722,9 +845,9 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
                 styles.thumb,
                 {
                   backgroundColor: resolvedThumbColor,
-                  width: thumbSize,
-                  height: thumbSize,
-                  borderRadius: thumbSize / 2,
+                  width: finalThumbSize,
+                  height: finalThumbSize,
+                  borderRadius: finalThumbSize / 2,
                   borderWidth: 2,
                   borderColor: resolvedActiveTrackColor,
                 },
@@ -739,9 +862,9 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
                 styles.thumb,
                 {
                   backgroundColor: resolvedThumbColor,
-                  width: thumbSize,
-                  height: thumbSize,
-                  borderRadius: thumbSize / 2,
+                  width: finalThumbSize,
+                  height: finalThumbSize,
+                  borderRadius: finalThumbSize / 2,
                   borderWidth: 2,
                   borderColor: resolvedActiveTrackColor,
                 },
