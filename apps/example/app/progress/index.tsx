@@ -8,6 +8,7 @@ import {
   Box,
   useThemedStyles,
   Theme,
+  ComponentVariant,
 } from 'rnc-theme';
 
 interface TaskProgress {
@@ -97,14 +98,14 @@ const ProgressScreen = () => {
 
   const getVariantByStatus = (
     status: string
-  ): 'default' | 'success' | 'warning' | 'error' => {
+  ): 'default' | 'success' | 'warning' | 'error' | 'info' | 'destructive' => {
     switch (status) {
       case 'completed':
         return 'success';
       case 'failed':
-        return 'error';
+        return 'destructive';
       case 'in-progress':
-        return 'default';
+        return 'info';
       default:
         return 'warning';
     }
@@ -115,7 +116,7 @@ const ProgressScreen = () => {
       case 'completed':
         return '#10B981';
       case 'failed':
-        return '#EF4444';
+        return '#DC2626';
       case 'in-progress':
         return '#3B82F6';
       default:
@@ -135,13 +136,83 @@ const ProgressScreen = () => {
 
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.title}>Project Dashboard</Text>
+      <Text style={styles.title}>Progress Component Showcase</Text>
+
+      {/* Size Comparison */}
+      <Box style={styles.section}>
+        <Text style={styles.sectionTitle}>Size Comparison</Text>
+        <VStack spacing="md">
+          <VStack spacing="xs">
+            <Text style={styles.label}>Extra Small (xs)</Text>
+            <Progress value={75} size="xs" variant="primary">
+              <ProgressFilledTrack />
+            </Progress>
+          </VStack>
+          <VStack spacing="xs">
+            <Text style={styles.label}>Small (sm)</Text>
+            <Progress value={75} size="sm" variant="primary">
+              <ProgressFilledTrack />
+            </Progress>
+          </VStack>
+          <VStack spacing="xs">
+            <Text style={styles.label}>Medium (md)</Text>
+            <Progress value={75} size="md" variant="primary">
+              <ProgressFilledTrack />
+            </Progress>
+          </VStack>
+          <VStack spacing="xs">
+            <Text style={styles.label}>Large (lg)</Text>
+            <Progress value={75} size="lg" variant="primary">
+              <ProgressFilledTrack />
+            </Progress>
+          </VStack>
+          <VStack spacing="xs">
+            <Text style={styles.label}>Extra Large (xl)</Text>
+            <Progress value={75} size="xl" variant="primary">
+              <ProgressFilledTrack />
+            </Progress>
+          </VStack>
+        </VStack>
+      </Box>
+
+      {/* All Variants */}
+      <Box style={styles.section}>
+        <Text style={styles.sectionTitle}>All Variants</Text>
+        <VStack spacing="md">
+          {[
+            'default',
+            'primary',
+            'secondary',
+            'outline',
+            'filled',
+            'ghost',
+            'success',
+            'error',
+            'warning',
+            'info',
+            'destructive',
+          ].map((variant) => (
+            <VStack key={variant} spacing="xs">
+              <Text style={styles.label}>
+                {variant.charAt(0).toUpperCase() + variant.slice(1)}
+              </Text>
+              <Progress
+                value={65}
+                variant={variant as ComponentVariant}
+                size="md"
+              >
+                <ProgressFilledTrack />
+              </Progress>
+            </VStack>
+          ))}
+        </VStack>
+      </Box>
 
       {/* Overall Progress */}
       <Box style={styles.overallCard}>
         <Text style={styles.overallTitle}>Overall Progress</Text>
         <Text style={styles.overallPercentage}>{overallProgress}%</Text>
-        <Progress value={overallProgress} size="lg" variant="default">
+        <Progress value={overallProgress} size="lg" variant="primary">
           <ProgressFilledTrack />
         </Progress>
 
@@ -151,40 +222,43 @@ const ProgressScreen = () => {
       </Box>
 
       {/* Task Progress List */}
-      <VStack spacing="md">
-        {tasks.map((task) => (
-          <Box key={task.id} style={styles.taskCard}>
-            <HStack
-              justify="space-between"
-              align="center"
-              style={styles.taskHeader}
-            >
-              <VStack spacing="xs" style={styles.taskInfo}>
-                <Text style={styles.taskName}>{task.name}</Text>
-                <Text
-                  style={[
-                    styles.taskCategory,
-                    { color: getStatusColor(task.status) },
-                  ]}
-                >
-                  {task.category.toUpperCase()} • {task.status.toUpperCase()}
+      <Box style={styles.section}>
+        <Text style={styles.sectionTitle}>Project Tasks</Text>
+        <VStack spacing="md">
+          {tasks.map((task) => (
+            <Box key={task.id} style={styles.taskCard}>
+              <HStack
+                justify="space-between"
+                align="center"
+                style={styles.taskHeader}
+              >
+                <VStack spacing="xs" style={styles.taskInfo}>
+                  <Text style={styles.taskName}>{task.name}</Text>
+                  <Text
+                    style={[
+                      styles.taskCategory,
+                      { color: getStatusColor(task.status) },
+                    ]}
+                  >
+                    {task.category.toUpperCase()} • {task.status.toUpperCase()}
+                  </Text>
+                </VStack>
+                <Text style={styles.taskPercentage}>
+                  {Math.round(task.progress)}%
                 </Text>
-              </VStack>
-              <Text style={styles.taskPercentage}>
-                {Math.round(task.progress)}%
-              </Text>
-            </HStack>
+              </HStack>
 
-            <Progress
-              value={task.progress}
-              variant={getVariantByStatus(task.status)}
-              style={styles.taskProgress}
-            >
-              <ProgressFilledTrack />
-            </Progress>
-          </Box>
-        ))}
-      </VStack>
+              <Progress
+                value={task.progress}
+                variant={getVariantByStatus(task.status)}
+                style={styles.taskProgress}
+              >
+                <ProgressFilledTrack />
+              </Progress>
+            </Box>
+          ))}
+        </VStack>
+      </Box>
 
       {/* Category Summary */}
       <Box style={styles.summaryCard}>
@@ -210,12 +284,61 @@ const ProgressScreen = () => {
                   {Math.round(categoryProgress)}%
                 </Text>
               </HStack>
-              <Progress value={categoryProgress} size="sm">
+              <Progress value={categoryProgress} size="sm" variant="secondary">
                 <ProgressFilledTrack />
               </Progress>
             </VStack>
           );
         })}
+      </Box>
+
+      {/* Real-world Examples */}
+      <Box style={styles.section}>
+        <Text style={styles.sectionTitle}>Real-world Examples</Text>
+        <VStack spacing="lg">
+          {/* File Upload */}
+          <VStack spacing="sm">
+            <Text style={styles.exampleTitle}>File Upload</Text>
+            <Progress value={85} variant="info" size="md">
+              <ProgressFilledTrack />
+            </Progress>
+            <Text style={styles.exampleDescription}>
+              Uploading document.pdf (85%)
+            </Text>
+          </VStack>
+
+          {/* System Health */}
+          <VStack spacing="sm">
+            <Text style={styles.exampleTitle}>System Health</Text>
+            <VStack spacing="xs">
+              <HStack justify="space-between">
+                <Text style={styles.metricLabel}>CPU Usage</Text>
+                <Text style={styles.metricValue}>45%</Text>
+              </HStack>
+              <Progress value={45} variant="success" size="sm">
+                <ProgressFilledTrack />
+              </Progress>
+            </VStack>
+            <VStack spacing="xs">
+              <HStack justify="space-between">
+                <Text style={styles.metricLabel}>Memory Usage</Text>
+                <Text style={styles.metricValue}>78%</Text>
+              </HStack>
+              <Progress value={78} variant="warning" size="sm">
+                <ProgressFilledTrack />
+              </Progress>
+            </VStack>
+            <VStack spacing="xs">
+              <HStack justify="space-between">
+                <Text style={styles.metricLabel}>Disk Usage</Text>
+                <Text style={styles.metricValue}>92%</Text>
+              </HStack>
+              <Progress value={92} variant="destructive" size="sm">
+                <ProgressFilledTrack />
+              </Progress>
+            </VStack>
+          </VStack>
+        </VStack>
       </Box>
     </ScrollView>
   );
@@ -233,6 +356,25 @@ const createStyles = (theme: Theme) => ({
     color: theme.colors.text,
     marginBottom: theme.spacing.xl,
     textAlign: 'center' as const,
+  },
+  section: {
+    marginBottom: theme.spacing.xl,
+    padding: theme.spacing.lg,
+    borderRadius: theme.components.borderRadius.lg,
+    backgroundColor: theme.colors.surface,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  sectionTitle: {
+    fontSize: theme.typography.subtitle.fontSize,
+    fontWeight: '600' as const,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.md,
+  },
+  label: {
+    fontSize: theme.typography.caption.fontSize,
+    fontWeight: '500' as const,
+    color: theme.colors.textSecondary,
   },
   overallCard: {
     padding: theme.spacing.lg,
@@ -322,6 +464,24 @@ const createStyles = (theme: Theme) => ({
     fontSize: theme.typography.body.fontSize,
     fontWeight: '600' as const,
     color: theme.colors.textSecondary,
+  },
+  exampleTitle: {
+    fontSize: theme.typography.body.fontSize,
+    fontWeight: '600' as const,
+    color: theme.colors.text,
+  },
+  exampleDescription: {
+    fontSize: theme.typography.caption.fontSize,
+    color: theme.colors.textSecondary,
+  },
+  metricLabel: {
+    fontSize: theme.typography.caption.fontSize,
+    color: theme.colors.textSecondary,
+  },
+  metricValue: {
+    fontSize: theme.typography.caption.fontSize,
+    fontWeight: '600' as const,
+    color: theme.colors.text,
   },
 });
 

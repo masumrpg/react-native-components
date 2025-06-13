@@ -9,14 +9,15 @@ import Animated, {
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
+import { ComponentSize, ComponentVariant } from '../../../types/ui';
 import { resolveColor } from '../../../utils';
 
 interface ProgressProps {
   children?: React.ReactNode;
   value?: number; // 0-100
   max?: number;
-  size?: 'sm' | 'md' | 'lg';
-  variant?: 'default' | 'success' | 'warning' | 'error';
+  size?: ComponentSize;
+  variant?: ComponentVariant;
   style?: ViewStyle;
   trackColor?: string | keyof Theme['colors'];
   animated?: boolean;
@@ -72,7 +73,7 @@ const Progress = forwardRef<React.ComponentRef<typeof View>, ProgressProps>(
               child as React.ReactElement<
                 ProgressFilledTrackProps & {
                   percentage?: number;
-                  variant?: string;
+                  variant?: ComponentVariant;
                   animated?: boolean;
                 }
               >,
@@ -96,7 +97,7 @@ const ProgressFilledTrack = forwardRef<
   React.ComponentRef<typeof View>,
   ProgressFilledTrackProps & {
     percentage?: number;
-    variant?: string;
+    variant?: ComponentVariant;
     animated?: boolean;
   }
 >(
@@ -117,7 +118,8 @@ const ProgressFilledTrack = forwardRef<
     // Reanimated shared values
     const animatedWidth = useSharedValue(0);
 
-    const resolveColor = (
+    const getVariantColor = (
+      variant: ComponentVariant,
       color: string | keyof Theme['colors'] | undefined
     ): string => {
       if (color) {
@@ -127,12 +129,26 @@ const ProgressFilledTrack = forwardRef<
       }
 
       switch (variant) {
+        case 'primary':
+          return theme.colors.primary;
+        case 'secondary':
+          return theme.colors.secondary;
         case 'success':
           return '#10B981';
-        case 'warning':
-          return '#F59E0B';
         case 'error':
           return '#EF4444';
+        case 'warning':
+          return '#F59E0B';
+        case 'info':
+          return '#3B82F6';
+        case 'destructive':
+          return '#DC2626';
+        case 'outline':
+          return theme.colors.primary;
+        case 'filled':
+          return theme.colors.primary;
+        case 'ghost':
+          return theme.colors.primary;
         default:
           return theme.colors.primary;
       }
@@ -164,7 +180,7 @@ const ProgressFilledTrack = forwardRef<
           style={[
             styles.filledTrack,
             {
-              backgroundColor: resolveColor(color),
+              backgroundColor: getVariantColor(variant, color),
             },
             animatedStyle,
             style,
@@ -181,7 +197,7 @@ const ProgressFilledTrack = forwardRef<
           styles.filledTrack,
           {
             width: `${percentage}%`,
-            backgroundColor: resolveColor(color),
+            backgroundColor: getVariantColor(variant, color),
           },
           style,
         ]}
@@ -199,6 +215,9 @@ const createProgressStyles = (theme: Theme) => ({
     borderRadius: theme.components.borderRadius.full,
     overflow: 'hidden' as const,
   },
+  xs: {
+    height: 2,
+  },
   sm: {
     height: 4,
   },
@@ -207,6 +226,9 @@ const createProgressStyles = (theme: Theme) => ({
   },
   lg: {
     height: 12,
+  },
+  xl: {
+    height: 16,
   },
 });
 
