@@ -15,8 +15,13 @@ type BadgeVariant =
   | 'secondary'
   | 'success'
   | 'warning'
-  | 'error';
-type BadgeSize = 'sm' | 'md' | 'lg';
+  | 'error'
+  | 'outline'
+  | 'filled'
+  | 'ghost'
+  | 'info'
+  | 'destructive';
+type BadgeSize = 'xs' | 'sm' | 'md' | 'lg';
 
 interface BaseBadgeProps {
   variant?: BadgeVariant;
@@ -181,7 +186,32 @@ const createBadgeStyles = (theme: Theme) => ({
     backgroundColor: '#EF4444',
     borderColor: '#EF4444',
   } as ViewStyle,
+  outline: {
+    backgroundColor: 'transparent',
+    borderColor: theme.colors.primary,
+    borderWidth: 1,
+  } as ViewStyle,
+  filled: {
+    backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
+  } as ViewStyle,
+  ghost: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
+  } as ViewStyle,
+  info: {
+    backgroundColor: theme.colors.info || '#3B82F6',
+    borderColor: theme.colors.info || '#3B82F6',
+  } as ViewStyle,
+  destructive: {
+    backgroundColor: theme.colors.destructive || '#DC2626',
+    borderColor: theme.colors.destructive || '#DC2626',
+  } as ViewStyle,
   // Sizes
+  xs: {
+    paddingHorizontal: theme.spacing.xs / 2,
+    paddingVertical: 1,
+  } as ViewStyle,
   sm: {
     paddingHorizontal: theme.spacing.xs,
     paddingVertical: 2,

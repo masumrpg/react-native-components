@@ -66,34 +66,133 @@ const BadgeScreen: React.FC = () => {
         </Badge>
 
         {/* Different Variants */}
-        <Badge variant="primary">
-          <BadgeText>Primary</BadgeText>
-        </Badge>
+        <Text style={styles.sectionTitle}>Original Variants</Text>
+        <View style={styles.statusRow}>
+          <Badge variant="primary">
+            <BadgeText>Primary</BadgeText>
+          </Badge>
+          <Badge variant="secondary">
+            <BadgeText>Secondary</BadgeText>
+          </Badge>
+          <Badge variant="success">
+            <BadgeText>Success</BadgeText>
+          </Badge>
+          <Badge variant="warning">
+            <BadgeText>Warning</BadgeText>
+          </Badge>
+          <Badge variant="error">
+            <BadgeText>Error</BadgeText>
+          </Badge>
+        </View>
 
-        <Badge variant="success">
-          <BadgeText>Success</BadgeText>
-        </Badge>
-
-        <Badge variant="warning">
-          <BadgeText>Warning</BadgeText>
-        </Badge>
-
-        <Badge variant="error">
-          <BadgeText>Error</BadgeText>
-        </Badge>
+        {/* New Variants */}
+        <Text style={styles.sectionTitle}>New Variants</Text>
+        <View style={styles.statusRow}>
+          <Badge variant="outline">
+            <BadgeText>Outline</BadgeText>
+          </Badge>
+          <Badge variant="filled">
+            <BadgeText>Filled</BadgeText>
+          </Badge>
+          <Badge variant="ghost">
+            <BadgeText>Ghost</BadgeText>
+          </Badge>
+          <Badge variant="info">
+            <BadgeText>Info</BadgeText>
+          </Badge>
+          <Badge variant="destructive">
+            <BadgeText>Destructive</BadgeText>
+          </Badge>
+        </View>
 
         {/* Different Sizes */}
-        <Badge size="sm">
-          <BadgeText>Small</BadgeText>
-        </Badge>
+        <Text style={styles.sectionTitle}>All Sizes</Text>
+        <View style={styles.sizeRow}>
+          <Badge size="xs">
+            <BadgeText>XS</BadgeText>
+          </Badge>
+          <Badge size="sm">
+            <BadgeText>Small</BadgeText>
+          </Badge>
+          <Badge size="md">
+            <BadgeText>Medium</BadgeText>
+          </Badge>
+          <Badge size="lg">
+            <BadgeText>Large</BadgeText>
+          </Badge>
+        </View>
 
-        <Badge size="md">
-          <BadgeText>Medium</BadgeText>
-        </Badge>
+        {/* Size Comparison with New Variants */}
+        <Text style={styles.sectionTitle}>Size Comparison - New Variants</Text>
+        <View style={styles.sizeComparison}>
+          <Text style={styles.smallDescription}>
+            Outline variant in different sizes:
+          </Text>
+          <View style={styles.sizeRow}>
+            <Badge variant="outline" size="xs">
+              <BadgeText>XS</BadgeText>
+            </Badge>
+            <Badge variant="outline" size="sm">
+              <BadgeText>SM</BadgeText>
+            </Badge>
+            <Badge variant="outline" size="md">
+              <BadgeText>MD</BadgeText>
+            </Badge>
+            <Badge variant="outline" size="lg">
+              <BadgeText>LG</BadgeText>
+            </Badge>
+          </View>
 
-        <Badge size="lg">
-          <BadgeText>Large</BadgeText>
-        </Badge>
+          <Text style={styles.smallDescription}>
+            Ghost variant in different sizes:
+          </Text>
+          <View style={styles.sizeRow}>
+            <Badge variant="ghost" size="xs">
+              <BadgeText>XS</BadgeText>
+            </Badge>
+            <Badge variant="ghost" size="sm">
+              <BadgeText>SM</BadgeText>
+            </Badge>
+            <Badge variant="ghost" size="md">
+              <BadgeText>MD</BadgeText>
+            </Badge>
+            <Badge variant="ghost" size="lg">
+              <BadgeText>LG</BadgeText>
+            </Badge>
+          </View>
+        </View>
+
+        {/* Badge with Icons - New Variants */}
+        <Text style={styles.sectionTitle}>New Variants with Icons</Text>
+        <View style={styles.statusRow}>
+          <Badge variant="outline">
+            <BadgeIcon position="left">
+              <Ionicons name="star-outline" size={16} color="#007AFF" />
+            </BadgeIcon>
+            <BadgeText>Outline</BadgeText>
+          </Badge>
+
+          <Badge variant="ghost">
+            <BadgeIcon position="left">
+              <Ionicons name="eye-outline" size={16} color="#666" />
+            </BadgeIcon>
+            <BadgeText>Ghost</BadgeText>
+          </Badge>
+
+          <Badge variant="info">
+            <BadgeIcon position="left">
+              <Ionicons name="information-circle" size={16} color="white" />
+            </BadgeIcon>
+            <BadgeText>Info</BadgeText>
+          </Badge>
+
+          <Badge variant="destructive">
+            <BadgeIcon position="left">
+              <Ionicons name="trash" size={16} color="white" />
+            </BadgeIcon>
+            <BadgeText>Delete</BadgeText>
+          </Badge>
+        </View>
 
         {/* Badge with Left Icon */}
         <Badge variant="primary">
@@ -254,6 +353,22 @@ const createStyles = (theme: Theme) => ({
     flexDirection: 'row' as const,
     gap: theme.spacing.sm,
     flexWrap: 'wrap' as const,
+  },
+  // Missing style properties - added below
+  sizeRow: {
+    flexDirection: 'row' as const,
+    gap: theme.spacing.sm,
+    flexWrap: 'wrap' as const,
+    alignItems: 'center' as const,
+  },
+  sizeComparison: {
+    gap: theme.spacing.md,
+  },
+  smallDescription: {
+    fontSize: theme.typography.caption.fontSize,
+    color: theme.colors.textSecondary,
+    marginBottom: theme.spacing.sm,
+    fontStyle: 'italic' as const,
   },
   onlineIndicator: {
     width: 8,
