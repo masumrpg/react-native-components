@@ -11,22 +11,18 @@ import Animated, {
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-import { ComponentSize, ComponentVariant } from '../../../types/ui';
+import { BaseComponentProps } from '../../../types/ui';
 
-interface SwitcherProps {
+type SwitcherProps = BaseComponentProps & {
   value: boolean;
   onValueChange?: (value: boolean) => void;
-  size?: ComponentSize;
-  variant?: ComponentVariant;
-  disabled?: boolean;
-  style?: ViewStyle;
   trackColor?: {
     false?: string;
     true?: string;
   };
   thumbColor?: string;
   animated?: boolean;
-}
+};
 
 interface SwitcherLabelProps {
   children: React.ReactNode;
