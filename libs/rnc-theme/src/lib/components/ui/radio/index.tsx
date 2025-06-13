@@ -16,9 +16,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-
-type RadioSize = 'sm' | 'md' | 'lg';
-type RadioVariant = 'default' | 'primary' | 'success' | 'warning' | 'error';
+import { BaseComponentProps, ComponentSize, ComponentVariant } from '../../../types/ui';
 
 interface RadioGroupProps {
   children: React.ReactNode;
@@ -28,14 +26,10 @@ interface RadioGroupProps {
   style?: ViewStyle;
 }
 
-interface RadioProps {
+type RadioProps = BaseComponentProps & {
   value: string;
   checked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
-  size?: RadioSize;
-  variant?: RadioVariant;
-  disabled?: boolean;
-  style?: ViewStyle;
   children?: React.ReactNode;
 }
 
@@ -137,9 +131,15 @@ const Radio = forwardRef<
       const variantBorderColors = {
         default: styles.default.borderColor as string,
         primary: styles.primary.borderColor as string,
+        secondary: styles.secondary.borderColor as string,
+        outline: styles.outline.borderColor as string,
+        filled: styles.filled.borderColor as string,
+        ghost: styles.ghost.borderColor as string,
         success: styles.success.borderColor as string,
-        warning: styles.warning.borderColor as string,
         error: styles.error.borderColor as string,
+        warning: styles.warning.borderColor as string,
+        info: styles.info.borderColor as string,
+        destructive: styles.destructive.borderColor as string,
       };
 
       return {
@@ -157,11 +157,17 @@ const Radio = forwardRef<
       );
 
       const variantColors = {
-        default: styles.primaryBackground.backgroundColor as string,
+        default: styles.defaultBackground.backgroundColor as string,
         primary: styles.primaryBackground.backgroundColor as string,
+        secondary: styles.secondaryBackground.backgroundColor as string,
+        outline: styles.outlineBackground.backgroundColor as string,
+        filled: styles.filledBackground.backgroundColor as string,
+        ghost: styles.ghostBackground.backgroundColor as string,
         success: styles.successBackground.backgroundColor as string,
-        warning: styles.warningBackground.backgroundColor as string,
         error: styles.errorBackground.backgroundColor as string,
+        warning: styles.warningBackground.backgroundColor as string,
+        info: styles.infoBackground.backgroundColor as string,
+        destructive: styles.destructiveBackground.backgroundColor as string,
       };
 
       return {
@@ -232,8 +238,8 @@ const RadioGroup: React.FC<RadioGroupProps> = ({
 
 const RadioIndicator: React.FC<
   RadioIndicatorProps & {
-    size?: RadioSize;
-    variant?: RadioVariant;
+    size?: ComponentSize;
+    variant?: ComponentVariant;
   }
 > = ({ children, style, size = 'md', variant = 'default', ...props }) => {
   const styles = useThemedStyles(createRadioIndicatorStyles);
@@ -250,11 +256,15 @@ const RadioIndicator: React.FC<
 
 const RadioIcon: React.FC<
   RadioIconProps & {
-    size?: RadioSize;
-    variant?: RadioVariant;
+    size?: ComponentSize;
+    variant?: ComponentVariant;
   }
 > = ({ icon, style, size = 'md', variant = 'default', ...props }) => {
-  const dotSize = size === 'sm' ? 6 : size === 'md' ? 8 : 10;
+  const dotSize =
+    size === 'xs' ? 4 :
+    size === 'sm' ? 6 :
+    size === 'md' ? 8 :
+    size === 'lg' ? 10 : 12;
   const iconColor = 'white';
 
   return (
@@ -278,7 +288,7 @@ const RadioIcon: React.FC<
 
 const RadioLabel: React.FC<
   RadioLabelProps & {
-    size?: RadioSize;
+    size?: ComponentSize;
   }
 > = ({ children, style, size = 'md', ...props }) => {
   const styles = useThemedStyles(createRadioLabelStyles);
@@ -336,6 +346,18 @@ const createRadioStyles = (theme: Theme) => ({
   primary: {
     borderColor: theme.colors.primary,
   },
+  secondary: {
+    borderColor: theme.colors.secondary,
+  },
+  outline: {
+    borderColor: theme.colors.primary,
+  },
+  filled: {
+    borderColor: theme.colors.primary,
+  },
+  ghost: {
+    borderColor: theme.colors.border,
+  },
   success: {
     borderColor: theme.colors.success,
   },
@@ -345,12 +367,30 @@ const createRadioStyles = (theme: Theme) => ({
   error: {
     borderColor: theme.colors.error,
   },
+  info: {
+    borderColor: '#3B82F6',
+  },
+  destructive: {
+    borderColor: '#DC2626',
+  },
   // Background variants
   defaultBackground: {
     backgroundColor: theme.colors.primary,
   },
   primaryBackground: {
     backgroundColor: theme.colors.primary,
+  },
+  secondaryBackground: {
+    backgroundColor: theme.colors.secondary,
+  },
+  outlineBackground: {
+    backgroundColor: theme.colors.primary,
+  },
+  filledBackground: {
+    backgroundColor: theme.colors.primary,
+  },
+  ghostBackground: {
+    backgroundColor: theme.colors.border,
   },
   successBackground: {
     backgroundColor: theme.colors.success,
@@ -361,7 +401,17 @@ const createRadioStyles = (theme: Theme) => ({
   errorBackground: {
     backgroundColor: theme.colors.error,
   },
+  infoBackground: {
+    backgroundColor: '#3B82F6',
+  },
+  destructiveBackground: {
+    backgroundColor: '#DC2626',
+  },
   // Sizes
+  xs: {
+    width: 16,
+    height: 16,
+  },
   sm: {
     width: 18,
     height: 18,
@@ -374,7 +424,15 @@ const createRadioStyles = (theme: Theme) => ({
     width: 26,
     height: 26,
   },
+  xl: {
+    width: 30,
+    height: 30,
+  },
   // Dot sizes
+  xsDot: {
+    width: 6,
+    height: 6,
+  },
   smDot: {
     width: 8,
     height: 8,
@@ -387,7 +445,15 @@ const createRadioStyles = (theme: Theme) => ({
     width: 12,
     height: 12,
   },
+  xlDot: {
+    width: 14,
+    height: 14,
+  },
   // Container sizes
+  xsContainer: {
+    minHeight: 28,
+    paddingVertical: 2,
+  },
   smContainer: {
     minHeight: 32,
     paddingVertical: 4,
@@ -399,6 +465,10 @@ const createRadioStyles = (theme: Theme) => ({
   lgContainer: {
     minHeight: 40,
     paddingVertical: 8,
+  },
+  xlContainer: {
+    minHeight: 44,
+    paddingVertical: 10,
   },
 });
 
@@ -420,6 +490,18 @@ const createRadioIndicatorStyles = (theme: Theme) => ({
   primary: {
     backgroundColor: theme.colors.primary,
   },
+  secondary: {
+    backgroundColor: theme.colors.secondary,
+  },
+  outline: {
+    backgroundColor: theme.colors.primary,
+  },
+  filled: {
+    backgroundColor: theme.colors.primary,
+  },
+  ghost: {
+    backgroundColor: theme.colors.border,
+  },
   success: {
     backgroundColor: theme.colors.success,
   },
@@ -429,7 +511,17 @@ const createRadioIndicatorStyles = (theme: Theme) => ({
   error: {
     backgroundColor: theme.colors.error,
   },
+  info: {
+    backgroundColor: '#3B82F6',
+  },
+  destructive: {
+    backgroundColor: '#DC2626',
+  },
   // Sizes
+  xs: {
+    width: 16,
+    height: 16,
+  },
   sm: {
     width: 18,
     height: 18,
@@ -442,6 +534,10 @@ const createRadioIndicatorStyles = (theme: Theme) => ({
     width: 26,
     height: 26,
   },
+  xl: {
+    width: 30,
+    height: 30,
+  },
 });
 
 const createRadioLabelStyles = (theme: Theme) => ({
@@ -449,11 +545,16 @@ const createRadioLabelStyles = (theme: Theme) => ({
     fontWeight: '400' as const,
     flex: 1,
     textAlignVertical: 'center' as const,
+    color: theme.colors.text,
   },
   disabled: {
     opacity: 0.5,
   },
   // Sizes
+  xs: {
+    fontSize: theme.typography.caption.fontSize,
+    lineHeight: theme.typography.caption.lineHeight,
+  },
   sm: {
     fontSize: theme.typography.small.fontSize,
     lineHeight: theme.typography.small.lineHeight,
@@ -465,6 +566,10 @@ const createRadioLabelStyles = (theme: Theme) => ({
   lg: {
     fontSize: theme.typography.subtitle.fontSize,
     lineHeight: theme.typography.subtitle.lineHeight,
+  },
+  xl: {
+    fontSize: theme.typography.title.fontSize,
+    lineHeight: theme.typography.title.lineHeight,
   },
 });
 
@@ -482,6 +587,4 @@ export type {
   RadioIndicatorProps,
   RadioIconProps,
   RadioLabelProps,
-  RadioSize,
-  RadioVariant,
 };
