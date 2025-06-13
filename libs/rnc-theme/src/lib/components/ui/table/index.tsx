@@ -9,6 +9,7 @@ interface TableProps {
   bordered?: boolean;
   striped?: boolean;
   scrollable?: boolean;
+  variant?: 'default' | 'minimal' | 'elevated';
 }
 
 interface TableHeaderProps {
@@ -19,7 +20,7 @@ interface TableHeaderProps {
 interface TableBodyProps {
   children?: React.ReactNode;
   style?: ViewStyle;
-  striped?: boolean; // Added missing property
+  striped?: boolean;
 }
 
 interface TableFooterProps {
@@ -32,6 +33,8 @@ interface TableRowProps {
   style?: ViewStyle;
   isHeader?: boolean;
   isEven?: boolean;
+  isFirst?: boolean;
+  isLast?: boolean;
 }
 
 interface TableHeadProps {
@@ -39,6 +42,8 @@ interface TableHeadProps {
   style?: TextStyle;
   align?: 'left' | 'center' | 'right';
   flex?: number;
+  sortable?: boolean;
+  onSort?: () => void;
 }
 
 interface TableDataProps {
@@ -62,27 +67,75 @@ const Table = forwardRef<React.ComponentRef<typeof View>, TableProps>(
       bordered = true,
       striped = false,
       scrollable = false,
+      variant = 'default',
       ...props
     },
     ref
   ) => {
     const styles = useThemedStyles(createTableStyles);
 
-    const tableContent = (
-      <View
-        ref={ref}
-        style={[styles.table, bordered && styles.bordered, style]}
-        {...props}
-      >
-        {React.Children.map(children, (child) => {
-          if (React.isValidElement(child) && child.type === TableBody) {
+    const processChildren = (children: React.ReactNode) => {
+      return React.Children.map(children, (child) => {
+        if (React.isValidElement(child)) {
+          if (child.type === TableBody) {
             return React.cloneElement(
               child as React.ReactElement<TableBodyProps>,
               { striped }
             );
           }
-          return child;
-        })}
+          if (
+            child.type === TableHeader ||
+            child.type === TableBody ||
+            child.type === TableFooter
+          ) {
+            const childElement = child as React.ReactElement<{
+              children?: React.ReactNode;
+            }>;
+            const childrenArray = React.Children.toArray(
+              childElement.props.children
+            );
+            const processedChildren = React.Children.map(
+              childElement.props.children,
+              (rowChild, index) => {
+                if (
+                  React.isValidElement(rowChild) &&
+                  rowChild.type === TableRow
+                ) {
+                  return React.cloneElement(
+                    rowChild as React.ReactElement<TableRowProps>,
+                    {
+                      isFirst: index === 0,
+                      isLast: index === childrenArray.length - 1,
+                      ...(child.type === TableHeader && { isHeader: true }),
+                      ...(child.type === TableBody &&
+                        striped && { isEven: index % 2 === 0 }),
+                    }
+                  );
+                }
+                return rowChild;
+              }
+            );
+            return React.cloneElement(childElement, {
+              children: processedChildren,
+            });
+          }
+        }
+        return child;
+      });
+    };
+
+    const tableContent = (
+      <View
+        ref={ref}
+        style={[
+          styles.table,
+          bordered && styles.bordered,
+          styles[variant],
+          style,
+        ]}
+        {...props}
+      >
+        {processChildren(children)}
       </View>
     );
 
@@ -108,15 +161,7 @@ const TableHeader = forwardRef<
 
   return (
     <View ref={ref} style={[styles.header, style]} {...props}>
-      {React.Children.map(children, (child) => {
-        if (React.isValidElement(child) && child.type === TableRow) {
-          return React.cloneElement(
-            child as React.ReactElement<TableRowProps>,
-            { isHeader: true }
-          );
-        }
-        return child;
-      })}
+      {children}
     </View>
   );
 });
@@ -129,17 +174,7 @@ const TableBody = forwardRef<React.ComponentRef<typeof View>, TableBodyProps>(
 
     return (
       <View ref={ref} style={[styles.body, style]} {...props}>
-        {React.Children.map(children, (child, index) => {
-          if (React.isValidElement(child) && child.type === TableRow) {
-            return React.cloneElement(
-              child as React.ReactElement<TableRowProps>,
-              {
-                isEven: striped && index % 2 === 0,
-              }
-            );
-          }
-          return child;
-        })}
+        {children}
       </View>
     );
   }
@@ -163,7 +198,18 @@ const TableFooter = forwardRef<
 TableFooter.displayName = 'TableFooter';
 
 const TableRow = forwardRef<React.ComponentRef<typeof View>, TableRowProps>(
-  ({ children, style, isHeader = false, isEven = false, ...props }, ref) => {
+  (
+    {
+      children,
+      style,
+      isHeader = false,
+      isEven = false,
+      isFirst = false,
+      isLast = false,
+      ...props
+    },
+    ref
+  ) => {
     const styles = useThemedStyles(createTableRowStyles);
 
     return (
@@ -173,6 +219,8 @@ const TableRow = forwardRef<React.ComponentRef<typeof View>, TableRowProps>(
           styles.row,
           isHeader && styles.headerRow,
           isEven && styles.evenRow,
+          isFirst && styles.firstRow,
+          isLast && styles.lastRow,
           style,
         ]}
         {...props}
@@ -186,7 +234,18 @@ const TableRow = forwardRef<React.ComponentRef<typeof View>, TableRowProps>(
 TableRow.displayName = 'TableRow';
 
 const TableHead = forwardRef<React.ComponentRef<typeof View>, TableHeadProps>(
-  ({ children, style, align = 'left', flex = 1, ...props }, ref) => {
+  (
+    {
+      children,
+      style,
+      align = 'left',
+      flex = 1,
+      sortable = false,
+      onSort,
+      ...props
+    },
+    ref
+  ) => {
     const styles = useThemedStyles(createTableHeadStyles);
 
     return (
@@ -240,11 +299,28 @@ TableCaption.displayName = 'TableCaption';
 const createTableStyles = (theme: Theme) => ({
   table: {
     backgroundColor: theme.colors.surface,
+    overflow: 'hidden' as const,
   },
   bordered: {
     borderWidth: 1,
     borderColor: theme.colors.border,
     borderRadius: theme.components.borderRadius.md,
+  },
+  default: {
+    // Default styling
+  },
+  minimal: {
+    backgroundColor: 'transparent',
+  },
+  elevated: {
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
 });
 
@@ -279,6 +355,17 @@ const createTableRowStyles = (theme: Theme) => ({
   },
   evenRow: {
     backgroundColor: theme.colors.background,
+  },
+  firstRow: {
+    borderTopLeftRadius: theme.components.borderRadius.md,
+    borderTopRightRadius: theme.components.borderRadius.md,
+    overflow: 'hidden' as const,
+  },
+  lastRow: {
+    borderBottomWidth: 0,
+    borderBottomLeftRadius: theme.components.borderRadius.md,
+    borderBottomRightRadius: theme.components.borderRadius.md,
+    overflow: 'hidden' as const,
   },
 });
 
