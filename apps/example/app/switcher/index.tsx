@@ -14,9 +14,15 @@ import {
 const SwitcherScreen = () => {
   const [basicSwitch, setBasicSwitch] = useState(false);
   const [primarySwitch, setPrimarySwitch] = useState(true);
+  const [secondarySwitch, setSecondarySwitch] = useState(false);
+  const [outlineSwitch, setOutlineSwitch] = useState(true);
+  const [filledSwitch, setFilledSwitch] = useState(false);
+  const [ghostSwitch, setGhostSwitch] = useState(true);
   const [successSwitch, setSuccessSwitch] = useState(false);
   const [warningSwitch, setWarningSwitch] = useState(true);
   const [errorSwitch, setErrorSwitch] = useState(false);
+  const [infoSwitch, setInfoSwitch] = useState(true);
+  const [destructiveSwitch, setDestructiveSwitch] = useState(false);
   const [disabledSwitch, setDisabledSwitch] = useState(true);
   const [customColorSwitch, setCustomColorSwitch] = useState(false);
   const [notificationSwitch, setNotificationSwitch] = useState(true);
@@ -34,10 +40,7 @@ const SwitcherScreen = () => {
             <VStack spacing="md">
               <HStack justify="space-between" align="center">
                 <Typography>Basic Switch</Typography>
-                <Switcher
-                  value={basicSwitch}
-                  onValueChange={setBasicSwitch}
-                />
+                <Switcher value={basicSwitch} onValueChange={setBasicSwitch} />
               </HStack>
 
               <HStack justify="space-between" align="center">
@@ -63,9 +66,9 @@ const SwitcherScreen = () => {
           <CardContent>
             <VStack spacing="md">
               <HStack justify="space-between" align="center">
-                <Typography>Small</Typography>
+                <Typography>Extra Small (xs)</Typography>
                 <Switcher
-                  size="sm"
+                  size="xs"
                   value={basicSwitch}
                   onValueChange={setBasicSwitch}
                   variant="primary"
@@ -73,9 +76,9 @@ const SwitcherScreen = () => {
               </HStack>
 
               <HStack justify="space-between" align="center">
-                <Typography>Medium (Default)</Typography>
+                <Typography>Small (sm)</Typography>
                 <Switcher
-                  size="md"
+                  size="sm"
                   value={primarySwitch}
                   onValueChange={setPrimarySwitch}
                   variant="primary"
@@ -83,11 +86,31 @@ const SwitcherScreen = () => {
               </HStack>
 
               <HStack justify="space-between" align="center">
-                <Typography>Large</Typography>
+                <Typography>Medium (md) - Default</Typography>
                 <Switcher
-                  size="lg"
+                  size="md"
                   value={successSwitch}
                   onValueChange={setSuccessSwitch}
+                  variant="primary"
+                />
+              </HStack>
+
+              <HStack justify="space-between" align="center">
+                <Typography>Large (lg)</Typography>
+                <Switcher
+                  size="lg"
+                  value={warningSwitch}
+                  onValueChange={setWarningSwitch}
+                  variant="primary"
+                />
+              </HStack>
+
+              <HStack justify="space-between" align="center">
+                <Typography>Extra Large (xl)</Typography>
+                <Switcher
+                  size="xl"
+                  value={errorSwitch}
+                  onValueChange={setErrorSwitch}
                   variant="primary"
                 />
               </HStack>
@@ -95,17 +118,62 @@ const SwitcherScreen = () => {
           </CardContent>
         </Card>
 
-        {/* Color Variants */}
+        {/* Variant Showcase */}
         <Card>
-          <CardHeader title="Color Variants" />
+          <CardHeader title="All Variants" />
           <CardContent>
             <VStack spacing="md">
+              <HStack justify="space-between" align="center">
+                <Typography>Default</Typography>
+                <Switcher
+                  value={basicSwitch}
+                  onValueChange={setBasicSwitch}
+                  variant="default"
+                />
+              </HStack>
+
               <HStack justify="space-between" align="center">
                 <Typography>Primary</Typography>
                 <Switcher
                   value={primarySwitch}
                   onValueChange={setPrimarySwitch}
                   variant="primary"
+                />
+              </HStack>
+
+              <HStack justify="space-between" align="center">
+                <Typography>Secondary</Typography>
+                <Switcher
+                  value={secondarySwitch}
+                  onValueChange={setSecondarySwitch}
+                  variant="secondary"
+                />
+              </HStack>
+
+              <HStack justify="space-between" align="center">
+                <Typography>Outline</Typography>
+                <Switcher
+                  value={outlineSwitch}
+                  onValueChange={setOutlineSwitch}
+                  variant="outline"
+                />
+              </HStack>
+
+              <HStack justify="space-between" align="center">
+                <Typography>Filled</Typography>
+                <Switcher
+                  value={filledSwitch}
+                  onValueChange={setFilledSwitch}
+                  variant="filled"
+                />
+              </HStack>
+
+              <HStack justify="space-between" align="center">
+                <Typography>Ghost</Typography>
+                <Switcher
+                  value={ghostSwitch}
+                  onValueChange={setGhostSwitch}
+                  variant="ghost"
                 />
               </HStack>
 
@@ -133,6 +201,24 @@ const SwitcherScreen = () => {
                   value={errorSwitch}
                   onValueChange={setErrorSwitch}
                   variant="error"
+                />
+              </HStack>
+
+              <HStack justify="space-between" align="center">
+                <Typography>Info</Typography>
+                <Switcher
+                  value={infoSwitch}
+                  onValueChange={setInfoSwitch}
+                  variant="info"
+                />
+              </HStack>
+
+              <HStack justify="space-between" align="center">
+                <Typography>Destructive</Typography>
+                <Switcher
+                  value={destructiveSwitch}
+                  onValueChange={setDestructiveSwitch}
+                  variant="destructive"
                 />
               </HStack>
             </VStack>
@@ -214,6 +300,7 @@ const SwitcherScreen = () => {
                   value={notificationSwitch}
                   onValueChange={setNotificationSwitch}
                   variant="primary"
+                  size="md"
                 />
               </HStack>
 
@@ -243,6 +330,37 @@ const SwitcherScreen = () => {
                   value={locationSwitch}
                   onValueChange={setLocationSwitch}
                   variant="success"
+                  size="md"
+                />
+              </HStack>
+
+              <HStack justify="space-between" align="center">
+                <VStack spacing="xs">
+                  <Typography weight="600">Auto-save</Typography>
+                  <Typography variant="small" color="textSecondary">
+                    Automatically save your work
+                  </Typography>
+                </VStack>
+                <Switcher
+                  value={infoSwitch}
+                  onValueChange={setInfoSwitch}
+                  variant="info"
+                  size="sm"
+                />
+              </HStack>
+
+              <HStack justify="space-between" align="center">
+                <VStack spacing="xs">
+                  <Typography weight="600">Delete Account</Typography>
+                  <Typography variant="small" color="textSecondary">
+                    Permanently delete your account
+                  </Typography>
+                </VStack>
+                <Switcher
+                  value={destructiveSwitch}
+                  onValueChange={setDestructiveSwitch}
+                  variant="destructive"
+                  size="md"
                 />
               </HStack>
             </VStack>

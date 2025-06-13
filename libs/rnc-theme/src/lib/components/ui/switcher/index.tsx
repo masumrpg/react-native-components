@@ -11,15 +11,13 @@ import Animated, {
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-
-type SwitcherSize = 'sm' | 'md' | 'lg';
-type SwitcherVariant = 'default' | 'primary' | 'success' | 'warning' | 'error';
+import { ComponentSize, ComponentVariant } from '../../../types/ui';
 
 interface SwitcherProps {
   value: boolean;
   onValueChange?: (value: boolean) => void;
-  size?: SwitcherSize;
-  variant?: SwitcherVariant;
+  size?: ComponentSize;
+  variant?: ComponentVariant;
   disabled?: boolean;
   style?: ViewStyle;
   trackColor?: {
@@ -79,7 +77,7 @@ const Switcher = forwardRef<
     }, [value, animated, switchValue]);
 
     // Get colors based on variant and state
-    const getTrackColors = () => {
+    const getVariantColors = () => {
       const offColor = trackColor?.false || theme.colors.border;
       let onColor = trackColor?.true;
 
@@ -88,13 +86,31 @@ const Switcher = forwardRef<
           case 'primary':
             onColor = theme.colors.primary;
             break;
+          case 'secondary':
+            onColor = theme.colors.secondary;
+            break;
+          case 'outline':
+            onColor = theme.colors.primary;
+            break;
+          case 'filled':
+            onColor = theme.colors.primary;
+            break;
+          case 'ghost':
+            onColor = theme.colors.primary;
+            break;
           case 'success':
             onColor = theme.colors.success;
+            break;
+          case 'error':
+            onColor = theme.colors.error;
             break;
           case 'warning':
             onColor = theme.colors.warning;
             break;
-          case 'error':
+          case 'info':
+            onColor = theme.colors.info;
+            break;
+          case 'destructive':
             onColor = theme.colors.error;
             break;
           default:
@@ -105,8 +121,28 @@ const Switcher = forwardRef<
       return { offColor, onColor };
     };
 
-    const { offColor, onColor } = getTrackColors();
+    const { offColor, onColor } = getVariantColors();
     const thumbColorValue = thumbColor || '#FFFFFF';
+
+    // Get size-specific dimensions
+    const getSizeDimensions = () => {
+      switch (size) {
+        case 'xs':
+          return { width: 24, height: 14, thumbSize: 10, thumbOffset: 2 };
+        case 'sm':
+          return { width: 28, height: 16, thumbSize: 12, thumbOffset: 2 };
+        case 'md':
+          return { width: 44, height: 26, thumbSize: 22, thumbOffset: 2 };
+        case 'lg':
+          return { width: 52, height: 32, thumbSize: 28, thumbOffset: 2 };
+        case 'xl':
+          return { width: 60, height: 36, thumbSize: 32, thumbOffset: 2 };
+        default:
+          return { width: 44, height: 26, thumbSize: 22, thumbOffset: 2 };
+      }
+    };
+
+    const { width, height, thumbSize, thumbOffset } = getSizeDimensions();
 
     // Animated styles
     const trackAnimatedStyle = useAnimatedStyle(() => {
@@ -118,6 +154,8 @@ const Switcher = forwardRef<
         backgroundColor,
         opacity: disabled ? 0.5 : 1,
         transform: [{ scale: pressScale.value }],
+        width,
+        height,
       };
     });
 
@@ -125,7 +163,7 @@ const Switcher = forwardRef<
       const translateX = interpolate(
         switchValue.value,
         [0, 1],
-        [2, styles[size].width - styles[`${size}Thumb`].width - 2]
+        [thumbOffset, width - thumbSize - thumbOffset]
       );
 
       return {
@@ -133,6 +171,9 @@ const Switcher = forwardRef<
         backgroundColor: disabled
           ? theme.colors.textSecondary
           : thumbColorValue,
+        width: thumbSize,
+        height: thumbSize,
+        top: thumbOffset,
       };
     });
 
@@ -171,9 +212,8 @@ const Switcher = forwardRef<
       pressScale.value = withSpring(1, { damping: 20, stiffness: 300 });
     };
 
-    const trackStyle = [styles.track, styles[size], style];
-
-    const thumbStyle = [styles.thumb, styles[`${size}Thumb`]];
+    const trackStyle = [styles.track, style];
+    const thumbStyle = [styles.thumb];
 
     return (
       <AnimatedTouchableOpacity
@@ -233,35 +273,6 @@ const createSwitcherStyles = (theme: Theme) => ({
     shadowOpacity: 0.25,
     shadowRadius: 3,
     elevation: 4,
-  },
-  // Sizes - optimized for iOS feel and professional proportions
-  sm: {
-    width: 28,
-    height: 16,
-  },
-  md: {
-    width: 44,
-    height: 26,
-  },
-  lg: {
-    width: 52,
-    height: 32,
-  },
-  // Thumb sizes - better proportions
-  smThumb: {
-    width: 12,
-    height: 12,
-    top: 2,
-  },
-  mdThumb: {
-    width: 22,
-    height: 22,
-    top: 2,
-  },
-  lgThumb: {
-    width: 28,
-    height: 28,
-    top: 2,
   },
 });
 
