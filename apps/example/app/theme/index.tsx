@@ -15,6 +15,8 @@ import {
   CustomThemeConfigFactory,
 } from 'rnc-theme';
 
+// TODO nanti refactor ini dan buat utils ke libs
+
 type ThemePreset =
   | 'default'
   | 'material'
