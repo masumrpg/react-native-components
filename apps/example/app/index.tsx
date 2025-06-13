@@ -18,6 +18,7 @@ import {
   LayoutDashboard,
   LetterText,
   List,
+  ListCollapse,
   Loader,
   Minus,
   Palette,
@@ -159,6 +160,12 @@ export default function HomeScreen() {
       title: 'Toggle',
       path: '/toggle',
       icon: <ToggleRight size={30} color={'black'} />,
+    },
+    {
+      id: 21,
+      title: 'Accordion',
+      path: '/accordion',
+      icon: <ListCollapse size={30} color={'black'} />,
     },
   ];
 
