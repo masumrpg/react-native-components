@@ -12,7 +12,6 @@ import {
   PressableProps,
   TouchableOpacityProps,
   View,
-  TextStyle,
   GestureResponderEvent,
 } from 'react-native';
 import Animated, {

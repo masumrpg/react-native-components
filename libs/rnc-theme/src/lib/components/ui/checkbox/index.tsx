@@ -18,9 +18,13 @@ import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { Check } from 'lucide-react-native';
+import {
+  BaseComponentProps,
+  ComponentSize,
+  ComponentVariant,
+} from '../../../types/ui';
 
-type CheckboxSize = 'sm' | 'md' | 'lg';
-type CheckboxVariant = 'default' | 'primary' | 'success' | 'warning' | 'error';
+
 type CheckboxShape = 'square' | 'round';
 
 interface CheckboxGroupProps {
@@ -31,17 +35,13 @@ interface CheckboxGroupProps {
   style?: ViewStyle;
 }
 
-interface CheckboxProps {
+type CheckboxProps = BaseComponentProps & {
   value: string;
   checked?: boolean;
   onCheckedChange?: (checked: boolean) => void;
-  size?: CheckboxSize;
-  variant?: CheckboxVariant;
   shape?: CheckboxShape;
-  disabled?: boolean;
-  style?: ViewStyle;
   children?: React.ReactNode;
-}
+};
 
 interface CheckboxIndicatorProps {
   children?: React.ReactNode;
@@ -175,21 +175,33 @@ const Checkbox = forwardRef<
         Extrapolation.CLAMP
       );
 
-      // Get the variant colors
+      // Get the variant colors - Fixed to include all variants
       const variantBackgroundColors = {
         default: styles.primaryBackground.backgroundColor as string,
         primary: styles.primaryBackground.backgroundColor as string,
+        secondary: styles.secondaryBackground.backgroundColor as string,
+        outline: styles.outlineBackground.backgroundColor as string,
+        filled: styles.filledBackground.backgroundColor as string,
+        ghost: styles.ghostBackground.backgroundColor as string,
         success: styles.successBackground.backgroundColor as string,
         warning: styles.warningBackground.backgroundColor as string,
         error: styles.errorBackground.backgroundColor as string,
+        info: styles.infoBackground.backgroundColor as string,
+        destructive: styles.destructiveBackground.backgroundColor as string,
       };
 
       const variantBorderColors = {
         default: styles.default.borderColor as string,
         primary: styles.primary.borderColor as string,
+        secondary: styles.secondary.borderColor as string,
+        outline: styles.outline.borderColor as string,
+        filled: styles.filled.borderColor as string,
+        ghost: styles.ghost.borderColor as string,
         success: styles.success.borderColor as string,
         warning: styles.warning.borderColor as string,
         error: styles.error.borderColor as string,
+        info: styles.info.borderColor as string,
+        destructive: styles.destructive.borderColor as string,
       };
 
       return {
@@ -321,11 +333,20 @@ CheckboxIndicator.displayName = 'CheckboxIndicator';
 
 const CheckboxIcon: React.FC<
   CheckboxIconProps & {
-    size?: CheckboxSize;
-    variant?: CheckboxVariant;
+    size?: ComponentSize;
+    variant?: ComponentVariant;
   }
 > = ({ icon, style, size = 'md', variant = 'default', ...props }) => {
-  const iconSize = size === 'sm' ? 12 : size === 'md' ? 16 : 20;
+  const iconSize =
+    size === 'xs'
+      ? 10
+      : size === 'sm'
+      ? 12
+      : size === 'md'
+      ? 16
+      : size === 'lg'
+      ? 20
+      : 24;
   const iconColor = 'white';
 
   return (
@@ -342,7 +363,7 @@ const CheckboxLabel = forwardRef<
   Text,
   CheckboxLabelProps & {
     disabled?: boolean;
-    size?: CheckboxSize;
+    size?: ComponentSize;
   }
 >(({ children, style, disabled = false, size = 'md', ...props }, ref) => {
   const { theme } = useTheme();
@@ -423,6 +444,21 @@ const createCheckboxStyles = (theme: Theme) => ({
   primary: {
     borderColor: theme.colors.primary,
   },
+  secondary: {
+    borderColor: theme.colors.secondary,
+  },
+  outline: {
+    borderColor: theme.colors.primary,
+    backgroundColor: 'transparent',
+  },
+  filled: {
+    borderColor: theme.colors.primary,
+    backgroundColor: theme.colors.primary + '10',
+  },
+  ghost: {
+    borderColor: 'transparent',
+    backgroundColor: theme.colors.primary + '05',
+  },
   success: {
     borderColor: theme.colors.success,
   },
@@ -432,11 +468,29 @@ const createCheckboxStyles = (theme: Theme) => ({
   error: {
     borderColor: theme.colors.error,
   },
+  info: {
+    borderColor: '#3B82F6',
+  },
+  destructive: {
+    borderColor: '#EF4444',
+  },
   // Background variants
   defaultBackground: {
     backgroundColor: theme.colors.primary,
   },
   primaryBackground: {
+    backgroundColor: theme.colors.primary,
+  },
+  secondaryBackground: {
+    backgroundColor: theme.colors.secondary,
+  },
+  outlineBackground: {
+    backgroundColor: theme.colors.primary,
+  },
+  filledBackground: {
+    backgroundColor: theme.colors.primary,
+  },
+  ghostBackground: {
     backgroundColor: theme.colors.primary,
   },
   successBackground: {
@@ -448,7 +502,17 @@ const createCheckboxStyles = (theme: Theme) => ({
   errorBackground: {
     backgroundColor: theme.colors.error,
   },
+  infoBackground: {
+    backgroundColor: '#3B82F6',
+  },
+  destructiveBackground: {
+    backgroundColor: '#EF4444',
+  },
   // Sizes - Perfect squares/circles
+  xs: {
+    width: 14,
+    height: 14,
+  },
   sm: {
     width: 18,
     height: 18,
@@ -461,7 +525,15 @@ const createCheckboxStyles = (theme: Theme) => ({
     width: 26,
     height: 26,
   },
+  xl: {
+    width: 30,
+    height: 30,
+  },
   // Container sizes - Proper alignment
+  xsContainer: {
+    minHeight: 28,
+    paddingVertical: 2,
+  },
   smContainer: {
     minHeight: 32,
     paddingVertical: 4,
@@ -473,6 +545,10 @@ const createCheckboxStyles = (theme: Theme) => ({
   lgContainer: {
     minHeight: 40,
     paddingVertical: 8,
+  },
+  xlContainer: {
+    minHeight: 44,
+    paddingVertical: 10,
   },
 });
 
@@ -494,6 +570,18 @@ const createCheckboxIndicatorStyles = (theme: Theme) => ({
   primary: {
     backgroundColor: theme.colors.primary,
   },
+  secondary: {
+    backgroundColor: theme.colors.secondary,
+  },
+  outline: {
+    backgroundColor: theme.colors.primary,
+  },
+  filled: {
+    backgroundColor: theme.colors.primary,
+  },
+  ghost: {
+    backgroundColor: theme.colors.primary,
+  },
   success: {
     backgroundColor: theme.colors.success,
   },
@@ -503,7 +591,17 @@ const createCheckboxIndicatorStyles = (theme: Theme) => ({
   error: {
     backgroundColor: theme.colors.error,
   },
+  info: {
+    backgroundColor: '#3B82F6',
+  },
+  destructive: {
+    backgroundColor: '#EF4444',
+  },
   // Sizes
+  xs: {
+    width: 14,
+    height: 14,
+  },
   sm: {
     width: 18,
     height: 18,
@@ -515,6 +613,10 @@ const createCheckboxIndicatorStyles = (theme: Theme) => ({
   lg: {
     width: 26,
     height: 26,
+  },
+  xl: {
+    width: 30,
+    height: 30,
   },
 });
 
@@ -528,6 +630,10 @@ const createCheckboxLabelStyles = (theme: Theme) => ({
     opacity: 0.5,
   },
   // Sizes
+  xs: {
+    fontSize: theme.typography.caption.fontSize,
+    lineHeight: theme.typography.caption.lineHeight,
+  },
   sm: {
     fontSize: theme.typography.small.fontSize,
     lineHeight: theme.typography.small.lineHeight,
@@ -539,6 +645,10 @@ const createCheckboxLabelStyles = (theme: Theme) => ({
   lg: {
     fontSize: theme.typography.subtitle.fontSize,
     lineHeight: theme.typography.subtitle.lineHeight,
+  },
+  xl: {
+    fontSize: theme.typography.title.fontSize,
+    lineHeight: theme.typography.title.lineHeight,
   },
 });
 
@@ -556,7 +666,5 @@ export type {
   CheckboxIndicatorProps,
   CheckboxIconProps,
   CheckboxLabelProps,
-  CheckboxSize,
-  CheckboxVariant,
   CheckboxShape,
 };
