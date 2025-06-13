@@ -88,11 +88,13 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
         activePreset
       );
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isDark, themeMode, activePreset, presetConfig]);
 
   // Load theme from storage on mount and when system color scheme changes
   useEffect(() => {
     loadThemeFromStorage();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Separate effect for system color scheme changes
@@ -109,6 +111,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     if (themeMode === 'system') {
       loadThemeFromStorage();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [systemColorScheme]);
 
   const loadThemeFromStorage = async () => {
@@ -116,14 +119,11 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       const storedConfig = await AsyncStorage.getItem(THEME_STORAGE_KEY);
       if (storedConfig) {
         const config: ThemeConfig = JSON.parse(storedConfig);
-        console.log('Loading theme config:', config);
-
         setThemeModeState(config.mode);
 
         // Set custom theme with both variants if available
         if (config.customTheme) {
           setCustomTheme(config.customTheme);
-          console.log('Loaded custom theme:', config.customTheme);
         }
 
         setActivePreset(config.activePreset);
@@ -137,23 +137,12 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
             config.activePreset
           );
           setPresetConfig(() => restoredPresetConfig);
-          console.log('Restored preset config for:', config.activePreset);
-
           // Only regenerate if we don't have the theme variant stored
           if (restoredPresetConfig) {
             const currentSystemScheme = Appearance.getColorScheme();
             const loadedIsDark =
               config.mode === 'dark' ||
               (config.mode === 'system' && currentSystemScheme === 'dark');
-
-            console.log(
-              'Loaded isDark:',
-              loadedIsDark,
-              'mode:',
-              config.mode,
-              'system:',
-              currentSystemScheme
-            );
 
             // Check if we already have the theme variant stored
             const hasStoredVariant =
@@ -174,7 +163,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
                 updatedCustomTheme,
                 config.activePreset
               );
-              console.log(
+              console.info(
                 'Generated missing theme variant:',
                 loadedIsDark ? 'dark' : 'light'
               );
@@ -182,7 +171,7 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
           }
         }
       } else {
-        console.log('No stored theme config found, using defaults');
+        console.info('No stored theme config found, using defaults');
       }
     } catch (error) {
       console.warn('Failed to load theme from storage:', error);

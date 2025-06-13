@@ -12,9 +12,8 @@ import {
   ButtonText,
   Button,
   themeRegistry,
+  CustomThemeConfigFactory,
 } from 'rnc-theme';
-
-// FIXME bug darkmode
 
 type ThemePreset =
   | 'default'
@@ -91,7 +90,7 @@ const ThemeScreen: React.FC = () => {
     // menggunakan tema yang sesuai dari storage berdasarkan mode baru
   }, [isDark, setThemeMode]);
 
-  const customThemeConfig = useMemo(
+  const customThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: isDark ? '#FF6B6B' : '#4ECDC4',
