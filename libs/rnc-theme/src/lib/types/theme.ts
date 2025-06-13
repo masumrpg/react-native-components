@@ -104,8 +104,8 @@ type ThemeMode = 'light' | 'dark' | 'system';
 type ThemeConfig = {
   mode: ThemeMode;
   customTheme?: Partial<Theme>;
-  activePreset?: string; // Tambahkan ini untuk tracking preset aktif
-  presetConfig?: (isDark: boolean) => Partial<Theme>; // Simpan function config
+  activePreset?: string;
+  // Hapus presetConfig karena function tidak bisa disimpan
 };
 
 export type {

@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import { ScrollView, Alert, StatusBar, View } from 'react-native';
 import {
   useTheme,
@@ -11,6 +11,7 @@ import {
   Switcher,
   ButtonText,
   Button,
+  themeRegistry,
 } from 'rnc-theme';
 
 // FIXME bug darkmode
@@ -46,6 +47,23 @@ const ThemeScreen: React.FC = () => {
   // Tambahkan state baru untuk preview
   const [previewTheme, setPreviewTheme] = useState<ThemePreset | null>(null);
   const [isDarkModeDisabled, setIsDarkModeDisabled] = useState(false);
+
+  useEffect(() => {
+    // Register semua theme presets ke registry
+    themeRegistry.registerPreset('material', materialThemeConfig);
+    themeRegistry.registerPreset('neon', neonThemeConfig);
+    themeRegistry.registerPreset('ocean', oceanThemeConfig);
+    themeRegistry.registerPreset('sunset', sunsetThemeConfig);
+    themeRegistry.registerPreset('forest', forestThemeConfig);
+    themeRegistry.registerPreset('galaxy', galaxyThemeConfig);
+    themeRegistry.registerPreset('vintage', vintageThemeConfig);
+    themeRegistry.registerPreset('cyberpunk', cyberpunkThemeConfig);
+    themeRegistry.registerPreset('pastel', pastelThemeConfig);
+    themeRegistry.registerPreset('monochrome', monochromeThemeConfig);
+    themeRegistry.registerPreset('autumn', autumnThemeConfig);
+    themeRegistry.registerPreset('arctic', arcticThemeConfig);
+    themeRegistry.registerPreset('custom', customThemeConfig);
+  }, []);
 
   // Dynamic theme creators that respond to theme mode changes
   const createDynamicTheme = useCallback(
