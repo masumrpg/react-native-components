@@ -16,7 +16,16 @@ type TypographyVariant =
   | 'h3'
   | 'h4'
   | 'h5'
-  | 'h6';
+  | 'h6'
+  // Tambahan variant baru
+  | 'display'
+  | 'lead'
+  | 'caption'
+  | 'overline'
+  | 'button'
+  | 'label'
+  | 'code'
+  | 'quote';
 
 type TypographyWeight = TextStyle['fontWeight'];
 type TypographyAlign = 'left' | 'center' | 'right' | 'justify';
@@ -143,6 +152,59 @@ const createTypographyStyles = (theme: Theme) => ({
     fontSize: 16,
     lineHeight: 22,
     fontWeight: '500' as TextStyle['fontWeight'],
+  } as TextStyle,
+  // Variant baru yang ditambahkan
+  display: {
+    fontSize: 48,
+    lineHeight: 56,
+    fontWeight: '800' as TextStyle['fontWeight'],
+    letterSpacing: -1,
+  } as TextStyle,
+  lead: {
+    fontSize: 20,
+    lineHeight: 30,
+    fontWeight: '400' as TextStyle['fontWeight'],
+    letterSpacing: 0.5,
+  } as TextStyle,
+  caption: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '400' as TextStyle['fontWeight'],
+    letterSpacing: 0.4,
+  } as TextStyle,
+  overline: {
+    fontSize: 10,
+    lineHeight: 14,
+    fontWeight: '600' as TextStyle['fontWeight'],
+    letterSpacing: 1.5,
+    textTransform: 'uppercase',
+  } as TextStyle,
+  button: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: '600' as TextStyle['fontWeight'],
+    letterSpacing: 0.25,
+    textTransform: 'uppercase',
+  } as TextStyle,
+  label: {
+    fontSize: 12,
+    lineHeight: 16,
+    fontWeight: '500' as TextStyle['fontWeight'],
+    letterSpacing: 0.5,
+  } as TextStyle,
+  code: {
+    fontSize: 14,
+    lineHeight: 20,
+    fontWeight: '400' as TextStyle['fontWeight'],
+    fontFamily: 'monospace',
+    letterSpacing: 0,
+  } as TextStyle,
+  quote: {
+    fontSize: 18,
+    lineHeight: 28,
+    fontWeight: '400' as TextStyle['fontWeight'],
+    fontStyle: 'italic',
+    letterSpacing: 0.25,
   } as TextStyle,
 });
 
@@ -318,6 +380,57 @@ const TextInfo = forwardRef<
 
 TextInfo.displayName = 'TextInfo';
 
+const Display = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => (
+  <Typography ref={ref} variant="display" weight="800" {...props} />
+));
+
+Display.displayName = 'Display';
+
+const Lead = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="lead" {...props} />);
+
+Lead.displayName = 'Lead';
+
+const Caption = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="caption" {...props} />);
+
+Caption.displayName = 'Caption';
+
+const Overline = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="overline" {...props} />);
+
+Overline.displayName = 'Overline';
+
+const Label = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="label" {...props} />);
+
+Label.displayName = 'Label';
+
+const Code = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="code" {...props} />);
+
+Code.displayName = 'Code';
+
+const Quote = forwardRef<
+  React.ComponentRef<typeof Text>,
+  Omit<TypographyProps, 'variant'>
+>((props, ref) => <Typography ref={ref} variant="quote" {...props} />);
+
+Quote.displayName = 'Quote';
+
 export {
   Typography,
   Heading,
@@ -332,6 +445,15 @@ export {
   H4,
   H5,
   H6,
+  // Komponen baru
+  Display,
+  Lead,
+  Caption,
+  Overline,
+  Label,
+  Code,
+  Quote,
+  // Semantic colors
   TextPrimary,
   TextSecondary,
   TextError,
