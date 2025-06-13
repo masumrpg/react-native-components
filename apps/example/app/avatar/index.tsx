@@ -103,9 +103,7 @@ export default function AvatarScreen() {
             </HStack>
 
             <HStack justify="space-between" align="center">
-              <Typography variant="body">
-                Show Status Badges
-              </Typography>
+              <Typography variant="body">Show Status Badges</Typography>
               <Switch
                 value={showBadges}
                 onValueChange={setShowBadges}
@@ -125,37 +123,25 @@ export default function AvatarScreen() {
             <Typography variant="subtitle" style={styles.sectionTitle}>
               Sizes
             </Typography>
-            <HStack spacing="md" align="center" justify="center">
+            <HStack spacing="md" align="center" justify="center" wrap>
               <VStack spacing="sm" align="center">
-                <Avatar
-                  size="sm"
-                  fallbackText="SM"
-                  variant="primary"
-                />
+                <Avatar size="xs" fallbackText="XS" variant="primary" />
+                <Typography variant="small">X-Small</Typography>
+              </VStack>
+              <VStack spacing="sm" align="center">
+                <Avatar size="sm" fallbackText="SM" variant="primary" />
                 <Typography variant="small">Small</Typography>
               </VStack>
               <VStack spacing="sm" align="center">
-                <Avatar
-                  size="md"
-                  fallbackText="MD"
-                  variant="primary"
-                />
+                <Avatar size="md" fallbackText="MD" variant="primary" />
                 <Typography variant="small">Medium</Typography>
               </VStack>
               <VStack spacing="sm" align="center">
-                <Avatar
-                  size="lg"
-                  fallbackText="LG"
-                  variant="primary"
-                />
+                <Avatar size="lg" fallbackText="LG" variant="primary" />
                 <Typography variant="small">Large</Typography>
               </VStack>
               <VStack spacing="sm" align="center">
-                <Avatar
-                  size="xl"
-                  fallbackText="XL"
-                  variant="primary"
-                />
+                <Avatar size="xl" fallbackText="XL" variant="primary" />
                 <Typography variant="small">X-Large</Typography>
               </VStack>
             </HStack>
@@ -168,48 +154,115 @@ export default function AvatarScreen() {
             <Typography variant="subtitle" style={styles.sectionTitle}>
               Variants
             </Typography>
-            <HStack spacing="md" align="center" justify="center" wrap>
-              <VStack spacing="sm" align="center">
-                <Avatar
-                  variant="default"
-                  fallbackText="DF"
-                  size="lg"
-                />
-                <Typography variant="small">Default</Typography>
-              </VStack>
-              <VStack spacing="sm" align="center">
-                <Avatar
-                  variant="primary"
-                  fallbackText="PR"
-                  size="lg"
-                />
-                <Typography variant="small">Primary</Typography>
-              </VStack>
-              <VStack spacing="sm" align="center">
-                <Avatar
-                  variant="success"
-                  fallbackText="SC"
-                  size="lg"
-                />
-                <Typography variant="small">Success</Typography>
-              </VStack>
-              <VStack spacing="sm" align="center">
-                <Avatar
-                  variant="warning"
-                  fallbackText="WR"
-                  size="lg"
-                />
-                <Typography variant="small">Warning</Typography>
-              </VStack>
-              <VStack spacing="sm" align="center">
-                <Avatar
-                  variant="error"
-                  fallbackText="ER"
-                  size="lg"
-                />
-                <Typography variant="small">Error</Typography>
-              </VStack>
+            <VStack spacing="lg">
+              {/* Row 1 */}
+              <HStack spacing="md" align="center" justify="center" wrap>
+                <VStack spacing="sm" align="center">
+                  <Avatar variant="default" fallbackText="DF" size="lg" />
+                  <Typography variant="small">Default</Typography>
+                </VStack>
+                <VStack spacing="sm" align="center">
+                  <Avatar variant="primary" fallbackText="PR" size="lg" />
+                  <Typography variant="small">Primary</Typography>
+                </VStack>
+                <VStack spacing="sm" align="center">
+                  <Avatar variant="secondary" fallbackText="SC" size="lg" />
+                  <Typography variant="small">Secondary</Typography>
+                </VStack>
+                <VStack spacing="sm" align="center">
+                  <Avatar variant="outline" fallbackText="OL" size="lg" />
+                  <Typography variant="small">Outline</Typography>
+                </VStack>
+              </HStack>
+
+              {/* Row 2 */}
+              <HStack spacing="md" align="center" justify="center" wrap>
+                <VStack spacing="sm" align="center">
+                  <Avatar variant="filled" fallbackText="FL" size="lg" />
+                  <Typography variant="small">Filled</Typography>
+                </VStack>
+                <VStack spacing="sm" align="center">
+                  <Avatar variant="ghost" fallbackText="GH" size="lg" />
+                  <Typography variant="small">Ghost</Typography>
+                </VStack>
+                <VStack spacing="sm" align="center">
+                  <Avatar variant="success" fallbackText="SC" size="lg" />
+                  <Typography variant="small">Success</Typography>
+                </VStack>
+                <VStack spacing="sm" align="center">
+                  <Avatar variant="warning" fallbackText="WR" size="lg" />
+                  <Typography variant="small">Warning</Typography>
+                </VStack>
+              </HStack>
+
+              {/* Row 3 */}
+              <HStack spacing="md" align="center" justify="center" wrap>
+                <VStack spacing="sm" align="center">
+                  <Avatar variant="error" fallbackText="ER" size="lg" />
+                  <Typography variant="small">Error</Typography>
+                </VStack>
+                <VStack spacing="sm" align="center">
+                  <Avatar variant="info" fallbackText="IF" size="lg" />
+                  <Typography variant="small">Info</Typography>
+                </VStack>
+                <VStack spacing="sm" align="center">
+                  <Avatar variant="destructive" fallbackText="DS" size="lg" />
+                  <Typography variant="small">Destructive</Typography>
+                </VStack>
+              </HStack>
+            </VStack>
+          </VStack>
+        </Card>
+
+        {/* New Variant Showcase */}
+        <Card style={styles.card}>
+          <VStack spacing="md">
+            <Typography variant="subtitle" style={styles.sectionTitle}>
+              New Variant Styles
+            </Typography>
+            <VStack spacing="lg">
+              <HStack spacing="lg" align="center" justify="center">
+                <VStack spacing="sm" align="center">
+                  <Avatar
+                    variant="outline"
+                    fallbackText="OL"
+                    size="xl"
+                    fallbackIcon={<User />}
+                  />
+                  <Typography variant="small">Outline Style</Typography>
+                  <Typography variant="body">
+                    Transparent background with border
+                  </Typography>
+                </VStack>
+                <VStack spacing="sm" align="center">
+                  <Avatar
+                    variant="ghost"
+                    fallbackText="GH"
+                    size="xl"
+                    fallbackIcon={<Star />}
+                  />
+                  <Typography variant="small">Ghost Style</Typography>
+                  <Typography variant="body">Fully transparent</Typography>
+                </VStack>
+              </HStack>
+            </VStack>
+          </VStack>
+        </Card>
+
+        {/* Size Comparison */}
+        <Card style={styles.card}>
+          <VStack spacing="md">
+            <Typography variant="subtitle" style={styles.sectionTitle}>
+              Size Comparison
+            </Typography>
+            <HStack spacing="lg" align="center" justify="center">
+              <Avatar size="xs" fallbackText="XS" variant="primary" />
+              <Avatar size="sm" fallbackText="SM" variant="primary" />
+              <Avatar size="md" fallbackText="MD" variant="primary" />
+              <Avatar size="lg" fallbackText="LG" variant="primary" />
+              <Avatar size="xl" fallbackText="XL" variant="primary" />
             </HStack>
+            <Typography variant="body">From XS (24px) to XL (72px)</Typography>
           </VStack>
         </Card>
 
@@ -249,35 +302,19 @@ export default function AvatarScreen() {
             </Typography>
             <HStack spacing="md" align="center" justify="center">
               <VStack spacing="sm" align="center">
-                <Avatar
-                  size="lg"
-                  variant="primary"
-                  fallbackIcon={<User />}
-                />
+                <Avatar size="lg" variant="primary" fallbackIcon={<User />} />
                 <Typography variant="small">User</Typography>
               </VStack>
               <VStack spacing="sm" align="center">
-                <Avatar
-                  size="lg"
-                  variant="success"
-                  fallbackIcon={<Camera />}
-                />
+                <Avatar size="lg" variant="success" fallbackIcon={<Camera />} />
                 <Typography variant="small">Camera</Typography>
               </VStack>
               <VStack spacing="sm" align="center">
-                <Avatar
-                  size="lg"
-                  variant="warning"
-                  fallbackIcon={<Star />}
-                />
+                <Avatar size="lg" variant="warning" fallbackIcon={<Star />} />
                 <Typography variant="small">Star</Typography>
               </VStack>
               <VStack spacing="sm" align="center">
-                <Avatar
-                  size="lg"
-                  variant="error"
-                  fallbackIcon={<Heart />}
-                />
+                <Avatar size="lg" variant="error" fallbackIcon={<Heart />} />
                 <Typography variant="small">Heart</Typography>
               </VStack>
             </HStack>
@@ -379,7 +416,9 @@ export default function AvatarScreen() {
                         )
                       }
                       borderWidth={selectedAvatar === user.id ? 4 : 2}
-                      borderColor={selectedAvatar === user.id ? 'primary' : 'border'}
+                      borderColor={
+                        selectedAvatar === user.id ? 'primary' : 'border'
+                      }
                       showBadge={showBadges}
                       badgeColor={getStatusColor(user.status)}
                     />
@@ -387,7 +426,8 @@ export default function AvatarScreen() {
                 </HStack>
                 {selectedAvatar && (
                   <Typography variant="small" style={styles.selectedText}>
-                    Selected: {sampleUsers.find(u => u.id === selectedAvatar)?.name}
+                    Selected:{' '}
+                    {sampleUsers.find((u) => u.id === selectedAvatar)?.name}
                   </Typography>
                 )}
               </VStack>
@@ -411,41 +451,25 @@ export default function AvatarScreen() {
             </Typography>
             <HStack spacing="lg" align="center" justify="center" wrap>
               <VStack spacing="sm" align="center">
-                <Avatar
-                  size="lg"
-                  fallbackText="TR"
-                  variant="primary"
-                >
+                <Avatar size="lg" fallbackText="TR" variant="primary">
                   <AvatarBadge position="top-right" color="success" />
                 </Avatar>
                 <Typography variant="small">Top Right</Typography>
               </VStack>
               <VStack spacing="sm" align="center">
-                <Avatar
-                  size="lg"
-                  fallbackText="TL"
-                  variant="primary"
-                >
+                <Avatar size="lg" fallbackText="TL" variant="primary">
                   <AvatarBadge position="top-left" color="warning" />
                 </Avatar>
                 <Typography variant="small">Top Left</Typography>
               </VStack>
               <VStack spacing="sm" align="center">
-                <Avatar
-                  size="lg"
-                  fallbackText="BR"
-                  variant="primary"
-                >
+                <Avatar size="lg" fallbackText="BR" variant="primary">
                   <AvatarBadge position="bottom-right" color="error" />
                 </Avatar>
                 <Typography variant="small">Bottom Right</Typography>
               </VStack>
               <VStack spacing="sm" align="center">
-                <Avatar
-                  size="lg"
-                  fallbackText="BL"
-                  variant="primary"
-                >
+                <Avatar size="lg" fallbackText="BL" variant="primary">
                   <AvatarBadge position="bottom-left" color="info" />
                 </Avatar>
                 <Typography variant="small">Bottom Left</Typography>

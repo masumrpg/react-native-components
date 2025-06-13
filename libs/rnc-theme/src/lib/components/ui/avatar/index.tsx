@@ -20,37 +20,32 @@ import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { resolveColor } from '../../../utils';
 import { User } from 'lucide-react-native';
+import { BaseComponentProps, ComponentSize } from '../../../types/ui';
 
-// Types
-type AvatarSize = 'sm' | 'md' | 'lg' | 'xl';
-type AvatarVariant = 'default' | 'primary' | 'success' | 'warning' | 'error';
+
 type AvatarShape = 'circle' | 'square';
 
-interface AvatarProps {
+type AvatarProps = BaseComponentProps & {
   children?: React.ReactNode;
-  size?: AvatarSize;
-  variant?: AvatarVariant;
   shape?: AvatarShape;
   source?: { uri: string } | number;
   fallbackText?: string;
   fallbackIcon?: React.ReactNode;
-  style?: ViewStyle;
   imageStyle?: ImageStyle;
   textStyle?: TextStyle;
   onPress?: () => void;
-  disabled?: boolean;
   borderWidth?: number;
   borderColor?: string | keyof Theme['colors'];
   showBadge?: boolean;
   badgeColor?: string | keyof Theme['colors'];
   badgeSize?: number;
   animated?: boolean;
-}
+};
 
 interface AvatarGroupProps {
   children: React.ReactNode;
   max?: number;
-  size?: AvatarSize;
+  size?: ComponentSize;
   spacing?: number;
   style?: ViewStyle;
   showMore?: boolean;
@@ -67,6 +62,7 @@ interface AvatarBadgeProps {
 
 // Size configurations
 const AVATAR_SIZES = {
+  xs: { size: 24, fontSize: 10, iconSize: 12, badgeSize: 6 },
   sm: { size: 32, fontSize: 12, iconSize: 16, badgeSize: 8 },
   md: { size: 40, fontSize: 14, iconSize: 20, badgeSize: 10 },
   lg: { size: 56, fontSize: 18, iconSize: 28, badgeSize: 12 },
@@ -176,7 +172,17 @@ const Avatar = forwardRef<React.ComponentRef<typeof View>, AvatarProps>(
         disabled && styles.disabled,
         style,
       ];
-    }, [styles, variant, sizeConfig, shape, theme, borderWidth, borderColor, disabled, style]);
+    }, [
+      styles,
+      variant,
+      sizeConfig,
+      shape,
+      theme,
+      borderWidth,
+      borderColor,
+      disabled,
+      style,
+    ]);
 
     // Render content
     const renderContent = () => {
@@ -229,26 +235,24 @@ const Avatar = forwardRef<React.ComponentRef<typeof View>, AvatarProps>(
 
       // Fallback icon - Fix React.cloneElement typing
       if (fallbackIcon) {
-        return React.cloneElement(fallbackIcon as React.ReactElement<{
-          size?: number;
-          color?: string;
-          width?: number;
-          height?: number;
-          fill?: string;
-          stroke?: string;
-        }>, {
-          size: sizeConfig.iconSize,
-          color: theme.colors.text,
-        });
+        return React.cloneElement(
+          fallbackIcon as React.ReactElement<{
+            size?: number;
+            color?: string;
+            width?: number;
+            height?: number;
+            fill?: string;
+            stroke?: string;
+          }>,
+          {
+            size: sizeConfig.iconSize,
+            color: theme.colors.text,
+          }
+        );
       }
 
       // Default icon
-      return (
-        <User
-          size={sizeConfig.iconSize}
-          color={theme.colors.text}
-        />
-      );
+      return <User size={sizeConfig.iconSize} color={theme.colors.text} />;
     };
 
     const content = (
@@ -288,60 +292,55 @@ const Avatar = forwardRef<React.ComponentRef<typeof View>, AvatarProps>(
 Avatar.displayName = 'Avatar';
 
 // Avatar Badge Component
-const AvatarBadge = forwardRef<React.ComponentRef<typeof View>, AvatarBadgeProps>(
-  (
-    {
-      color,
-      size = 10,
-      style,
-      position = 'top-right',
-      ...props
-    },
-    ref
-  ) => {
-    const { theme } = useTheme();
-    const styles = useThemedStyles(createAvatarBadgeStyles);
+const AvatarBadge = forwardRef<
+  React.ComponentRef<typeof View>,
+  AvatarBadgeProps
+>(({ color, size = 10, style, position = 'top-right', ...props }, ref) => {
+  const { theme } = useTheme();
+  const styles = useThemedStyles(createAvatarBadgeStyles);
 
-    const positionStyle = useMemo(() => {
-      const offset = size / 2;
-      switch (position) {
-        case 'top-left':
-          return { top: -offset, left: -offset };
-        case 'top-right':
-          return { top: -offset, right: -offset };
-        case 'bottom-left':
-          return { bottom: -offset, left: -offset };
-        case 'bottom-right':
-          return { bottom: -offset, right: -offset };
-        default:
-          return { top: -offset, right: -offset };
-      }
-    }, [position, size]);
+  const positionStyle = useMemo(() => {
+    const offset = size / 2;
+    switch (position) {
+      case 'top-left':
+        return { top: -offset, left: -offset };
+      case 'top-right':
+        return { top: -offset, right: -offset };
+      case 'bottom-left':
+        return { bottom: -offset, left: -offset };
+      case 'bottom-right':
+        return { bottom: -offset, right: -offset };
+      default:
+        return { top: -offset, right: -offset };
+    }
+  }, [position, size]);
 
-    return (
-      <View
-        ref={ref}
-        style={[
-          styles.badge,
-          {
-            width: size,
-            height: size,
-            borderRadius: size / 2,
-            backgroundColor: resolveColor(theme, color, theme.colors.success),
-          },
-          positionStyle,
-          style,
-        ]}
-        {...props}
-      />
-    );
-  }
-);
+  return (
+    <View
+      ref={ref}
+      style={[
+        styles.badge,
+        {
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          backgroundColor: resolveColor(theme, color, theme.colors.success),
+        },
+        positionStyle,
+        style,
+      ]}
+      {...props}
+    />
+  );
+});
 
 AvatarBadge.displayName = 'AvatarBadge';
 
 // Avatar Group Component
-const AvatarGroup = forwardRef<React.ComponentRef<typeof View>, AvatarGroupProps>(
+const AvatarGroup = forwardRef<
+  React.ComponentRef<typeof View>,
+  AvatarGroupProps
+>(
   (
     {
       children,
@@ -364,25 +363,24 @@ const AvatarGroup = forwardRef<React.ComponentRef<typeof View>, AvatarGroupProps
     const remainingCount = childrenArray.length - max;
 
     return (
-      <View
-        ref={ref}
-        style={[styles.group, style]}
-        {...props}
-      >
+      <View ref={ref} style={[styles.group, style]} {...props}>
         {visibleChildren.map((child, index) => {
           if (React.isValidElement(child)) {
             // Fix React.cloneElement typing and child.props access
-            return React.cloneElement(child as React.ReactElement<AvatarProps>, {
-              key: index,
-              size,
-              style: StyleSheet.flatten([
-                (child.props as AvatarProps).style,
-                {
-                  marginLeft: index > 0 ? spacing : 0,
-                  zIndex: visibleChildren.length - index,
-                },
-              ]),
-            });
+            return React.cloneElement(
+              child as React.ReactElement<AvatarProps>,
+              {
+                key: index,
+                size,
+                style: StyleSheet.flatten([
+                  (child.props as AvatarProps).style,
+                  {
+                    marginLeft: index > 0 ? spacing : 0,
+                    zIndex: visibleChildren.length - index,
+                  },
+                ]),
+              }
+            );
           }
           return child;
         })}
@@ -426,18 +424,48 @@ const createAvatarStyles = (theme: Theme) => ({
   // Variants
   default: {
     backgroundColor: theme.colors.surface,
+    borderColor: theme.colors.border,
   } as ViewStyle,
   primary: {
     backgroundColor: theme.colors.primary,
+    borderColor: theme.colors.primary,
+  } as ViewStyle,
+  secondary: {
+    backgroundColor: theme.colors.secondary,
+    borderColor: theme.colors.secondary,
+  } as ViewStyle,
+  outline: {
+    backgroundColor: 'transparent',
+    borderColor: theme.colors.border,
+    borderWidth: 1,
+  } as ViewStyle,
+  filled: {
+    backgroundColor: theme.colors.surface,
+    borderColor: theme.colors.border,
+  } as ViewStyle,
+  ghost: {
+    backgroundColor: 'transparent',
+    borderColor: 'transparent',
   } as ViewStyle,
   success: {
     backgroundColor: theme.colors.success,
-  } as ViewStyle,
-  warning: {
-    backgroundColor: theme.colors.warning,
+    borderColor: theme.colors.success,
   } as ViewStyle,
   error: {
     backgroundColor: theme.colors.error,
+    borderColor: theme.colors.error,
+  } as ViewStyle,
+  warning: {
+    backgroundColor: theme.colors.warning,
+    borderColor: theme.colors.warning,
+  } as ViewStyle,
+  info: {
+    backgroundColor: theme.colors.info,
+    borderColor: theme.colors.info,
+  } as ViewStyle,
+  destructive: {
+    backgroundColor: theme.colors.destructive,
+    borderColor: theme.colors.destructive,
   } as ViewStyle,
 });
 
