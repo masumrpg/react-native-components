@@ -68,10 +68,18 @@ const ThemeScreen: React.FC = () => {
   // Dynamic theme creators that respond to theme mode changes
   const createDynamicTheme = useCallback(
     (themeConfig: (isDark: boolean) => Partial<Theme>) => {
-      const dynamicTheme = themeConfig(isDark);
-      updateCustomTheme(dynamicTheme);
+      // Generate both light and dark variants
+      const lightTheme = themeConfig(false);
+      const darkTheme = themeConfig(true);
+
+      // Update with both variants
+      updateCustomTheme(
+        isDark ? darkTheme : lightTheme,
+        undefined,
+        themeConfig
+      );
     },
-    [updateCustomTheme]
+    [updateCustomTheme, isDark]
   );
 
   // Improved toggle theme yang memperbarui tema aktif
@@ -79,14 +87,9 @@ const ThemeScreen: React.FC = () => {
     const newMode = isDark ? 'light' : 'dark';
     setThemeMode(newMode);
 
-    // Jika ada tema yang sedang diterapkan (bukan default), perbarui tema tersebut
-    if (appliedTheme !== 'default') {
-      // Delay sedikit untuk memastikan themeMode sudah terupdate
-      setTimeout(() => {
-        applyThemePreset(appliedTheme);
-      }, 50);
-    }
-  }, [isDark, setThemeMode, appliedTheme]);
+    // Tidak perlu setTimeout lagi karena ThemeContext akan otomatis
+    // menggunakan tema yang sesuai dari storage berdasarkan mode baru
+  }, [isDark, setThemeMode]);
 
   const customThemeConfig = useMemo(
     () => (isDark: boolean) => ({
@@ -874,8 +877,16 @@ const ThemeScreen: React.FC = () => {
       } else {
         const themeConfig = getThemeConfig(preset);
         if (themeConfig) {
-          // Pass preset name DAN config function ke updateCustomTheme
-          updateCustomTheme(themeConfig(isDark), preset, themeConfig);
+          // Generate both light and dark variants when applying
+          const lightTheme = themeConfig(false);
+          const darkTheme = themeConfig(true);
+
+          // Apply current theme variant and save the config for future mode switches
+          updateCustomTheme(
+            isDark ? darkTheme : lightTheme,
+            preset,
+            themeConfig
+          );
         }
       }
     },

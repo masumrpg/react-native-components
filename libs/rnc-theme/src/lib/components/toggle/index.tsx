@@ -31,9 +31,11 @@ interface ToggleModeProps {
   padding?: number;
   animated?: boolean;
   onPress?: () => void;
+  enableSystemMode?: boolean;
 }
 
-const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
+const AnimatedTouchableOpacity =
+  Animated.createAnimatedComponent(TouchableOpacity);
 
 const ToggleMode = forwardRef<
   React.ComponentRef<typeof TouchableOpacity>,
@@ -50,6 +52,7 @@ const ToggleMode = forwardRef<
       padding,
       animated = true,
       onPress,
+      enableSystemMode = false,
     },
     ref
   ) => {
@@ -82,21 +85,25 @@ const ToggleMode = forwardRef<
       if (disabled) return;
 
       if (animated) {
-        scaleValue.value = withSpring(0.9, {
-          damping: 15,
-          stiffness: 300,
-        }, () => {
-          scaleValue.value = withSpring(1, {
+        scaleValue.value = withSpring(
+          0.9,
+          {
             damping: 15,
             stiffness: 300,
-          });
-        });
+          },
+          () => {
+            scaleValue.value = withSpring(1, {
+              damping: 15,
+              stiffness: 300,
+            });
+          }
+        );
       }
 
-      // Toggle theme mode
-      const newMode = themeMode === 'system'
+      // Toggle theme mode - simplified logic
+      const newMode = enableSystemMode && themeMode === 'system'
         ? (isDark ? 'light' : 'dark')
-        : (themeMode === 'light' ? 'dark' : 'light');
+        : (isDark ? 'light' : 'dark');
 
       setThemeMode(newMode);
       onPress?.();
@@ -128,7 +135,7 @@ const ToggleMode = forwardRef<
         [0, 1],
         [
           styleType === 'filled' ? theme.colors.primary : 'transparent',
-          styleType === 'filled' ? theme.colors.secondary : 'transparent'
+          styleType === 'filled' ? theme.colors.secondary : 'transparent',
         ]
       );
 
@@ -137,30 +144,23 @@ const ToggleMode = forwardRef<
         [0, 1],
         [
           styleType === 'outlined' ? theme.colors.primary : 'transparent',
-          styleType === 'outlined' ? theme.colors.secondary : 'transparent'
+          styleType === 'outlined' ? theme.colors.secondary : 'transparent',
         ]
       );
 
       return {
-        backgroundColor: styleType === 'ghost' ? 'transparent' : backgroundColor,
+        backgroundColor:
+          styleType === 'ghost' ? 'transparent' : backgroundColor,
         borderColor: styleType === 'outlined' ? borderColor : 'transparent',
-        transform: [
-          { scale: scaleValue.value },
-        ],
+        transform: [{ scale: scaleValue.value }],
       };
     });
 
     const animatedIconStyle = useAnimatedStyle(() => {
-      const rotation = interpolate(
-        rotationValue.value,
-        [0, 1],
-        [0, 360]
-      );
+      const rotation = interpolate(rotationValue.value, [0, 1], [0, 360]);
 
       return {
-        transform: [
-          { rotate: `${rotation}deg` },
-        ],
+        transform: [{ rotate: `${rotation}deg` }],
       };
     });
 

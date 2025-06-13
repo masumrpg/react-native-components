@@ -127,6 +127,24 @@ const ToggleScreen = () => {
           </CardContent>
         </Card>
 
+        {/* System Mode Examples */}
+        <Card>
+          <CardHeader title="System Mode Support" />
+          <CardContent>
+            <VStack spacing="md">
+              <HStack justify="space-between" align="center">
+                <Typography>With System Mode</Typography>
+                <ToggleMode enableSystemMode />
+              </HStack>
+
+              <HStack justify="space-between" align="center">
+                <Typography>Without System Mode (Default)</Typography>
+                <ToggleMode enableSystemMode={false} />
+              </HStack>
+            </VStack>
+          </CardContent>
+        </Card>
+
         {/* Combined Examples */}
         <Card>
           <CardHeader title="Combined Styles" />
@@ -134,20 +152,12 @@ const ToggleScreen = () => {
             <VStack spacing="md">
               <HStack justify="space-between" align="center">
                 <Typography>Large + Square + Outlined</Typography>
-                <ToggleMode
-                  size="lg"
-                  variant="square"
-                  styleType="outlined"
-                />
+                <ToggleMode size="lg" variant="square" styleType="outlined" />
               </HStack>
 
               <HStack justify="space-between" align="center">
                 <Typography>Small + Rounded + Ghost</Typography>
-                <ToggleMode
-                  size="sm"
-                  variant="rounded"
-                  styleType="ghost"
-                />
+                <ToggleMode size="sm" variant="rounded" styleType="ghost" />
               </HStack>
 
               <HStack justify="space-between" align="center">
@@ -158,6 +168,7 @@ const ToggleScreen = () => {
                   styleType="filled"
                   iconSize={28}
                   padding={16}
+                  enableSystemMode
                   style={{ backgroundColor: 'rgba(255, 255, 255, 0.1)' }}
                 />
               </HStack>

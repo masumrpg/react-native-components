@@ -103,9 +103,11 @@ type ThemeMode = 'light' | 'dark' | 'system';
 
 type ThemeConfig = {
   mode: ThemeMode;
-  customTheme?: Partial<Theme>;
+  customTheme?: {
+    light?: Partial<Theme>;
+    dark?: Partial<Theme>;
+  };
   activePreset?: string;
-  // Hapus presetConfig karena function tidak bisa disimpan
 };
 
 export type {

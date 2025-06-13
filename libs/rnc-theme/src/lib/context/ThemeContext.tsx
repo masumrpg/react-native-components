@@ -52,7 +52,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   customDarkTheme,
 }) => {
   const [themeMode, setThemeModeState] = useState<ThemeMode>(defaultTheme);
-  const [customTheme, setCustomTheme] = useState<Partial<Theme> | undefined>();
+  const [customTheme, setCustomTheme] = useState<{
+    light?: Partial<Theme>;
+    dark?: Partial<Theme>;
+  }>({});
   const [activePreset, setActivePreset] = useState<string | undefined>();
   const [presetConfig, setPresetConfig] = useState<
     ((isDark: boolean) => Partial<Theme>) | undefined
@@ -70,17 +73,30 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   useEffect(() => {
     if (activePreset && presetConfig) {
       const newCustomTheme = presetConfig(isDark);
-      setCustomTheme(newCustomTheme);
+      // Update the appropriate theme variant
+      setCustomTheme((prev) => ({
+        ...prev,
+        [isDark ? 'dark' : 'light']: newCustomTheme,
+      }));
       // Update storage with new generated theme
-      saveThemeToStorage(themeMode, newCustomTheme, activePreset);
+      saveThemeToStorage(
+        themeMode,
+        {
+          ...customTheme,
+          [isDark ? 'dark' : 'light']: newCustomTheme,
+        },
+        activePreset
+      );
     }
   }, [isDark, themeMode, activePreset, presetConfig]);
 
-  // Load theme from storage on mount
+  // Load theme from storage on mount and when system color scheme changes
   useEffect(() => {
     loadThemeFromStorage();
+  }, []);
 
-    // Listen to system theme changes
+  // Separate effect for system color scheme changes
+  useEffect(() => {
     const subscription = Appearance.addChangeListener(({ colorScheme }) => {
       setSystemColorScheme(colorScheme);
     });
@@ -88,14 +104,28 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
     return () => subscription?.remove();
   }, []);
 
-  // Di dalam ThemeProvider component, update loadThemeFromStorage:
+  // Reload theme when system color scheme changes (for system mode)
+  useEffect(() => {
+    if (themeMode === 'system') {
+      loadThemeFromStorage();
+    }
+  }, [systemColorScheme]);
+
   const loadThemeFromStorage = async () => {
     try {
       const storedConfig = await AsyncStorage.getItem(THEME_STORAGE_KEY);
       if (storedConfig) {
         const config: ThemeConfig = JSON.parse(storedConfig);
+        console.log('Loading theme config:', config);
+
         setThemeModeState(config.mode);
-        setCustomTheme(config.customTheme);
+
+        // Set custom theme with both variants if available
+        if (config.customTheme) {
+          setCustomTheme(config.customTheme);
+          console.log('Loaded custom theme:', config.customTheme);
+        }
+
         setActivePreset(config.activePreset);
 
         // Restore presetConfig from registry
@@ -107,13 +137,52 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
             config.activePreset
           );
           setPresetConfig(() => restoredPresetConfig);
+          console.log('Restored preset config for:', config.activePreset);
 
-          // Regenerate theme with current mode
+          // Only regenerate if we don't have the theme variant stored
           if (restoredPresetConfig) {
-            const newCustomTheme = restoredPresetConfig(isDark);
-            setCustomTheme(newCustomTheme);
+            const currentSystemScheme = Appearance.getColorScheme();
+            const loadedIsDark =
+              config.mode === 'dark' ||
+              (config.mode === 'system' && currentSystemScheme === 'dark');
+
+            console.log(
+              'Loaded isDark:',
+              loadedIsDark,
+              'mode:',
+              config.mode,
+              'system:',
+              currentSystemScheme
+            );
+
+            // Check if we already have the theme variant stored
+            const hasStoredVariant =
+              config.customTheme &&
+              config.customTheme[loadedIsDark ? 'dark' : 'light'];
+
+            if (!hasStoredVariant) {
+              // Generate missing theme variant
+              const newCustomTheme = restoredPresetConfig(loadedIsDark);
+              const updatedCustomTheme = {
+                ...config.customTheme,
+                [loadedIsDark ? 'dark' : 'light']: newCustomTheme,
+              };
+              setCustomTheme(updatedCustomTheme);
+              // Save the generated variant
+              saveThemeToStorage(
+                config.mode,
+                updatedCustomTheme,
+                config.activePreset
+              );
+              console.log(
+                'Generated missing theme variant:',
+                loadedIsDark ? 'dark' : 'light'
+              );
+            }
           }
         }
+      } else {
+        console.log('No stored theme config found, using defaults');
       }
     } catch (error) {
       console.warn('Failed to load theme from storage:', error);
@@ -122,7 +191,10 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   const saveThemeToStorage = async (
     mode: ThemeMode,
-    customTheme?: Partial<Theme>,
+    customTheme?: {
+      light?: Partial<Theme>;
+      dark?: Partial<Theme>;
+    },
     preset?: string
   ) => {
     try {
@@ -135,7 +207,8 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
 
   const setThemeMode = (mode: ThemeMode) => {
     setThemeModeState(mode);
-    // Jangan save di sini, biarkan useEffect yang handle regeneration
+    // Save theme mode to storage immediately
+    saveThemeToStorage(mode, customTheme, activePreset);
   };
 
   const updateCustomTheme = useCallback(
@@ -144,29 +217,36 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
       preset?: string,
       newPresetConfig?: (isDark: boolean) => Partial<Theme>
     ) => {
-      setCustomTheme(newCustomTheme);
+      // Update the appropriate theme variant based on current mode
+      const updatedCustomTheme = {
+        ...customTheme,
+        [isDark ? 'dark' : 'light']: newCustomTheme,
+      };
+
+      setCustomTheme(updatedCustomTheme);
       setActivePreset(preset);
       if (newPresetConfig) {
-        setPresetConfig(() => newPresetConfig); // Wrap in function to avoid stale closure
+        setPresetConfig(() => newPresetConfig);
       }
-      saveThemeToStorage(themeMode, newCustomTheme, preset);
+      saveThemeToStorage(themeMode, updatedCustomTheme, preset);
     },
-    [themeMode]
+    [themeMode, customTheme, isDark]
   );
 
   const resetTheme = () => {
-    setCustomTheme(undefined);
+    setCustomTheme({});
     setActivePreset(undefined);
     setPresetConfig(undefined);
-    saveThemeToStorage(themeMode, undefined, undefined);
+    saveThemeToStorage(themeMode, {}, undefined);
   };
 
   // Get base theme
   const baseTheme = isDark ? darkTheme : lightTheme;
 
-  // Apply custom theme overrides
+  // Apply custom theme overrides - now using the appropriate variant
   const providedCustomTheme = isDark ? customDarkTheme : customLightTheme;
-  const finalCustomTheme = { ...providedCustomTheme, ...customTheme };
+  const currentCustomTheme = isDark ? customTheme.dark : customTheme.light;
+  const finalCustomTheme = { ...providedCustomTheme, ...currentCustomTheme };
 
   // Merge themes
   const theme = mergeThemes(baseTheme, finalCustomTheme);
