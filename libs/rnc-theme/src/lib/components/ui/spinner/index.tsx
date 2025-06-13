@@ -11,9 +11,11 @@ import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { resolveColor } from '../../../utils';
+import { ComponentSize, ComponentVariant } from '../../../types/ui';
 
 interface SpinnerProps {
-  size?: 'sm' | 'md' | 'lg' | number;
+  size?: ComponentSize | number;
+  variant?: ComponentVariant;
   color?: string | keyof Theme['colors'];
   style?: ViewStyle;
   thickness?: number;
@@ -21,10 +23,59 @@ interface SpinnerProps {
   animating?: boolean;
 }
 
+// Variant styling function
+const getVariantColor = (variant: ComponentVariant, theme: Theme): string => {
+  switch (variant) {
+    case 'primary':
+      return theme.colors.primary;
+    case 'secondary':
+      return theme.colors.secondary;
+    case 'success':
+      return theme.colors.success;
+    case 'error':
+      return theme.colors.error;
+    case 'warning':
+      return theme.colors.warning;
+    case 'info':
+      return theme.colors.info;
+    case 'destructive':
+      return theme.colors.destructive;
+    case 'outline':
+      return theme.colors.border;
+    case 'filled':
+      return theme.colors.primary;
+    case 'ghost':
+      return `${theme.colors.primary}60`;
+    case 'default':
+    default:
+      return theme.colors.primary;
+  }
+};
+
+// Size function
+const getSpinnerSize = (size: ComponentSize | number): number => {
+  if (typeof size === 'number') return size;
+  switch (size) {
+    case 'xs':
+      return 12;
+    case 'sm':
+      return 16;
+    case 'md':
+      return 24;
+    case 'lg':
+      return 32;
+    case 'xl':
+      return 40;
+    default:
+      return 24;
+  }
+};
+
 const Spinner = forwardRef<React.ComponentRef<typeof View>, SpinnerProps>(
   (
     {
       size = 'md',
+      variant = 'default',
       color,
       style,
       thickness = 2,
@@ -72,22 +123,11 @@ const Spinner = forwardRef<React.ComponentRef<typeof View>, SpinnerProps>(
       };
     }, []);
 
-    const getSize = (): number => {
-      if (typeof size === 'number') return size;
-      switch (size) {
-        case 'sm':
-          return 16;
-        case 'md':
-          return 24;
-        case 'lg':
-          return 32;
-        default:
-          return 24;
-      }
-    };
-
-    const spinnerSize = getSize();
-    const spinnerColor = resolveColor(theme, color, theme.colors.primary);
+    const spinnerSize = getSpinnerSize(size);
+    const variantColor = getVariantColor(variant, theme);
+    const spinnerColor = color
+      ? resolveColor(theme, color, variantColor)
+      : variantColor;
     const borderRadius = spinnerSize / 2;
 
     // Create gradient effect for better visual appeal
