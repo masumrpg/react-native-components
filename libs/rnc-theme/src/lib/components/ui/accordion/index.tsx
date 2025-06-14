@@ -5,13 +5,13 @@ import {
   ViewStyle,
   TextStyle,
   Text,
+  LayoutChangeEvent,
 } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withSpring,
   withTiming,
-  runOnJS,
   useAnimatedRef,
 } from 'react-native-reanimated';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -490,29 +490,35 @@ const AccordionContent = forwardRef<
 
   const animatedRef = useAnimatedRef<Animated.View>();
   const height = useSharedValue(0);
-  const opacity = useSharedValue(0);
+  const opacity = useSharedValue(isExpanded ? 1 : 0);
+  const [contentHeight, setContentHeight] = useState(0);
+
+  // Initialize height based on initial expanded state
+  React.useEffect(() => {
+    if (contentHeight > 0) {
+      height.value = isExpanded ? contentHeight : 0;
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contentHeight]);
 
   React.useEffect(() => {
-    if (isExpanded) {
-      runOnJS(() => {
-        // Measure content height
-        setTimeout(() => {
-          height.value = withSpring(200, {
-            // Fallback height
-            damping: 20,
-            stiffness: 150,
-          });
-          opacity.value = withTiming(1, { duration: 200 });
-        }, 50);
-      })();
-    } else {
-      height.value = withSpring(0, {
-        damping: 25,
-        stiffness: 120,
-      });
-      opacity.value = withTiming(0, { duration: 150 });
+    if (contentHeight > 0) {
+      if (isExpanded) {
+        height.value = withSpring(contentHeight, {
+          damping: 20,
+          stiffness: 150,
+        });
+        opacity.value = withTiming(1, { duration: 200 });
+      } else {
+        height.value = withSpring(0, {
+          damping: 25,
+          stiffness: 120,
+        });
+        opacity.value = withTiming(0, { duration: 150 });
+      }
     }
-  }, [isExpanded, height, opacity]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isExpanded, contentHeight]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
@@ -520,6 +526,43 @@ const AccordionContent = forwardRef<
       opacity: opacity.value,
     };
   });
+
+  const handleLayout = (event: LayoutChangeEvent) => {
+    const { height: layoutHeight } = event.nativeEvent.layout;
+    if (layoutHeight > 0 && layoutHeight !== contentHeight) {
+      setContentHeight(layoutHeight);
+    }
+  };
+
+  // Render content in a hidden container first to measure height
+  if (contentHeight === 0) {
+    return (
+      <View
+        style={{
+          position: 'absolute',
+          opacity: 0,
+          zIndex: -1,
+        }}
+      >
+        <View
+          style={[
+            styles.contentInner,
+            {
+              padding: padding
+                ? typeof padding === 'string'
+                  ? 16
+                  : padding
+                : 16,
+            },
+            style,
+          ]}
+          onLayout={handleLayout}
+        >
+          {children}
+        </View>
+      </View>
+    );
+  }
 
   return (
     <Animated.View ref={animatedRef} style={[styles.content, animatedStyle]}>
