@@ -447,9 +447,7 @@ const FabClustered = ({
         onPress={handlePress}
       >
         <Animated.View style={[styles.iconContainer, plusIconStyle, style]}>
-          {plusIcon || (
-            <Plus size={35} color={'white'} strokeWidth={2} />
-          )}
+          {plusIcon || <Plus size={35} color={'white'} strokeWidth={2} />}
         </Animated.View>
       </Pressable>
     </Animated.View>
@@ -597,9 +595,7 @@ const FabDoted = ({
         <Animated.View
           style={[styles.iconContainer, animatedStyles.plus, style]}
         >
-          {plusIcon || (
-            <Plus size={35} color={'white'} strokeWidth={2} />
-          )}
+          {plusIcon || <Plus size={35} color={'white'} strokeWidth={2} />}
         </Animated.View>
       </Pressable>
     </Animated.View>
@@ -677,9 +673,7 @@ const FabExtended = ({
           <Animated.View
             style={[styles.iconContainer, animatedStyles.plus, style]}
           >
-            {plusIcon || (
-              <Plus size={35} color={'white'} strokeWidth={2} />
-            )}
+            {plusIcon || <Plus size={35} color={'white'} strokeWidth={2} />}
           </Animated.View>
         </Pressable>
 
@@ -862,9 +856,7 @@ const FabStacked = ({
         <Animated.View
           style={[styles.iconContainer, animatedStyles.plus, style]}
         >
-          {plusIcon || (
-            <Plus size={35} color={'white'} strokeWidth={2} />
-          )}
+          {plusIcon || <Plus size={35} color={'white'} strokeWidth={2} />}
         </Animated.View>
       </Pressable>
     </Animated.View>
@@ -895,4 +887,10 @@ const Fab = (props: FabProps) => {
 };
 
 export { Fab };
-export type {FabVariant};
+export type {
+  FabVariant,
+  FabClusteredProps,
+  FabDotedProps,
+  FabExtendedProps,
+  FabSingleProps,
+};

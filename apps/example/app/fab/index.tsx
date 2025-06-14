@@ -110,7 +110,6 @@ export default function FabScreen() {
       {fabVariant === 'extended' && (
         <Fab
           variant="extended"
-          theme="dark"
           style={{
             backgroundColor: 'pink',
           }}
