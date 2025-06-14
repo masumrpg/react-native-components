@@ -1,6 +1,6 @@
 import { StyleProp, View, ViewStyle, Text } from 'react-native';
 import React, { useMemo } from 'react';
-import { Pressable, StyleSheet, TouchableOpacity } from 'react-native';
+import { Pressable, TouchableOpacity } from 'react-native';
 import Animated, {
   Easing,
   Extrapolation,
@@ -13,6 +13,8 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Plus } from 'lucide-react-native';
+import { Theme } from '../../../types/theme';
+import { useThemedStyles } from '../../../hooks/useThemedStyles';
 
 /** Item type for Clustered FAB variant with label */
 type FabClusteredItem = {
@@ -28,8 +30,6 @@ type FabClusteredItem = {
 type FabClusteredProps = {
   /** Array of 1-3 FAB items to be displayed in clustered layout */
   items: [FabClusteredItem, FabClusteredItem?, FabClusteredItem?];
-  /** Theme variant for the FAB */
-  theme?: 'dark' | 'light';
   /** Custom styles for the FAB */
   style?: StyleProp<ViewStyle>;
   /** Callback for FAB open/close state changes */
@@ -52,8 +52,6 @@ type FabDotedItem = {
 type FabDotedProps = {
   /** Array of 1-3 FAB items to be displayed in doted layout */
   items: [FabDotedItem, FabDotedItem?, FabDotedItem?];
-  /** Theme variant for the FAB */
-  theme?: 'dark' | 'light';
   /** Custom styles for the FAB */
   style?: StyleProp<ViewStyle>;
   /** Callback for FAB open/close state changes */
@@ -78,8 +76,6 @@ type FabExtendedItem = {
 type FabExtendedProps = {
   /** Array of 1-3 FAB items to be displayed in extended layout */
   items: [FabExtendedItem, FabExtendedItem?, FabExtendedItem?];
-  /** Theme variant for the FAB */
-  theme?: 'dark' | 'light';
   /** Custom styles for the FAB */
   style?: StyleProp<ViewStyle>;
   /** Callback for FAB open/close state changes */
@@ -96,8 +92,6 @@ type FabSingleProps = {
   icon?: React.ReactNode;
   /** Optional callback function when FAB is pressed */
   onPress?: () => void;
-  /** Theme variant for the FAB */
-  theme?: 'dark' | 'light';
   /** Custom styles for the FAB */
   style?: StyleProp<ViewStyle>;
 };
@@ -114,8 +108,6 @@ type FabStackedItem = {
 type FabStackedProps = {
   /** Array of 1-3 FAB items to be displayed in stacked layout */
   items: [FabStackedItem, FabStackedItem?, FabStackedItem?];
-  /** Theme variant for the FAB */
-  theme?: 'dark' | 'light';
   /** Custom styles for the FAB */
   style?: StyleProp<ViewStyle>;
   /** Callback for FAB open/close state changes */
@@ -138,7 +130,7 @@ type FabProps =
   | ({ variant: 'stacked' } & FabStackedProps);
 
 // Centralized StyleSheet for all FAB variants
-const styles = StyleSheet.create({
+const createFabStyles = (theme: Theme) => ({
   // Base styles
   container: {
     flex: 1,
@@ -146,7 +138,7 @@ const styles = StyleSheet.create({
 
   // Common positioning and shadow styles
   baseContentContainer: {
-    position: 'absolute',
+    position: 'absolute' as const,
     bottom: 30,
     right: 30,
     borderRadius: 50,
@@ -159,28 +151,28 @@ const styles = StyleSheet.create({
 
   // Clustered specific styles
   clusteredContentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    overflow: 'hidden',
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    overflow: 'hidden' as const,
   },
 
   // Extended specific styles
   extendedFabContainer: {
-    overflow: 'hidden',
+    overflow: 'hidden' as const,
   },
 
   extendedContentContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    overflow: 'hidden',
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    overflow: 'hidden' as const,
   },
 
   // Common icon container
   iconContainer: {
     width: 60,
     height: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
   },
 
   // Single variant specific icon container
@@ -196,28 +188,25 @@ const styles = StyleSheet.create({
 
   // Text styles
   text: {
-    color: 'white',
+    color: 'white' as const,
     fontSize: 18,
     marginLeft: 10,
   },
 
   // Theme backgrounds
-  lightBg: {
-    backgroundColor: '#000',
-  },
-  darkBg: {
-    backgroundColor: '#fff',
+  background: {
+    backgroundColor: theme.colors.primary as ViewStyle['backgroundColor'],
   },
 
   // Single variant container
   singleContainer: {
-    position: 'absolute',
+    position: 'absolute' as const,
     bottom: 30,
     right: 30,
     borderRadius: 50,
     width: 60,
     height: 60,
-    shadowColor: '#000',
+    shadowColor: '#000' as const,
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
@@ -226,15 +215,15 @@ const styles = StyleSheet.create({
 
   // Single variant touchable
   singleTouchable: {
-    width: '100%',
-    height: '100%',
-    justifyContent: 'center',
-    alignItems: 'center',
+    width: '100%' as const,
+    height: '100%' as const,
+    justifyContent: 'center' as const,
+    alignItems: 'center' as const,
   },
 
   // Wrapper container for main Fab component
   wrapperContainer: {
-    position: 'absolute',
+    position: 'absolute' as const,
     bottom: 0,
     right: 0,
     left: 0,
@@ -245,10 +234,11 @@ const FabClustered = ({
   items,
   style,
   containerStyle,
-  theme = 'light',
   isOpen: setIsOpen,
   plusIcon,
 }: FabClusteredProps) => {
+  const styles = useThemedStyles(createFabStyles);
+
   const [firstValue, secondValue, thirdValue] = [
     useSharedValue(30),
     useSharedValue(30),
@@ -400,10 +390,20 @@ const FabClustered = ({
     ]
   );
 
-  const backgroundStyle = theme === 'light' ? styles.lightBg : styles.darkBg;
-
   return (
-    <Animated.View style={[styles.container, containerStyle]}>
+    <Animated.View
+      style={[
+        styles.container,
+        containerStyle,
+        {
+          shadowColor: '#000' as const,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
+        },
+      ]}
+    >
       {items.map((item, index) => (
         <Animated.View
           key={index}
@@ -412,7 +412,7 @@ const FabClustered = ({
             styles.clusteredContentContainer,
             sampleItems[index].animate,
             sampleItems[index].width,
-            backgroundStyle,
+            styles.background,
             style,
           ]}
         >
@@ -442,7 +442,7 @@ const FabClustered = ({
         style={[
           styles.baseContentContainer,
           styles.clusteredContentContainer,
-          backgroundStyle,
+          styles.background,
         ]}
         onPress={handlePress}
       >
@@ -458,10 +458,11 @@ const FabDoted = ({
   items,
   style,
   containerStyle,
-  theme = 'light',
   isOpen: setIsOpen,
   plusIcon,
 }: FabDotedProps) => {
+  const styles = useThemedStyles(createFabStyles);
+
   const [firstValue, secondValue, thirdValue, isOpen] = [
     useSharedValue(30),
     useSharedValue(30),
@@ -563,8 +564,6 @@ const FabDoted = ({
     [animatedStyles]
   );
 
-  const backgroundStyle = theme === 'light' ? styles.lightBg : styles.darkBg;
-
   return (
     <Animated.View style={[styles.container, containerStyle]}>
       {items.map((item, index) => (
@@ -573,7 +572,7 @@ const FabDoted = ({
           style={[
             styles.baseContentContainer,
             sampleItems[index].animate,
-            backgroundStyle,
+            styles.background,
           ]}
         >
           <TouchableOpacity
@@ -589,7 +588,7 @@ const FabDoted = ({
       ))}
 
       <Pressable
-        style={[styles.baseContentContainer, backgroundStyle]}
+        style={[styles.baseContentContainer, styles.background]}
         onPress={handlePress}
       >
         <Animated.View
@@ -606,10 +605,11 @@ const FabExtended = ({
   items,
   style,
   containerStyle,
-  theme = 'light',
   isOpen: setIsOpen,
   plusIcon,
 }: FabExtendedProps) => {
+  const styles = useThemedStyles(createFabStyles);
+
   const [width, height, borderRadius, isOpen] = [
     useSharedValue(60),
     useSharedValue(60),
@@ -656,16 +656,26 @@ const FabExtended = ({
     })),
   };
 
-  const backgroundStyle = theme === 'light' ? styles.lightBg : styles.darkBg;
-
   return (
-    <Animated.View style={[styles.container, containerStyle]}>
+    <Animated.View
+      style={[
+        styles.container,
+        containerStyle,
+        {
+          shadowColor: '#000' as const,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          elevation: 5,
+        },
+      ]}
+    >
       <Animated.View
         style={[
           styles.baseContentContainer,
           styles.extendedFabContainer,
           animatedStyles.container,
-          backgroundStyle,
+          styles.background,
           style,
         ]}
       >
@@ -687,12 +697,7 @@ const FabExtended = ({
             }}
           >
             <View style={styles.iconContainer}>{item?.icon}</View>
-            <Text
-              style={[
-                styles.text,
-                { color: theme === 'light' ? '#fff' : '#000' },
-              ]}
-            >
+            <Text style={[styles.text, { color: styles.text.color }]}>
               {item?.label}
             </Text>
           </TouchableOpacity>
@@ -702,16 +707,11 @@ const FabExtended = ({
   );
 };
 
-const FabSingle = ({
-  icon: component,
-  onPress,
-  style,
-  theme = 'light',
-}: FabSingleProps) => {
-  const backgroundStyle = theme === 'light' ? styles.lightBg : styles.darkBg;
+const FabSingle = ({ icon: component, onPress, style }: FabSingleProps) => {
+  const styles = useThemedStyles(createFabStyles);
 
   return (
-    <Animated.View style={[styles.singleContainer, backgroundStyle, style]}>
+    <Animated.View style={[styles.singleContainer, styles.background, style]}>
       <TouchableOpacity style={styles.singleTouchable} onPress={onPress}>
         {component || <Plus />}
       </TouchableOpacity>
@@ -723,10 +723,11 @@ const FabStacked = ({
   items,
   style,
   containerStyle,
-  theme = 'light',
   isOpen: setIsOpen,
   plusIcon,
 }: FabStackedProps) => {
+  const styles = useThemedStyles(createFabStyles);
+
   const [firstValue, secondValue, thirdValue, isOpen] = [
     useSharedValue(30),
     useSharedValue(30),
@@ -824,8 +825,6 @@ const FabStacked = ({
     [animatedStyles]
   );
 
-  const backgroundStyle = theme === 'light' ? styles.lightBg : styles.darkBg;
-
   return (
     <Animated.View style={[styles.container, containerStyle]}>
       {items.map((item, index) => (
@@ -834,7 +833,7 @@ const FabStacked = ({
           style={[
             styles.baseContentContainer,
             sampleItems[index].animate,
-            backgroundStyle,
+            styles.background,
           ]}
         >
           <TouchableOpacity
@@ -850,7 +849,7 @@ const FabStacked = ({
       ))}
 
       <Pressable
-        style={[styles.baseContentContainer, backgroundStyle]}
+        style={[styles.baseContentContainer, styles.background]}
         onPress={handlePress}
       >
         <Animated.View
@@ -864,6 +863,8 @@ const FabStacked = ({
 };
 
 const Fab = (props: FabProps) => {
+  const styles = useThemedStyles(createFabStyles);
+
   return (
     <View style={styles.wrapperContainer}>
       {(() => {
