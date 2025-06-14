@@ -17,4 +17,3 @@ export * from './modal';
 export * from './form-control';
 export * from './combobox';
 export * from './accordion';
-export * from './tooltip';

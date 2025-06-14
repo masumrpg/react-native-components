@@ -29,7 +29,6 @@ import {
   TextCursorInput,
   ToggleLeft,
   ToggleRight,
-  Wrench,
 } from 'lucide-react-native';
 import { ReactElement } from 'react';
 
@@ -167,12 +166,6 @@ export default function HomeScreen() {
       title: 'Accordion',
       path: '/accordion',
       icon: <ListCollapse size={30} color={'black'} />,
-    },
-    {
-      id: 22,
-      title: 'Tooltip',
-      path: '/tooltip',
-      icon: <Wrench size={30} color={'black'} />,
     },
   ];
 
