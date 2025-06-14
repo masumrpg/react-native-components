@@ -24,6 +24,7 @@ import {
   Palette,
   ParkingCircleOff,
   PictureInPicture2,
+  Plus,
   SlidersHorizontal,
   Table,
   TextCursorInput,
@@ -166,6 +167,12 @@ export default function HomeScreen() {
       title: 'Accordion',
       path: '/accordion',
       icon: <ListCollapse size={30} color={'black'} />,
+    },
+    {
+      id: 22,
+      title: 'Fab',
+      path: '/fab',
+      icon: <Plus size={30} color={'black'} />,
     },
   ];
 
