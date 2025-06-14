@@ -65,7 +65,7 @@ interface AccordionTriggerProps {
 interface AccordionContentProps {
   children: React.ReactNode;
   style?: ViewStyle;
-  padding?: keyof Theme['spacing'];
+  padding?: ComponentSize;
 }
 
 // Context
@@ -238,6 +238,27 @@ const createAccordionStyles = (theme: Theme) => ({
     paddingVertical: theme.spacing.lg,
   } as ViewStyle,
 
+  // Size-specific content padding
+  contentPaddingXs: {
+    padding: theme.spacing.xs,
+  } as ViewStyle,
+
+  contentPaddingSm: {
+    padding: theme.spacing.sm,
+  } as ViewStyle,
+
+  contentPaddingMd: {
+    padding: theme.spacing.md,
+  } as ViewStyle,
+
+  contentPaddingLg: {
+    padding: theme.spacing.lg,
+  } as ViewStyle,
+
+  contentPaddingXl: {
+    padding: theme.spacing.xl,
+  } as ViewStyle,
+
   // Size-specific text
   textXs: {
     fontSize: 12,
@@ -387,14 +408,14 @@ const AccordionTrigger = forwardRef<
       ? accordion.value === itemValue
       : Array.isArray(accordion.value) && accordion.value.includes(itemValue);
 
-  const iconRotation = useSharedValue(isExpanded ? 180 : 0);
+  const iconRotation = useSharedValue(isExpanded ? (icon ? 360 : 180) : 0);
 
   React.useEffect(() => {
-    iconRotation.value = withSpring(isExpanded ? 180 : 0, {
+    iconRotation.value = withSpring(isExpanded ? (icon ? 360 : 180) : 0, {
       damping: 15,
       stiffness: 200,
     });
-  }, [isExpanded, iconRotation]);
+  }, [isExpanded, iconRotation, icon]);
 
   const animatedIconStyle = useAnimatedStyle(() => {
     return {
@@ -534,6 +555,14 @@ const AccordionContent = forwardRef<
     }
   };
 
+  // Get padding style based on size
+  const paddingStyle =
+    styles[
+      `contentPadding${
+        padding.charAt(0).toUpperCase() + padding.slice(1)
+      }` as keyof typeof styles
+    ];
+
   // Render content in a hidden container first to measure height
   if (contentHeight === 0) {
     return (
@@ -542,20 +571,13 @@ const AccordionContent = forwardRef<
           position: 'absolute',
           opacity: 0,
           zIndex: -1,
+          top: 0,
+          left: 0,
+          right: 0,
         }}
       >
         <View
-          style={[
-            styles.contentInner,
-            {
-              padding: padding
-                ? typeof padding === 'string'
-                  ? 16
-                  : padding
-                : 16,
-            },
-            style,
-          ]}
+          style={[styles.contentInner, paddingStyle, style]}
           onLayout={handleLayout}
         >
           {children}
@@ -568,17 +590,7 @@ const AccordionContent = forwardRef<
     <Animated.View ref={animatedRef} style={[styles.content, animatedStyle]}>
       <View
         ref={ref}
-        style={[
-          styles.contentInner,
-          {
-            padding: padding
-              ? typeof padding === 'string'
-                ? 16
-                : padding
-              : 16,
-          },
-          style,
-        ]}
+        style={[styles.contentInner, paddingStyle, style]}
         {...props}
       >
         {children}
