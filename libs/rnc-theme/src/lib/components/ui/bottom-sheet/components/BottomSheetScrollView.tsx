@@ -36,6 +36,9 @@ const BottomSheetScrollView = forwardRef<
       children,
       backgroundColor,
       backDropColor,
+      lineBackgroundColor,
+      borderTopLeftRadius,
+      borderTopRightRadius,
       onStateChange,
       ...rest
     }: BottomSheetScrollViewProps,
@@ -347,11 +350,20 @@ const BottomSheetScrollView = forwardRef<
               {
                 backgroundColor: backgroundColor,
                 paddingBottom: inset.bottom,
+                borderTopLeftRadius: borderTopLeftRadius,
+                borderTopRightRadius: borderTopRightRadius,
               },
             ]}
           >
             <View style={styles.lineContainer}>
-              <View style={styles.line} />
+              <View
+                style={[
+                  styles.line,
+                  {
+                    backgroundColor: lineBackgroundColor,
+                  },
+                ]}
+              />
             </View>
             <GestureDetector
               gesture={Gesture.Simultaneous(scrollViewGesture, panScroll)}
@@ -376,21 +388,17 @@ const BottomSheetScrollView = forwardRef<
 
 BottomSheetScrollView.displayName = 'BottomSheetScrollView';
 
-
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
   },
   lineContainer: {
     marginVertical: 10,
     alignItems: 'center',
   },
   line: {
-    width: 50,
+    width: 25,
     height: 4,
-    backgroundColor: 'black',
     borderRadius: 20,
   },
 });

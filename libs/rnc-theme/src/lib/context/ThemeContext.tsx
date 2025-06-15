@@ -260,7 +260,19 @@ export const RNCThemeProvider: React.FC<ThemeProviderProps> = ({
 
   return (
     <ThemeContext.Provider value={value}>
-      <BottomSheetProvider {...bottomSheetProps}>
+      <BottomSheetProvider
+        backgroundColor={theme.colors.surface}
+        lineBackgroundColor={theme.colors.text}
+        borderTopLeftRadius={
+          bottomSheetProps?.borderTopLeftRadius ??
+          theme.components.borderRadius.lg
+        }
+        borderTopRightRadius={
+          bottomSheetProps?.borderTopRightRadius ??
+          theme.components.borderRadius.lg
+        }
+        {...bottomSheetProps}
+      >
         {children}
       </BottomSheetProvider>
     </ThemeContext.Provider>

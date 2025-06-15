@@ -40,6 +40,9 @@ const BottomSheetFlatList = forwardRef<
       maxSnapTo,
       backgroundColor = '#FFFFFF',
       backDropColor,
+      lineBackgroundColor = '#000000',
+      borderTopLeftRadius,
+      borderTopRightRadius,
       onStateChange,
       ListHeaderComponent,
       ListFooterComponent,
@@ -330,11 +333,20 @@ const BottomSheetFlatList = forwardRef<
               {
                 backgroundColor: backgroundColor,
                 paddingBottom: inset.bottom,
+                borderTopLeftRadius: borderTopLeftRadius,
+                borderTopRightRadius: borderTopRightRadius,
               },
             ]}
           >
             <View style={styles.lineContainer}>
-              <View style={styles.line} />
+              <View
+                style={[
+                  styles.line,
+                  {
+                    backgroundColor: lineBackgroundColor,
+                  },
+                ]}
+              />
             </View>
             <GestureDetector gesture={combinedGesture}>
               <Animated.FlatList
@@ -368,8 +380,6 @@ export default memo(BottomSheetFlatList);
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,
-    borderTopLeftRadius: 20,
-    borderTopRightRadius: 20,
   },
   contentContainer: {
     paddingBottom: 20,
@@ -379,9 +389,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   line: {
-    width: 50,
+    width: 25,
     height: 4,
-    backgroundColor: 'black',
     borderRadius: 20,
   },
 });

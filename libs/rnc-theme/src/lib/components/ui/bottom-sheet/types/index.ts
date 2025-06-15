@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { FlatListProps, ListRenderItem } from 'react-native';
+import { FlatListProps, ListRenderItem, ViewStyle } from 'react-native';
 import { AnimatedScrollViewProps, SharedValue } from 'react-native-reanimated';
 
 type BackDropProps = {
@@ -13,8 +13,11 @@ type BackDropProps = {
 interface BottomSheetScrollViewProps extends AnimatedScrollViewProps {
   snapTo: string;
   maxSnapTo?: string;
-  backgroundColor?: string;
+  backgroundColor?: ViewStyle['backgroundColor'];
   backDropColor: string;
+  lineBackgroundColor?: ViewStyle['backgroundColor'];
+  borderTopLeftRadius: ViewStyle['borderTopLeftRadius'];
+  borderTopRightRadius: ViewStyle['borderTopRightRadius'];
   children: ReactNode;
   onStateChange?: (state: boolean) => void;
 }
@@ -45,7 +48,6 @@ interface BottomSheetContextType<T = any> {
   toggle: (snapToValue?: string) => void;
   setContent: (content: ReactNode) => void;
   setSheetTitle: (title: ReactNode) => void;
-  // setSnapTo: (value: string) => void;
   setMaxTo: (value: string) => void;
   variant?: 'scroll' | 'flatlist';
   setVariant: (variant: 'scroll' | 'flatlist') => void;
@@ -58,8 +60,11 @@ interface BottomSheetProviderProps<T = any> {
   children: ReactNode;
   defaultSnapTo?: string;
   maxSnapTo?: string;
-  backgroundColor?: string;
+  backgroundColor?: ViewStyle['backgroundColor'];
   backDropColor?: string;
+  lineBackgroundColor?: ViewStyle['backgroundColor'];
+  borderTopLeftRadius?: ViewStyle['borderTopLeftRadius'];
+  borderTopRightRadius?: ViewStyle['borderTopRightRadius'];
   onStateChange?: (state: boolean) => void;
   variant?: 'scroll' | 'flatlist';
   flatListProps?: Omit<FlatListProps<T>, 'ref'>;
@@ -70,7 +75,10 @@ interface BottomSheetFlatListProps<T = any>
   extends Omit<FlatListProps<T>, 'ref'> {
   snapTo: string;
   maxSnapTo?: string;
-  backgroundColor?: string;
+  backgroundColor?: ViewStyle['backgroundColor'];
+  lineBackgroundColor?: ViewStyle['backgroundColor'];
+  borderTopLeftRadius: ViewStyle['borderTopLeftRadius'];
+  borderTopRightRadius: ViewStyle['borderTopRightRadius'];
   backDropColor: string;
   onStateChange?: (state: boolean) => void;
 }

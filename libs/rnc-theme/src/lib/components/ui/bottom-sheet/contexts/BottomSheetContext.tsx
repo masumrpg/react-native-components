@@ -35,6 +35,9 @@ export const BottomSheetProvider = <T = any,>({
   maxSnapTo = '100%',
   backgroundColor = '#FFFFFF',
   backDropColor = 'rgba(0,0,0,0.5)',
+  lineBackgroundColor = '#000000',
+  borderTopLeftRadius = 25,
+  borderTopRightRadius = 25,
   onStateChange,
   variant = 'scroll',
   flatListProps,
@@ -210,7 +213,7 @@ export const BottomSheetProvider = <T = any,>({
         style={{
           paddingBottom: 12,
           borderBottomWidth: 1,
-          borderBottomColor: '#E5E5E5',
+          borderBottomColor: lineBackgroundColor,
           alignItems: 'center',
         }}
       >
@@ -234,6 +237,9 @@ export const BottomSheetProvider = <T = any,>({
             maxSnapTo={maxSnapToValue}
             backgroundColor={backgroundColor}
             backDropColor={backDropColor}
+            lineBackgroundColor={lineBackgroundColor}
+            borderTopLeftRadius={borderTopLeftRadius}
+            borderTopRightRadius={borderTopRightRadius}
             onStateChange={handleStateChange}
           >
             <>
@@ -248,11 +254,14 @@ export const BottomSheetProvider = <T = any,>({
             maxSnapTo={maxSnapToValue}
             backgroundColor={backgroundColor}
             backDropColor={backDropColor}
+            lineBackgroundColor={lineBackgroundColor}
+            borderTopLeftRadius={borderTopLeftRadius}
+            borderTopRightRadius={borderTopRightRadius}
             onStateChange={handleStateChange}
             data={listData}
             renderItem={safeRenderItem}
             ListHeaderComponent={<TitleContainer />}
-            contentContainerStyle={{ paddingBottom: 20 }}
+            contentContainerStyle={{ paddingBottom: 20, backgroundColor }}
             {...flatListProps}
           />
         )}
