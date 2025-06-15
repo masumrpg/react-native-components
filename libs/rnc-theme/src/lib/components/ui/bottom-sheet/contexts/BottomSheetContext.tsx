@@ -246,10 +246,10 @@ export const BottomSheetProvider = <T = any,>({
             backDropColor={backDropColor}
             onStateChange={handleStateChange}
           >
-            <View style={{ minHeight: 300 }}>
+            <>
               <TitleContainer />
               <View style={{ padding: 20 }}>{content}</View>
-            </View>
+            </>
           </BottomSheetScrollView>
         ) : (
           <BottomSheetFlatList
@@ -261,12 +261,7 @@ export const BottomSheetProvider = <T = any,>({
             onStateChange={handleStateChange}
             data={listData}
             renderItem={safeRenderItem}
-            ListHeaderComponent={
-              <View style={{ minHeight: 300 }}>
-                <TitleContainer />
-                {content}
-              </View>
-            }
+            ListHeaderComponent={<TitleContainer />}
             contentContainerStyle={{ paddingBottom: 20 }}
             {...flatListProps}
           />

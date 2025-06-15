@@ -18,16 +18,12 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
-import {BackDrop} from './BackDrop';
+import { BackDrop } from './BackDrop';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { BottomSheetMethods, BottomSheetFlatListProps } from '../types';
-import { FlatList } from 'react-native';
 
 // Memoize BackDrop component to prevent unnecessary re-renders
 const MemoizedBackDrop = memo(BackDrop);
-
-// Create AnimatedFlatList
-const AnimatedFlatList = Animated.createAnimatedComponent(FlatList);
 
 /**
  * BottomSheetFlatList component that renders a bottom sheet with a FlatList inside
@@ -47,6 +43,7 @@ const BottomSheetFlatList = forwardRef<
       ListHeaderComponent,
       ListFooterComponent,
       contentContainerStyle,
+      renderItem,
       ...rest
     }: BottomSheetFlatListProps,
     ref
@@ -331,13 +328,15 @@ const BottomSheetFlatList = forwardRef<
               <View style={styles.line} />
             </View>
             <GestureDetector gesture={combinedGesture}>
-              <AnimatedFlatList
-                {...rest}
+              <Animated.FlatList
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+                {...(rest as any)}
                 scrollEnabled={canListScroll.value}
                 bounces={false}
                 scrollEventThrottle={16}
                 onScroll={onScroll}
                 ListHeaderComponent={ListHeaderComponent}
+                renderItem={renderItem}
                 ListFooterComponent={ListFooterComponent}
                 contentContainerStyle={[
                   styles.contentContainer,
