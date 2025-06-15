@@ -8,11 +8,6 @@ import {
   Button,
   ButtonText,
   Typography,
-  Heading,
-  Box,
-  H1,
-  Subtitle,
-  Body,
 } from 'rnc-theme';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -147,15 +142,15 @@ const BottomSheetScreen: React.FC = () => {
     setVariant('scroll');
     setSheetTitle('Simple Example');
     setContent(
-      <Box>
-        <Heading>
+      <View>
+        <Text style={styles.description}>
           This is a simple example of the bottom sheet component. You can put
           any content here!
-        </Heading>
+        </Text>
         <Button onPress={close}>
           <ButtonText>Close</ButtonText>
         </Button>
-      </Box>
+      </View>
     );
     expand('30%');
   };
@@ -165,22 +160,20 @@ const BottomSheetScreen: React.FC = () => {
     setMaxTo('60%');
     setVariant('scroll');
     setSheetTitle(
-      <Box style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <H1 style={{ fontSize: 18, marginRight: 8 }}>🎉</H1>
-        <Subtitle style={{ fontSize: 20, fontWeight: '600' }}>
-          Custom Title
-        </Subtitle>
-      </Box>
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={{ fontSize: 18, marginRight: 8 }}>🎉</Text>
+        <Text style={{ fontSize: 20, fontWeight: '600' }}>Custom Title</Text>
+      </View>
     );
     setContent(
-      <Box>
-        <Body style={styles.description}>
+      <View>
+        <Text style={styles.description}>
           This is an example with custom ReactNode title!
-        </Body>
+        </Text>
         <Button onPress={close}>
           <ButtonText>Close</ButtonText>
         </Button>
-      </Box>
+      </View>
     );
     expand('30%');
   };
@@ -190,31 +183,31 @@ const BottomSheetScreen: React.FC = () => {
     setMaxTo('70%');
     setVariant('flatlist');
     setSheetTitle(
-      <Box style={{ alignItems: 'center' }}>
-        <Box
+      <View style={{ alignItems: 'center' }}>
+        <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             marginBottom: 4,
           }}
         >
-          <H1 style={{ fontSize: 18, marginRight: 8 }}>📝</H1>
-          <H1 style={{ fontSize: 20, fontWeight: '600' }}>Item List</H1>
-        </Box>
-        <Subtitle style={{ fontSize: 12, color: '#666' }}>
+          <Text style={{ fontSize: 18, marginRight: 8 }}>📝</Text>
+          <Text style={{ fontSize: 20, fontWeight: '600' }}>Item List</Text>
+        </View>
+        <Text style={{ fontSize: 12, color: '#666' }}>
           Select an item below
-        </Subtitle>
-      </Box>
+        </Text>
+      </View>
     );
 
     // Set the content for the header section
     setContent(
-      <Box style={styles.headerContent}>
-        <Body style={styles.description}>
+      <View style={styles.headerContent}>
+        <Text style={styles.description}>
           This is an example of the bottom sheet with FlatList. Below is a list
           of items:
-        </Body>
-      </Box>
+        </Text>
+      </View>
     );
 
     // Set the data for the FlatList
@@ -229,8 +222,10 @@ const BottomSheetScreen: React.FC = () => {
           setVariant('scroll');
           setSheetTitle(
             <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <H1 style={{ fontSize: 18, marginRight: 8 }}>ℹ️</H1>
-              <H1 style={{ fontSize: 20, fontWeight: '600' }}>{item.title}</H1>
+              <Text style={{ fontSize: 18, marginRight: 8 }}>ℹ️</Text>
+              <Text style={{ fontSize: 20, fontWeight: '600' }}>
+                {item.title}
+              </Text>
             </View>
           );
           setContent(

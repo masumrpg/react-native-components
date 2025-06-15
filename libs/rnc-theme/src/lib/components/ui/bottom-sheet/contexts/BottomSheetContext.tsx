@@ -216,6 +216,7 @@ export const BottomSheetProvider = <T = any,>({
           borderBottomWidth: isBorderBottomTitleVisible ? 0.3 : 0,
           borderBottomColor: lineBackgroundColor,
           alignItems: 'center',
+          backgroundColor: backgroundColor,
         }}
       >
         <Text style={{ fontSize: 20, fontWeight: '600' }}>{title}</Text>
@@ -242,11 +243,10 @@ export const BottomSheetProvider = <T = any,>({
             borderTopLeftRadius={borderTopLeftRadius}
             borderTopRightRadius={borderTopRightRadius}
             onStateChange={handleStateChange}
+            stickyHeaderIndices={title ? [0] : []}
           >
-            <>
-              <TitleContainer />
-              <View style={{ padding: 20 }}>{content}</View>
-            </>
+            <TitleContainer />
+            <View style={{ padding: 20 }}>{content}</View>
           </BottomSheetScrollView>
         ) : (
           <BottomSheetFlatList
@@ -262,6 +262,7 @@ export const BottomSheetProvider = <T = any,>({
             data={listData}
             renderItem={safeRenderItem}
             ListHeaderComponent={<TitleContainer />}
+            stickyHeaderIndices={title ? [0] : []}
             contentContainerStyle={{ paddingBottom: 20, backgroundColor }}
             {...flatListProps}
           />
