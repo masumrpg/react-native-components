@@ -44,8 +44,8 @@ interface BottomSheetContextType<T = any> {
   close: () => void;
   toggle: (snapToValue?: string) => void;
   setContent: (content: ReactNode) => void;
-  setSheetTitle: (title: string) => void;
-  setSnapTo: (value: string) => void;
+  setSheetTitle: (title: ReactNode) => void;
+  // setSnapTo: (value: string) => void;
   setMaxTo: (value: string) => void;
   variant?: 'scroll' | 'flatlist';
   setVariant: (variant: 'scroll' | 'flatlist') => void;

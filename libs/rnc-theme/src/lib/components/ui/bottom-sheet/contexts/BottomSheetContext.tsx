@@ -52,7 +52,7 @@ export const BottomSheetProvider = <T = any,>({
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [content, setContent] = useState<ReactNode>(null);
-  const [title, setSheetTitle] = useState<string>('');
+  const [title, setSheetTitle] = useState<ReactNode>(null);
   const [snapTo, setSnapTo] = useState<string>(defaultSnapTo);
   const [maxSnapToValue, setMaxSnapToValue] = useState<string>(maxSnapTo);
   const [sheetVariant, setSheetVariant] = useState<'scroll' | 'flatlist'>(
@@ -121,12 +121,8 @@ export const BottomSheetProvider = <T = any,>({
     setContent(newContent);
   }, []);
 
-  const handleSetSheetTitle = useCallback((newTitle: string) => {
+  const handleSetSheetTitle = useCallback((newTitle: ReactNode) => {
     setSheetTitle(newTitle);
-  }, []);
-
-  const handleSetSnapTo = useCallback((newValue: string) => {
-    setSnapTo(newValue);
   }, []);
 
   const handleSetMaxTo = useCallback((newValue: string) => {
@@ -209,7 +205,6 @@ export const BottomSheetProvider = <T = any,>({
     toggle,
     setContent: handleSetContent,
     setSheetTitle: handleSetSheetTitle,
-    setSnapTo: handleSetSnapTo,
     setMaxTo: handleSetMaxTo,
     variant: sheetVariant,
     setVariant: handleSetVariant,
@@ -286,21 +281,12 @@ export const BottomSheetProvider = <T = any,>({
  * Supports both ScrollView and FlatList variants.
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const useBottomSheet = <T = any,>(
-  snapToValue?: string
-): BottomSheetContextType<T> => {
+export const useBottomSheet = <T = any,>(): BottomSheetContextType<T> => {
   const context = useContext(BottomSheetContext);
 
   if (context === undefined) {
     throw new Error('useBottomSheet must be used within a BottomSheetProvider');
   }
-
-  // Set snapTo if parameter is provided when hook is called
-  useEffect(() => {
-    if (snapToValue) {
-      context.setSnapTo(snapToValue);
-    }
-  }, [snapToValue, context]);
 
   return context as BottomSheetContextType<T>;
 };

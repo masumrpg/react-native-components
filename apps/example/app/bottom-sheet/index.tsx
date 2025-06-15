@@ -30,12 +30,18 @@ export default function BottomSheetScreen() {
   const showScrollExample = () => {
     setMaxTo('95%');
     setVariant('scroll');
-    setSheetTitle('Scroll Example');
+    setSheetTitle(
+      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Text style={{ fontSize: 18, marginRight: 8 }}>📋</Text>
+        <Text style={{ fontSize: 20, fontWeight: '600', color: '#2196F3' }}>
+          Scroll Example
+        </Text>
+      </View>
+    );
     setContent(
       <View>
         <Text style={styles.description}>
-          This is an example of the bottom sheet with ScrollView. You can add
-          any content here.
+          This is an example with custom ReactNode title!
         </Text>
         <Button title="Close" onPress={close} />
       </View>
@@ -47,7 +53,23 @@ export default function BottomSheetScreen() {
   const showFlatListExample = () => {
     setMaxTo('70%');
     setVariant('flatlist');
-    setSheetTitle('FlatList Example');
+    setSheetTitle(
+      <View style={{ alignItems: 'center' }}>
+        <View
+          style={{
+            flexDirection: 'row',
+            alignItems: 'center',
+            marginBottom: 4,
+          }}
+        >
+          <Text style={{ fontSize: 18, marginRight: 8 }}>📝</Text>
+          <Text style={{ fontSize: 20, fontWeight: '600' }}>Item List</Text>
+        </View>
+        <Text style={{ fontSize: 12, color: '#666' }}>
+          Select an item below
+        </Text>
+      </View>
+    );
 
     // Set the content for the header section
     setContent(
@@ -69,7 +91,14 @@ export default function BottomSheetScreen() {
         onPress={() => {
           // Example of what happens when an item is pressed
           setVariant('scroll');
-          setSheetTitle(`Details for ${item.title}`);
+          setSheetTitle(
+            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={{ fontSize: 18, marginRight: 8 }}>ℹ️</Text>
+              <Text style={{ fontSize: 20, fontWeight: '600' }}>
+                {item.title}
+              </Text>
+            </View>
+          );
           setContent(
             <View>
               <Text style={styles.title}>{item.title}</Text>
