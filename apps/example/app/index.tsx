@@ -15,6 +15,7 @@ import {
   Circle,
   CircleUser,
   GitPullRequestClosedIcon,
+  Layers2,
   LayoutDashboard,
   LetterText,
   List,
@@ -173,6 +174,12 @@ export default function HomeScreen() {
       title: 'Fab',
       path: '/fab',
       icon: <Plus size={30} color={'black'} />,
+    },
+    {
+      id: 23,
+      title: 'Bottom Sheet',
+      path: '/bottom-sheet',
+      icon: <Layers2 size={30} color={'black'} />,
     },
   ];
 

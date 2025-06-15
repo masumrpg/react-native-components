@@ -3,7 +3,7 @@ import { useFonts } from 'expo-font';
 import { Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { ThemeProvider as MyTheme } from 'rnc-theme';
+import { RNCThemeProvider } from 'rnc-theme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 
@@ -64,7 +64,7 @@ function RootLayoutNav() {
           .join(' ');
 
   return (
-    <MyTheme defaultTheme="system">
+    <RNCThemeProvider defaultTheme="system">
       <StatusBar style={pathName === '/scroll-to-hide' ? 'light' : 'dark'} />
       <GestureHandlerRootView>
         <Stack
@@ -78,6 +78,6 @@ function RootLayoutNav() {
           <Stack.Screen name="index" />
         </Stack>
       </GestureHandlerRootView>
-    </MyTheme>
+    </RNCThemeProvider>
   );
 }

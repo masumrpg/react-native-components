@@ -11,6 +11,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Theme, ThemeMode, ThemeConfig } from '../types/theme';
 import { lightTheme, darkTheme } from '../themes/defaultThemes';
 import { themeRegistry } from '../registry/ThemeRegistry';
+import { BottomSheetProvider } from '../components/ui/bottom-sheet/contexts/BottomSheetContext';
 
 interface ThemeContextType {
   theme: Theme;
@@ -18,7 +19,11 @@ interface ThemeContextType {
   isDark: boolean;
   activePreset?: string;
   setThemeMode: (mode: ThemeMode) => void;
-  updateCustomTheme: (customTheme: Partial<Theme>, preset?: string, presetConfig?: (isDark: boolean) => Partial<Theme>) => void;
+  updateCustomTheme: (
+    customTheme: Partial<Theme>,
+    preset?: string,
+    presetConfig?: (isDark: boolean) => Partial<Theme>
+  ) => void;
   resetTheme: () => void;
 }
 
@@ -45,7 +50,7 @@ interface ThemeProviderProps {
   customDarkTheme?: Partial<Theme>;
 }
 
-export const ThemeProvider: React.FC<ThemeProviderProps> = ({
+export const RNCThemeProvider: React.FC<ThemeProviderProps> = ({
   children,
   defaultTheme = 'system',
   customLightTheme,
@@ -251,7 +256,9 @@ export const ThemeProvider: React.FC<ThemeProviderProps> = ({
   };
 
   return (
-    <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
+    <ThemeContext.Provider value={value}>
+      <BottomSheetProvider>{children}</BottomSheetProvider>
+    </ThemeContext.Provider>
   );
 };
 
