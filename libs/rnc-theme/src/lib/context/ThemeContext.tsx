@@ -265,11 +265,15 @@ export const RNCThemeProvider: React.FC<ThemeProviderProps> = ({
         lineBackgroundColor={theme.colors.text}
         borderTopLeftRadius={
           bottomSheetProps?.borderTopLeftRadius ??
-          theme.components.borderRadius.lg
+          theme.components.borderRadius.md < 5
+            ? theme.components.borderRadius.md
+            : theme.components.borderRadius.md + 10
         }
         borderTopRightRadius={
           bottomSheetProps?.borderTopRightRadius ??
-          theme.components.borderRadius.lg
+          theme.components.borderRadius.md < 5
+            ? theme.components.borderRadius.md
+            : theme.components.borderRadius.md + 10
         }
         {...bottomSheetProps}
       >
