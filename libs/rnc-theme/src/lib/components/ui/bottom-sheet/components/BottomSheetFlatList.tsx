@@ -16,6 +16,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withTiming,
+  useDerivedValue,
 } from 'react-native-reanimated';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import { BackDrop } from './BackDrop';
@@ -52,6 +53,9 @@ const BottomSheetFlatList = forwardRef<
     const { height } = Dimensions.get('screen');
     const [isOpen, setIsOpen] = useState(false);
 
+    // Add state for scroll enabled - SOLUTION 1
+    const [scrollEnabled, setScrollEnabled] = useState(true);
+
     // Parse percentages only once when props change
     const percentage = useCallback(
       () => parseFloat(snapTo.replace('%', '')) / 100,
@@ -76,6 +80,11 @@ const BottomSheetFlatList = forwardRef<
     const startY = useSharedValue(0);
     const isMinimalMovement = useSharedValue(true);
     const canListScroll = useSharedValue(true);
+
+    // SOLUTION 2: Use useDerivedValue to sync shared value with state
+    useDerivedValue(() => {
+      runOnJS(setScrollEnabled)(canListScroll.value);
+    });
 
     // Smooth animation config
     const timingConfig = useMemo(
@@ -331,7 +340,7 @@ const BottomSheetFlatList = forwardRef<
               <Animated.FlatList
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 {...(rest as any)}
-                scrollEnabled={canListScroll.value}
+                scrollEnabled={scrollEnabled}
                 bounces={false}
                 scrollEventThrottle={16}
                 onScroll={onScroll}
