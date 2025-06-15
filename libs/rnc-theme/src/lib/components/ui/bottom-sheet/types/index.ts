@@ -1,5 +1,5 @@
 import { ReactNode } from "react";
-import { FlatListProps } from 'react-native';
+import { FlatListProps, ListRenderItem } from 'react-native';
 import { AnimatedScrollViewProps, SharedValue } from 'react-native-reanimated';
 
 type BackDropProps = {
@@ -25,7 +25,8 @@ interface BottomSheetMethods {
   isOpen?: boolean;
 }
 
-interface BottomSheetContextType {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface BottomSheetContextType<T = any> {
   isOpen: boolean;
   isLoading: boolean;
   expand: (
@@ -45,15 +46,15 @@ interface BottomSheetContextType {
   setContent: (content: ReactNode) => void;
   setSheetTitle: (title: string) => void;
   setSnapTo: (value: string) => void;
+  setMaxTo: (value: string) => void;
   variant?: 'scroll' | 'flatlist';
   setVariant: (variant: 'scroll' | 'flatlist') => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setListData: (data: any[]) => void;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  setRenderItem: (renderer: (info: any) => ReactNode) => void;
+  setListData: (data: T[]) => void;
+  setRenderItem: (renderer: ListRenderItem<T>) => void;
 }
 
-interface BottomSheetProviderProps {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+interface BottomSheetProviderProps<T = any> {
   children: ReactNode;
   defaultSnapTo?: string;
   maxSnapTo?: string;
@@ -61,12 +62,12 @@ interface BottomSheetProviderProps {
   backDropColor?: string;
   onStateChange?: (state: boolean) => void;
   variant?: 'scroll' | 'flatlist';
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  flatListProps?: Omit<FlatListProps<any>, 'ref'>;
+  flatListProps?: Omit<FlatListProps<T>, 'ref'>;
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-interface BottomSheetFlatListProps extends Omit<FlatListProps<any>, 'ref'> {
+interface BottomSheetFlatListProps<T = any>
+  extends Omit<FlatListProps<T>, 'ref'> {
   snapTo: string;
   maxSnapTo?: string;
   backgroundColor?: string;

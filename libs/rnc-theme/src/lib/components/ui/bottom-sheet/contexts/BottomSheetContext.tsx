@@ -1,4 +1,4 @@
-import React, {
+import {
   createContext,
   useContext,
   useRef,
@@ -10,6 +10,7 @@ import React, {
 import { View, Text, BackHandler } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
+import { ListRenderItem } from 'react-native';
 import BottomSheetScrollView from '../components/BottomSheetScrollView';
 import BottomSheetFlatList from '../components/BottomSheetFlatList';
 import {
@@ -37,7 +38,8 @@ const BottomSheetContext = createContext<BottomSheetContextType | undefined>(
  * BottomSheetProvider component that manages the bottom sheet state and behavior.
  * Now supports both ScrollView and FlatList variants.
  */
-export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const BottomSheetProvider = <T = any,>({
   children,
   defaultSnapTo = '70%',
   maxSnapTo = '100%',
@@ -46,18 +48,19 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
   onStateChange,
   variant = 'scroll',
   flatListProps,
-}) => {
+}: BottomSheetProviderProps<T>) => {
   const bottomSheetRef = useRef<BottomSheetMethods>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [content, setContent] = useState<ReactNode>(null);
   const [title, setSheetTitle] = useState<string>('');
   const [snapTo, setSnapTo] = useState<string>(defaultSnapTo);
+  const [maxSnapToValue, setMaxSnapToValue] = useState<string>(maxSnapTo);
   const [sheetVariant, setSheetVariant] = useState<'scroll' | 'flatlist'>(
     variant
   );
 
-  const [listData, setListData] = useState<any[]>([]);
-  const [renderItem, setRenderItem] = useState<any>(null);
+  const [listData, setListData] = useState<T[]>([]);
+  const [renderItem, setRenderItem] = useState<ListRenderItem<T> | null>(null);
   const navigation = useNavigation();
 
   // Remove isLoading state which causes delays and unnecessary re-renders
@@ -126,31 +129,31 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
     setSnapTo(newValue);
   }, []);
 
+  const handleSetMaxTo = useCallback((newValue: string) => {
+    setMaxSnapToValue(newValue);
+  }, []);
+
   const handleSetVariant = useCallback((newVariant: 'scroll' | 'flatlist') => {
     setSheetVariant(newVariant);
   }, []);
 
-  const handleSetListData = useCallback((data: any[]) => {
+  const handleSetListData = useCallback((data: T[]) => {
     setListData(data || []); // Add null check to prevent empty data
   }, []);
 
-  const handleSetRenderItem = useCallback(
-    (renderer: (info: any) => ReactNode) => {
-      // Wrap the provided renderer with null checks
+  const handleSetRenderItem = useCallback((renderer: ListRenderItem<T>) => {
+    // Wrap the provided renderer with null checks
+    const safeRenderer: ListRenderItem<T> = (info) => {
+      // If info or info.item is null/undefined, return null or a placeholder
+      if (!info || info.item === null || info.item === undefined) {
+        return null;
+      }
+      // Otherwise use the original renderer
+      return renderer(info);
+    };
 
-      const safeRenderer = (info: any) => {
-        // If info or info.item is null/undefined, return null or a placeholder
-        if (!info || info.item === null || info.item === undefined) {
-          return null;
-        }
-        // Otherwise use the original renderer
-        return renderer(info);
-      };
-
-      setRenderItem(() => safeRenderer);
-    },
-    []
-  );
+    setRenderItem(() => safeRenderer);
+  }, []);
 
   // Handle Android back button
   useEffect(() => {
@@ -173,7 +176,8 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
     useCallback(() => {
       const unsubscribe = navigation.addListener(
         'beforeRemove',
-        (e) => {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        (e: any) => {
           if (!isOpen) return; // Don't handle if sheet is not open
 
           // Prevent immediate navigation
@@ -198,7 +202,7 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
   );
 
   // Value provided by Context
-  const contextValue: BottomSheetContextType = {
+  const contextValue: BottomSheetContextType<T> = {
     isOpen,
     expand,
     close,
@@ -206,6 +210,7 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
     setContent: handleSetContent,
     setSheetTitle: handleSetSheetTitle,
     setSnapTo: handleSetSnapTo,
+    setMaxTo: handleSetMaxTo,
     variant: sheetVariant,
     setVariant: handleSetVariant,
     setListData: handleSetListData,
@@ -231,9 +236,7 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
   // Add safeguard for renderItem in case it's still null
   const safeRenderItem =
     renderItem ||
-    (() => (
-      <Text style={{ padding: 20 }}>No item renderer provided</Text>
-    ));
+    (() => <Text style={{ padding: 20 }}>No item renderer provided</Text>);
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
@@ -243,7 +246,7 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
           <BottomSheetScrollView
             ref={bottomSheetRef}
             snapTo={snapTo}
-            maxSnapTo={maxSnapTo}
+            maxSnapTo={maxSnapToValue}
             backgroundColor={backgroundColor}
             backDropColor={backDropColor}
             onStateChange={handleStateChange}
@@ -257,7 +260,7 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
           <BottomSheetFlatList
             ref={bottomSheetRef}
             snapTo={snapTo}
-            maxSnapTo={maxSnapTo}
+            maxSnapTo={maxSnapToValue}
             backgroundColor={backgroundColor}
             backDropColor={backDropColor}
             onStateChange={handleStateChange}
@@ -282,9 +285,10 @@ export const BottomSheetProvider: React.FC<BottomSheetProviderProps> = ({
  * Custom hook to access the Bottom Sheet Context.
  * Supports both ScrollView and FlatList variants.
  */
-export const useBottomSheet = (
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const useBottomSheet = <T = any,>(
   snapToValue?: string
-): BottomSheetContextType => {
+): BottomSheetContextType<T> => {
   const context = useContext(BottomSheetContext);
 
   if (context === undefined) {
@@ -298,5 +302,5 @@ export const useBottomSheet = (
     }
   }, [snapToValue, context]);
 
-  return context;
+  return context as BottomSheetContextType<T>;
 };

@@ -23,12 +23,12 @@ export default function BottomSheetScreen() {
     setVariant,
     setListData,
     setRenderItem,
-    setSnapTo,
-  } = useBottomSheet();
+    setMaxTo,
+  } = useBottomSheet<(typeof SAMPLE_DATA)[0]>();
 
-  // Example of showing a ScrollView bottom sheet
+  // Example usage
   const showScrollExample = () => {
-    setSnapTo('90%');
+    setMaxTo('95%');
     setVariant('scroll');
     setSheetTitle('Scroll Example');
     setContent(
@@ -45,6 +45,7 @@ export default function BottomSheetScreen() {
 
   // Example of showing a FlatList bottom sheet
   const showFlatListExample = () => {
+    setMaxTo('70%');
     setVariant('flatlist');
     setSheetTitle('FlatList Example');
 
