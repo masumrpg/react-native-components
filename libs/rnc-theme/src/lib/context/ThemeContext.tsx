@@ -12,6 +12,7 @@ import { Theme, ThemeMode, ThemeConfig } from '../types/theme';
 import { lightTheme, darkTheme } from '../themes/defaultThemes';
 import { themeRegistry } from '../registry/ThemeRegistry';
 import { BottomSheetProvider } from '../components/ui/bottom-sheet/contexts/BottomSheetContext';
+import { BottomSheetProviderProps } from '../components/ui/bottom-sheet/types';
 
 interface ThemeContextType {
   theme: Theme;
@@ -48,6 +49,7 @@ interface ThemeProviderProps {
   defaultTheme?: ThemeMode;
   customLightTheme?: Partial<Theme>;
   customDarkTheme?: Partial<Theme>;
+  bottomSheetProps?: BottomSheetProviderProps;
 }
 
 export const RNCThemeProvider: React.FC<ThemeProviderProps> = ({
@@ -55,6 +57,7 @@ export const RNCThemeProvider: React.FC<ThemeProviderProps> = ({
   defaultTheme = 'system',
   customLightTheme,
   customDarkTheme,
+  bottomSheetProps,
 }) => {
   const [themeMode, setThemeModeState] = useState<ThemeMode>(defaultTheme);
   const [customTheme, setCustomTheme] = useState<{
@@ -257,7 +260,9 @@ export const RNCThemeProvider: React.FC<ThemeProviderProps> = ({
 
   return (
     <ThemeContext.Provider value={value}>
-      <BottomSheetProvider>{children}</BottomSheetProvider>
+      <BottomSheetProvider {...bottomSheetProps}>
+        {children}
+      </BottomSheetProvider>
     </ThemeContext.Provider>
   );
 };

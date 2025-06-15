@@ -18,16 +18,16 @@ import {
   BottomSheetMethods,
   BottomSheetProviderProps,
 } from '../types';
-import {
-  configureReanimatedLogger,
-  ReanimatedLogLevel,
-} from 'react-native-reanimated';
+// import {
+//   configureReanimatedLogger,
+//   ReanimatedLogLevel,
+// } from 'react-native-reanimated';
 
 // This is the default configuration
-configureReanimatedLogger({
-  level: ReanimatedLogLevel.warn,
-  strict: false,
-});
+// configureReanimatedLogger({
+//   level: ReanimatedLogLevel.warn,
+//   strict: false,
+// });
 
 // Create Context with Default Value
 const BottomSheetContext = createContext<BottomSheetContextType | undefined>(
@@ -262,7 +262,7 @@ export const BottomSheetProvider = <T = any,>({
             data={listData}
             renderItem={safeRenderItem}
             ListHeaderComponent={
-              <View style={{ paddingHorizontal: 20, paddingTop: 20 }}>
+              <View style={{ minHeight: 300 }}>
                 <TitleContainer />
                 {content}
               </View>
