@@ -65,6 +65,7 @@ interface BottomSheetProviderProps<T = any> {
   lineBackgroundColor?: ViewStyle['backgroundColor'];
   borderTopLeftRadius?: ViewStyle['borderTopLeftRadius'];
   borderTopRightRadius?: ViewStyle['borderTopRightRadius'];
+  isBorderBottomTitleVisible?: boolean;
   onStateChange?: (state: boolean) => void;
   variant?: 'scroll' | 'flatlist';
   flatListProps?: Omit<FlatListProps<T>, 'ref'>;

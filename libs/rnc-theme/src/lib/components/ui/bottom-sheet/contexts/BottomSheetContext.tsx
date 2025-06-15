@@ -38,6 +38,7 @@ export const BottomSheetProvider = <T = any,>({
   lineBackgroundColor = '#000000',
   borderTopLeftRadius = 25,
   borderTopRightRadius = 25,
+  isBorderBottomTitleVisible = false,
   onStateChange,
   variant = 'scroll',
   flatListProps,
@@ -212,7 +213,7 @@ export const BottomSheetProvider = <T = any,>({
       <View
         style={{
           paddingBottom: 12,
-          borderBottomWidth: 1,
+          borderBottomWidth: isBorderBottomTitleVisible ? 0.3 : 0,
           borderBottomColor: lineBackgroundColor,
           alignItems: 'center',
         }}
