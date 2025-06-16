@@ -4,7 +4,6 @@ import Animated from 'react-native-reanimated';
 import {
   VScroll,
   HScroll,
-  VList,
   HList,
   Card,
   CardHeader,
@@ -31,17 +30,6 @@ interface Story {
   username: string;
   avatar: string;
   viewed: boolean;
-}
-
-interface Message {
-  id: string;
-  user: {
-    name: string;
-    avatar: string;
-  };
-  message: string;
-  timestamp: string;
-  unread: boolean;
 }
 
 // Sample data
@@ -186,59 +174,6 @@ const stories: Story[] = [
   },
 ];
 
-const messages: Message[] = [
-  {
-    id: '1',
-    user: {
-      name: 'John Doe',
-      avatar: 'https://picsum.photos/52',
-    },
-    message: 'Hey, how are you?',
-    timestamp: '2:30 PM',
-    unread: true,
-  },
-  {
-    id: '2',
-    user: {
-      name: 'Jane Smith',
-      avatar: 'https://picsum.photos/53',
-    },
-    message: 'Meeting at 3?',
-    timestamp: '1:45 PM',
-    unread: false,
-  },
-  {
-    id: '3',
-    user: {
-      name: 'Mike Wilson',
-      avatar: 'https://picsum.photos/54',
-    },
-    message: 'Did you check the latest project updates?',
-    timestamp: '1:15 PM',
-    unread: true,
-  },
-  {
-    id: '4',
-    user: {
-      name: 'Sarah Parker',
-      avatar: 'https://picsum.photos/55',
-    },
-    message: 'The presentation looks great! Nice work!',
-    timestamp: '12:30 PM',
-    unread: false,
-  },
-  {
-    id: '5',
-    user: {
-      name: 'Alex Brown',
-      avatar: 'https://picsum.photos/56',
-    },
-    message: 'Lunch break in 10 minutes?',
-    timestamp: '11:45 AM',
-    unread: true,
-  },
-];
-
 // FIXME bug VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.
 
 const HEADER_HEIGHT = 100;
@@ -254,12 +189,6 @@ const ScrollScreen = () => {
   );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
-
-  const [infiniteMessages, setInfiniteMessages] = useState<Message[]>(
-    messages.slice(0, 3)
-  );
-  const [isLoadingMoreMessages, setIsLoadingMoreMessages] = useState(false);
-  const [hasMoreMessages, setHasMoreMessages] = useState(true);
 
   const loadMoreProducts = () => {
     if (isLoadingMore) return;
@@ -278,26 +207,6 @@ const ScrollScreen = () => {
       }
 
       setIsLoadingMore(false);
-    }, 1000);
-  };
-
-  const loadMoreMessages = () => {
-    if (isLoadingMoreMessages) return;
-
-    setIsLoadingMoreMessages(true);
-
-    // Simulasi API call
-    setTimeout(() => {
-      const currentLength = infiniteMessages.length;
-      const newMessages = messages.slice(currentLength, currentLength + 2);
-
-      if (newMessages.length > 0) {
-        setInfiniteMessages((prev) => [...prev, ...newMessages]);
-      } else {
-        setHasMoreMessages(false);
-      }
-
-      setIsLoadingMoreMessages(false);
     }, 1000);
   };
 
@@ -449,75 +358,6 @@ const ScrollScreen = () => {
                     <Box padding="md">
                       <Typography variant="caption" color="textSecondary">
                         No more products
-                      </Typography>
-                    </Box>
-                  ) : null
-                }
-              />
-            </CardContent>
-          </Card>
-
-          {/* Messages List dengan Infinite Scroll */}
-          <Card>
-            <CardHeader
-              title="Messages (Infinite Scroll)"
-              subtitle="Vertical scrolling dengan infinite loading"
-            />
-            <CardContent>
-              <VList
-                data={infiniteMessages}
-                backgroundColor="surface"
-                borderRadius="md"
-                themed
-                infiniteScroll={{
-                  onLoadMore: loadMoreMessages,
-                  loading: isLoadingMoreMessages,
-                  hasMore: hasMoreMessages,
-                  threshold: 0.1,
-                }}
-                renderItem={({ item }) => (
-                  <Box
-                    padding="md"
-                    backgroundColor={item.unread ? 'background' : 'transparent'}
-                    style={styles.messageContainer}
-                  >
-                    <HStack spacing="sm">
-                      <Image
-                        source={{ uri: item.user.avatar }}
-                        style={styles.messageAvatar}
-                      />
-                      <VStack flex={1} spacing="xs">
-                        <HStack justify="space-between">
-                          <Typography variant="subtitle" weight="600">
-                            {item.user.name}
-                          </Typography>
-                          <Typography variant="caption" color="textSecondary">
-                            {item.timestamp}
-                          </Typography>
-                        </HStack>
-                        <Typography
-                          variant="body"
-                          color={item.unread ? 'text' : 'textSecondary'}
-                          numberOfLines={1}
-                        >
-                          {item.message}
-                        </Typography>
-                      </VStack>
-                    </HStack>
-                  </Box>
-                )}
-                keyExtractor={(item) => item.id}
-                ListFooterComponent={
-                  isLoadingMoreMessages ? (
-                    <Box padding="md">
-                      <Typography variant="caption" color="textSecondary">
-                        Loading more messages...
-                      </Typography>
-                    </Box>
-                  ) : !hasMoreMessages ? (
-                    <Box padding="md">
-                      <Typography variant="caption" color="textSecondary">
-                        No more messages
                       </Typography>
                     </Box>
                   ) : null
