@@ -519,8 +519,8 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       helperTextStyle,
     ]);
 
-    const inputContainerStyle: ViewStyle[] = useMemo(() => {
-      const baseStyles: ViewStyle[] = [
+    const inputContainerStyle = useMemo(() => {
+      const baseStyles = [
         styles.inputContainer,
         styles[variant],
         getSizeStyles(size, styles),
@@ -528,6 +528,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
           backgroundColor: getBackgroundColor(variant, theme.colors, disabled),
           borderRadius: theme.components.borderRadius[borderRadius],
         },
+        style,
       ];
 
       // FIX: Add specific styling for textarea
@@ -544,8 +545,6 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
           baseStyles.push(styles[stateKey] as ViewStyle);
         }
       }
-
-      if (style) baseStyles.push(style);
 
       return baseStyles;
     }, [

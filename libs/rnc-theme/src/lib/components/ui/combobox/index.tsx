@@ -21,6 +21,7 @@ import {
   Platform,
   InteractionManager,
   Animated,
+  StyleProp,
 } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { Theme } from '../../../types/theme';
@@ -65,12 +66,12 @@ type BaseComboboxProps = {
   onValueChange?: (value: string | string[]) => void;
   onSearchChange?: (search: string) => void;
   borderRadius?: keyof Theme['components']['borderRadius'];
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   inputStyle?: TextStyle;
   labelStyle?: TextStyle;
   helperTextStyle?: TextStyle;
-  dropdownStyle?: ViewStyle;
-  optionStyle?: ViewStyle;
+  dropdownStyle?: StyleProp<ViewStyle>;
+  optionStyle?: StyleProp<ViewStyle>;
   animationEnabled?: boolean;
   maxDropdownHeight?: number;
   closeOnSelect?: boolean;

@@ -1,5 +1,5 @@
 import React, { useEffect, forwardRef } from 'react';
-import { View, ViewStyle } from 'react-native';
+import { StyleProp, View, ViewStyle } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -18,13 +18,13 @@ interface ProgressProps {
   max?: number;
   size?: ComponentSize;
   variant?: ComponentVariant;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   trackColor?: string | keyof Theme['colors'];
   animated?: boolean;
 }
 
 interface ProgressFilledTrackProps {
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   color?: string | keyof Theme['colors'];
 }
 

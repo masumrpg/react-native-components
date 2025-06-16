@@ -12,6 +12,7 @@ import {
   ViewStyle,
   TextStyle,
   LayoutChangeEvent,
+  StyleProp,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -51,10 +52,10 @@ type BaseSliderProps = BaseComponentProps & {
   showLabel?: boolean;
   showLabels?: boolean;
   labelFormatter?: (value: number) => string;
-  trackStyle?: ViewStyle;
-  thumbStyle?: ViewStyle;
+  trackStyle?: StyleProp<ViewStyle>;
+  thumbStyle?: StyleProp<ViewStyle>;
   labelStyle?: TextStyle;
-}
+};
 
 interface SliderProps extends BaseSliderProps {
   initialValue?: number;

@@ -1,5 +1,5 @@
 import React, { useEffect, forwardRef } from 'react';
-import { View, ViewStyle } from 'react-native';
+import { StyleProp, View, ViewStyle } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -17,7 +17,7 @@ interface SpinnerProps {
   size?: ComponentSize | number;
   variant?: ComponentVariant;
   color?: string | keyof Theme['colors'];
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   thickness?: number;
   duration?: number;
   animating?: boolean;

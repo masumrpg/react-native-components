@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { DimensionValue, View, ViewStyle } from 'react-native';
+import { DimensionValue, StyleProp, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
@@ -7,7 +7,7 @@ import { resolveColor } from '../../../utils';
 
 interface BaseLayoutProps {
   children?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   padding?: keyof Theme['spacing'];
   margin?: keyof Theme['spacing'];
   backgroundColor?: string | keyof Theme['colors'];

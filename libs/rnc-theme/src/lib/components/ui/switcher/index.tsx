@@ -1,5 +1,5 @@
 import React, { useEffect, forwardRef } from 'react';
-import { TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -27,7 +27,7 @@ type SwitcherProps = BaseComponentProps & {
 interface SwitcherLabelProps {
   children: React.ReactNode;
   position?: 'left' | 'right';
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 const AnimatedTouchableOpacity =

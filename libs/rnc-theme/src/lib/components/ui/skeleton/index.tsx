@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { View, ViewStyle, DimensionValue } from 'react-native';
+import { View, ViewStyle, DimensionValue, StyleProp } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -18,7 +18,7 @@ type SkeletonProps = BaseComponentProps & {
   height?: DimensionValue;
   borderRadius?: keyof Theme['components']['borderRadius'];
   animated?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 };
 
 type SkeletonTextProps = BaseComponentProps & {
@@ -26,13 +26,13 @@ type SkeletonTextProps = BaseComponentProps & {
   lineHeight?: number;
   lastLineWidth?: DimensionValue;
   animated?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 };
 
 type SkeletonCircleProps = BaseComponentProps & {
   diameter?: number;
   animated?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 };
 
 // Styles
@@ -125,7 +125,7 @@ const Skeleton = React.forwardRef<
       };
     }, [animated, theme.colors.muted, theme.colors.border]);
 
-    const skeletonStyles: ViewStyle[] = [
+    const skeletonStyles = [
       styles.base,
       getSizeStyles(size, styles),
       {
@@ -133,14 +133,11 @@ const Skeleton = React.forwardRef<
         height,
         borderRadius: theme.components.borderRadius[borderRadius],
       },
+      style,
     ];
 
     if (disabled) {
       skeletonStyles.push(styles.stateDisabled);
-    }
-
-    if (style) {
-      skeletonStyles.push(style);
     }
 
     return (

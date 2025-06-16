@@ -8,6 +8,7 @@ import {
   ImageStyle,
   TouchableOpacity,
   StyleSheet,
+  StyleProp,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -21,7 +22,6 @@ import { Theme } from '../../../types/theme';
 import { resolveColor } from '../../../utils';
 import { User } from 'lucide-react-native';
 import { BaseComponentProps, ComponentSize } from '../../../types/ui';
-
 
 type AvatarShape = 'circle' | 'square';
 
@@ -47,7 +47,7 @@ interface AvatarGroupProps {
   max?: number;
   size?: ComponentSize;
   spacing?: number;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   showMore?: boolean;
   moreText?: string;
   onMorePress?: () => void;
@@ -56,7 +56,7 @@ interface AvatarGroupProps {
 interface AvatarBadgeProps {
   color?: string | keyof Theme['colors'];
   size?: number;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
 }
 

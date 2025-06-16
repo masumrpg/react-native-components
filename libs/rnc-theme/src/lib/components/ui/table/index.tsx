@@ -1,11 +1,18 @@
 import React, { forwardRef } from 'react';
-import { View, Text, ScrollView, ViewStyle, TextStyle } from 'react-native';
+import {
+  View,
+  Text,
+  ScrollView,
+  ViewStyle,
+  TextStyle,
+  StyleProp,
+} from 'react-native';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 
 interface TableProps {
   children?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   bordered?: boolean;
   striped?: boolean;
   scrollable?: boolean;
@@ -14,23 +21,23 @@ interface TableProps {
 
 interface TableHeaderProps {
   children?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface TableBodyProps {
   children?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   striped?: boolean;
 }
 
 interface TableFooterProps {
   children?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface TableRowProps {
   children?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   isHeader?: boolean;
   isEven?: boolean;
   isFirst?: boolean;

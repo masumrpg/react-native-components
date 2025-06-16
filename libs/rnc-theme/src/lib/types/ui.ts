@@ -1,4 +1,4 @@
-import { ViewStyle } from 'react-native';
+import { StyleProp, ViewStyle } from 'react-native';
 
 type ComponentVariant =
   | 'default'
@@ -36,7 +36,7 @@ type BaseComponentProps = {
   variant?: ComponentVariant;
   size?: ComponentSize;
   disabled?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 };
 
 type AnimatedComponentProps = BaseComponentProps & {

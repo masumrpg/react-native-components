@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { View, ViewStyle, DimensionValue } from 'react-native';
+import { View, ViewStyle, DimensionValue, StyleProp } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
@@ -17,7 +17,7 @@ interface DividerProps {
   marginRight?: keyof Theme['spacing'];
   marginTop?: keyof Theme['spacing'];
   marginBottom?: keyof Theme['spacing'];
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 const Divider = forwardRef<React.ComponentRef<typeof View>, DividerProps>(

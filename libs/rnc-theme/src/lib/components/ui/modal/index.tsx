@@ -19,6 +19,7 @@ import {
   Platform,
   StatusBar,
   InteractionManager,
+  StyleProp,
 } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -49,8 +50,8 @@ interface ModalProps {
   closeOnBackdrop?: boolean;
   showCloseButton?: boolean;
   backdropOpacity?: number;
-  style?: ViewStyle;
-  contentStyle?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
+  contentStyle?: StyleProp<ViewStyle>;
   animationDuration?: number;
   padding?: keyof Theme['spacing'];
   margin?: keyof Theme['spacing'];
@@ -64,7 +65,7 @@ interface ModalHeaderProps {
   title?: string;
   subtitle?: string;
   children?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   titleStyle?: TextStyle;
   subtitleStyle?: TextStyle;
   showCloseButton?: boolean;
@@ -77,7 +78,7 @@ interface ModalHeaderProps {
 
 interface ModalContentProps {
   children?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   scrollable?: boolean;
   padding?: keyof Theme['spacing'];
 }

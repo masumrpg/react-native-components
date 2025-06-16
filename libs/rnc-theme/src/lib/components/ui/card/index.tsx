@@ -195,7 +195,7 @@ const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
     const { theme } = useTheme();
     const styles = useThemedStyles(createStyles);
 
-    const cardStyles: ViewStyle[] = [
+    const cardStyles = [
       styles.base,
       styles[variant],
       getSizeStyles(size, styles),
@@ -207,14 +207,11 @@ const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
         shadowOpacity,
         elevation: disabled ? 0 : elevation,
       },
+      style,
     ];
 
     if (disabled) {
       cardStyles.push(styles.stateDisabled);
-    }
-
-    if (style) {
-      cardStyles.push(style);
     }
 
     return (

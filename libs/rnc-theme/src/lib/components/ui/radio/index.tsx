@@ -5,6 +5,7 @@ import {
   ViewStyle,
   TextStyle,
   Text,
+  StyleProp,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -16,14 +17,18 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-import { BaseComponentProps, ComponentSize, ComponentVariant } from '../../../types/ui';
+import {
+  BaseComponentProps,
+  ComponentSize,
+  ComponentVariant,
+} from '../../../types/ui';
 
 interface RadioGroupProps {
   children: React.ReactNode;
   value?: string;
   onValueChange?: (value: string) => void;
   disabled?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 type RadioProps = BaseComponentProps & {
@@ -35,12 +40,12 @@ type RadioProps = BaseComponentProps & {
 
 interface RadioIndicatorProps {
   children?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface RadioIconProps {
   icon?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface RadioLabelProps {

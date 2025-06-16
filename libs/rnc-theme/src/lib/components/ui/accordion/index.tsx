@@ -6,6 +6,7 @@ import {
   TextStyle,
   Text,
   LayoutChangeEvent,
+  StyleProp,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -46,7 +47,7 @@ interface AccordionProps {
   onValueChange?: (value: string | string[]) => void;
   disabled?: boolean;
   collapsible?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 type AccordionItemProps = BaseComponentProps & {
@@ -56,7 +57,7 @@ type AccordionItemProps = BaseComponentProps & {
 
 interface AccordionTriggerProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   textStyle?: TextStyle;
   showIcon?: boolean;
   icon?: React.ReactNode;
@@ -64,7 +65,7 @@ interface AccordionTriggerProps {
 
 interface AccordionContentProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   padding?: ComponentSize;
 }
 

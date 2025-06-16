@@ -1,10 +1,5 @@
 import React, { createContext, useContext, forwardRef, useMemo } from 'react';
-import {
-  View,
-  Text,
-  ViewStyle,
-  TextStyle,
-} from 'react-native';
+import { View, Text, ViewStyle, TextStyle, StyleProp } from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
@@ -35,13 +30,13 @@ interface FormControlProps {
   size?: FormControlSize;
   disabled?: boolean;
   required?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   spacing?: keyof Theme['spacing'];
 }
 
 interface FormControlLabelProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   htmlFor?: string;
 }
 
@@ -53,7 +48,7 @@ interface FormControlLabelTextProps {
 
 interface FormControlHelperProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface FormControlHelperTextProps {
@@ -64,12 +59,12 @@ interface FormControlHelperTextProps {
 
 interface FormControlErrorProps {
   children: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface FormControlErrorIconProps {
   icon?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   size?: number;
 }
 

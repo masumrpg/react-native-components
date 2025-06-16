@@ -1,5 +1,5 @@
 import React, { forwardRef, useMemo } from 'react';
-import { ViewStyle, TextStyle, View } from 'react-native';
+import { ViewStyle, TextStyle, View, StyleProp } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -26,7 +26,7 @@ type BadgeSize = 'xs' | 'sm' | 'md' | 'lg';
 interface BaseBadgeProps {
   variant?: BadgeVariant;
   size?: BadgeSize;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
   rounded?: boolean;
 }
 
@@ -42,7 +42,7 @@ interface BadgeTextProps {
 interface BadgeIconProps {
   children: React.ReactNode;
   position?: 'left' | 'right';
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface AnimatedBadgeProps extends BadgeProps {
@@ -93,9 +93,8 @@ const Badge = forwardRef<
         styles[variant],
         styles[size],
         rounded && styles.rounded,
+        style,
       ];
-
-      if (style) baseStyles.push(style);
 
       return baseStyles;
     }, [styles, variant, size, rounded, style]);
@@ -136,8 +135,7 @@ const BadgeIcon = forwardRef<React.ComponentRef<typeof View>, BadgeIconProps>(
     const styles = useThemedStyles(createBadgeIconStyles);
 
     const iconStyle = useMemo(() => {
-      const baseStyles = [styles.icon, styles[position]];
-      if (style) baseStyles.push(style);
+      const baseStyles = [styles.icon, styles[position], style];
       return baseStyles;
     }, [styles, position, style]);
 

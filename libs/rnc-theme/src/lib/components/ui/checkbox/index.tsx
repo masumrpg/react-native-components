@@ -5,6 +5,7 @@ import {
   ViewStyle,
   TextStyle,
   Text,
+  StyleProp,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -24,7 +25,6 @@ import {
   ComponentVariant,
 } from '../../../types/ui';
 
-
 type CheckboxShape = 'square' | 'round';
 
 interface CheckboxGroupProps {
@@ -32,7 +32,7 @@ interface CheckboxGroupProps {
   value?: string[];
   onValueChange?: (value: string[]) => void;
   disabled?: boolean;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 type CheckboxProps = BaseComponentProps & {
@@ -45,12 +45,12 @@ type CheckboxProps = BaseComponentProps & {
 
 interface CheckboxIndicatorProps {
   children?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface CheckboxIconProps {
   icon?: React.ReactNode;
-  style?: ViewStyle;
+  style?: StyleProp<ViewStyle>;
 }
 
 interface CheckboxLabelProps {

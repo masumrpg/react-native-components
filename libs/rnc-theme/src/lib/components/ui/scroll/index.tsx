@@ -28,7 +28,6 @@ interface InfiniteScrollProps {
 
 interface ScrollProps extends ScrollViewProps {
   children?: React.ReactNode;
-  style?: ViewStyle;
   padding?: keyof Theme['spacing'];
   margin?: keyof Theme['spacing'];
   backgroundColor?: string | keyof Theme['colors'];
