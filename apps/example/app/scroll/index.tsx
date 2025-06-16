@@ -81,6 +81,76 @@ const products: Product[] = [
     image: 'https://picsum.photos/204',
     category: 'Accessories',
   },
+  {
+    id: '6',
+    name: 'Digital Camera',
+    price: 599.99,
+    image: 'https://picsum.photos/205',
+    category: 'Electronics',
+  },
+  {
+    id: '7',
+    name: 'Yoga Mat',
+    price: 29.99,
+    image: 'https://picsum.photos/206',
+    category: 'Sports',
+  },
+  {
+    id: '8',
+    name: 'Air Fryer',
+    price: 129.99,
+    image: 'https://picsum.photos/207',
+    category: 'Home & Kitchen',
+  },
+  {
+    id: '9',
+    name: 'Sunglasses',
+    price: 79.99,
+    image: 'https://picsum.photos/208',
+    category: 'Accessories',
+  },
+  {
+    id: '10',
+    name: 'Gaming Console',
+    price: 499.99,
+    image: 'https://picsum.photos/209',
+    category: 'Electronics',
+  },
+  {
+    id: '11',
+    name: 'Bluetooth Speaker',
+    price: 89.99,
+    image: 'https://picsum.photos/210',
+    category: 'Electronics',
+  },
+  {
+    id: '12',
+    name: 'Tennis Racket',
+    price: 159.99,
+    image: 'https://picsum.photos/211',
+    category: 'Sports',
+  },
+  {
+    id: '13',
+    name: 'Blender',
+    price: 69.99,
+    image: 'https://picsum.photos/212',
+    category: 'Home & Kitchen',
+  },
+  {
+    id: '14',
+    name: 'Leather Wallet',
+    price: 49.99,
+    image: 'https://picsum.photos/213',
+    category: 'Accessories',
+  },
+  {
+    id: '15',
+    name: 'Tablet',
+    price: 399.99,
+    image: 'https://picsum.photos/214',
+    category: 'Electronics',
+  },
 ];
 
 const stories: Story[] = [
@@ -178,6 +248,59 @@ const ScrollScreen = () => {
   const [hideOnScrollResult, setHideOnScrollResult] =
     useState<HideOnScrollResult | null>(null);
 
+  // State untuk infinite scroll
+  const [infiniteProducts, setInfiniteProducts] = useState<Product[]>(
+    products.slice(0, 3)
+  );
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [hasMoreProducts, setHasMoreProducts] = useState(true);
+
+  const [infiniteMessages, setInfiniteMessages] = useState<Message[]>(
+    messages.slice(0, 3)
+  );
+  const [isLoadingMoreMessages, setIsLoadingMoreMessages] = useState(false);
+  const [hasMoreMessages, setHasMoreMessages] = useState(true);
+
+  const loadMoreProducts = () => {
+    if (isLoadingMore) return;
+
+    setIsLoadingMore(true);
+
+    // Simulasi API call
+    setTimeout(() => {
+      const currentLength = infiniteProducts.length;
+      const newProducts = products.slice(currentLength, currentLength + 2);
+
+      if (newProducts.length > 0) {
+        setInfiniteProducts((prev) => [...prev, ...newProducts]);
+      } else {
+        setHasMoreProducts(false);
+      }
+
+      setIsLoadingMore(false);
+    }, 1000);
+  };
+
+  const loadMoreMessages = () => {
+    if (isLoadingMoreMessages) return;
+
+    setIsLoadingMoreMessages(true);
+
+    // Simulasi API call
+    setTimeout(() => {
+      const currentLength = infiniteMessages.length;
+      const newMessages = messages.slice(currentLength, currentLength + 2);
+
+      if (newMessages.length > 0) {
+        setInfiniteMessages((prev) => [...prev, ...newMessages]);
+      } else {
+        setHasMoreMessages(false);
+      }
+
+      setIsLoadingMoreMessages(false);
+    }, 1000);
+  };
+
   return (
     <View style={styles.container}>
       {/* Animated Header with hideOnScroll integration */}
@@ -200,11 +323,10 @@ const ScrollScreen = () => {
           height: HEADER_HEIGHT,
           duration: 300,
           threshold: 10,
-          scrollDirection: 'down', // Hide when scrolling down
-          hideDirection: 'up', // Hide header upward
+          scrollDirection: 'down',
+          hideDirection: 'up',
           result: (value) => {
             setHideOnScrollResult(value);
-            console.log('Scroll position:', value?.sharedScrollVertical.value);
           },
         }}
       >
@@ -224,9 +346,7 @@ const ScrollScreen = () => {
                       borderRadius="md"
                       padding="md"
                     >
-                      <Typography color="white" align="center">
-                        Item {item}
-                      </Typography>
+                      <Typography color="white">Item {item}</Typography>
                     </Box>
                   ))}
                 </HStack>
@@ -260,7 +380,6 @@ const ScrollScreen = () => {
                       </View>
                       <Typography
                         variant="caption"
-                        align="center"
                         style={styles.storyUsername}
                       >
                         {item.username}
@@ -273,28 +392,25 @@ const ScrollScreen = () => {
             </CardContent>
           </Card>
 
-          {/* Product List Example */}
+          {/* Product List dengan Infinite Scroll */}
           <Card>
             <CardHeader
-              title="Product List"
-              subtitle="Horizontal scrolling products"
+              title="Product List (Infinite Scroll)"
+              subtitle="Horizontal scrolling dengan infinite loading"
             />
             <CardContent>
               <HList
-                hideOnScroll={{
-                  result: (value) => {
-                    console.log(
-                      'Horizontal scroll position:',
-                      value?.sharedScrollHorizontal.value
-                    );
-                  },
-                  height: 200,
-                }}
-                data={products}
+                data={infiniteProducts}
                 backgroundColor="surface"
                 padding="sm"
                 borderRadius="lg"
                 themed
+                infiniteScroll={{
+                  onLoadMore: loadMoreProducts,
+                  loading: isLoadingMore,
+                  hasMore: hasMoreProducts,
+                  threshold: 0.8,
+                }}
                 renderItem={({ item }) => (
                   <Box
                     width={200}
@@ -322,35 +438,56 @@ const ScrollScreen = () => {
                   </Box>
                 )}
                 keyExtractor={(item) => item.id}
+                ListFooterComponent={
+                  isLoadingMore ? (
+                    <Box padding="md">
+                      <Typography variant="caption" color="textSecondary">
+                        Loading more products...
+                      </Typography>
+                    </Box>
+                  ) : !hasMoreProducts ? (
+                    <Box padding="md">
+                      <Typography variant="caption" color="textSecondary">
+                        No more products
+                      </Typography>
+                    </Box>
+                  ) : null
+                }
               />
             </CardContent>
           </Card>
 
-          {/* Messages List Example */}
+          {/* Messages List dengan Infinite Scroll */}
           <Card>
             <CardHeader
-              title="Messages"
-              subtitle="Vertical scrolling messages"
+              title="Messages (Infinite Scroll)"
+              subtitle="Vertical scrolling dengan infinite loading"
             />
             <CardContent>
               <VList
-                data={messages}
+                data={infiniteMessages}
                 backgroundColor="surface"
                 borderRadius="md"
                 themed
+                infiniteScroll={{
+                  onLoadMore: loadMoreMessages,
+                  loading: isLoadingMoreMessages,
+                  hasMore: hasMoreMessages,
+                  threshold: 0.1,
+                }}
                 renderItem={({ item }) => (
                   <Box
                     padding="md"
                     backgroundColor={item.unread ? 'background' : 'transparent'}
                     style={styles.messageContainer}
                   >
-                    <HStack spacing="sm" align="center">
+                    <HStack spacing="sm">
                       <Image
                         source={{ uri: item.user.avatar }}
                         style={styles.messageAvatar}
                       />
                       <VStack flex={1} spacing="xs">
-                        <HStack justify="space-between" align="center">
+                        <HStack justify="space-between">
                           <Typography variant="subtitle" weight="600">
                             {item.user.name}
                           </Typography>
@@ -370,6 +507,21 @@ const ScrollScreen = () => {
                   </Box>
                 )}
                 keyExtractor={(item) => item.id}
+                ListFooterComponent={
+                  isLoadingMoreMessages ? (
+                    <Box padding="md">
+                      <Typography variant="caption" color="textSecondary">
+                        Loading more messages...
+                      </Typography>
+                    </Box>
+                  ) : !hasMoreMessages ? (
+                    <Box padding="md">
+                      <Typography variant="caption" color="textSecondary">
+                        No more messages
+                      </Typography>
+                    </Box>
+                  ) : null
+                }
               />
             </CardContent>
           </Card>

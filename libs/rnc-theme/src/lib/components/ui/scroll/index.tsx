@@ -19,6 +19,13 @@ import {
   HideOnScrollResult,
 } from '../../../hooks/useHideOnScroll';
 
+interface InfiniteScrollProps {
+  onLoadMore: () => void;
+  loading?: boolean;
+  hasMore?: boolean;
+  threshold?: number;
+}
+
 interface ScrollProps extends ScrollViewProps {
   children?: React.ReactNode;
   style?: ViewStyle;
@@ -52,6 +59,7 @@ interface ListProps<T> extends Omit<FlatListProps<T>, 'renderItem'> {
     hideDirection?: HideDirectionType;
     result: (value: HideOnScrollResult | null) => void;
   };
+  infiniteScroll?: InfiniteScrollProps;
 }
 
 const VScroll = forwardRef<ScrollView, ScrollProps>(
@@ -193,6 +201,7 @@ const VFlatList = <T = any,>(
     borderRadius,
     hideOnScroll,
     themed = false,
+    infiniteScroll,
     ...props
   }: ListProps<T>,
   ref: React.ForwardedRef<FlatList<T>>
@@ -229,6 +238,12 @@ const VFlatList = <T = any,>(
     hideOnScroll?.result(hideOnScrollProps ?? null);
   };
 
+  const handleEndReached = () => {
+    if (infiniteScroll && infiniteScroll.hasMore && !infiniteScroll.loading) {
+      infiniteScroll.onLoadMore();
+    }
+  };
+
   return (
     <FlatList<T>
       ref={ref}
@@ -237,6 +252,8 @@ const VFlatList = <T = any,>(
       keyExtractor={keyExtractor}
       style={[flatListStyle, style]}
       onScroll={handleScroll}
+      onEndReached={infiniteScroll ? handleEndReached : undefined}
+      onEndReachedThreshold={infiniteScroll?.threshold || 0.1}
       {...props}
     />
   );
@@ -260,6 +277,7 @@ const HFlatList = <T = any,>(
     borderRadius,
     hideOnScroll,
     themed = false,
+    infiniteScroll,
     ...props
   }: ListProps<T>,
   ref: React.ForwardedRef<FlatList<T>>
@@ -296,6 +314,12 @@ const HFlatList = <T = any,>(
     hideOnScroll?.result(hideOnScrollProps ?? null);
   };
 
+  const handleEndReached = () => {
+    if (infiniteScroll && infiniteScroll.hasMore && !infiniteScroll.loading) {
+      infiniteScroll.onLoadMore();
+    }
+  };
+
   return (
     <FlatList<T>
       ref={ref}
@@ -305,6 +329,8 @@ const HFlatList = <T = any,>(
       horizontal
       style={[flatListStyle, style]}
       onScroll={handleScroll}
+      onEndReached={infiniteScroll ? handleEndReached : undefined}
+      onEndReachedThreshold={infiniteScroll?.threshold || 0.1}
       {...props}
     />
   );
@@ -329,4 +355,4 @@ const createHStyles = (theme: Theme) => ({
 });
 
 export { VScroll, HScroll, VList, HList };
-export type { ScrollProps, ListProps };
+export type { ScrollProps, ListProps, InfiniteScrollProps };
