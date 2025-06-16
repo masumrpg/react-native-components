@@ -1,11 +1,16 @@
-import React, { useEffect, useRef } from 'react';
-import { Animated, View, ViewStyle, DimensionValue } from 'react-native';
+import React, { useEffect } from 'react';
+import { View, ViewStyle, DimensionValue } from 'react-native';
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  withRepeat,
+  withTiming,
+  interpolateColor,
+} from 'react-native-reanimated';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-import {
-  BaseComponentProps,
-} from '../../../types/ui';
+import { BaseComponentProps } from '../../../types/ui';
 import { getSizeStyles } from '../../../utils';
 
 type SkeletonProps = BaseComponentProps & {
@@ -69,7 +74,10 @@ const createStyles = (theme: Theme) =>
     stateWarning: {} as ViewStyle,
   } as const);
 
-const Skeleton = React.forwardRef<React.ComponentRef<typeof View>, SkeletonProps>(
+const Skeleton = React.forwardRef<
+  React.ComponentRef<typeof View>,
+  SkeletonProps
+>(
   (
     {
       width = '100%',
@@ -85,37 +93,37 @@ const Skeleton = React.forwardRef<React.ComponentRef<typeof View>, SkeletonProps
   ) => {
     const { theme } = useTheme();
     const styles = useThemedStyles(createStyles);
-    const animatedValue = useRef(new Animated.Value(0)).current;
+    const animatedValue = useSharedValue(0);
 
     useEffect(() => {
       if (animated && !disabled) {
-        const animation = Animated.loop(
-          Animated.sequence([
-            Animated.timing(animatedValue, {
-              toValue: 1,
-              duration: 1000,
-              useNativeDriver: false,
-            }),
-            Animated.timing(animatedValue, {
-              toValue: 0,
-              duration: 1000,
-              useNativeDriver: false,
-            }),
-          ])
+        animatedValue.value = withRepeat(
+          withTiming(1, { duration: 1000 }),
+          -1,
+          true
         );
-        animation.start();
-        return () => {
-          animation.stop();
-        };
+      } else {
+        animatedValue.value = 0;
       }
     }, [animated, disabled, animatedValue]);
 
-    const backgroundColor = animated
-      ? animatedValue.interpolate({
-          inputRange: [0, 1],
-          outputRange: [theme.colors.muted, theme.colors.border],
-        })
-      : theme.colors.muted;
+    const animatedStyle = useAnimatedStyle(() => {
+      if (!animated) {
+        return {
+          backgroundColor: theme.colors.muted,
+        };
+      }
+
+      const backgroundColor = interpolateColor(
+        animatedValue.value,
+        [0, 1],
+        [theme.colors.muted, theme.colors.border]
+      );
+
+      return {
+        backgroundColor,
+      };
+    }, [animated, theme.colors.muted, theme.colors.border]);
 
     const skeletonStyles: ViewStyle[] = [
       styles.base,
@@ -124,7 +132,6 @@ const Skeleton = React.forwardRef<React.ComponentRef<typeof View>, SkeletonProps
         width,
         height,
         borderRadius: theme.components.borderRadius[borderRadius],
-        backgroundColor: animated ? undefined : theme.colors.muted,
       },
     ];
 
@@ -136,22 +143,13 @@ const Skeleton = React.forwardRef<React.ComponentRef<typeof View>, SkeletonProps
       skeletonStyles.push(style);
     }
 
-    if (animated) {
-      return (
-        <Animated.View
-          ref={ref}
-          style={[
-            ...skeletonStyles,
-            {
-              backgroundColor,
-            },
-          ]}
-          {...props}
-        />
-      );
-    }
-
-    return <View ref={ref} style={skeletonStyles} {...props} />;
+    return (
+      <Animated.View
+        ref={ref}
+        style={[skeletonStyles, animatedStyle]}
+        {...props}
+      />
+    );
   }
 );
 
