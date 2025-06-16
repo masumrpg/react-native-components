@@ -20,3 +20,4 @@ export * from './accordion';
 export * from './fab';
 export * from './bottom-sheet';
 export * from './scroll';
+export * from './skeleton';

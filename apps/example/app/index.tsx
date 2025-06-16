@@ -32,6 +32,7 @@ import {
   TextCursorInput,
   ToggleLeft,
   ToggleRight,
+  User,
 } from 'lucide-react-native';
 import { ReactElement } from 'react';
 
@@ -187,6 +188,12 @@ export default function HomeScreen() {
       title: 'Scroll',
       path: '/scroll',
       icon: <ScrollText size={30} color={'black'} />,
+    },
+    {
+      id: 25,
+      title: 'Skeleton',
+      path: '/skeleton',
+      icon: <User size={30} color={'black'} />,
     },
   ];
 
