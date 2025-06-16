@@ -26,6 +26,7 @@ import {
   ParkingCircleOff,
   PictureInPicture2,
   Plus,
+  ScrollText,
   SlidersHorizontal,
   Table,
   TextCursorInput,
@@ -180,6 +181,12 @@ export default function HomeScreen() {
       title: 'Bottom Sheet',
       path: '/bottom-sheet',
       icon: <Layers2 size={30} color={'black'} />,
+    },
+    {
+      id: 24,
+      title: 'Scroll',
+      path: '/scroll',
+      icon: <ScrollText size={30} color={'black'} />,
     },
   ];
 
