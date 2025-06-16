@@ -1,9 +1,23 @@
 import React, { forwardRef } from 'react';
-import { FlatList, FlatListProps, ScrollView, ScrollViewProps, ViewStyle } from 'react-native';
+import {
+  FlatList,
+  FlatListProps,
+  ScrollView,
+  ScrollViewProps,
+  ViewStyle,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
+} from 'react-native';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { resolveColor } from '../../../utils';
+import {
+  HideDirectionType,
+  useHideOnScroll as onScrolling,
+  ScrollDirectionType,
+  HideOnScrollResult,
+} from '../../../hooks/useHideOnScroll';
 
 interface ScrollProps extends ScrollViewProps {
   children?: React.ReactNode;
@@ -13,6 +27,14 @@ interface ScrollProps extends ScrollViewProps {
   backgroundColor?: string | keyof Theme['colors'];
   borderRadius?: keyof Theme['components']['borderRadius'];
   themed?: boolean;
+  hideOnScroll?: {
+    height: number;
+    duration?: number;
+    threshold?: number;
+    scrollDirection?: ScrollDirectionType;
+    hideDirection?: HideDirectionType;
+    result: (value: HideOnScrollResult | null) => void;
+  };
 }
 
 interface ListProps<T> extends Omit<FlatListProps<T>, 'renderItem'> {
@@ -22,6 +44,14 @@ interface ListProps<T> extends Omit<FlatListProps<T>, 'renderItem'> {
   backgroundColor?: string | keyof Theme['colors'];
   borderRadius?: keyof Theme['components']['borderRadius'];
   themed?: boolean;
+  hideOnScroll?: {
+    height: number;
+    duration?: number;
+    threshold?: number;
+    scrollDirection?: ScrollDirectionType;
+    hideDirection?: HideDirectionType;
+    result: (value: HideOnScrollResult | null) => void;
+  };
 }
 
 const VScroll = forwardRef<ScrollView, ScrollProps>(
@@ -34,12 +64,24 @@ const VScroll = forwardRef<ScrollView, ScrollProps>(
       backgroundColor,
       borderRadius,
       themed = false,
+      hideOnScroll,
       ...props
     },
     ref
   ) => {
     const { theme } = useTheme();
     const styles = useThemedStyles(createVStyles);
+
+    const hideOnScrollProps = hideOnScroll
+      ? onScrolling({
+          height: hideOnScroll.height,
+          duration: hideOnScroll.duration || 300,
+          threshold: hideOnScroll.threshold || 10,
+          scrollDirection:
+            hideOnScroll.scrollDirection === 'up' ? 'up' : 'down',
+          hideDirection: hideOnScroll.hideDirection === 'up' ? 'up' : 'down',
+        })
+      : null;
 
     const scrollStyle: ViewStyle = {
       ...styles.base,
@@ -55,8 +97,19 @@ const VScroll = forwardRef<ScrollView, ScrollProps>(
         : undefined,
     };
 
+    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      hideOnScrollProps?.onScroll(event);
+      hideOnScroll?.result(hideOnScrollProps ?? null);
+    };
+
     return (
-      <ScrollView ref={ref} style={[scrollStyle, style]} {...props}>
+      <ScrollView
+        ref={ref}
+        style={[scrollStyle, style]}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        {...props}
+      >
         {children}
       </ScrollView>
     );
@@ -75,12 +128,24 @@ const HScroll = forwardRef<ScrollView, ScrollProps>(
       backgroundColor,
       borderRadius,
       themed = false,
+      hideOnScroll,
       ...props
     },
     ref
   ) => {
     const { theme } = useTheme();
     const styles = useThemedStyles(createHStyles);
+
+    const hideOnScrollProps = hideOnScroll
+      ? onScrolling({
+          height: hideOnScroll.height,
+          duration: hideOnScroll.duration || 300,
+          threshold: hideOnScroll.threshold || 10,
+          scrollDirection:
+            hideOnScroll.scrollDirection === 'up' ? 'up' : 'down',
+          hideDirection: hideOnScroll.hideDirection === 'up' ? 'up' : 'down',
+        })
+      : null;
 
     const scrollStyle: ViewStyle = {
       ...styles.base,
@@ -96,8 +161,19 @@ const HScroll = forwardRef<ScrollView, ScrollProps>(
         : undefined,
     };
 
+    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+      hideOnScrollProps?.onScroll(event);
+      hideOnScroll?.result(hideOnScrollProps ?? null);
+    };
+
     return (
-      <ScrollView horizontal ref={ref} style={[scrollStyle, style]} {...props}>
+      <ScrollView
+        ref={ref}
+        style={[scrollStyle, style]}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
+        {...props}
+      >
         {children}
       </ScrollView>
     );
@@ -106,9 +182,8 @@ const HScroll = forwardRef<ScrollView, ScrollProps>(
 
 HScroll.displayName = 'HScroll';
 
-// VFlatList - Vertical FlatList
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const VFlatList = <T = any>(
+const VFlatList = <T = any,>(
   {
     data,
     renderItem,
@@ -118,6 +193,7 @@ const VFlatList = <T = any>(
     margin,
     backgroundColor,
     borderRadius,
+    hideOnScroll,
     themed = false,
     ...props
   }: ListProps<T>,
@@ -125,6 +201,16 @@ const VFlatList = <T = any>(
 ) => {
   const { theme } = useTheme();
   const styles = useThemedStyles(createVStyles);
+
+  const hideOnScrollProps = hideOnScroll
+    ? onScrolling({
+        height: hideOnScroll.height,
+        duration: hideOnScroll.duration || 300,
+        threshold: hideOnScroll.threshold || 10,
+        scrollDirection: hideOnScroll.scrollDirection === 'up' ? 'up' : 'down',
+        hideDirection: hideOnScroll.hideDirection === 'up' ? 'up' : 'down',
+      })
+    : null;
 
   const flatListStyle: ViewStyle = {
     ...styles.base,
@@ -140,6 +226,11 @@ const VFlatList = <T = any>(
       : undefined,
   };
 
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    hideOnScrollProps?.onScroll(event);
+    hideOnScroll?.result(hideOnScrollProps ?? null);
+  };
+
   return (
     <FlatList<T>
       ref={ref}
@@ -147,6 +238,7 @@ const VFlatList = <T = any>(
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       style={[flatListStyle, style]}
+      onScroll={handleScroll}
       {...props}
     />
   );
@@ -155,7 +247,6 @@ const VFlatList = <T = any>(
 const VList = forwardRef(VFlatList) as <T>(
   props: ListProps<T> & { ref?: React.ForwardedRef<FlatList<T>> }
 ) => React.ReactElement;
-
 
 // HFlatList with generics
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -169,6 +260,7 @@ const HFlatList = <T = any,>(
     margin,
     backgroundColor,
     borderRadius,
+    hideOnScroll,
     themed = false,
     ...props
   }: ListProps<T>,
@@ -176,6 +268,16 @@ const HFlatList = <T = any,>(
 ) => {
   const { theme } = useTheme();
   const styles = useThemedStyles(createHStyles);
+
+  const hideOnScrollProps = hideOnScroll
+    ? onScrolling({
+        height: hideOnScroll.height,
+        duration: hideOnScroll.duration || 300,
+        threshold: hideOnScroll.threshold || 10,
+        scrollDirection: hideOnScroll.scrollDirection === 'up' ? 'up' : 'down',
+        hideDirection: hideOnScroll.hideDirection === 'up' ? 'up' : 'down',
+      })
+    : null;
 
   const flatListStyle: ViewStyle = {
     ...styles.base,
@@ -191,6 +293,11 @@ const HFlatList = <T = any,>(
       : undefined,
   };
 
+  const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    hideOnScrollProps?.onScroll(event);
+    hideOnScroll?.result(hideOnScrollProps ?? null);
+  };
+
   return (
     <FlatList<T>
       ref={ref}
@@ -199,6 +306,7 @@ const HFlatList = <T = any,>(
       keyExtractor={keyExtractor}
       horizontal
       style={[flatListStyle, style]}
+      onScroll={handleScroll}
       {...props}
     />
   );

@@ -116,7 +116,7 @@ const ScrollScreen = () => {
       username: 'alex_brown',
       avatar: 'https://picsum.photos/56',
       viewed: false,
-    }
+    },
   ];
 
   const messages: Message[] = [
@@ -169,17 +169,26 @@ const ScrollScreen = () => {
       message: 'Lunch break in 10 minutes?',
       timestamp: '11:45 AM',
       unread: true,
-    }
+    },
   ];
 
   return (
-    <VScroll style={styles.container}>
+    <VScroll
+      style={styles.container}
+      themed
+      hideOnScroll={{
+        result: (value) => {
+          console.log(value?.sharedScrollVertical);
+        },
+        height: 200,
+      }}
+    >
       <VStack spacing="lg" padding="lg">
         {/* Basic HScroll Example */}
         <Card>
           <CardHeader title="Basic Horizontal Scroll" />
           <CardContent>
-            <HScroll>
+            <HScroll backgroundColor="surface" padding="sm" borderRadius="md">
               <HStack spacing="sm">
                 {[1, 2, 3, 4, 5].map((item) => (
                   <Box
@@ -206,6 +215,10 @@ const ScrollScreen = () => {
           <CardContent>
             <HList
               data={stories}
+              backgroundColor="surface"
+              padding="xs"
+              borderRadius="md"
+              themed
               renderItem={({ item }) => (
                 <Box padding="xs">
                   <View style={styles.storyContainer}>
@@ -237,10 +250,23 @@ const ScrollScreen = () => {
 
         {/* Product List Example */}
         <Card>
-          <CardHeader title="Product List" subtitle="Horizontal scrolling products" />
+          <CardHeader
+            title="Product List"
+            subtitle="Horizontal scrolling products"
+          />
           <CardContent>
             <HList
+              hideOnScroll={{
+                result: (value) => {
+                  console.log(value?.sharedScrollHorizontal);
+                },
+                height: 200,
+              }}
               data={products}
+              backgroundColor="surface"
+              padding="sm"
+              borderRadius="lg"
+              themed
               renderItem={({ item }) => (
                 <Box
                   width={200}
@@ -278,6 +304,9 @@ const ScrollScreen = () => {
           <CardContent>
             <VList
               data={messages}
+              backgroundColor="surface"
+              borderRadius="md"
+              themed
               renderItem={({ item }) => (
                 <Box
                   padding="md"
