@@ -9,11 +9,19 @@ import {
   SharedValue,
 } from 'react-native-reanimated';
 
-type HideDirectionType = 'up' | 'down';
+type VerticalHideDirectionType = 'up' | 'down';
+type HorizontalHideDirectionType = 'left' | 'right';
+type HideDirectionType =
+  | VerticalHideDirectionType
+  | HorizontalHideDirectionType;
 
-type ScrollDirectionType = 'up' | 'down';
+type VerticalScrollDirectionType = 'up' | 'down';
+type HorizontalScrollDirectionType = 'left' | 'right';
+type ScrollDirectionType =
+  | VerticalScrollDirectionType
+  | HorizontalScrollDirectionType;
 
-interface UseHideOnScrollOptions {
+interface HideOnScrollOptions {
   /**
    * Height of the component to be hidden (in pixels)
    * This is required to calculate the correct translation distance
@@ -36,21 +44,37 @@ interface UseHideOnScrollOptions {
 
   /**
    * Direction of scroll that triggers hiding the component
-   * 'DOWN' - hide component when scrolling down (default)
-   * 'UP' - hide component when scrolling up
-   * @default ScrollDirection.DOWN
+   * Vertical: 'up' | 'down' - hide component when scrolling up/down
+   * Horizontal: 'left' | 'right' - hide component when scrolling left/right
+   * @default 'down'
    */
   scrollDirection?: ScrollDirectionType;
 
   /**
    * Direction in which the component will be hidden
-   * 'up' - component will be hidden upward (for header)
-   * 'down' - component will be hidden downward (for tabbar/footer)
-   * Choose based on component position in layout
+   * Vertical: 'up' | 'down' - component will slide up/down
+   * Horizontal: 'left' | 'right' - component will slide left/right
    * @default 'down'
    */
   hideDirection?: HideDirectionType;
+
+  /**
+   * Orientation of the scroll
+   * 'vertical' | 'horizontal'
+   * @default 'vertical'
+   */
+  orientation?: 'vertical' | 'horizontal';
 }
+
+type TranslateY = {
+  translateY: number;
+};
+
+type TranslateX = {
+  translateX: number;
+};
+
+type ScrollTransform = TranslateX | TranslateY;
 
 interface HideOnScrollResult {
   /**
@@ -58,9 +82,7 @@ interface HideOnScrollResult {
    * Apply this to your component using style={[yourStyles, animatedStyle]}
    */
   animatedStyle: {
-    transform: {
-      translateY: number;
-    }[];
+    transform: ScrollTransform[];
     opacity: number;
   };
 
@@ -178,15 +200,14 @@ interface HideOnScrollResult {
  * - Supports both enum values (HideDirection.UP/DOWN, ScrollDirection.UP/DOWN)
  *   and string literals ('up'/'down') for direction props
  */
-const useHideOnScroll = (
-  options: UseHideOnScrollOptions
-): HideOnScrollResult => {
+const useHideOnScroll = (options: HideOnScrollOptions): HideOnScrollResult => {
   const {
     height,
     duration = 300,
     threshold = 10,
     scrollDirection = 'down',
     hideDirection = 'down',
+    orientation = 'vertical',
   } = options;
 
   // Renamed shared values
@@ -210,55 +231,49 @@ const useHideOnScroll = (
     sharedScrollX.value = currentScrollX;
     sharedScrollY.value = currentScrollY;
 
-    // Detect if at the very top or bottom
-    const isAtTop = currentScrollY <= 0;
-    const isAtBottom =
-      currentScrollY + layoutMeasurement.height >= contentSize.height;
-    const isAtEdge = isAtTop || isAtBottom;
+    // Detect edge based on orientation
+    const isAtEdge =
+      orientation === 'vertical'
+        ? currentScrollY <= 0 ||
+          currentScrollY + layoutMeasurement.height >= contentSize.height
+        : currentScrollX <= 0 ||
+          currentScrollX + layoutMeasurement.width >= contentSize.width;
 
-    // Detect bounce
+    // Bounce handling
     if (isAtEdge) {
       if (!isAtEdgeRef.current) {
-        // Just entered edge, start bounce mode
         isAtEdgeRef.current = true;
         isBouncingRef.current = true;
       }
     } else {
       if (isAtEdgeRef.current) {
-        // Just left edge, end bounce mode
         isAtEdgeRef.current = false;
-
-        // Reset bounce state after leaving edge
-        setTimeout(() => {
-          isBouncingRef.current = false;
-        }, 300); // Delay to ensure bounce effect has completed
+        isBouncingRef.current = false;
       }
     }
 
-    // If in bouncing state, don't change component visibility
-    if (isBouncingRef.current) {
-      return;
-    }
+    if (isBouncingRef.current) return;
 
     const diffY = currentScrollY - lastScrollY.current;
     const diffX = currentScrollX - lastScrollX.current;
 
-    // Use either X or Y difference based on scroll orientation
-    const diff = Math.abs(diffY) > Math.abs(diffX) ? diffY : diffX;
+    // Use appropriate diff based on orientation
+    const diff = orientation === 'vertical' ? diffY : diffX;
 
-    // Only process if scroll difference exceeds threshold
     if (Math.abs(diff) < threshold) return;
 
-    // Determine whether to show or hide based on scroll direction
-    const isScrollingDown = diff > 0;
+    // Determine scroll direction based on orientation
+    const isScrollingForward = diff > 0;
     const shouldHide =
-      (scrollDirection === 'down' && isScrollingDown) ||
-      (scrollDirection === 'up' && !isScrollingDown);
+      orientation === 'vertical'
+        ? (scrollDirection === 'down' && isScrollingForward) ||
+          (scrollDirection === 'up' && !isScrollingForward)
+        : (scrollDirection === 'right' && isScrollingForward) ||
+          (scrollDirection === 'left' && !isScrollingForward);
 
-    // Update visibility
     isVisible.value = withTiming(shouldHide ? 0 : 1, { duration });
 
-    // Save last scroll positions
+    // Update last positions
     lastScrollY.current = currentScrollY;
     lastScrollX.current = currentScrollX;
   };
@@ -272,17 +287,41 @@ const useHideOnScroll = (
   };
 
   const animatedStyle = useAnimatedStyle(() => {
-    // Determine translation direction based on hideDirection
-    const translationDirection = hideDirection === 'down' ? 1 : -1;
+    // Determine if we're doing vertical or horizontal translation
+    const isVertical = ['up', 'down'].includes(hideDirection);
 
-    const translateY = interpolate(
-      isVisible.value,
-      [0, 1],
-      [height * translationDirection, 0],
-      Extrapolation.CLAMP
-    );
+    // Calculate translation direction
+    const translationDirection = isVertical
+      ? hideDirection === 'down'
+        ? 1
+        : -1
+      : hideDirection === 'right'
+      ? 1
+      : -1;
 
-    // Opacity interpolation
+    // Create transform based on orientation
+    const transform = isVertical
+      ? [
+          {
+            translateY: interpolate(
+              isVisible.value,
+              [0, 1],
+              [height * translationDirection, 0],
+              Extrapolation.CLAMP
+            ),
+          },
+        ]
+      : [
+          {
+            translateX: interpolate(
+              isVisible.value,
+              [0, 1],
+              [height * translationDirection, 0],
+              Extrapolation.CLAMP
+            ),
+          },
+        ];
+
     const opacity = interpolate(
       isVisible.value,
       [0, 1],
@@ -291,7 +330,7 @@ const useHideOnScroll = (
     );
 
     return {
-      transform: [{ translateY }],
+      transform,
       opacity,
     };
   });
@@ -308,8 +347,12 @@ const useHideOnScroll = (
 
 export { useHideOnScroll };
 export type {
-  UseHideOnScrollOptions,
+  HideOnScrollOptions,
   HideOnScrollResult,
   HideDirectionType,
   ScrollDirectionType,
+  VerticalHideDirectionType,
+  HorizontalHideDirectionType,
+  VerticalScrollDirectionType,
+  HorizontalScrollDirectionType,
 };

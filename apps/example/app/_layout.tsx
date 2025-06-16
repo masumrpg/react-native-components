@@ -9,7 +9,7 @@ import 'react-native-reanimated';
 
 import { StatusBar } from 'expo-status-bar';
 
-const nonHeaderPatshs = ['/scroll-to-hide', '/qrcode-pack/qr-scanner'];
+const nonHeaderPatshs = ['/scroll', '/qrcode-pack/qr-scanner'];
 
 export {
   // Catch any errors thrown by the Layout component.

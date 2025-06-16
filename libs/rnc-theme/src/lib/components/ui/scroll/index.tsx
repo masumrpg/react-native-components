@@ -77,9 +77,8 @@ const VScroll = forwardRef<ScrollView, ScrollProps>(
           height: hideOnScroll.height,
           duration: hideOnScroll.duration || 300,
           threshold: hideOnScroll.threshold || 10,
-          scrollDirection:
-            hideOnScroll.scrollDirection === 'up' ? 'up' : 'down',
-          hideDirection: hideOnScroll.hideDirection === 'up' ? 'up' : 'down',
+          scrollDirection: hideOnScroll.scrollDirection,
+          hideDirection: hideOnScroll.hideDirection,
         })
       : null;
 
@@ -141,9 +140,8 @@ const HScroll = forwardRef<ScrollView, ScrollProps>(
           height: hideOnScroll.height,
           duration: hideOnScroll.duration || 300,
           threshold: hideOnScroll.threshold || 10,
-          scrollDirection:
-            hideOnScroll.scrollDirection === 'up' ? 'up' : 'down',
-          hideDirection: hideOnScroll.hideDirection === 'up' ? 'up' : 'down',
+          scrollDirection: hideOnScroll.scrollDirection,
+          hideDirection: hideOnScroll.hideDirection,
         })
       : null;
 
