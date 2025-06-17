@@ -6,7 +6,8 @@ export type ToastVariant =
   | 'error'
   | 'warning'
   | 'info'
-  | 'loading';
+  | 'loading'
+  | 'custom';
 
 export type ToastPosition = 'top' | 'bottom';
 

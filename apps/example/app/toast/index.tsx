@@ -13,6 +13,16 @@ import {
   CardContent,
   CardFooter,
 } from 'rnc-theme';
+// Import Lucide icons untuk custom toast
+import {
+  Heart,
+  Star,
+  Gift,
+  Coffee,
+  Music,
+  Camera,
+  Bell,
+} from 'lucide-react-native';
 
 export default function ToastExample() {
   const { toast, dismissAll, toastAsync, updateToast } = useToast();
@@ -131,6 +141,110 @@ export default function ToastExample() {
     }
   };
 
+  // Tambahkan fungsi untuk custom icon toasts
+  const showCustomIconToast = () => {
+    toast({
+      variant: 'custom',
+      title: 'Custom Heart Icon',
+      description: 'This toast uses a custom heart icon from Lucide.',
+      icon: <Heart size={20} color="#EF4444" />,
+    });
+  };
+
+  const showStarToast = () => {
+    toast({
+      variant: 'custom',
+      title: 'Starred!',
+      description: 'You have starred this item.',
+      icon: <Star size={20} color="#F59E0B" />,
+    });
+  };
+
+  const showGiftToast = () => {
+    toast({
+      variant: 'custom',
+      title: 'Gift Received!',
+      description: 'You have received a special gift.',
+      icon: <Gift size={20} color="#8B5CF6" />,
+      action: {
+        label: 'Open',
+        onPress: () => {
+          toast({
+            variant: 'success',
+            title: 'Gift Opened!',
+            description: 'You found 100 coins!',
+          });
+        },
+      },
+    });
+  };
+
+  const showCoffeeToast = () => {
+    toast({
+      variant: 'custom',
+      title: 'Coffee Break',
+      description: 'Time for a coffee break!',
+      icon: <Coffee size={20} color="#92400E" />,
+      duration: 6000,
+    });
+  };
+
+  const showMusicToast = () => {
+    toast({
+      variant: 'custom',
+      title: 'Now Playing',
+      description: 'Your favorite song is now playing.',
+      icon: <Music size={20} color="#059669" />,
+    });
+  };
+
+  const showNotificationToast = () => {
+    toast({
+      variant: 'custom',
+      title: 'New Notification',
+      description: 'You have 3 new messages.',
+      icon: <Bell size={20} color="#DC2626" />,
+      action: {
+        label: 'View',
+        onPress: () => {
+          toast({
+            variant: 'info',
+            title: 'Messages',
+            description: 'Opening your messages...',
+          });
+        },
+      },
+    });
+  };
+
+  const showCustomAsyncToast = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      await toastAsync(
+        {
+          title: 'Uploading Photo',
+          loadingText: 'Uploading your photo to gallery...',
+          icon: <Camera size={20} color="#3B82F6" />,
+        },
+        async () => {
+          await new Promise((resolve) => setTimeout(resolve, 3000));
+
+          if (Math.random() < 0.2) {
+            throw new Error('Upload failed due to network error');
+          }
+
+          return { photoId: '67890', fileName: 'photo.jpg' };
+        }
+      );
+    } catch (error) {
+      console.log('Photo upload failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const showToastWithAction = () => {
     toast({
       variant: 'info',
@@ -220,6 +334,42 @@ export default function ToastExample() {
         </CardContent>
       </Card>
 
+      {/* Custom Icons Card - NEW */}
+      <Card variant="secondary" style={styles.card}>
+        <CardHeader
+          title="Custom Icons"
+          subtitle="Toast with custom Lucide icons"
+          borderBottom
+        />
+        <CardContent>
+          <View style={styles.buttonGroup}>
+            <Button onPress={showCustomIconToast} style={styles.button}>
+              <ButtonText>❤️ Heart Toast</ButtonText>
+            </Button>
+            <Button onPress={showStarToast} style={styles.button}>
+              <ButtonText>⭐ Star Toast</ButtonText>
+            </Button>
+            <Button onPress={showGiftToast} style={styles.button}>
+              <ButtonText>🎁 Gift Toast</ButtonText>
+            </Button>
+            <Button onPress={showCoffeeToast} style={styles.button}>
+              <ButtonText>☕ Coffee Toast</ButtonText>
+            </Button>
+            <Button onPress={showMusicToast} style={styles.button}>
+              <ButtonText>🎵 Music Toast</ButtonText>
+            </Button>
+            <Button onPress={showNotificationToast} style={styles.button}>
+              <ButtonText>🔔 Notification Toast</ButtonText>
+            </Button>
+          </View>
+        </CardContent>
+        <CardFooter>
+          <Body style={styles.cardFooterText}>
+            💡 Use any Lucide icon or custom React component as toast icon
+          </Body>
+        </CardFooter>
+      </Card>
+
       {/* Async Loading Card */}
       <Card variant="primary" style={styles.card}>
         <CardHeader
@@ -254,6 +404,16 @@ export default function ToastExample() {
             >
               <ButtonText>
                 {isLoading ? 'Syncing...' : 'Async Data Sync'}
+              </ButtonText>
+            </Button>
+            <Button
+              onPress={showCustomAsyncToast}
+              variant="secondary"
+              style={styles.button}
+              disabled={isLoading}
+            >
+              <ButtonText>
+                {isLoading ? 'Uploading...' : '📷 Custom Async Photo Upload'}
               </ButtonText>
             </Button>
           </View>
@@ -327,6 +487,31 @@ toast({
 });`}
           </Code>
 
+          <H3 style={styles.codeTitle}>Custom Icons</H3>
+          <Code style={styles.codeBlock}>
+            {`import { Heart, Star, Gift } from 'lucide-react-native';
+
+// Custom icon toast
+toast({
+  variant: 'custom',
+  title: 'Custom Icon',
+  description: 'Toast with custom icon.',
+  icon: <Heart size={20} color="#EF4444" />
+});
+
+// With action
+toast({
+  variant: 'custom',
+  title: 'Gift Received!',
+  description: 'You got a special gift.',
+  icon: <Gift size={20} color="#8B5CF6" />,
+  action: {
+    label: 'Open',
+    onPress: () => openGift()
+  }
+});`}
+          </Code>
+
           <H3 style={styles.codeTitle}>Async Operations</H3>
           <Code style={styles.codeBlock}>
             {`// Auto-managed async toast
@@ -335,7 +520,8 @@ const { toastAsync } = useToast();
 const result = await toastAsync(
   {
     title: 'Uploading',
-    loadingText: 'Please wait...'
+    loadingText: 'Please wait...',
+    icon: <Upload size={20} color="#3B82F6" />
   },
   async () => {
     return await uploadFile(file);

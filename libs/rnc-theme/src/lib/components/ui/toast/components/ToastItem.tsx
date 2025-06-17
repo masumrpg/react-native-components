@@ -44,6 +44,8 @@ const getToastIcon = (
       return <Info size={20} color="#3B82F6" />;
     case 'loading':
       return <ActivityIndicator size="small" color={theme.colors.primary} />;
+    case 'custom':
+      return null; // Custom icon akan dihandle melalui toast.icon prop
     default:
       return null;
   }
@@ -125,7 +127,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     return () => {
       unregisterDismissCallback(toast.id);
     };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     toast.id,
     handleDismiss,
@@ -304,6 +306,10 @@ const createToastItemStyle = (theme: Theme) =>
       borderLeftColor: theme.colors.info,
     },
     loading: {
+      borderLeftWidth: 4,
+      borderLeftColor: theme.colors.primary,
+    },
+    custom: {
       borderLeftWidth: 4,
       borderLeftColor: theme.colors.primary,
     },
