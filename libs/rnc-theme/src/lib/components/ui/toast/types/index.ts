@@ -22,6 +22,8 @@ export interface ToastContextType {
   toast: (data: Omit<ToastData, 'id'>) => string;
   dismiss: (id: string) => void;
   dismissAll: () => void;
+  registerDismissCallback: (id: string, callback: () => void) => void;
+  unregisterDismissCallback: (id: string) => void;
 }
 
 export interface ToastProviderProps {

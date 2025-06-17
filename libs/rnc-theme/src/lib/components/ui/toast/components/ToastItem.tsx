@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'; // Tambahkan missing imports
+import React, { useCallback, useEffect, useMemo } from 'react'; // Tambahkan missing imports
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -17,6 +17,7 @@ import {
 } from 'lucide-react-native';
 import { ToastItemProps, ToastVariant } from '../types';
 import { Theme } from '../../../../types/theme';
+import { useToast } from '../context/ToastContext';
 
 const getToastIcon = (variant: ToastVariant) => {
   switch (variant) {
@@ -39,55 +40,64 @@ export const ToastItem: React.FC<ToastItemProps> = ({
   index,
   onDismiss,
 }) => {
+  const { registerDismissCallback, unregisterDismissCallback } = useToast();
   const styles = useMemo(() => createToastItemStyle(theme), [theme]);
   const translateY = useSharedValue(-100);
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.9);
-  const translateX = useSharedValue(0); // Pindahkan ke top level
+  const translateX = useSharedValue(0);
 
-  useEffect(() => {
-    // Enter animation
-    translateY.value = withSpring(0, { damping: 20, stiffness: 300 });
-    opacity.value = withTiming(1, { duration: 300 });
-    scale.value = withSpring(1, { damping: 20, stiffness: 300 });
-  }, []);
-
-  const handleDismiss = () => {
-    // Animasi dismiss yang lebih smooth dengan multiple effects
-
-    // 1. Slide ke kanan dengan spring yang lebih smooth
+  const handleDismiss = useCallback(() => {
+    // Animasi dismiss yang sama untuk manual dan auto
     translateX.value = withSpring(400, {
       damping: 25,
       stiffness: 200,
       mass: 1,
     });
 
-    // 2. Scale down dengan timing yang berbeda untuk efek yang lebih natural
     scale.value = withSpring(0.85, {
       damping: 30,
       stiffness: 400,
       mass: 0.8,
     });
 
-    // 3. Slide up sedikit untuk efek "lift and dismiss"
     translateY.value = withSpring(-20, {
       damping: 25,
       stiffness: 300,
       mass: 0.9,
     });
 
-    // 4. Fade out dengan easing yang lebih smooth
     opacity.value = withTiming(
       0,
       {
-        duration: 400, // Lebih lama untuk smooth
-        easing: Easing.bezier(0.25, 0.46, 0.45, 0.94), // Easing curve yang lebih natural
+        duration: 400,
+        easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
       },
       () => {
         runOnJS(onDismiss)(toast.id);
       }
     );
-  };
+  }, [toast.id, onDismiss]);
+
+  useEffect(() => {
+    // Enter animation
+    translateY.value = withSpring(0, { damping: 20, stiffness: 300 });
+    opacity.value = withTiming(1, { duration: 300 });
+    scale.value = withSpring(1, { damping: 20, stiffness: 300 });
+
+    // Register dismiss callback untuk auto-dismiss
+    registerDismissCallback(toast.id, handleDismiss);
+
+    // Cleanup
+    return () => {
+      unregisterDismissCallback(toast.id);
+    };
+  }, [
+    toast.id,
+    handleDismiss,
+    registerDismissCallback,
+    unregisterDismissCallback,
+  ]);
 
   const animatedStyle = useAnimatedStyle(() => {
     return {

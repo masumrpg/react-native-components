@@ -1,4 +1,10 @@
-import React, { createContext, useContext, useState, useCallback } from 'react';
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useCallback,
+  useRef,
+} from 'react';
 import { ToastContextType, ToastData, ToastProviderProps } from '../types';
 
 const ToastContext = createContext<ToastContextType | undefined>(undefined);
@@ -16,6 +22,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
   maxToasts = 5,
 }) => {
   const [toasts, setToasts] = useState<ToastData[]>([]);
+  const dismissCallbacks = useRef<Map<string, () => void>>(new Map());
 
   const toast = useCallback(
     (data: Omit<ToastData, 'id'>) => {
@@ -32,16 +39,22 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
         return updated.slice(0, maxToasts);
       });
 
-      // Auto dismiss
+      // Auto dismiss dengan animasi
       if (newToast.duration && newToast.duration > 0) {
         setTimeout(() => {
-          dismiss(id);
+          // Trigger animasi dismiss, bukan langsung hapus dari state
+          const dismissCallback = dismissCallbacks.current.get(id);
+          if (dismissCallback) {
+            dismissCallback(); // Ini akan trigger animasi di ToastItem
+          } else {
+            // Fallback jika callback belum ready
+            dismiss(id);
+          }
         }, newToast.duration);
       }
 
       return id;
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
     [maxToasts]
   );
 
@@ -53,11 +66,26 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
     setToasts([]);
   }, []);
 
+  // Function untuk register dismiss callback dari ToastItem
+  const registerDismissCallback = useCallback(
+    (id: string, callback: () => void) => {
+      dismissCallbacks.current.set(id, callback);
+    },
+    []
+  );
+
+  // Function untuk unregister dismiss callback
+  const unregisterDismissCallback = useCallback((id: string) => {
+    dismissCallbacks.current.delete(id);
+  }, []);
+
   const value: ToastContextType = {
     toasts,
     toast,
     dismiss,
     dismissAll,
+    registerDismissCallback,
+    unregisterDismissCallback,
   };
 
   return (
