@@ -32,18 +32,31 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
       : { bottom: insets.bottom + 10 },
   ];
 
+  // Untuk bottom position, kita perlu reverse urutan rendering
+  // agar toast terbaru (index 0) muncul di bawah
+  const orderedToasts =
+    position === 'bottom' ? [...visibleToasts].reverse() : visibleToasts;
+
   return (
     <View style={containerStyle} pointerEvents="box-none">
-      {visibleToasts.map((toast, index) => (
-        <ToastItem
-          theme={theme}
-          key={toast.id}
-          toast={toast}
-          index={index}
-          position={position}
-          onDismiss={dismiss}
-        />
-      ))}
+      {orderedToasts.map((toast, renderIndex) => {
+        // Untuk bottom, kita perlu menghitung ulang index yang benar
+        const actualIndex =
+          position === 'bottom'
+            ? visibleToasts.length - 1 - renderIndex
+            : renderIndex;
+
+        return (
+          <ToastItem
+            theme={theme}
+            key={toast.id}
+            toast={toast}
+            index={actualIndex}
+            position={position}
+            onDismiss={dismiss}
+          />
+        );
+      })}
     </View>
   );
 };

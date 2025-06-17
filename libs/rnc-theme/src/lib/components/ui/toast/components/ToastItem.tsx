@@ -39,7 +39,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
   theme,
   index,
   onDismiss,
-  position = 'top',
+  position = 'top', // Tambahkan prop position
 }) => {
   const { registerDismissCallback, unregisterDismissCallback } = useToast();
   const styles = useMemo(() => createToastItemStyle(theme), [theme]);
@@ -105,12 +105,18 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     unregisterDismissCallback,
   ]);
 
-  // iOS-style notification stack - berbeda berdasarkan posisi
+  // iOS-style notification stack - PERBAIKAN UTAMA DI SINI!
   const stackedStyle = useAnimatedStyle(() => {
-    // Untuk posisi top: stack ke bawah (positif)
-    // Untuk posisi bottom: stack ke atas (negatif)
-    const stackDirection = position === 'top' ? 1 : -1;
-    const stackOffset = index * 4 * stackDirection;
+    let stackOffset;
+
+    if (position === 'top') {
+      // Posisi TOP: toast lama bergeser ke bawah (index 0 = paling atas)
+      stackOffset = index * 4; // positif = ke bawah
+    } else {
+      // Posisi BOTTOM: toast lama bergeser ke atas (index 0 = paling bawah)
+      stackOffset = -index * 4; // negatif = ke atas
+    }
+
     const scaleValue = 1 - index * 0.02;
     const opacityValue = 1;
 
@@ -128,7 +134,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
         { scale: scale.value },
       ],
       opacity: opacity.value,
-      zIndex: 1000 - index,
+      zIndex: position === 'top' ? 1000 - index : 1000 + index, // Perbaiki z-index untuk bottom
     };
   });
 
