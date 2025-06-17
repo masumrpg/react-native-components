@@ -231,7 +231,7 @@ const getVariantStyles = (
   }
 };
 
-// Updated modal size calculation
+// Modal size calculation
 const getModalSize = (
   size: ComponentSize,
   screenWidth: number,
@@ -284,7 +284,7 @@ const getModalSize = (
   }
 };
 
-// Optimized position calculation
+// Position calculation
 const getModalPosition = (position: ModalPosition): ViewStyle => {
   const androidPadding = Platform.OS === 'android' ? 20 : 50;
 
@@ -308,7 +308,7 @@ const getModalPosition = (position: ModalPosition): ViewStyle => {
   }
 };
 
-// FIXED MODAL COMPONENT
+// FIXED MODAL COMPONENT - Race Condition Fixes Applied
 const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
   (
     {
@@ -335,70 +335,50 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
     },
     ref
   ) => {
-    // State management untuk race condition fix
-    const [isModalReady, setIsModalReady] = useState(false);
-    const [shouldShowModal, setShouldShowModal] = useState(false);
+    // FIXED: Better state management dengan atomic updates
+    const [modalState, setModalState] = useState({
+      shouldRender: false,
+      isReady: false,
+      isAnimating: false,
+    });
 
-    // Refs untuk tracking
-    const isAnimatingRef = useRef(false);
+    // Refs untuk tracking lifecycle
     const mountedRef = useRef(true);
     const visibleRef = useRef(visible);
-    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const readyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Screen dimensions dengan proper handling
+    // Screen dimensions dengan better error handling
     const windowDimensions = useWindowDimensions();
     const screenDimensions = Dimensions.get('screen');
 
     const { width: screenWidth, height: screenHeight } = useMemo(() => {
-      // Pastikan dimensi selalu valid
       const fallbackWidth = 375;
       const fallbackHeight = 667;
 
+      // Gunakan screen dimensions untuk Android, window untuk iOS
       if (Platform.OS === 'android') {
         return {
-          width: screenDimensions.width || fallbackWidth,
-          height: screenDimensions.height || fallbackHeight,
+          width: Math.max(screenDimensions.width || fallbackWidth, 280),
+          height: Math.max(screenDimensions.height || fallbackHeight, 500),
         };
       }
 
       return {
-        width: windowDimensions.width || fallbackWidth,
-        height: windowDimensions.height || fallbackHeight,
+        width: Math.max(windowDimensions.width || fallbackWidth, 280),
+        height: Math.max(windowDimensions.height || fallbackHeight, 500),
       };
     }, [windowDimensions, screenDimensions]);
 
     const { theme } = useTheme();
     const styles = useThemedStyles(createModalStyles);
 
-    // Animation values dengan proper initialization
-    const scale = useSharedValue(0);
+    // FIXED: Animation values dengan safe initialization
+    const scale = useSharedValue(animation === 'scale' ? 0.3 : 1);
     const opacity = useSharedValue(0);
     const translateY = useSharedValue(0);
 
-    // Initialize animation values berdasarkan position
-    const initializeAnimationValues = useCallback(() => {
-      'worklet';
-      scale.value = animation === 'scale' ? 0.1 : 1; // Prevent 0 scale
-      opacity.value = 0;
-
-      if (animation === 'slide') {
-        switch (position) {
-          case 'bottom':
-            translateY.value = screenHeight * 0.5;
-            break;
-          case 'top':
-            translateY.value = -screenHeight * 0.5;
-            break;
-          default:
-            translateY.value = 0;
-        }
-      } else {
-        translateY.value = 0;
-      }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [animation, position, screenHeight]);
-
-    // Memoized calculations
+    // FIXED: Memoized calculations dengan dependency yang tepat
     const modalSize = useMemo(
       () => getModalSize(size, screenWidth, screenHeight),
       [size, screenWidth, screenHeight]
@@ -411,70 +391,113 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       [variant, theme]
     );
 
-    // Safe state updater
-    const safeSetState = useCallback((setter: () => void) => {
-      if (mountedRef.current) {
-        setter();
-      }
-    }, []);
-
-    // Animation completion handler
-    const onAnimationComplete = useCallback(
-      (isOpening: boolean) => {
-        isAnimatingRef.current = false;
-
-        if (!isOpening && mountedRef.current) {
-          // Delay hiding modal untuk memastikan animation selesai
-          timeoutRef.current = setTimeout(() => {
-            safeSetState(() => setShouldShowModal(false));
-          }, 50);
+    // FIXED: Safe state updater dengan atomic operations
+    const updateModalState = useCallback(
+      (updates: Partial<typeof modalState>) => {
+        if (mountedRef.current) {
+          setModalState((prev) => ({ ...prev, ...updates }));
         }
       },
-      [safeSetState]
+      []
     );
 
-    // Show modal dengan proper sequencing
+    // FIXED: Initialize animation values dengan proper sequencing
+    const initializeAnimationValues = useCallback(() => {
+      'worklet'
+
+      // Reset ke initial state yang aman
+      opacity.value = 0;
+
+      if (animation === 'scale') {
+        scale.value = 0.3; // Tidak terlalu kecil untuk menghindari visual glitch
+      } else {
+        scale.value = 1;
+      }
+
+      if (animation === 'slide') {
+        switch (position) {
+          case 'bottom':
+            translateY.value = screenHeight * 0.3; // Lebih kecil untuk smooth animation
+            break;
+          case 'top':
+            translateY.value = -screenHeight * 0.3;
+            break;
+          default:
+            translateY.value = 0;
+        }
+      } else {
+        translateY.value = 0;
+      }
+    }, [animation, position, screenHeight, opacity, scale, translateY]);
+
+    // FIXED: Animation completion handler
+    const onAnimationComplete = useCallback(
+      (isOpening: boolean) => {
+        if (!mountedRef.current) return;
+
+        if (isOpening) {
+          updateModalState({ isAnimating: false, isReady: true });
+        } else {
+          updateModalState({ isAnimating: false });
+
+          // Delay untuk memastikan animation selesai sebelum unmount
+          animationTimeoutRef.current = setTimeout(() => {
+            if (mountedRef.current) {
+              updateModalState({ shouldRender: false, isReady: false });
+            }
+          }, 100);
+        }
+      },
+      [updateModalState]
+    );
+
+    // FIXED: Show modal dengan proper timing dan sequencing
     const showModal = useCallback(() => {
-      if (!mountedRef.current || isAnimatingRef.current) return;
+      if (!mountedRef.current || modalState.isAnimating) return;
 
-      // Reset state
-      isAnimatingRef.current = true;
-      setIsModalReady(false);
-      setShouldShowModal(true);
+      // Clear any pending timeouts
+      if (animationTimeoutRef.current) {
+        clearTimeout(animationTimeoutRef.current);
+        animationTimeoutRef.current = null;
+      }
+      if (readyTimeoutRef.current) {
+        clearTimeout(readyTimeoutRef.current);
+        readyTimeoutRef.current = null;
+      }
 
-      // Initialize animation values
+      // Step 1: Update state dan initialize animations
+      updateModalState({
+        shouldRender: true,
+        isAnimating: true,
+        isReady: false,
+      });
+
+      // Step 2: Initialize animation values IMMEDIATELY
       initializeAnimationValues();
 
-      // Wait for modal to be rendered
+      // Step 3: Wait for render cycle
       InteractionManager.runAfterInteractions(() => {
         if (!mountedRef.current) return;
 
-        // Additional delay untuk Android
-        const readyDelay = Platform.OS === 'android' ? 100 : 50;
-
-        setTimeout(() => {
-          if (!mountedRef.current) return;
-
-          safeSetState(() => setIsModalReady(true));
-
-          // Start animations
-          const springConfig = {
-            damping: Platform.OS === 'android' ? 20 : 15,
-            stiffness: Platform.OS === 'android' ? 120 : 150,
-            mass: 1,
-          };
-
-          // Backdrop animation
-          opacity.value = withTiming(1, {
-            duration: animationDuration * 0.8,
-          });
-
-          // Content animation
-          const contentDelay = Platform.OS === 'android' ? 150 : 100;
-
-          setTimeout(() => {
+        // Step 4: Start animations dengan delay yang cukup
+        readyTimeoutRef.current = setTimeout(
+          () => {
             if (!mountedRef.current) return;
 
+            const springConfig = {
+              damping: Platform.OS === 'android' ? 25 : 20,
+              stiffness: Platform.OS === 'android' ? 300 : 250,
+              mass: 1,
+            };
+
+            const timingConfig = {
+              duration: animationDuration,
+            };
+
+            // Backdrop fade in
+            opacity.value = withTiming(1, timingConfig);
+
+            // Content animation
             if (animation === 'scale') {
               scale.value = withSpring(1, springConfig, (finished) => {
                 if (finished) {
@@ -489,89 +512,80 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
               });
             } else {
               // fade animation
-              scale.value = withTiming(
-                1,
-                {
-                  duration: animationDuration,
-                },
-                (finished) => {
-                  if (finished) {
-                    runOnJS(onAnimationComplete)(true);
-                  }
+              scale.value = withTiming(1, timingConfig, (finished) => {
+                if (finished) {
+                  runOnJS(onAnimationComplete)(true);
                 }
-              );
+              });
             }
-          }, contentDelay);
-        }, readyDelay);
+          },
+          Platform.OS === 'android' ? 150 : 100
+        );
       });
-      // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [
-      animation,
-      animationDuration,
+      modalState.isAnimating,
+      updateModalState,
       initializeAnimationValues,
+      animationDuration,
+      animation,
       onAnimationComplete,
-      safeSetState,
+      opacity,
+      scale,
+      translateY,
     ]);
 
-    // Hide modal
+    // FIXED: Hide modal dengan proper cleanup
     const hideModal = useCallback(() => {
-      if (!mountedRef.current || isAnimatingRef.current) return;
+      if (!mountedRef.current || modalState.isAnimating) return;
 
-      isAnimatingRef.current = true;
+      updateModalState({ isAnimating: true, isReady: false });
 
       const exitDuration =
         Platform.OS === 'android'
-          ? animationDuration * 0.6
+          ? animationDuration * 0.7
           : animationDuration * 0.8;
+
+      const timingConfig = { duration: exitDuration };
 
       // Content animation out
       if (animation === 'scale') {
-        scale.value = withTiming(0.1, { duration: exitDuration });
+        scale.value = withTiming(0.3, timingConfig);
       } else if (animation === 'slide') {
         const exitTranslateY =
           position === 'bottom'
-            ? screenHeight * 0.5
+            ? screenHeight * 0.3
             : position === 'top'
-            ? -screenHeight * 0.5
+            ? -screenHeight * 0.3
             : 0;
-        translateY.value = withTiming(exitTranslateY, {
-          duration: exitDuration,
-        });
+        translateY.value = withTiming(exitTranslateY, timingConfig);
       } else {
-        scale.value = withTiming(0.1, { duration: exitDuration });
+        scale.value = withTiming(0.3, timingConfig);
       }
 
-      // Backdrop animation out
-      opacity.value = withTiming(
-        0,
-        {
-          duration: exitDuration,
-        },
-        (finished) => {
-          if (finished) {
-            runOnJS(onAnimationComplete)(false);
-          }
+      // Backdrop fade out
+      opacity.value = withTiming(0, timingConfig, (finished) => {
+        if (finished) {
+          runOnJS(onAnimationComplete)(false);
         }
-      );
-
-      // eslint-disable-next-line react-hooks/exhaustive-deps
+      });
     }, [
-      animation,
+      modalState.isAnimating,
+      updateModalState,
       animationDuration,
-      onAnimationComplete,
+      animation,
       position,
       screenHeight,
+      scale,
+      translateY,
+      opacity,
+      onAnimationComplete,
     ]);
 
-    // Handle visibility changes
+    // FIXED: Handle visibility changes dengan debouncing
     useEffect(() => {
+      // Prevent rapid toggle
+      if (visibleRef.current === visible) return;
       visibleRef.current = visible;
-
-      // Clear any pending timeouts
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
 
       if (visible) {
         showModal();
@@ -580,68 +594,79 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       }
     }, [visible, showModal, hideModal]);
 
-    // Cleanup
+    // FIXED: Cleanup dengan proper cancellation
     useEffect(() => {
       return () => {
         mountedRef.current = false;
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
+
+        // Clear timeouts
+        if (animationTimeoutRef.current) {
+          clearTimeout(animationTimeoutRef.current);
         }
+        if (readyTimeoutRef.current) {
+          clearTimeout(readyTimeoutRef.current);
+        }
+
+        // Cancel animations
         cancelAnimation(scale);
         cancelAnimation(opacity);
         cancelAnimation(translateY);
       };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, []);
+    }, [scale, opacity, translateY]);
 
-    // Animated styles
+    // FIXED: Animated styles dengan safe values
     const animatedOverlayStyle = useAnimatedStyle(
       () => ({
-        opacity: opacity.value,
+        opacity: Math.max(0, Math.min(1, opacity.value)),
       }),
       []
     );
 
     const animatedContentStyle = useAnimatedStyle(() => {
       const baseStyle = {
-        opacity: Math.max(opacity.value, 0),
+        opacity: Math.max(0, Math.min(1, opacity.value)),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         transform: [] as any[],
       };
 
       if (animation === 'scale') {
-        // Ensure minimum scale untuk prevent invisible modal
-        const scaleValue = Math.max(scale.value, 0.01);
+        // Ensure safe scale values
+        const scaleValue = Math.max(0.1, Math.min(2, scale.value));
         baseStyle.transform.push({ scale: scaleValue });
       } else if (animation === 'slide') {
-        baseStyle.transform.push({ translateY: translateY.value });
+        // Clamp translate values
+        const translateValue = Math.max(
+          -screenHeight,
+          Math.min(screenHeight, translateY.value)
+        );
+        baseStyle.transform.push({ translateY: translateValue });
       }
 
       return baseStyle;
-    }, [animation]);
+    }, [animation, screenHeight]);
 
     // Event handlers
     const handleBackdropPress = useCallback(() => {
-      if (closeOnBackdrop && !isAnimatingRef.current && isModalReady) {
+      if (closeOnBackdrop && modalState.isReady && !modalState.isAnimating) {
         onClose();
       }
-    }, [closeOnBackdrop, onClose, isModalReady]);
+    }, [closeOnBackdrop, modalState.isReady, modalState.isAnimating, onClose]);
 
     const handleClosePress = useCallback(() => {
-      if (!isAnimatingRef.current && isModalReady) {
+      if (modalState.isReady && !modalState.isAnimating) {
         onClose();
       }
-    }, [onClose, isModalReady]);
+    }, [modalState.isReady, modalState.isAnimating, onClose]);
 
-    // Don't render until modal should be shown
-    if (!shouldShowModal) {
+    // FIXED: Don't render until state is properly set
+    if (!modalState.shouldRender) {
       return null;
     }
 
     return (
       <RNModal
         ref={ref}
-        visible={shouldShowModal}
+        visible={modalState.shouldRender}
         transparent
         animationType="none"
         statusBarTranslucent={Platform.OS === 'android'}
@@ -685,7 +710,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
                     onPress={handleClosePress}
                     activeOpacity={0.7}
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-                    disabled={!isModalReady}
+                    disabled={!modalState.isReady}
                   >
                     <Text style={styles.closeButtonText}>✕</Text>
                   </TouchableOpacity>
