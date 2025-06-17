@@ -9,6 +9,7 @@ import {
 import { Href, Link } from 'expo-router';
 import {
   Badge,
+  Bell,
   BookPlus,
   CardSim,
   CheckSquare,
@@ -194,6 +195,12 @@ export default function HomeScreen() {
       title: 'Skeleton',
       path: '/skeleton',
       icon: <User size={30} color={'black'} />,
+    },
+    {
+      id: 26,
+      title: 'Toast',
+      path: '/toast',
+      icon: <Bell size={30} color={'black'} />,
     },
   ];
 

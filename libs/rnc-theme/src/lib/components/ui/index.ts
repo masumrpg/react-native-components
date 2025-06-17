@@ -21,3 +21,4 @@ export * from './fab';
 export * from './bottom-sheet';
 export * from './scroll';
 export * from './skeleton';
+export * from './toast';
