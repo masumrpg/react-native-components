@@ -13,7 +13,6 @@ export const useToast = () => {
 
 export const ToastProvider: React.FC<ToastProviderProps> = ({
   children,
-  position = 'top',
   maxToasts = 5,
 }) => {
   const [toasts, setToasts] = useState<ToastData[]>([]);
@@ -42,6 +41,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
 
       return id;
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [maxToasts]
   );
 

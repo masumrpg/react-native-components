@@ -1,11 +1,5 @@
-import React, { useEffect } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleProp,
-  ViewStyle,
-} from 'react-native';
+import React, { useEffect, useMemo } from 'react';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -21,7 +15,6 @@ import {
   Info,
 } from 'lucide-react-native';
 import { ToastItemProps, ToastVariant } from '../types';
-import { useThemedStyles } from '../../../../hooks/useThemedStyles';
 import { Theme } from '../../../../types/theme';
 
 const getToastIcon = (variant: ToastVariant) => {
@@ -41,10 +34,11 @@ const getToastIcon = (variant: ToastVariant) => {
 
 export const ToastItem: React.FC<ToastItemProps> = ({
   toast,
+  theme,
   index,
   onDismiss,
 }) => {
-  const styles = useThemedStyles(createToastItemStyles);
+  const styles = useMemo(() => createToastItemStyle(theme), [theme]);
   const translateY = useSharedValue(-100);
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.9);
@@ -54,6 +48,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     translateY.value = withSpring(0, { damping: 20, stiffness: 300 });
     opacity.value = withTiming(1, { duration: 300 });
     scale.value = withSpring(1, { damping: 20, stiffness: 300 });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDismiss = () => {
@@ -118,80 +113,81 @@ export const ToastItem: React.FC<ToastItemProps> = ({
   );
 };
 
-const createToastItemStyles = (theme: Theme) => ({
-  container: {
-    backgroundColor: theme.colors.background,
-    borderRadius: theme.components.borderRadius.md,
-    marginHorizontal: theme.spacing.md,
-    marginVertical: theme.spacing.xs,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
+const createToastItemStyle = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme.colors.background,
+      borderRadius: theme.components.borderRadius.md,
+      marginHorizontal: theme.spacing.md,
+      marginVertical: theme.spacing.xs,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 5,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
     },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  } as ViewStyle,
-  content: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    padding: theme.spacing.md,
-  } as ViewStyle,
-  iconContainer: {
-    marginRight: theme.spacing.sm,
-    marginTop: 2,
-  } as ViewStyle,
-  textContainer: {
-    flex: 1,
-  } as ViewStyle,
-  title: {
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600',
-    color: theme.colors.text,
-    marginBottom: theme.spacing.xs ? theme.spacing.xs : 0,
-  },
-  description: {
-    fontSize: theme.typography.caption.fontSize,
-    color: theme.colors.textSecondary,
-    lineHeight: theme.typography.caption.lineHeight,
-  },
-  closeButton: {
-    padding: theme.spacing.xs,
-    marginLeft: theme.spacing.sm,
-  } as ViewStyle,
-  actionButton: {
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-    borderTopWidth: 1,
-    borderTopColor: theme.colors.border,
-  } as ViewStyle,
-  actionText: {
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600',
-    color: theme.colors.primary,
-  },
-  // Variants
-  default: {
-    borderLeftWidth: 4,
-    borderLeftColor: theme.colors.border,
-  } as ViewStyle,
-  success: {
-    borderLeftWidth: 4,
-    borderLeftColor: '#10B981',
-  } as ViewStyle,
-  error: {
-    borderLeftWidth: 4,
-    borderLeftColor: '#EF4444',
-  } as ViewStyle,
-  warning: {
-    borderLeftWidth: 4,
-    borderLeftColor: '#F59E0B',
-  } as ViewStyle,
-  info: {
-    borderLeftWidth: 4,
-    borderLeftColor: '#3B82F6',
-  } as ViewStyle,
-});
+    content: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      padding: theme.spacing.md,
+    },
+    iconContainer: {
+      marginRight: theme.spacing.sm,
+      marginTop: 2,
+    },
+    textContainer: {
+      flex: 1,
+    },
+    title: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: '600',
+      color: theme.colors.text,
+      marginBottom: theme.spacing.xs ? theme.spacing.xs : 0,
+    },
+    description: {
+      fontSize: theme.typography.caption.fontSize,
+      color: theme.colors.textSecondary,
+      lineHeight: theme.typography.caption.lineHeight,
+    },
+    closeButton: {
+      padding: theme.spacing.xs,
+      marginLeft: theme.spacing.sm,
+    },
+    actionButton: {
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.sm,
+      borderTopWidth: 1,
+      borderTopColor: theme.colors.border,
+    },
+    actionText: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: '600',
+      color: theme.colors.primary,
+    },
+    // Variants
+    default: {
+      borderLeftWidth: 4,
+      borderLeftColor: theme.colors.border,
+    },
+    success: {
+      borderLeftWidth: 4,
+      borderLeftColor: theme.colors.success,
+    },
+    error: {
+      borderLeftWidth: 4,
+      borderLeftColor: theme.colors.error,
+    },
+    warning: {
+      borderLeftWidth: 4,
+      borderLeftColor: theme.colors.warning,
+    },
+    info: {
+      borderLeftWidth: 4,
+      borderLeftColor: theme.colors.info,
+    },
+  });

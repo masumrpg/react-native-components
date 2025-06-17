@@ -7,7 +7,6 @@ import { RNCThemeProvider } from 'rnc-theme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { StatusBar } from 'expo-status-bar';
-import { ToastProvider, Toast } from 'rnc-theme';
 
 const nonHeaderPatshs = ['/scroll', '/qrcode-pack/qr-scanner'];
 
@@ -64,23 +63,23 @@ function RootLayoutNav() {
           .join(' ');
 
   return (
-    <RNCThemeProvider defaultTheme="system">
-      <ToastProvider position="top" maxToasts={5}>
-        <StatusBar style={pathName === '/scroll-to-hide' ? 'light' : 'dark'} />
-        <GestureHandlerRootView>
-          <Stack
-            screenOptions={{
-              title: formattedTitle,
-              headerTitleAlign: 'center',
-              headerBackTitle: 'Back',
-              headerShown: isNonHeaderPath ? false : true,
-            }}
-          >
-            <Stack.Screen name="index" />
-          </Stack>
-          <Toast position="bottom" />
-        </GestureHandlerRootView>
-      </ToastProvider>
+    <RNCThemeProvider
+      defaultTheme="system"
+      toast={{ maxToasts: 4, position: 'bottom' }}
+    >
+      <StatusBar style={pathName === '/scroll-to-hide' ? 'light' : 'dark'} />
+      <GestureHandlerRootView>
+        <Stack
+          screenOptions={{
+            title: formattedTitle,
+            headerTitleAlign: 'center',
+            headerBackTitle: 'Back',
+            headerShown: isNonHeaderPath ? false : true,
+          }}
+        >
+          <Stack.Screen name="index" />
+        </Stack>
+      </GestureHandlerRootView>
     </RNCThemeProvider>
   );
 }

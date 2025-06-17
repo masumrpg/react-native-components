@@ -13,6 +13,9 @@ import { lightTheme, darkTheme } from '../themes/defaultThemes';
 import { themeRegistry } from '../registry/ThemeRegistry';
 import { BottomSheetProvider } from '../components/ui/bottom-sheet/contexts/BottomSheetContext';
 import { BottomSheetProviderProps } from '../components/ui/bottom-sheet/types';
+import { ToastProvider } from '../components/ui/toast/context/ToastContext';
+import { ToastPosition } from '../components/ui/toast/types';
+import { Toast } from '../components/ui/toast/components/ToastContainer';
 
 interface ThemeContextType {
   theme: Theme;
@@ -30,7 +33,7 @@ interface ThemeContextType {
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
-const THEME_STORAGE_KEY = '@app_theme_config';
+const THEME_STORAGE_KEY = 'RNC_THEME';
 
 const mergeThemes = (baseTheme: Theme, customTheme?: Partial<Theme>): Theme => {
   if (!customTheme) return baseTheme;
@@ -50,6 +53,10 @@ interface ThemeProviderProps {
   customLightTheme?: Partial<Theme>;
   customDarkTheme?: Partial<Theme>;
   bottomSheetProps?: BottomSheetProviderProps;
+  toast?: {
+    position?: ToastPosition;
+    maxToasts?: number | undefined;
+  };
 }
 
 export const RNCThemeProvider: React.FC<ThemeProviderProps> = ({
@@ -58,6 +65,7 @@ export const RNCThemeProvider: React.FC<ThemeProviderProps> = ({
   customLightTheme,
   customDarkTheme,
   bottomSheetProps,
+  toast,
 }) => {
   const [themeMode, setThemeModeState] = useState<ThemeMode>(defaultTheme);
   const [customTheme, setCustomTheme] = useState<{
@@ -260,25 +268,28 @@ export const RNCThemeProvider: React.FC<ThemeProviderProps> = ({
 
   return (
     <ThemeContext.Provider value={value}>
-      <BottomSheetProvider
-        backgroundColor={theme.colors.surface}
-        lineBackgroundColor={theme.colors.text}
-        borderTopLeftRadius={
-          bottomSheetProps?.borderTopLeftRadius ??
-          theme.components.borderRadius.md < 5
-            ? theme.components.borderRadius.md
-            : theme.components.borderRadius.md + 10
-        }
-        borderTopRightRadius={
-          bottomSheetProps?.borderTopRightRadius ??
-          theme.components.borderRadius.md < 5
-            ? theme.components.borderRadius.md
-            : theme.components.borderRadius.md + 10
-        }
-        {...bottomSheetProps}
-      >
-        {children}
-      </BottomSheetProvider>
+      <ToastProvider maxToasts={toast?.maxToasts ?? 5}>
+        <BottomSheetProvider
+          backgroundColor={theme.colors.surface}
+          lineBackgroundColor={theme.colors.text}
+          borderTopLeftRadius={
+            bottomSheetProps?.borderTopLeftRadius ??
+            theme.components.borderRadius.md < 5
+              ? theme.components.borderRadius.md
+              : theme.components.borderRadius.md + 10
+          }
+          borderTopRightRadius={
+            bottomSheetProps?.borderTopRightRadius ??
+            theme.components.borderRadius.md < 5
+              ? theme.components.borderRadius.md
+              : theme.components.borderRadius.md + 10
+          }
+          {...bottomSheetProps}
+        >
+          {children}
+        </BottomSheetProvider>
+        <Toast theme={theme} position={toast?.position ?? 'top'} />
+      </ToastProvider>
     </ThemeContext.Provider>
   );
 };

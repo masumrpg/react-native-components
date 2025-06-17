@@ -1,3 +1,5 @@
+import { Theme } from '../../../../types/theme';
+
 export type ToastVariant = 'default' | 'success' | 'error' | 'warning' | 'info';
 
 export type ToastPosition = 'top' | 'bottom';
@@ -24,12 +26,12 @@ export interface ToastContextType {
 
 export interface ToastProviderProps {
   children: React.ReactNode;
-  position?: ToastPosition;
   maxToasts?: number;
 }
 
 export interface ToastItemProps {
   toast: ToastData;
   index: number;
+  theme: Theme;
   onDismiss: (id: string) => void;
 }
