@@ -16,6 +16,7 @@ import { BottomSheetProviderProps } from '../components/ui/bottom-sheet/types';
 import { ToastProvider } from '../components/ui/toast/context/ToastContext';
 import { ToastPosition } from '../components/ui/toast/types';
 import { Toast } from '../components/ui/toast/components/ToastContainer';
+import { PortalProvider } from '../components/ui/portal/context/PortalContext';
 
 interface ThemeContextType {
   theme: Theme;
@@ -269,25 +270,27 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
   return (
     <ThemeContext.Provider value={value}>
       <ToastProvider maxToasts={toast?.maxToasts ?? 5}>
-        <BottomSheetProvider
-          backgroundColor={theme.colors.surface}
-          lineBackgroundColor={theme.colors.text}
-          borderTopLeftRadius={
-            bottomSheetProps?.borderTopLeftRadius ??
-            theme.components.borderRadius.md < 5
-              ? theme.components.borderRadius.md
-              : theme.components.borderRadius.md + 10
-          }
-          borderTopRightRadius={
-            bottomSheetProps?.borderTopRightRadius ??
-            theme.components.borderRadius.md < 5
-              ? theme.components.borderRadius.md
-              : theme.components.borderRadius.md + 10
-          }
-          {...bottomSheetProps}
-        >
-          {children}
-        </BottomSheetProvider>
+        <PortalProvider>
+          <BottomSheetProvider
+            backgroundColor={theme.colors.surface}
+            lineBackgroundColor={theme.colors.text}
+            borderTopLeftRadius={
+              bottomSheetProps?.borderTopLeftRadius ??
+              theme.components.borderRadius.md < 5
+                ? theme.components.borderRadius.md
+                : theme.components.borderRadius.md + 10
+            }
+            borderTopRightRadius={
+              bottomSheetProps?.borderTopRightRadius ??
+              theme.components.borderRadius.md < 5
+                ? theme.components.borderRadius.md
+                : theme.components.borderRadius.md + 10
+            }
+            {...bottomSheetProps}
+          >
+            {children}
+          </BottomSheetProvider>
+        </PortalProvider>
         <Toast
           theme={theme}
           position={toast?.position ?? 'top'}

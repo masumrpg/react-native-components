@@ -6,9 +6,5 @@ export const PortalHost: React.FC<PortalHostProps & { children: React.ReactNode 
   children,
   name = 'default'
 }) => {
-  return (
-    <PortalProvider>
-      {children}
-    </PortalProvider>
-  );
+  return <PortalProvider hostName={name}>{children}</PortalProvider>;
 };

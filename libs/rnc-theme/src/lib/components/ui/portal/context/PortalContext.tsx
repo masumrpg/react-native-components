@@ -13,31 +13,54 @@ export const usePortal = () => {
 
 interface PortalProviderProps {
   children: React.ReactNode;
+  hostName?: string;
 }
 
-export const PortalProvider: React.FC<PortalProviderProps> = ({ children }) => {
+export const PortalProvider: React.FC<PortalProviderProps> = ({
+  children,
+  hostName = 'default',
+}) => {
   const [portals, setPortals] = useState<PortalState>({});
 
-  const mount = useCallback((name: string, children: React.ReactNode) => {
-    setPortals(prev => ({ ...prev, [name]: children }));
-  }, []);
+  const mount = useCallback(
+    (name: string, children: React.ReactNode, targetHost?: string) => {
+      // Only mount if this portal belongs to this host or no specific host is specified
+      if (!targetHost || targetHost === hostName) {
+        setPortals((prev) => ({ ...prev, [name]: children }));
+      }
+    },
+    [hostName]
+  );
 
-  const unmount = useCallback((name: string) => {
-    setPortals(prev => {
-      const newPortals = { ...prev };
-      delete newPortals[name];
-      return newPortals;
-    });
-  }, []);
+  const unmount = useCallback(
+    (name: string, targetHost?: string) => {
+      // Only unmount if this portal belongs to this host or no specific host is specified
+      if (!targetHost || targetHost === hostName) {
+        setPortals((prev) => {
+          const newPortals = { ...prev };
+          delete newPortals[name];
+          return newPortals;
+        });
+      }
+    },
+    [hostName]
+  );
 
-  const update = useCallback((name: string, children: React.ReactNode) => {
-    setPortals(prev => ({ ...prev, [name]: children }));
-  }, []);
+  const update = useCallback(
+    (name: string, children: React.ReactNode, targetHost?: string) => {
+      // Only update if this portal belongs to this host or no specific host is specified
+      if (!targetHost || targetHost === hostName) {
+        setPortals((prev) => ({ ...prev, [name]: children }));
+      }
+    },
+    [hostName]
+  );
 
   const value: PortalContextType = {
     mount,
     unmount,
     update,
+    hostName,
   };
 
   return (
