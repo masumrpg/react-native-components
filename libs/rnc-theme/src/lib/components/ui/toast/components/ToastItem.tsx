@@ -39,7 +39,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
   theme,
   index,
   onDismiss,
-  position = 'top', // Tambahkan prop position
+  position = 'top',
 }) => {
   const { registerDismissCallback, unregisterDismissCallback } = useToast();
   const styles = useMemo(() => createToastItemStyle(theme), [theme]);
@@ -53,31 +53,28 @@ export const ToastItem: React.FC<ToastItemProps> = ({
 
   const handleDismiss = useCallback(() => {
     // Animasi dismiss yang sama untuk manual dan auto
-    translateX.value = withSpring(400, {
-      damping: 25,
-      stiffness: 200,
-      mass: 1,
+    translateX.value = withTiming(400, {
+      duration: 300,
+      easing: Easing.out(Easing.cubic),
     });
 
-    scale.value = withSpring(0.85, {
-      damping: 30,
-      stiffness: 400,
-      mass: 0.8,
+    scale.value = withTiming(0.85, {
+      duration: 300,
+      easing: Easing.out(Easing.cubic),
     });
 
     // Animasi translateY berbeda berdasarkan posisi
     const dismissTranslateY = position === 'top' ? -20 : 20;
-    translateY.value = withSpring(dismissTranslateY, {
-      damping: 25,
-      stiffness: 300,
-      mass: 0.9,
+    translateY.value = withTiming(dismissTranslateY, {
+      duration: 300,
+      easing: Easing.out(Easing.cubic),
     });
 
     opacity.value = withTiming(
       0,
       {
-        duration: 400,
-        easing: Easing.bezier(0.25, 0.46, 0.45, 0.94),
+        duration: 300,
+        easing: Easing.out(Easing.cubic),
       },
       () => {
         runOnJS(onDismiss)(toast.id);
@@ -86,10 +83,21 @@ export const ToastItem: React.FC<ToastItemProps> = ({
   }, [toast.id, onDismiss, position]);
 
   useEffect(() => {
-    // Enter animation
-    translateY.value = withSpring(0, { damping: 20, stiffness: 300 });
-    opacity.value = withTiming(1, { duration: 300 });
-    scale.value = withSpring(1, { damping: 20, stiffness: 300 });
+    // Enter animation - TANPA BOUNCING, smooth linear motion
+    translateY.value = withTiming(0, {
+      duration: 400,
+      easing: Easing.out(Easing.cubic), // Smooth easing tanpa bounce
+    });
+
+    opacity.value = withTiming(1, {
+      duration: 400,
+      easing: Easing.out(Easing.cubic),
+    });
+
+    scale.value = withTiming(1, {
+      duration: 400,
+      easing: Easing.out(Easing.cubic),
+    });
 
     // Register dismiss callback untuk auto-dismiss
     registerDismissCallback(toast.id, handleDismiss);
@@ -105,23 +113,36 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     unregisterDismissCallback,
   ]);
 
-  // iOS-style notification stack - PERBAIKAN UTAMA DI SINI!
+  // iOS-style notification stack - smooth push animation
   const stackedStyle = useAnimatedStyle(() => {
     let stackOffset;
 
     if (position === 'top') {
-      // Posisi TOP: toast lama bergeser ke bawah (index 0 = paling atas)
-      stackOffset = index * 4; // positif = ke bawah
+      // Posisi TOP: toast lama bergeser ke bawah
+      stackOffset = index * 4;
     } else {
-      // Posisi BOTTOM: toast lama bergeser ke atas (index 0 = paling bawah)
-      stackOffset = -index * 4; // negatif = ke atas
+      // Posisi BOTTOM: toast lama bergeser ke atas dengan smooth transition
+      stackOffset = -index * 4;
     }
 
     const scaleValue = 1 - index * 0.02;
     const opacityValue = 1;
 
     return {
-      transform: [{ translateY: stackOffset }, { scale: scaleValue }],
+      transform: [
+        {
+          translateY: withTiming(stackOffset, {
+            duration: 300,
+            easing: Easing.out(Easing.cubic), // Smooth push tanpa bounce
+          }),
+        },
+        {
+          scale: withTiming(scaleValue, {
+            duration: 300,
+            easing: Easing.out(Easing.cubic),
+          }),
+        },
+      ],
       opacity: opacityValue,
     };
   });
@@ -134,7 +155,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
         { scale: scale.value },
       ],
       opacity: opacity.value,
-      zIndex: position === 'top' ? 1000 - index : 1000 + index, // Perbaiki z-index untuk bottom
+      zIndex: position === 'top' ? 1000 - index : 1000 + index,
     };
   });
 
