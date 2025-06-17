@@ -327,52 +327,86 @@ export default function PortalExample() {
             </Card>
           </View>
 
-          {/* Icon Tooltips */}
+          {/* Icon Tooltips - Updated section */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Icon Tooltips</Text>
+            <Text style={styles.sectionTitle}>Icon Tooltips (Long Press)</Text>
             <Card>
               <CardContent>
                 <HStack spacing="lg" justify="space-around" align="center">
-                  <TouchableOpacity onPress={() => showTooltip('settings')}>
-                    <Tooltip
-                      content="Pengaturan aplikasi"
-                      position="top"
-                      visible={activeTooltip === 'settings'}
-                    >
-                      <Settings size={32} color={theme.colors.primary} />
-                    </Tooltip>
-                  </TouchableOpacity>
+                  <Tooltip
+                    content="Pengaturan aplikasi"
+                    position="top"
+                    visible={activeTooltip === 'settings'}
+                    onVisibilityChange={(visible) => {
+                      if (visible) {
+                        setActiveTooltip('settings');
+                        setTimeout(() => setActiveTooltip(null), 2000);
+                      } else {
+                        setActiveTooltip(null);
+                      }
+                    }}
+                  >
+                    <Settings size={32} color={theme.colors.primary} />
+                  </Tooltip>
 
-                  <TouchableOpacity onPress={() => showTooltip('star')}>
-                    <Tooltip
-                      content="Tambahkan ke favorit"
-                      position="top"
-                      visible={activeTooltip === 'star'}
-                    >
-                      <Star size={32} color={theme.colors.warning} />
-                    </Tooltip>
-                  </TouchableOpacity>
+                  <Tooltip
+                    content="Tambahkan ke favorit"
+                    position="right"
+                    visible={activeTooltip === 'star'}
+                    onVisibilityChange={(visible) => {
+                      if (visible) {
+                        setActiveTooltip('star');
+                        setTimeout(() => setActiveTooltip(null), 2000);
+                      } else {
+                        setActiveTooltip(null);
+                      }
+                    }}
+                  >
+                    <Star size={32} color={theme.colors.warning} />
+                  </Tooltip>
 
-                  <TouchableOpacity onPress={() => showTooltip('heart')}>
-                    <Tooltip
-                      content="Suka konten ini"
-                      position="top"
-                      visible={activeTooltip === 'heart'}
-                    >
-                      <Heart size={32} color={theme.colors.error} />
-                    </Tooltip>
-                  </TouchableOpacity>
+                  <Tooltip
+                    content="Suka konten ini"
+                    position="bottom"
+                    visible={activeTooltip === 'heart'}
+                    onVisibilityChange={(visible) => {
+                      if (visible) {
+                        setActiveTooltip('heart');
+                        setTimeout(() => setActiveTooltip(null), 2000);
+                      } else {
+                        setActiveTooltip(null);
+                      }
+                    }}
+                  >
+                    <Heart size={32} color={theme.colors.error} />
+                  </Tooltip>
 
-                  <TouchableOpacity onPress={() => showTooltip('alert')}>
-                    <Tooltip
-                      content="Informasi penting"
-                      position="top"
-                      visible={activeTooltip === 'alert'}
-                    >
-                      <AlertCircle size={32} color={theme.colors.info} />
-                    </Tooltip>
-                  </TouchableOpacity>
+                  <Tooltip
+                    content="Informasi penting"
+                    position="left"
+                    visible={activeTooltip === 'alert'}
+                    onVisibilityChange={(visible) => {
+                      if (visible) {
+                        setActiveTooltip('alert');
+                        setTimeout(() => setActiveTooltip(null), 2000);
+                      } else {
+                        setActiveTooltip(null);
+                      }
+                    }}
+                  >
+                    <AlertCircle size={32} color={theme.colors.info} />
+                  </Tooltip>
                 </HStack>
+                <Typography
+                  variant="small"
+                  style={{
+                    textAlign: 'center',
+                    marginTop: 8,
+                    color: theme.colors.textSecondary,
+                  }}
+                >
+                  Long press pada icon untuk menampilkan tooltip
+                </Typography>
               </CardContent>
             </Card>
           </View>

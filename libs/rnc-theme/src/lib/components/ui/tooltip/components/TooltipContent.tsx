@@ -24,19 +24,19 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
     switch (position) {
       case 'top':
         tooltipX = x + width / 2 - tooltipWidth / 2;
-        tooltipY = y - tooltipHeight - offset;
+        tooltipY = y - tooltipHeight - 70 - offset;
         break;
       case 'bottom':
         tooltipX = x + width / 2 - tooltipWidth / 2;
-        tooltipY = y + height + offset;
+        tooltipY = y + height - 50 + offset;
         break;
       case 'left':
-        tooltipX = x - tooltipWidth - offset;
-        tooltipY = y + height / 2 - tooltipHeight / 2;
+        tooltipX = x - tooltipWidth - 10 - offset;
+        tooltipY = y + height / 2 - tooltipHeight / 2 - 55;
         break;
       case 'right':
-        tooltipX = x + width + offset;
-        tooltipY = y + height / 2 - tooltipHeight / 2;
+        tooltipX = x + width + 10 + offset;
+        tooltipY = y + height / 2 - tooltipHeight / 2 - 55;
         break;
     }
 
@@ -76,7 +76,7 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
 
     // Calculate arrow position relative to target element
     const targetCenterX = x + width / 2;
-    const targetCenterY = y + height / 2;
+    const targetCenterY = y + height / 2 - 55; // Sesuaikan dengan offset tooltip Y
     const tooltipStyle = getTooltipStyle();
     const tooltipLeft = tooltipStyle.left as number;
     const tooltipTop = tooltipStyle.top as number;
@@ -98,7 +98,7 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
           borderTopWidth: arrowSize,
           borderLeftColor: 'transparent',
           borderRightColor: 'transparent',
-          borderTopColor: 'rgba(0, 0, 0, 0.8)',
+          borderTopColor: theme.colors.primary,
         };
       case 'bottom':
         return {
@@ -116,12 +116,12 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
           borderBottomWidth: arrowSize,
           borderLeftColor: 'transparent',
           borderRightColor: 'transparent',
-          borderBottomColor: 'rgba(0, 0, 0, 0.8)',
+          borderBottomColor: theme.colors.primary,
         };
       case 'left':
         return {
           ...baseArrowStyle,
-          right: -arrowSize,
+          right: -arrowSize + 0.6,
           top: Math.max(
             arrowSize,
             Math.min(
@@ -134,12 +134,12 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
           borderLeftWidth: arrowSize,
           borderTopColor: 'transparent',
           borderBottomColor: 'transparent',
-          borderLeftColor: 'rgba(0, 0, 0, 0.8)',
+          borderLeftColor: theme.colors.primary,
         };
       case 'right':
         return {
           ...baseArrowStyle,
-          left: -arrowSize,
+          left: -arrowSize + 0.6,
           top: Math.max(
             arrowSize,
             Math.min(
@@ -152,7 +152,7 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
           borderRightWidth: arrowSize,
           borderTopColor: 'transparent',
           borderBottomColor: 'transparent',
-          borderRightColor: 'rgba(0, 0, 0, 0.8)',
+          borderRightColor: theme.colors.primary,
         };
       default:
         return baseArrowStyle;
@@ -167,7 +167,17 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
   };
 
   return (
-    <View style={[styles.container, getTooltipStyle()]} onLayout={handleLayout}>
+    <View
+      style={[
+        styles.container,
+        {
+          backgroundColor: theme.colors.primary,
+          borderRadius: theme.components.borderRadius.md,
+        },
+        getTooltipStyle(),
+      ]}
+      onLayout={handleLayout}
+    >
       {tooltipLayout.width > 0 && <View style={getArrowStyle()} />}
       {typeof content === 'string' ? (
         <Text style={[styles.text, { color: theme.colors.background }]}>
@@ -182,16 +192,13 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(0, 0, 0, 0.8)',
     paddingHorizontal: 12,
     paddingVertical: 8,
-    borderRadius: 6,
     maxWidth: 200,
     zIndex: 1000,
   },
   text: {
     fontSize: 14,
     textAlign: 'center',
-    color: 'white',
   },
 });
