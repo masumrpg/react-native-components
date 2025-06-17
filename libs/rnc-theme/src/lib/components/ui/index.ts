@@ -22,3 +22,5 @@ export * from './bottom-sheet';
 export * from './scroll';
 export * from './skeleton';
 export * from './toast';
+export * from './portal';
+export * from './tooltip';

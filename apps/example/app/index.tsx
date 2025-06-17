@@ -16,6 +16,7 @@ import {
   Circle,
   CircleUser,
   GitPullRequestClosedIcon,
+  Info,
   Layers2,
   LayoutDashboard,
   LetterText,
@@ -201,6 +202,12 @@ export default function HomeScreen() {
       title: 'Toast',
       path: '/toast',
       icon: <Bell size={30} color={'black'} />,
+    },
+    {
+      id: 27,
+      title: 'Portal',
+      path: '/portal',
+      icon: <Info size={30} color={'black'} />,
     },
   ];
 
