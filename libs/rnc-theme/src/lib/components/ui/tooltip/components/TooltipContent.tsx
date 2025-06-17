@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
 import { TooltipContentProps } from '../types';
 import { useTheme } from '../../../../context/ThemeContext';
 
@@ -14,6 +14,8 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
   const { theme } = useTheme();
   const [tooltipLayout, setTooltipLayout] = useState({ width: 0, height: 0 });
 
+  const isIos = Platform.OS === 'ios';
+
   const getTooltipStyle = () => {
     const { x, y, width, height } = targetLayout;
     const { width: tooltipWidth, height: tooltipHeight } = tooltipLayout;
@@ -24,19 +26,19 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
     switch (position) {
       case 'top':
         tooltipX = x + width / 2 - tooltipWidth / 2;
-        tooltipY = y - tooltipHeight - 70 - offset;
+        tooltipY = y - tooltipHeight - offset - (isIos ? 100 : 70);
         break;
       case 'bottom':
         tooltipX = x + width / 2 - tooltipWidth / 2;
-        tooltipY = y + height - 50 + offset;
+        tooltipY = y + height + offset - (isIos ? 100 : 50);
         break;
       case 'left':
         tooltipX = x - tooltipWidth - 10 - offset;
-        tooltipY = y + height / 2 - tooltipHeight / 2 - 55;
+        tooltipY = y + height / 2 - tooltipHeight / 2 - (isIos ? 100 : 55);
         break;
       case 'right':
         tooltipX = x + width + 10 + offset;
-        tooltipY = y + height / 2 - tooltipHeight / 2 - 55;
+        tooltipY = y + height / 2 - tooltipHeight / 2 - (isIos ? 100 : 55);
         break;
     }
 
@@ -76,7 +78,7 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
 
     // Calculate arrow position relative to target element
     const targetCenterX = x + width / 2;
-    const targetCenterY = y + height / 2 - 55; // Sesuaikan dengan offset tooltip Y
+    const targetCenterY = y + height / 2 - (isIos ? 100 : 55); // Sesuaikan dengan offset tooltip Y
     const tooltipStyle = getTooltipStyle();
     const tooltipLeft = tooltipStyle.left as number;
     const tooltipTop = tooltipStyle.top as number;

@@ -15,6 +15,7 @@ import {
   CheckSquare,
   Circle,
   CircleUser,
+  GalleryThumbnails,
   GitPullRequestClosedIcon,
   Info,
   Layers2,
@@ -208,6 +209,12 @@ export default function HomeScreen() {
       title: 'Portal',
       path: '/portal',
       icon: <Info size={30} color={'black'} />,
+    },
+    {
+      id: 28,
+      title: 'Image Carousel',
+      path: '/image-carousel',
+      icon: <GalleryThumbnails size={30} color={'black'} />,
     },
   ];
 
