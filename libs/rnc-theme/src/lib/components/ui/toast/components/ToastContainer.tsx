@@ -7,18 +7,21 @@ import { ToastPosition } from '../types';
 import { Theme } from '../../../../types/theme';
 
 interface ToastContainerProps {
+  maxToasts: number;
   theme: Theme;
   position?: ToastPosition;
 }
 
 const ToastContainer: React.FC<ToastContainerProps> = ({
+  maxToasts,
   theme,
   position = 'top',
 }) => {
   const { toasts, dismiss } = useToast();
   const insets = useSafeAreaInsets();
+  const visibleToasts = toasts.slice(0, maxToasts);
 
-  if (toasts.length === 0) {
+  if (visibleToasts.length === 0) {
     return null;
   }
 
@@ -31,7 +34,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
 
   return (
     <View style={containerStyle} pointerEvents="box-none">
-      {toasts.map((toast, index) => (
+      {visibleToasts.map((toast, index) => (
         <ToastItem
           theme={theme}
           key={toast.id}

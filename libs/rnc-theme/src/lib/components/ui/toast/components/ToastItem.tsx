@@ -77,6 +77,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
         runOnJS(onDismiss)(toast.id);
       }
     );
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [toast.id, onDismiss]);
 
   useEffect(() => {
@@ -92,6 +93,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     return () => {
       unregisterDismissCallback(toast.id);
     };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     toast.id,
     handleDismiss,
@@ -99,29 +101,8 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     unregisterDismissCallback,
   ]);
 
-  const animatedStyle = useAnimatedStyle(() => {
-    return {
-      transform: [
-        { translateY: translateY.value },
-        { translateX: translateX.value }, // Tambahkan translateX
-        { scale: scale.value },
-      ],
-      opacity: opacity.value,
-      zIndex: 1000 - index,
-    };
-  });
-
   // iOS-style notification stack - sangat subtle!
   const stackedStyle = useAnimatedStyle(() => {
-    const maxVisibleNotifications = 3;
-
-    if (index >= maxVisibleNotifications) {
-      return {
-        transform: [{ translateY: 0 }, { scale: 0 }],
-        opacity: 0,
-      };
-    }
-
     // iOS style: sangat minimal offset dan scale
     const stackOffset = index * 4; // Sangat kecil, hanya 4px per notification
     const scaleValue = 1 - index * 0.02; // Hampir tidak terlihat perbedaannya (2%)
@@ -133,6 +114,18 @@ export const ToastItem: React.FC<ToastItemProps> = ({
         { scale: scaleValue }, // Scale hampir tidak berubah
       ],
       opacity: opacityValue,
+    };
+  });
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [
+        { translateY: translateY.value },
+        { translateX: translateX.value },
+        { scale: scale.value },
+      ],
+      opacity: opacity.value,
+      zIndex: 1000 - index,
     };
   });
 

@@ -65,7 +65,7 @@ function RootLayoutNav() {
   return (
     <RNCProvider
       defaultTheme="system"
-      toast={{ maxToasts: 5, position: 'top' }}
+      toast={{ maxToasts: 4, position: 'bottom' }}
     >
       <StatusBar style={pathName === '/scroll-to-hide' ? 'light' : 'dark'} />
       <GestureHandlerRootView>

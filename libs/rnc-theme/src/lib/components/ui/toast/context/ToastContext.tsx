@@ -55,6 +55,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
 
       return id;
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [maxToasts]
   );
 

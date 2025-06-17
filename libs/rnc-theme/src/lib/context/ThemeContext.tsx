@@ -288,7 +288,11 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
         >
           {children}
         </BottomSheetProvider>
-        <Toast theme={theme} position={toast?.position ?? 'top'} />
+        <Toast
+          theme={theme}
+          position={toast?.position ?? 'top'}
+          maxToasts={toast?.maxToasts ?? 5}
+        />
       </ToastProvider>
     </ThemeContext.Provider>
   );
