@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo } from 'react'; // Tambahkan missing imports
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -6,6 +6,7 @@ import Animated, {
   withSpring,
   withTiming,
   runOnJS,
+  Easing,
 } from 'react-native-reanimated';
 import {
   X,
@@ -42,38 +43,86 @@ export const ToastItem: React.FC<ToastItemProps> = ({
   const translateY = useSharedValue(-100);
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.9);
+  const translateX = useSharedValue(0); // Pindahkan ke top level
 
   useEffect(() => {
     // Enter animation
     translateY.value = withSpring(0, { damping: 20, stiffness: 300 });
     opacity.value = withTiming(1, { duration: 300 });
     scale.value = withSpring(1, { damping: 20, stiffness: 300 });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const handleDismiss = () => {
-    // Exit animation
-    translateY.value = withTiming(-100, { duration: 200 });
-    opacity.value = withTiming(0, { duration: 200 }, () => {
-      runOnJS(onDismiss)(toast.id);
+    // Animasi dismiss yang lebih smooth dengan multiple effects
+
+    // 1. Slide ke kanan dengan spring yang lebih smooth
+    translateX.value = withSpring(400, {
+      damping: 25,
+      stiffness: 200,
+      mass: 1,
     });
+
+    // 2. Scale down dengan timing yang berbeda untuk efek yang lebih natural
+    scale.value = withSpring(0.85, {
+      damping: 30,
+      stiffness: 400,
+      mass: 0.8,
+    });
+
+    // 3. Slide up sedikit untuk efek "lift and dismiss"
+    translateY.value = withSpring(-20, {
+      damping: 25,
+      stiffness: 300,
+      mass: 0.9,
+    });
+
+    // 4. Fade out dengan easing yang lebih smooth
+    opacity.value = withTiming(
+      0,
+      {
+        duration: 400, // Lebih lama untuk smooth
+        easing: Easing.bezier(0.25, 0.46, 0.45, 0.94), // Easing curve yang lebih natural
+      },
+      () => {
+        runOnJS(onDismiss)(toast.id);
+      }
+    );
   };
 
   const animatedStyle = useAnimatedStyle(() => {
     return {
       transform: [
         { translateY: translateY.value },
-        { scale: scale.value - index * 0.05 },
+        { translateX: translateX.value }, // Tambahkan translateX
+        { scale: scale.value },
       ],
-      opacity: opacity.value * (1 - index * 0.1),
+      opacity: opacity.value,
       zIndex: 1000 - index,
     };
   });
 
+  // iOS-style notification stack - sangat subtle!
   const stackedStyle = useAnimatedStyle(() => {
+    const maxVisibleNotifications = 3;
+
+    if (index >= maxVisibleNotifications) {
+      return {
+        transform: [{ translateY: 0 }, { scale: 0 }],
+        opacity: 0,
+      };
+    }
+
+    // iOS style: sangat minimal offset dan scale
+    const stackOffset = index * 4; // Sangat kecil, hanya 4px per notification
+    const scaleValue = 1 - index * 0.02; // Hampir tidak terlihat perbedaannya (2%)
+    const opacityValue = 1; // Semua notification full opacity seperti iOS
+
     return {
-      transform: [{ translateY: index * -8 }, { scale: 1 - index * 0.05 }],
-      opacity: 1 - index * 0.1,
+      transform: [
+        { translateY: stackOffset }, // Bergerak ke bawah sedikit
+        { scale: scaleValue }, // Scale hampir tidak berubah
+      ],
+      opacity: opacityValue,
     };
   });
 
@@ -86,7 +135,6 @@ export const ToastItem: React.FC<ToastItemProps> = ({
         styles[toast.variant || 'default'],
         animatedStyle,
         stackedStyle,
-        { marginTop: index * 4 },
       ]}
     >
       <View style={styles.content}>
