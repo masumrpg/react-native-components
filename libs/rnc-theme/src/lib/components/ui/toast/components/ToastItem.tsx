@@ -39,10 +39,14 @@ export const ToastItem: React.FC<ToastItemProps> = ({
   theme,
   index,
   onDismiss,
+  position = 'top',
 }) => {
   const { registerDismissCallback, unregisterDismissCallback } = useToast();
   const styles = useMemo(() => createToastItemStyle(theme), [theme]);
-  const translateY = useSharedValue(-100);
+
+  // Animasi berbeda berdasarkan posisi
+  const initialTranslateY = position === 'top' ? -100 : 100;
+  const translateY = useSharedValue(initialTranslateY);
   const opacity = useSharedValue(0);
   const scale = useSharedValue(0.9);
   const translateX = useSharedValue(0);
@@ -61,7 +65,9 @@ export const ToastItem: React.FC<ToastItemProps> = ({
       mass: 0.8,
     });
 
-    translateY.value = withSpring(-20, {
+    // Animasi translateY berbeda berdasarkan posisi
+    const dismissTranslateY = position === 'top' ? -20 : 20;
+    translateY.value = withSpring(dismissTranslateY, {
       damping: 25,
       stiffness: 300,
       mass: 0.9,
@@ -77,8 +83,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
         runOnJS(onDismiss)(toast.id);
       }
     );
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [toast.id, onDismiss]);
+  }, [toast.id, onDismiss, position]);
 
   useEffect(() => {
     // Enter animation
@@ -93,7 +98,6 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     return () => {
       unregisterDismissCallback(toast.id);
     };
-      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     toast.id,
     handleDismiss,
@@ -101,18 +105,17 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     unregisterDismissCallback,
   ]);
 
-  // iOS-style notification stack - sangat subtle!
+  // iOS-style notification stack - berbeda berdasarkan posisi
   const stackedStyle = useAnimatedStyle(() => {
-    // iOS style: sangat minimal offset dan scale
-    const stackOffset = index * 4; // Sangat kecil, hanya 4px per notification
-    const scaleValue = 1 - index * 0.02; // Hampir tidak terlihat perbedaannya (2%)
-    const opacityValue = 1; // Semua notification full opacity seperti iOS
+    // Untuk posisi top: stack ke bawah (positif)
+    // Untuk posisi bottom: stack ke atas (negatif)
+    const stackDirection = position === 'top' ? 1 : -1;
+    const stackOffset = index * 4 * stackDirection;
+    const scaleValue = 1 - index * 0.02;
+    const opacityValue = 1;
 
     return {
-      transform: [
-        { translateY: stackOffset }, // Bergerak ke bawah sedikit
-        { scale: scaleValue }, // Scale hampir tidak berubah
-      ],
+      transform: [{ translateY: stackOffset }, { scale: scaleValue }],
       opacity: opacityValue,
     };
   });

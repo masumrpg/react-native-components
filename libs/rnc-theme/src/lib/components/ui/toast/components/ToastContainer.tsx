@@ -40,6 +40,7 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
           key={toast.id}
           toast={toast}
           index={index}
+          position={position}
           onDismiss={dismiss}
         />
       ))}

@@ -35,5 +35,6 @@ export interface ToastItemProps {
   toast: ToastData;
   index: number;
   theme: Theme;
+  position?: ToastPosition;
   onDismiss: (id: string) => void;
 }
