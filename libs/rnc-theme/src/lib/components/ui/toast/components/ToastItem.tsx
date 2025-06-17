@@ -1,9 +1,14 @@
-import React, { useCallback, useEffect, useMemo } from 'react'; // Tambahkan missing imports
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import React, { useEffect, useCallback, useMemo } from 'react';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ActivityIndicator,
+} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
   withTiming,
   runOnJS,
   Easing,
@@ -19,7 +24,15 @@ import { ToastItemProps, ToastVariant } from '../types';
 import { Theme } from '../../../../types/theme';
 import { useToast } from '../context/ToastContext';
 
-const getToastIcon = (variant: ToastVariant) => {
+const getToastIcon = (
+  variant: ToastVariant,
+  theme: Theme,
+  isLoading?: boolean
+) => {
+  if (isLoading) {
+    return <ActivityIndicator size="small" color={theme.colors.primary} />;
+  }
+
   switch (variant) {
     case 'success':
       return <CheckCircle size={20} color="#10B981" />;
@@ -29,6 +42,8 @@ const getToastIcon = (variant: ToastVariant) => {
       return <AlertTriangle size={20} color="#F59E0B" />;
     case 'info':
       return <Info size={20} color="#3B82F6" />;
+    case 'loading':
+      return <ActivityIndicator size="small" color={theme.colors.primary} />;
     default:
       return null;
   }
@@ -52,6 +67,9 @@ export const ToastItem: React.FC<ToastItemProps> = ({
   const translateX = useSharedValue(0);
 
   const handleDismiss = useCallback(() => {
+    // Jangan dismiss jika masih loading
+    if (toast.isLoading) return;
+
     // Animasi dismiss yang sama untuk manual dan auto
     translateX.value = withTiming(400, {
       duration: 300,
@@ -80,13 +98,14 @@ export const ToastItem: React.FC<ToastItemProps> = ({
         runOnJS(onDismiss)(toast.id);
       }
     );
-  }, [toast.id, onDismiss, position]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [toast.id, toast.isLoading, onDismiss, position]);
 
   useEffect(() => {
     // Enter animation - TANPA BOUNCING, smooth linear motion
     translateY.value = withTiming(0, {
       duration: 400,
-      easing: Easing.out(Easing.cubic), // Smooth easing tanpa bounce
+      easing: Easing.out(Easing.cubic),
     });
 
     opacity.value = withTiming(1, {
@@ -106,6 +125,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     return () => {
       unregisterDismissCallback(toast.id);
     };
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     toast.id,
     handleDismiss,
@@ -118,10 +138,8 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     let stackOffset;
 
     if (position === 'top') {
-      // Posisi TOP: toast lama bergeser ke bawah
       stackOffset = index * 4;
     } else {
-      // Posisi BOTTOM: toast lama bergeser ke atas dengan smooth transition
       stackOffset = -index * 4;
     }
 
@@ -133,7 +151,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
         {
           translateY: withTiming(stackOffset, {
             duration: 300,
-            easing: Easing.out(Easing.cubic), // Smooth push tanpa bounce
+            easing: Easing.out(Easing.cubic),
           }),
         },
         {
@@ -159,7 +177,9 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     };
   });
 
-  const icon = toast.icon || getToastIcon(toast.variant || 'default');
+  const icon =
+    toast.icon ||
+    getToastIcon(toast.variant || 'default', theme, toast.isLoading);
 
   return (
     <Animated.View
@@ -177,12 +197,18 @@ export const ToastItem: React.FC<ToastItemProps> = ({
           {toast.description && (
             <Text style={styles.description}>{toast.description}</Text>
           )}
+          {toast.isLoading && toast.loadingText && (
+            <Text style={styles.loadingText}>{toast.loadingText}</Text>
+          )}
         </View>
-        <TouchableOpacity style={styles.closeButton} onPress={handleDismiss}>
-          <X size={16} color="#6B7280" />
-        </TouchableOpacity>
+        {/* Hanya tampilkan close button jika tidak loading */}
+        {!toast.isLoading && (
+          <TouchableOpacity style={styles.closeButton} onPress={handleDismiss}>
+            <X size={16} color="#6B7280" />
+          </TouchableOpacity>
+        )}
       </View>
-      {toast.action && (
+      {toast.action && !toast.isLoading && (
         <TouchableOpacity
           style={styles.actionButton}
           onPress={toast.action.onPress}
@@ -235,6 +261,12 @@ const createToastItemStyle = (theme: Theme) =>
       color: theme.colors.textSecondary,
       lineHeight: theme.typography.caption.lineHeight,
     },
+    loadingText: {
+      fontSize: theme.typography.caption.fontSize,
+      color: theme.colors.primary,
+      fontStyle: 'italic',
+      marginTop: theme.spacing.xs,
+    },
     closeButton: {
       padding: theme.spacing.xs,
       marginLeft: theme.spacing.sm,
@@ -270,5 +302,9 @@ const createToastItemStyle = (theme: Theme) =>
     info: {
       borderLeftWidth: 4,
       borderLeftColor: theme.colors.info,
+    },
+    loading: {
+      borderLeftWidth: 4,
+      borderLeftColor: theme.colors.primary,
     },
   });

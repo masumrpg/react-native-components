@@ -1,9 +1,22 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, ScrollView, StyleSheet } from 'react-native';
-import { Button, ButtonText, useToast, Code, H3, Body, H2 } from 'rnc-theme';
+import {
+  Button,
+  ButtonText,
+  useToast,
+  Code,
+  H3,
+  Body,
+  H2,
+  Card,
+  CardHeader,
+  CardContent,
+  CardFooter,
+} from 'rnc-theme';
 
 export default function ToastExample() {
-  const { toast, dismissAll } = useToast();
+  const { toast, dismissAll, toastAsync, updateToast } = useToast();
+  const [isLoading, setIsLoading] = useState(false);
 
   const showDefaultToast = () => {
     toast({
@@ -44,6 +57,80 @@ export default function ToastExample() {
     });
   };
 
+  const showLoadingToast = () => {
+    const toastId = toast({
+      variant: 'loading',
+      title: 'Loading',
+      description: 'Please wait...',
+      isLoading: true,
+      loadingText: 'Processing your request...',
+      duration: 0, // Tidak auto dismiss
+    });
+
+    // Simulasi async operation
+    setTimeout(() => {
+      updateToast(toastId, {
+        variant: 'success',
+        isLoading: false,
+        title: 'Completed!',
+        description: 'Your request has been processed successfully.',
+        duration: 3000,
+      });
+    }, 3000);
+  };
+
+  const showAsyncToast = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      await toastAsync(
+        {
+          title: 'Uploading File',
+          loadingText: 'Uploading your file, please wait...',
+        },
+        async () => {
+          // Simulasi upload file
+          await new Promise((resolve) => setTimeout(resolve, 4000));
+
+          // Simulasi kemungkinan error (20% chance)
+          if (Math.random() < 0.2) {
+            throw new Error('Upload failed due to network error');
+          }
+
+          return { fileId: '12345', fileName: 'document.pdf' };
+        }
+      );
+    } catch (error) {
+      console.log('Upload failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const showAsyncWithCustomMessages = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      await toastAsync(
+        {
+          title: 'Syncing Data',
+          loadingText: 'Synchronizing with server...',
+        },
+        async () => {
+          // Simulasi sync process
+          await new Promise((resolve) => setTimeout(resolve, 2500));
+          return { syncedItems: 150 };
+        }
+      );
+    } catch (error) {
+      console.log('Sync failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const showToastWithAction = () => {
     toast({
       variant: 'info',
@@ -80,16 +167,23 @@ export default function ToastExample() {
   };
 
   return (
-      <ScrollView style={styles.container}>
-        <View style={styles.section}>
-          <H2>Toast Examples</H2>
-          <Body style={styles.description}>
-            Stacked toast notifications with different variants and animations.
-          </Body>
-        </View>
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <H2>Toast Examples</H2>
+        <Body style={styles.description}>
+          Stacked toast notifications with different variants, animations, and
+          async operations.
+        </Body>
+      </View>
 
-        <View style={styles.section}>
-          <H3>Basic Variants</H3>
+      {/* Basic Variants Card */}
+      <Card variant="default" style={styles.card}>
+        <CardHeader
+          title="Basic Variants"
+          subtitle="Different toast types for various use cases"
+          borderBottom
+        />
+        <CardContent>
           <View style={styles.buttonGroup}>
             <Button onPress={showDefaultToast} style={styles.button}>
               <ButtonText>Default Toast</ButtonText>
@@ -123,10 +217,63 @@ export default function ToastExample() {
               <ButtonText>Info Toast</ButtonText>
             </Button>
           </View>
-        </View>
+        </CardContent>
+      </Card>
 
-        <View style={styles.section}>
-          <H3>Advanced Features</H3>
+      {/* Async Loading Card */}
+      <Card variant="primary" style={styles.card}>
+        <CardHeader
+          title="Async & Loading States"
+          subtitle="Toast with loading animations and async operations"
+          borderBottom
+        />
+        <CardContent>
+          <View style={styles.buttonGroup}>
+            <Button
+              onPress={showLoadingToast}
+              variant="primary"
+              style={styles.button}
+            >
+              <ButtonText>Manual Loading Toast</ButtonText>
+            </Button>
+            <Button
+              onPress={showAsyncToast}
+              variant="primary"
+              style={styles.button}
+              disabled={isLoading}
+            >
+              <ButtonText>
+                {isLoading ? 'Processing...' : 'Async File Upload'}
+              </ButtonText>
+            </Button>
+            <Button
+              onPress={showAsyncWithCustomMessages}
+              variant="secondary"
+              style={styles.button}
+              disabled={isLoading}
+            >
+              <ButtonText>
+                {isLoading ? 'Syncing...' : 'Async Data Sync'}
+              </ButtonText>
+            </Button>
+          </View>
+        </CardContent>
+        <CardFooter>
+          <Body style={styles.cardFooterText}>
+            💡 Async toasts automatically transition from loading to
+            success/error states
+          </Body>
+        </CardFooter>
+      </Card>
+
+      {/* Advanced Features Card */}
+      <Card variant="outline" style={styles.card}>
+        <CardHeader
+          title="Advanced Features"
+          subtitle="Special toast behaviors and interactions"
+          borderBottom
+        />
+        <CardContent>
           <View style={styles.buttonGroup}>
             <Button onPress={showToastWithAction} style={styles.button}>
               <ButtonText>Toast with Action</ButtonText>
@@ -145,16 +292,24 @@ export default function ToastExample() {
               <ButtonText>Dismiss All</ButtonText>
             </Button>
           </View>
-        </View>
+        </CardContent>
+      </Card>
 
-        <View style={styles.section}>
-          <H3>Usage</H3>
-          <Code>
+      {/* Usage Examples Card */}
+      <Card variant="ghost" style={styles.card}>
+        <CardHeader
+          title="Usage Examples"
+          subtitle="Code examples for different toast implementations"
+          borderBottom
+        />
+        <CardContent>
+          <H3 style={styles.codeTitle}>Basic Usage</H3>
+          <Code style={styles.codeBlock}>
             {`import { useToast } from 'rnc-theme';
 
 const { toast } = useToast();
 
-// Basic usage
+// Basic toast
 toast({
   title: 'Success!',
   description: 'Operation completed.',
@@ -171,8 +326,49 @@ toast({
   }
 });`}
           </Code>
-        </View>
-      </ScrollView>
+
+          <H3 style={styles.codeTitle}>Async Operations</H3>
+          <Code style={styles.codeBlock}>
+            {`// Auto-managed async toast
+const { toastAsync } = useToast();
+
+const result = await toastAsync(
+  {
+    title: 'Uploading',
+    loadingText: 'Please wait...'
+  },
+  async () => {
+    return await uploadFile(file);
+  }
+);
+
+// Manual control
+const { toast, updateToast } = useToast();
+
+const id = toast({
+  variant: 'loading',
+  isLoading: true,
+  duration: 0
+});
+
+try {
+  await operation();
+  updateToast(id, {
+    variant: 'success',
+    isLoading: false,
+    duration: 3000
+  });
+} catch (error) {
+  updateToast(id, {
+    variant: 'error',
+    isLoading: false,
+    duration: 5000
+  });
+}`}
+          </Code>
+        </CardContent>
+      </Card>
+    </ScrollView>
   );
 }
 
@@ -180,18 +376,35 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
-  section: {
+  header: {
     marginBottom: 24,
+    paddingHorizontal: 16,
+    paddingTop: 16,
   },
   description: {
     marginTop: 8,
     opacity: 0.7,
   },
+  card: {
+    marginHorizontal: 16,
+    marginBottom: 16,
+  },
   buttonGroup: {
     gap: 12,
-    marginTop: 16,
   },
   button: {
     marginBottom: 8,
+  },
+  cardFooterText: {
+    fontSize: 12,
+    fontStyle: 'italic',
+    opacity: 0.7,
+  },
+  codeTitle: {
+    marginTop: 16,
+    marginBottom: 8,
+  },
+  codeBlock: {
+    marginBottom: 16,
   },
 });

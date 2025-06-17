@@ -39,15 +39,13 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
         return updated.slice(0, maxToasts);
       });
 
-      // Auto dismiss dengan animasi
-      if (newToast.duration && newToast.duration > 0) {
+      // Auto dismiss dengan animasi (kecuali untuk loading toast)
+      if (newToast.duration && newToast.duration > 0 && !newToast.isLoading) {
         setTimeout(() => {
-          // Trigger animasi dismiss, bukan langsung hapus dari state
           const dismissCallback = dismissCallbacks.current.get(id);
           if (dismissCallback) {
-            dismissCallback(); // Ini akan trigger animasi di ToastItem
+            dismissCallback();
           } else {
-            // Fallback jika callback belum ready
             dismiss(id);
           }
         }, newToast.duration);
@@ -63,11 +61,82 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
     setToasts((prev) => prev.filter((toast) => toast.id !== id));
   }, []);
 
+  // Fungsi untuk update toast yang sudah ada
+  const updateToast = useCallback((id: string, data: Partial<ToastData>) => {
+    setToasts((prev) =>
+      prev.map((toast) => (toast.id === id ? { ...toast, ...data } : toast))
+    );
+  }, []);
+
+  // Fungsi async yang menampilkan loading dan update otomatis
+  const toastAsync = useCallback(
+    async <T,>(
+      data: Omit<ToastData, 'id'>,
+      asyncFn: () => Promise<T>
+    ): Promise<T> => {
+      // Tampilkan loading toast
+      const id = toast({
+        ...data,
+        variant: 'loading',
+        isLoading: true,
+        duration: 0, // Tidak auto dismiss
+        loadingText: data.loadingText || 'Loading...',
+      });
+
+      try {
+        const result = await asyncFn();
+
+        // Update ke success
+        updateToast(id, {
+          variant: 'success',
+          isLoading: false,
+          title: data.title || 'Success',
+          description: data.description || 'Operation completed successfully',
+          duration: 3000,
+        });
+
+        // Auto dismiss setelah success
+        setTimeout(() => {
+          const dismissCallback = dismissCallbacks.current.get(id);
+          if (dismissCallback) {
+            dismissCallback();
+          } else {
+            dismiss(id);
+          }
+        }, 3000);
+
+        return result;
+      } catch (error) {
+        // Update ke error
+        updateToast(id, {
+          variant: 'error',
+          isLoading: false,
+          title: 'Error',
+          description:
+            error instanceof Error ? error.message : 'Something went wrong',
+          duration: 5000,
+        });
+
+        // Auto dismiss setelah error
+        setTimeout(() => {
+          const dismissCallback = dismissCallbacks.current.get(id);
+          if (dismissCallback) {
+            dismissCallback();
+          } else {
+            dismiss(id);
+          }
+        }, 5000);
+
+        throw error;
+      }
+    },
+    [toast, updateToast, dismiss]
+  );
+
   const dismissAll = useCallback(() => {
     setToasts([]);
   }, []);
 
-  // Function untuk register dismiss callback dari ToastItem
   const registerDismissCallback = useCallback(
     (id: string, callback: () => void) => {
       dismissCallbacks.current.set(id, callback);
@@ -75,7 +144,6 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
     []
   );
 
-  // Function untuk unregister dismiss callback
   const unregisterDismissCallback = useCallback((id: string) => {
     dismissCallbacks.current.delete(id);
   }, []);
@@ -87,6 +155,8 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
     dismissAll,
     registerDismissCallback,
     unregisterDismissCallback,
+    updateToast,
+    toastAsync,
   };
 
   return (
