@@ -59,7 +59,7 @@ interface ThemeProviderProps {
   };
 }
 
-export const RNCThemeProvider: React.FC<ThemeProviderProps> = ({
+export const RNCProvider: React.FC<ThemeProviderProps> = ({
   children,
   defaultTheme = 'system',
   customLightTheme,
