@@ -25,3 +25,4 @@ export * from './toast';
 export * from './portal';
 export * from './tooltip';
 export * from './image-carousel';
+export * from './rating';

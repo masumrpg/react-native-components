@@ -31,6 +31,7 @@ import {
   Plus,
   ScrollText,
   SlidersHorizontal,
+  Star,
   Table,
   TextCursorInput,
   ToggleLeft,
@@ -215,6 +216,12 @@ export default function HomeScreen() {
       title: 'Image Carousel',
       path: '/image-carousel',
       icon: <GalleryThumbnails size={30} color={'black'} />,
+    },
+    {
+      id: 29,
+      title: 'Rating',
+      path: '/rating',
+      icon: <Star size={30} color={'black'} />,
     },
   ];
 
