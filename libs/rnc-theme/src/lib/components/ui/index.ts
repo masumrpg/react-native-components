@@ -24,3 +24,4 @@ export * from './skeleton';
 export * from './toast';
 export * from './portal';
 export * from './tooltip';
+export * from './image-carousel';
