@@ -1,10 +1,11 @@
-import React, { useState, useRef, forwardRef } from 'react';
+import { useState, forwardRef } from 'react';
 import {
   View,
   TouchableOpacity,
   Text,
   StyleProp,
   ViewStyle,
+  DimensionValue,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -19,8 +20,6 @@ import { Theme } from '../../../types/theme';
 import { Star, Heart, Rocket, Bell } from 'lucide-react-native';
 import {
   BaseComponentProps,
-  ComponentSize,
-  ComponentVariant,
 } from '../../../types/ui';
 
 type RatingType = 'star' | 'heart' | 'rocket' | 'bell' | 'custom';
@@ -44,12 +43,12 @@ interface AirbnbRatingProps extends BaseRatingProps {
   starContainerStyle?: StyleProp<ViewStyle>;
   ratingContainerStyle?: StyleProp<ViewStyle>;
   starStyle?: StyleProp<ViewStyle>;
-  starImage?: any;
+  starImage?: React.ComponentType<any>;
 }
 
 interface SwipeRatingProps extends BaseRatingProps {
   type?: RatingType;
-  ratingImage?: any;
+  ratingImage?: React.ComponentType<any>;
   ratingColor?: string;
   ratingBackgroundColor?: string;
   tintColor?: string;
@@ -190,8 +189,6 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
     const { theme } = useTheme();
     const styles = useThemedStyles(createSwipeRatingStyles);
     const [rating, setRating] = useState(startingValue ?? defaultRating);
-    const [isGesturing, setIsGesturing] = useState(false);
-    const containerRef = useRef<View>(null);
     const containerWidth = useSharedValue(0);
     const gestureX = useSharedValue(0);
 
@@ -214,7 +211,6 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
       .onStart(() => {
         'worklet';
         if (readonly) return;
-        runOnJS(setIsGesturing)(true);
         if (onStartRating) {
           runOnJS(onStartRating)(rating);
         }
@@ -233,13 +229,12 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
       .onEnd(() => {
         'worklet';
         if (readonly) return;
-        runOnJS(setIsGesturing)(false);
         if (onFinishRating) {
           runOnJS(onFinishRating)(rating);
         }
       });
 
-    const onLayout = (event: any) => {
+    const onLayout = (event: { nativeEvent: { layout: { width: number } } }) => {
       containerWidth.value = event.nativeEvent.layout.width;
     };
 
@@ -268,7 +263,7 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
               style={[
                 styles.activeIconOverlay,
                 {
-                  width: fractionWidth as any,
+                  width: fractionWidth as DimensionValue,
                 },
               ]}
             >
