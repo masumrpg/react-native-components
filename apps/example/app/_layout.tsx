@@ -1,31 +1,9 @@
-// Polyfills required to use Intl with Hermes engine - order matters!
-import '@formatjs/intl-getcanonicallocales/polyfill';
-import '@formatjs/intl-locale/polyfill';
-// Use polyfill-force for better performance in React Native
-import '@formatjs/intl-pluralrules/polyfill-force';
-// Add locale data for supported languages
-import '@formatjs/intl-pluralrules/locale-data/en';
-import '@formatjs/intl-pluralrules/locale-data/id';
-import '@formatjs/intl-pluralrules/locale-data/es';
-import '@formatjs/intl-pluralrules/locale-data/fr';
-import '@formatjs/intl-numberformat/polyfill';
-// Add locale data for NumberFormat
-import '@formatjs/intl-numberformat/locale-data/en';
-import '@formatjs/intl-numberformat/locale-data/id';
-import '@formatjs/intl-numberformat/locale-data/es';
-import '@formatjs/intl-numberformat/locale-data/fr';
-import '@formatjs/intl-relativetimeformat/polyfill';
-// Add locale data for RelativeTimeFormat
-import '@formatjs/intl-relativetimeformat/locale-data/en';
-import '@formatjs/intl-relativetimeformat/locale-data/id';
-import '@formatjs/intl-relativetimeformat/locale-data/es';
-import '@formatjs/intl-relativetimeformat/locale-data/fr';
 import { useFonts } from 'expo-font';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
-import { I18nProvider, RNCProvider } from 'rnc-theme';
+import { RNCProvider } from 'rnc-theme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import 'react-native-reanimated';
 import { StatusBar } from 'expo-status-bar';
@@ -89,7 +67,6 @@ function RootLayoutNav() {
       defaultTheme="system"
       toast={{ maxToasts: 4, position: 'bottom' }}
     >
-      <I18nProvider options={{ fallbackLng: 'en', debug: false }}>
         <StatusBar style={pathName === '/scroll-to-hide' ? 'light' : 'dark'} />
         <GestureHandlerRootView>
           <Stack
@@ -103,7 +80,6 @@ function RootLayoutNav() {
             <Stack.Screen name="index" />
           </Stack>
         </GestureHandlerRootView>
-      </I18nProvider>
     </RNCProvider>
   );
 }

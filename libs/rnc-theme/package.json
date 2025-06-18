@@ -43,10 +43,7 @@
   "keywords": [
     "react-native",
     "rnc-theme",
-    "mobile",
-    "i18n",
-    "internationalization",
-    "localization"
+    "mobile"
   ],
   "author": "Masum",
   "license": "MIT",
@@ -56,9 +53,7 @@
     "react-native-reanimated": ">=3",
     "react-native-gesture-handler": ">=2",
     "@react-native-async-storage/async-storage": ">=2",
-    "lucide-react-native": ">=0.513.0",
-    "i18next": ">=23.7.16",
-    "react-i18next": ">=14.0.0"
+    "lucide-react-native": ">=0.513.0"
   },
   "devDependencies": {
     "@types/react": ">=19.0.14",

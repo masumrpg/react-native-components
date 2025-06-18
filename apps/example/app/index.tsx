@@ -18,7 +18,6 @@ import {
   GalleryThumbnails,
   GitPullRequestClosedIcon,
   Info,
-  Languages,
   Layers2,
   LayoutDashboard,
   LetterText,
@@ -225,17 +224,11 @@ export default function HomeScreen() {
       path: '/rating',
       icon: <Star size={30} color={'black'} />,
     },
-    // {
-    //   id: 30,
-    //   title: 'Calendar',
-    //   path: '/calendar',
-    //   icon: <Calendar size={30} color={'black'} />,
-    // },
     {
-      id: 31,
-      title: 'I18n',
-      path: '/i18n' as Href,
-      icon: <Languages size={30} color={'black'} />,
+      id: 30,
+      title: 'Calendar',
+      path: '/calendar',
+      icon: <Calendar size={30} color={'black'} />,
     },
   ];
 

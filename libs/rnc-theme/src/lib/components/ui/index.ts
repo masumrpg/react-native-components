@@ -26,4 +26,3 @@ export * from './portal';
 export * from './tooltip';
 export * from './image-carousel';
 export * from './rating';
-export * from './i18n';
