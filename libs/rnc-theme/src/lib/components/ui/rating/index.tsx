@@ -144,23 +144,29 @@ const Rating = forwardRef<View, RatingProps>(
 
     const getStarColor = (isSelected: boolean) => {
       if (!isSelected) return unSelectedColor;
-      
+
       if (enableDynamicColors && customColors.length > 0) {
         // Use color based on current rating, not individual star
-        const colorIndex = Math.min(Math.floor(rating) - 1, customColors.length - 1);
+        const colorIndex = Math.min(
+          Math.floor(rating) - 1,
+          customColors.length - 1
+        );
         return customColors[Math.max(0, colorIndex)];
       }
-      
+
       return selectedColor;
     };
 
     const getReviewColor = () => {
       if (enableDynamicColors && customColors.length > 0 && rating > 0) {
         // Use same color logic as stars for consistency
-        const colorIndex = Math.min(Math.floor(rating) - 1, customColors.length - 1);
+        const colorIndex = Math.min(
+          Math.floor(rating) - 1,
+          customColors.length - 1
+        );
         return customColors[Math.max(0, colorIndex)];
       }
-      
+
       return reviewColor;
     };
 
@@ -183,7 +189,7 @@ const Rating = forwardRef<View, RatingProps>(
 
     const renderStars = () => {
       const IconComponent = customIcon || Star;
-      
+
       return Array.from({ length: count }, (_, index) => {
         const starIndex = index + 1;
         const isSelected = starIndex <= rating;
@@ -385,18 +391,14 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
 const createRatingStyles = (theme: Theme) => ({
   container: {
     alignItems: 'center' as const,
-    paddingVertical: theme.spacing.md,
   },
   ratingSummaryContainer: {
     alignItems: 'center' as const,
-    marginBottom: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
   },
   ratingValue: {
     fontSize: theme.typography.title.fontSize,
     fontWeight: '600' as const,
     color: theme.colors.text,
-    marginBottom: theme.spacing.xs,
     textAlign: 'center' as const,
   },
   reviewersCount: {

@@ -408,9 +408,6 @@ const RatingScreen = () => {
               unSelectedColor={theme.colors.border}
               summaryStyle={{
                 backgroundColor: theme.colors.surface,
-                padding: theme.spacing.md,
-                borderRadius: theme.components.borderRadius.md,
-                marginBottom: theme.spacing.lg,
               }}
               summaryTextStyle={{
                 color: theme.colors.primary,
