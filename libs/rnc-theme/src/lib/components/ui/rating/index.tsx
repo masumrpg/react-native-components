@@ -48,6 +48,8 @@ interface RatingProps extends BaseRatingProps {
     color?: string;
     fill?: string;
   }>;
+  enableDynamicColors?: boolean;
+  customColors?: string[];
 }
 
 interface SwipeRatingProps extends BaseRatingProps {
@@ -84,6 +86,8 @@ const Rating = forwardRef<View, RatingProps>(
       ratingContainerStyle,
       starStyle,
       style,
+      enableDynamicColors = false,
+      customColors = ['#e74c3c', '#f39c12', '#f1c40f', '#2ecc71', '#27ae60'],
       ...props
     },
     ref
@@ -115,10 +119,23 @@ const Rating = forwardRef<View, RatingProps>(
       transform: [{ scale: scale.value }],
     }));
 
+    const getStarColor = (isSelected: boolean) => {
+      if (!isSelected) return unSelectedColor;
+      
+      if (enableDynamicColors && customColors.length > 0) {
+        // Use color based on current rating, not individual star
+        const colorIndex = Math.min(Math.floor(rating) - 1, customColors.length - 1);
+        return customColors[Math.max(0, colorIndex)];
+      }
+      
+      return selectedColor;
+    };
+
     const renderStars = () => {
       return Array.from({ length: count }, (_, index) => {
         const starIndex = index + 1;
         const isSelected = starIndex <= rating;
+        const starColor = getStarColor(isSelected);
 
         return (
           <TouchableOpacity
@@ -130,8 +147,8 @@ const Rating = forwardRef<View, RatingProps>(
             <Animated.View style={animatedStyle}>
               <Star
                 size={starSize}
-                color={isSelected ? selectedColor : unSelectedColor}
-                fill={isSelected ? selectedColor : 'transparent'}
+                color={starColor}
+                fill={isSelected ? starColor : 'transparent'}
                 style={starStyle}
               />
             </Animated.View>
