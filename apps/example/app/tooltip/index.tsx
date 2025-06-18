@@ -31,7 +31,7 @@ import {
   AlertCircle,
 } from 'lucide-react-native';
 
-export default function PortalExample() {
+export default function TooltipScreen() {
   const { theme } = useTheme();
   const [showPortalContent, setShowPortalContent] = useState(false);
   const [showModalPortal, setShowModalPortal] = useState(false);

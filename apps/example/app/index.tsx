@@ -206,8 +206,8 @@ export default function HomeScreen() {
     },
     {
       id: 27,
-      title: 'Portal',
-      path: '/portal',
+      title: 'Tooltip',
+      path: '/tooltip',
       icon: <Info size={30} color={'black'} />,
     },
     {
