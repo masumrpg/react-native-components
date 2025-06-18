@@ -37,6 +37,7 @@ import {
   ToggleLeft,
   ToggleRight,
   User,
+  Calendar,
 } from 'lucide-react-native';
 import { ReactElement } from 'react';
 
@@ -222,6 +223,12 @@ export default function HomeScreen() {
       title: 'Rating',
       path: '/rating',
       icon: <Star size={30} color={'black'} />,
+    },
+    {
+      id: 30,
+      title: 'Calendar',
+      path: '/calendar',
+      icon: <Calendar size={30} color={'black'} />,
     },
   ];
 
