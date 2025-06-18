@@ -19,9 +19,7 @@ import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { Star, Heart, Rocket, Bell } from 'lucide-react-native';
-import {
-  BaseComponentProps,
-} from '../../../types/ui';
+import { BaseComponentProps } from '../../../types/ui';
 
 type RatingType = 'star' | 'heart' | 'rocket' | 'bell' | 'custom';
 
@@ -68,7 +66,11 @@ interface RatingProps extends BaseRatingProps {
 
 interface SwipeRatingProps extends BaseRatingProps {
   type?: RatingType;
-  ratingImage?: React.ComponentType<{ size?: number; color?: string; fill?: string }>;
+  ratingImage?: React.ComponentType<{
+    size?: number;
+    color?: string;
+    fill?: string;
+  }>;
   ratingColor?: string;
   ratingBackgroundColor?: string;
   tintColor?: string;
@@ -93,7 +95,7 @@ const Rating = forwardRef<View, RatingProps>(
       reviewColor = '#f1c40f',
       size = 'md',
       reviewSize = 25,
-      showRating = true,
+      showRating = false,
       readonly = false,
       onRatingChange,
       starContainerStyle,
@@ -187,6 +189,23 @@ const Rating = forwardRef<View, RatingProps>(
       );
     };
 
+    const renderShowRating = () => {
+      if (!showRating) return null;
+      return (
+        <Text
+          style={[
+            styles.reviewText,
+            {
+              color: getReviewColor(),
+              fontSize: reviewSize,
+            },
+          ]}
+        >
+          {reviews[rating - 1] || ''}
+        </Text>
+      );
+    };
+
     const renderStars = () => {
       const IconComponent = customIcon || Star;
 
@@ -226,19 +245,7 @@ const Rating = forwardRef<View, RatingProps>(
         {...props}
       >
         {renderRatingSummary()}
-        {showRating && (
-          <Text
-            style={[
-              styles.reviewText,
-              {
-                color: getReviewColor(),
-                fontSize: reviewSize,
-              },
-            ]}
-          >
-            {reviews[rating - 1] || ''}
-          </Text>
-        )}
+        {renderShowRating()}
         <View style={styles.starsContainer}>{renderStars()}</View>
       </View>
     );
@@ -394,6 +401,7 @@ const createRatingStyles = (theme: Theme) => ({
   },
   ratingSummaryContainer: {
     alignItems: 'center' as const,
+    marginBottom: theme.spacing.sm,
   },
   ratingValue: {
     fontSize: theme.typography.title.fontSize,
