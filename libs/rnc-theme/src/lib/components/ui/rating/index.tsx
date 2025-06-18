@@ -5,6 +5,7 @@ import {
   Text,
   StyleProp,
   ViewStyle,
+  TextStyle,
   DimensionValue,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
@@ -55,6 +56,14 @@ interface RatingProps extends BaseRatingProps {
     color?: string;
     fill?: string;
   }>;
+  showRatingSummary?: boolean;
+  totalRating?: number;
+  totalReviewers?: number;
+  ratingLabel?: string;
+  reviewersLabel?: string;
+  starGap?: number;
+  summaryStyle?: StyleProp<ViewStyle>;
+  summaryTextStyle?: StyleProp<TextStyle>;
 }
 
 interface SwipeRatingProps extends BaseRatingProps {
@@ -94,6 +103,14 @@ const Rating = forwardRef<View, RatingProps>(
       enableDynamicColors = false,
       customColors = ['#e74c3c', '#f39c12', '#f1c40f', '#2ecc71', '#27ae60'],
       customIcon,
+      showRatingSummary = false,
+      totalRating,
+      totalReviewers,
+      ratingLabel = 'Rating',
+      reviewersLabel = 'reviews',
+      starGap = 4,
+      summaryStyle,
+      summaryTextStyle,
       ...props
     },
     ref
@@ -147,6 +164,23 @@ const Rating = forwardRef<View, RatingProps>(
       return reviewColor;
     };
 
+    const renderRatingSummary = () => {
+      if (!showRatingSummary || !totalRating || !totalReviewers) {
+        return null;
+      }
+
+      return (
+        <View style={[styles.ratingSummaryContainer, summaryStyle]}>
+          <Text style={[styles.ratingValue, summaryTextStyle]}>
+            {totalRating.toFixed(1)} {ratingLabel}
+          </Text>
+          <Text style={[styles.reviewersCount, summaryTextStyle]}>
+            {totalReviewers.toLocaleString()} {reviewersLabel}
+          </Text>
+        </View>
+      );
+    };
+
     const renderStars = () => {
       const IconComponent = customIcon || Star;
       
@@ -160,7 +194,11 @@ const Rating = forwardRef<View, RatingProps>(
             key={index}
             onPress={() => handleRating(starIndex)}
             disabled={readonly}
-            style={[styles.starContainer, starContainerStyle]}
+            style={[
+              styles.starContainer,
+              { marginHorizontal: starGap / 2 },
+              starContainerStyle,
+            ]}
           >
             <Animated.View style={animatedStyle}>
               <IconComponent
@@ -181,6 +219,7 @@ const Rating = forwardRef<View, RatingProps>(
         style={[styles.container, ratingContainerStyle, style]}
         {...props}
       >
+        {renderRatingSummary()}
         {showRating && (
           <Text
             style={[
@@ -348,6 +387,24 @@ const createRatingStyles = (theme: Theme) => ({
     alignItems: 'center' as const,
     paddingVertical: theme.spacing.md,
   },
+  ratingSummaryContainer: {
+    alignItems: 'center' as const,
+    marginBottom: theme.spacing.md,
+    paddingVertical: theme.spacing.sm,
+  },
+  ratingValue: {
+    fontSize: theme.typography.title.fontSize,
+    fontWeight: '600' as const,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.xs,
+    textAlign: 'center' as const,
+  },
+  reviewersCount: {
+    fontSize: theme.typography.body.fontSize,
+    color: theme.colors.textSecondary,
+    fontWeight: '400' as const,
+    textAlign: 'center' as const,
+  },
   reviewText: {
     marginBottom: theme.spacing.sm,
     fontWeight: '600' as const,
@@ -358,8 +415,7 @@ const createRatingStyles = (theme: Theme) => ({
     alignItems: 'center' as const,
   },
   starContainer: {
-    marginHorizontal: theme.spacing.xs,
-    padding: theme.spacing.xs,
+    padding: theme.spacing.xs / 2,
   },
 });
 
