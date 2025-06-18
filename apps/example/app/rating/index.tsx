@@ -8,7 +8,7 @@ import {
   ScrollView,
 } from 'react-native';
 import React, { useState } from 'react';
-import { AirbnbRating, SwipeRating, useTheme } from 'rnc-theme';
+import { Rating, SwipeRating, useTheme } from 'rnc-theme';
 
 const RatingScreen = () => {
   const { theme } = useTheme();
@@ -22,14 +22,16 @@ const RatingScreen = () => {
   };
 
   return (
-    <SafeAreaView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+    <SafeAreaView
+      style={[styles.container, { backgroundColor: theme.colors.background }]}
+    >
       <ScrollView contentContainerStyle={styles.scrollContent}>
         {/* Basic Airbnb Rating */}
         <View style={styles.section}>
           <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
             Basic Airbnb Rating
           </Text>
-          <AirbnbRating
+          <Rating
             defaultRating={airbnbRating}
             onRatingChange={setAirbnbRating}
           />
@@ -40,7 +42,7 @@ const RatingScreen = () => {
           <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
             Custom Airbnb Rating
           </Text>
-          <AirbnbRating
+          <Rating
             count={11}
             reviews={[
               'Terrible',
@@ -121,7 +123,7 @@ const RatingScreen = () => {
           <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
             Readonly Rating
           </Text>
-          <AirbnbRating
+          <Rating
             defaultRating={4}
             readonly
             showRating={false}
@@ -151,7 +153,7 @@ const RatingScreen = () => {
           <Text style={[styles.sectionTitle, { color: theme.colors.text }]}>
             Large Size Rating
           </Text>
-          <AirbnbRating
+          <Rating
             size="lg"
             defaultRating={5}
             selectedColor={theme.colors.primary}

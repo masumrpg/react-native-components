@@ -34,7 +34,7 @@ interface BaseRatingProps extends BaseComponentProps {
   style?: StyleProp<ViewStyle>;
 }
 
-interface AirbnbRatingProps extends BaseRatingProps {
+interface RatingProps extends BaseRatingProps {
   reviews?: string[];
   reviewColor?: string;
   reviewSize?: number;
@@ -43,7 +43,11 @@ interface AirbnbRatingProps extends BaseRatingProps {
   starContainerStyle?: StyleProp<ViewStyle>;
   ratingContainerStyle?: StyleProp<ViewStyle>;
   starStyle?: StyleProp<ViewStyle>;
-  starImage?: React.ComponentType<{ size?: number; color?: string; fill?: string }>;
+  starImage?: React.ComponentType<{
+    size?: number;
+    color?: string;
+    fill?: string;
+  }>;
 }
 
 interface SwipeRatingProps extends BaseRatingProps {
@@ -62,7 +66,7 @@ interface SwipeRatingProps extends BaseRatingProps {
   onFinishRating?: (rating: number) => void;
 }
 
-const AirbnbRating = forwardRef<View, AirbnbRatingProps>(
+const Rating = forwardRef<View, RatingProps>(
   (
     {
       count = 5,
@@ -84,7 +88,7 @@ const AirbnbRating = forwardRef<View, AirbnbRatingProps>(
     },
     ref
   ) => {
-    const styles = useThemedStyles(createAirbnbRatingStyles);
+    const styles = useThemedStyles(createRatingStyles);
     const [rating, setRating] = useState(defaultRating);
     const scale = useSharedValue(1);
 
@@ -234,7 +238,9 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
         }
       });
 
-    const onLayout = (event: { nativeEvent: { layout: { width: number } } }) => {
+    const onLayout = (event: {
+      nativeEvent: { layout: { width: number } };
+    }) => {
       containerWidth.value = event.nativeEvent.layout.width;
     };
 
@@ -302,7 +308,7 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
   }
 );
 
-const createAirbnbRatingStyles = (theme: Theme) => ({
+const createRatingStyles = (theme: Theme) => ({
   container: {
     alignItems: 'center' as const,
     paddingVertical: theme.spacing.md,
@@ -349,8 +355,8 @@ const createSwipeRatingStyles = (theme: Theme) => ({
   },
 });
 
-AirbnbRating.displayName = 'AirbnbRating';
+Rating.displayName = 'Rating';
 SwipeRating.displayName = 'SwipeRating';
 
-export { AirbnbRating, SwipeRating };
-export type { AirbnbRatingProps, SwipeRatingProps };
+export { Rating, SwipeRating };
+export type { RatingProps, SwipeRatingProps };
