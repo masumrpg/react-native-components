@@ -43,12 +43,12 @@ interface AirbnbRatingProps extends BaseRatingProps {
   starContainerStyle?: StyleProp<ViewStyle>;
   ratingContainerStyle?: StyleProp<ViewStyle>;
   starStyle?: StyleProp<ViewStyle>;
-  starImage?: React.ComponentType<any>;
+  starImage?: React.ComponentType<{ size?: number; color?: string; fill?: string }>;
 }
 
 interface SwipeRatingProps extends BaseRatingProps {
   type?: RatingType;
-  ratingImage?: React.ComponentType<any>;
+  ratingImage?: React.ComponentType<{ size?: number; color?: string; fill?: string }>;
   ratingColor?: string;
   ratingBackgroundColor?: string;
   tintColor?: string;
