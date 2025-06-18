@@ -34,8 +34,24 @@ const CustomImage = ({
   // Get Image Width and Height to Calculate AspectRatio
   useLayoutEffect(() => {
     if (item.image) {
-      const { width, height } = Image.resolveAssetSource(item.image);
-      setAspectRatio(width / height);
+      if (typeof item.image === 'number') {
+        // Handle local images (require)
+        const { width, height } = Image.resolveAssetSource(item.image);
+        setAspectRatio(width / height);
+      } else if (typeof item.image === 'object' && 'uri' in item.image) {
+        // Handle remote images (URI)
+        const uri = (item.image as { uri: string }).uri;
+        Image.getSize(
+          uri,
+          (width, height) => {
+            setAspectRatio(width / height);
+          },
+          (error) => {
+            console.error('Error loading image:', error);
+            setAspectRatio(1); // Fallback to square if there's an error
+          }
+        );
+      }
     }
   }, [item.image]);
 

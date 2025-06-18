@@ -17,31 +17,47 @@ const ImageCarouselScreen = () => {
 
   const data = [
     {
-      image: require('../../assets/images/products/image-product-1.jpg'),
+      image: {
+        uri: 'https://picsum.photos/seed/product1/800/800',
+      },
     },
     {
-      image: require('../../assets/images/products/image-product-2.jpg'),
+      image: {
+        uri: 'https://picsum.photos/seed/product2/800/800',
+      },
     },
     {
-      image: require('../../assets/images/products/image-product-3.jpg'),
+      image: {
+        uri: 'https://picsum.photos/seed/product3/800/800',
+      },
     },
     {
-      image: require('../../assets/images/products/image-product-4.jpg'),
+      image: {
+        uri: 'https://picsum.photos/seed/product4/800/800',
+      },
     },
   ];
 
   const data2 = [
     {
-      image: require('../../assets/images/products/image-product-1-landscape.jpg'),
+      image: {
+        uri: 'https://picsum.photos/seed/product1/1200/800',
+      },
     },
     {
-      image: require('../../assets/images/products/image-product-2-landscape.jpg'),
+      image: {
+        uri: 'https://picsum.photos/seed/product2/1200/800',
+      },
     },
     {
-      image: require('../../assets/images/products/image-product-3-landscape.jpg'),
+      image: {
+        uri: 'https://picsum.photos/seed/product3/1200/800',
+      },
     },
     {
-      image: require('../../assets/images/products/image-product-4-landscape.jpg'),
+      image: {
+        uri: 'https://picsum.photos/seed/product4/1200/800',
+      },
     },
   ];
 
