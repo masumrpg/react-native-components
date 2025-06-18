@@ -15,6 +15,7 @@ import {
   CardHeader,
   Typography,
 } from 'rnc-theme';
+import { Heart, ThumbsUp, Smile } from 'lucide-react-native';
 
 const RatingScreen = () => {
   const { theme } = useTheme();
@@ -225,6 +226,98 @@ const RatingScreen = () => {
               ratingBackgroundColor={theme.colors.border}
               onFinishRating={ratingCompleted}
               fractions={1}
+            />
+          </CardContent>
+        </Card>
+
+        {/* Custom Icon Examples */}
+        <Card margin="md">
+          <CardHeader
+            title="Custom Icon Examples"
+            subtitle="Heart, Thumbs Up, and Smile ratings"
+          />
+          <CardContent>
+            <Typography
+              style={{
+                marginBottom: 16,
+                fontSize: 16,
+                fontWeight: '600',
+                color: theme.colors.text,
+              }}
+            >
+              Heart Icon Rating
+            </Typography>
+            <Rating
+              count={5}
+              defaultRating={3}
+              size="md"
+              customIcon={Heart}
+              selectedColor="#e74c3c"
+              unSelectedColor="#bdc3c7"
+              reviews={[
+                'Hate it',
+                'Dislike',
+                'Neutral',
+                'Like',
+                'Love it',
+              ]}
+              onRatingChange={(rating) => console.log('Heart Rating:', rating)}
+            />
+
+            <Typography
+              style={{
+                marginTop: 24,
+                marginBottom: 16,
+                fontSize: 16,
+                fontWeight: '600',
+                color: theme.colors.text,
+              }}
+            >
+              Thumbs Up Rating
+            </Typography>
+            <Rating
+              count={5}
+              defaultRating={4}
+              size="md"
+              customIcon={ThumbsUp}
+              selectedColor="#3498db"
+              unSelectedColor="#95a5a6"
+              reviews={[
+                'Very Bad',
+                'Bad',
+                'Average',
+                'Good',
+                'Excellent',
+              ]}
+              onRatingChange={(rating) => console.log('Thumbs Rating:', rating)}
+            />
+
+            <Typography
+              style={{
+                marginTop: 24,
+                marginBottom: 16,
+                fontSize: 16,
+                fontWeight: '600',
+                color: theme.colors.text,
+              }}
+            >
+              Smile Rating with Dynamic Colors
+            </Typography>
+            <Rating
+              count={5}
+              defaultRating={5}
+              size="md"
+              customIcon={Smile}
+              enableDynamicColors={true}
+              customColors={['#e74c3c', '#f39c12', '#f1c40f', '#2ecc71', '#9b59b6']}
+              reviews={[
+                'Very Sad',
+                'Sad',
+                'Neutral',
+                'Happy',
+                'Very Happy',
+              ]}
+              onRatingChange={(rating) => console.log('Smile Rating:', rating)}
             />
           </CardContent>
         </Card>

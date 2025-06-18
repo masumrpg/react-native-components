@@ -50,6 +50,11 @@ interface RatingProps extends BaseRatingProps {
   }>;
   enableDynamicColors?: boolean;
   customColors?: string[];
+  customIcon?: React.ComponentType<{
+    size?: number;
+    color?: string;
+    fill?: string;
+  }>;
 }
 
 interface SwipeRatingProps extends BaseRatingProps {
@@ -88,6 +93,7 @@ const Rating = forwardRef<View, RatingProps>(
       style,
       enableDynamicColors = false,
       customColors = ['#e74c3c', '#f39c12', '#f1c40f', '#2ecc71', '#27ae60'],
+      customIcon,
       ...props
     },
     ref
@@ -142,6 +148,8 @@ const Rating = forwardRef<View, RatingProps>(
     };
 
     const renderStars = () => {
+      const IconComponent = customIcon || Star;
+      
       return Array.from({ length: count }, (_, index) => {
         const starIndex = index + 1;
         const isSelected = starIndex <= rating;
@@ -155,7 +163,7 @@ const Rating = forwardRef<View, RatingProps>(
             style={[styles.starContainer, starContainerStyle]}
           >
             <Animated.View style={animatedStyle}>
-              <Star
+              <IconComponent
                 size={starSize}
                 color={starColor}
                 fill={isSelected ? starColor : 'transparent'}
