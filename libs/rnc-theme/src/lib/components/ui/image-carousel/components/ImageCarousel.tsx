@@ -48,6 +48,7 @@ const ImageCarousel = ({
   loop = true,
   width: customWidth,
   height: customHeight,
+  ...rest
 }: ImageCarouselProps) => {
   const scrollViewRef = useAnimatedRef<Animated.ScrollView>();
   const interval = useRef<NodeJS.Timeout | null>(null);
@@ -161,7 +162,7 @@ const ImageCarousel = ({
   const iosAdjustments = getIOSAdjustments();
 
   return (
-    <View style={[styles.container, containerStyle]}>
+    <View style={[styles.container, containerStyle]} {...rest}>
       <Animated.ScrollView
         ref={scrollViewRef}
         onScroll={onScroll}

@@ -4,6 +4,7 @@ import {
   ViewStyle,
   ImageStyle,
   DimensionValue,
+  ViewProps,
 } from 'react-native';
 import { SharedValue } from 'react-native-reanimated';
 
@@ -14,7 +15,7 @@ export interface CarouselItem {
   description?: string;
 }
 
-export interface ImageCarouselProps {
+export interface ImageCarouselProps extends ViewProps {
   data: CarouselItem[];
   autoPlay?: boolean;
   pagination?: boolean;
