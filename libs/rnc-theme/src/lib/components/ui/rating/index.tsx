@@ -5,21 +5,13 @@ import {
   Text,
   StyleProp,
   ViewStyle,
-  TextStyle,
 } from 'react-native';
-import {
-  PanGestureHandler,
-  PanGestureHandlerGestureEvent,
-} from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
-  useAnimatedGestureHandler,
   withSpring,
-  withTiming,
   runOnJS,
-  interpolate,
-  Extrapolation,
 } from 'react-native-reanimated';
 import { useTheme } from '../../../context/ThemeContext';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -93,7 +85,6 @@ const AirbnbRating = forwardRef<View, AirbnbRatingProps>(
     },
     ref
   ) => {
-    const { theme } = useTheme();
     const styles = useThemedStyles(createAirbnbRatingStyles);
     const [rating, setRating] = useState(defaultRating);
     const scale = useSharedValue(1);
@@ -108,11 +99,11 @@ const AirbnbRating = forwardRef<View, AirbnbRatingProps>(
 
     const handleRating = (newRating: number) => {
       if (readonly) return;
-      
+
       scale.value = withSpring(0.8, { damping: 15, stiffness: 300 }, () => {
         scale.value = withSpring(1, { damping: 15, stiffness: 300 });
       });
-      
+
       setRating(newRating);
       onRatingChange?.(newRating);
     };
@@ -125,7 +116,7 @@ const AirbnbRating = forwardRef<View, AirbnbRatingProps>(
       return Array.from({ length: count }, (_, index) => {
         const starIndex = index + 1;
         const isSelected = starIndex <= rating;
-        
+
         return (
           <TouchableOpacity
             key={index}
@@ -147,7 +138,11 @@ const AirbnbRating = forwardRef<View, AirbnbRatingProps>(
     };
 
     return (
-      <View ref={ref} style={[styles.container, ratingContainerStyle, style]} {...props}>
+      <View
+        ref={ref}
+        style={[styles.container, ratingContainerStyle, style]}
+        {...props}
+      >
         {showRating && (
           <Text
             style={[
@@ -202,44 +197,47 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
 
     const updateRating = (newRating: number) => {
       let finalRating = Math.max(minValue, Math.min(count, newRating));
-      
+
       if (jumpValue > 0) {
         finalRating = Math.round(finalRating / jumpValue) * jumpValue;
       } else if (fractions > 0) {
         const precision = Math.pow(10, fractions);
         finalRating = Math.round(finalRating * precision) / precision;
       }
-      
+
       setRating(finalRating);
       onRatingChange?.(finalRating);
       return finalRating;
     };
 
-    const gestureHandler = useAnimatedGestureHandler<PanGestureHandlerGestureEvent>({
-      onStart: () => {
+    const panGesture = Gesture.Pan()
+      .onStart(() => {
+        'worklet';
         if (readonly) return;
         runOnJS(setIsGesturing)(true);
         if (onStartRating) {
-          runOnJS(onStartRating)();
+          runOnJS(onStartRating)(rating);
         }
-      },
-      onActive: (event) => {
+      })
+      .onUpdate((event) => {
+        'worklet';
         if (readonly) return;
         gestureX.value = event.x;
         const newRating = (event.x / containerWidth.value) * count;
-        const updatedRating = runOnJS(updateRating)(Math.max(0, newRating));
+        const updatedRating = Math.max(0, newRating);
+        runOnJS(updateRating)(updatedRating);
         if (onSwipeRating) {
           runOnJS(onSwipeRating)(updatedRating);
         }
-      },
-      onEnd: () => {
+      })
+      .onEnd(() => {
+        'worklet';
         if (readonly) return;
         runOnJS(setIsGesturing)(false);
         if (onFinishRating) {
           runOnJS(onFinishRating)(rating);
         }
-      },
-    });
+      });
 
     const onLayout = (event: any) => {
       containerWidth.value = event.nativeEvent.layout.width;
@@ -248,8 +246,8 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
     const renderIcon = (index: number) => {
       const isActive = index < rating;
       const isFraction = index < rating && index + 1 > rating;
-      const fractionWidth = isFraction ? ((rating - index) * 100) + '%' : '100%';
-      
+      const fractionWidth = isFraction ? (rating - index) * 100 + '%' : '100%';
+
       const IconComponent = {
         star: Star,
         heart: Heart,
@@ -299,14 +297,11 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
             {rating.toFixed(fractions)}
           </Text>
         )}
-        <PanGestureHandler onGestureEvent={gestureHandler} enabled={!readonly}>
-          <Animated.View
-            style={styles.ratingContainer}
-            onLayout={onLayout}
-          >
+        <GestureDetector gesture={panGesture}>
+          <Animated.View style={styles.ratingContainer} onLayout={onLayout}>
             {Array.from({ length: count }, (_, index) => renderIcon(index))}
           </Animated.View>
-        </PanGestureHandler>
+        </GestureDetector>
       </View>
     );
   }
