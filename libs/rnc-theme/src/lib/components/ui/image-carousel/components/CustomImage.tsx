@@ -5,7 +5,9 @@ import Animated, {
   interpolate,
 } from 'react-native-reanimated';
 import { CustomImageProps } from '../types';
+import { useTheme } from '../../../../context/ThemeContext';
 const CustomImage = ({ item, x, index, size, spacer }: CustomImageProps) => {
+  const { theme } = useTheme();
   const [aspectRatio, setAspectRatio] = useState(1);
 
   // Get Image Width and Height to Calculate AspectRatio
@@ -32,7 +34,13 @@ const CustomImage = ({ item, x, index, size, spacer }: CustomImageProps) => {
   }
   return (
     <View style={{ width: size }} key={index}>
-      <Animated.View style={[styles.imageContainer, style]}>
+      <Animated.View
+        style={[
+          styles.imageContainer,
+          { borderRadius: theme.components.borderRadius.md },
+          style,
+        ]}
+      >
         <Image
           source={item.image}
           style={[styles.image, { aspectRatio: aspectRatio }]}
@@ -42,11 +50,10 @@ const CustomImage = ({ item, x, index, size, spacer }: CustomImageProps) => {
   );
 };
 
-export {CustomImage};
+export { CustomImage };
 
 const styles = StyleSheet.create({
   imageContainer: {
-    borderRadius: 34,
     overflow: 'hidden',
   },
   image: {

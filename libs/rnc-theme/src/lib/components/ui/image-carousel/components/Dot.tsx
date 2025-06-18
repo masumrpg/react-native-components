@@ -5,8 +5,10 @@ import Animated, {
   Extrapolation,
 } from 'react-native-reanimated';
 import { DotProps } from '../types';
+import { useTheme } from '../../../../context/ThemeContext';
 
 const Dot = ({ x, index, size }: DotProps) => {
+  const { theme } = useTheme();
   const animatedDotStyle = useAnimatedStyle(() => {
     const widthAnimation = interpolate(
       x.value,
@@ -25,7 +27,15 @@ const Dot = ({ x, index, size }: DotProps) => {
       opacity: opacityAnimation,
     };
   });
-  return <Animated.View style={[styles.dots, animatedDotStyle]} />;
+  return (
+    <Animated.View
+      style={[
+        styles.dots,
+        { backgroundColor: theme.colors.primary },
+        animatedDotStyle,
+      ]}
+    />
+  );
 };
 
 export {Dot};
@@ -33,7 +43,6 @@ export {Dot};
 const styles = StyleSheet.create({
   dots: {
     height: 10,
-    backgroundColor: 'orange',
     marginHorizontal: 10,
     borderRadius: 5,
   },
