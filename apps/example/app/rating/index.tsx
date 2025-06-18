@@ -6,19 +6,19 @@ import {
   ScrollView,
 } from 'react-native';
 import React, { useState } from 'react';
-import { 
-  Rating, 
-  SwipeRating, 
-  useTheme, 
-  Card, 
-  CardContent, 
-  CardHeader, 
-  Typography 
+import {
+  Rating,
+  SwipeRating,
+  useTheme,
+  Card,
+  CardContent,
+  CardHeader,
+  Typography,
 } from 'rnc-theme';
 
 const RatingScreen = () => {
   const { theme } = useTheme();
-  const [airbnbRating, setAirbnbRating] = useState(3);
+  const [rating, setRating] = useState(3);
   const [swipeRating, setSwipeRating] = useState(2.5);
   const [heartRating, setHeartRating] = useState(4);
   const [customRating, setCustomRating] = useState(3.5);
@@ -32,23 +32,20 @@ const RatingScreen = () => {
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <ScrollView contentContainerStyle={styles.scrollContent}>
-        {/* Basic Airbnb Rating */}
+        {/* Basic Rating */}
         <Card margin="md">
-          <CardHeader title="Basic Airbnb Rating" />
+          <CardHeader title="Basic Rating" />
           <CardContent>
-            <Rating
-              defaultRating={airbnbRating}
-              onRatingChange={setAirbnbRating}
-            />
+            <Rating defaultRating={rating} onRatingChange={setRating} />
           </CardContent>
         </Card>
 
-        {/* Custom Airbnb Rating */}
+        {/* Custom Rating */}
         <Card margin="md">
-          <CardHeader title="Custom Airbnb Rating" subtitle="With custom reviews" />
+          <CardHeader title="Custom Rating" subtitle="With custom reviews" />
           <CardContent>
             <Rating
-              count={11}
+              count={9}
               reviews={[
                 'Terrible',
                 'Bad',
@@ -57,10 +54,8 @@ const RatingScreen = () => {
                 'Good',
                 'Hmm...',
                 'Very Good',
-                'Wow',
                 'Amazing',
-                'Unbelievable',
-                'Jesus',
+                'Allahuakbar...',
               ]}
               defaultRating={6}
               size="sm"
@@ -73,17 +68,33 @@ const RatingScreen = () => {
 
         {/* Gradient Color Rating */}
         <Card margin="md">
-          <CardHeader title="Gradient Color Rating" subtitle="Colors change based on rating" />
+          <CardHeader
+            title="Gradient Color Rating"
+            subtitle="Colors change based on rating"
+          />
           <CardContent>
             <Rating
               defaultRating={3}
               enableDynamicColors={true}
-              customColors={['#e74c3c', '#f39c12', '#f1c40f', '#2ecc71', '#27ae60']}
+              customColors={[
+                '#e74c3c',
+                '#f39c12',
+                '#f1c40f',
+                '#2ecc71',
+                '#27ae60',
+              ]}
               reviews={['Poor', 'Fair', 'Good', 'Very Good', 'Excellent']}
               onRatingChange={ratingCompleted}
               size="lg"
             />
-            <Typography style={{ textAlign: 'center', marginTop: 8, fontSize: 12, color: theme.colors.textSecondary }}>
+            <Typography
+              style={{
+                textAlign: 'center',
+                marginTop: 8,
+                fontSize: 12,
+                color: theme.colors.textSecondary,
+              }}
+            >
               1★ Red • 2★ Orange • 3★ Yellow • 4★ Light Green • 5★ Green
             </Typography>
           </CardContent>
@@ -124,7 +135,10 @@ const RatingScreen = () => {
 
         {/* Custom Swipe Rating with Fractions */}
         <Card margin="md">
-          <CardHeader title="Custom Rating with Fractions" subtitle="Rocket rating with decimal values" />
+          <CardHeader
+            title="Custom Rating with Fractions"
+            subtitle="Rocket rating with decimal values"
+          />
           <CardContent>
             <SwipeRating
               type="rocket"
@@ -144,7 +158,10 @@ const RatingScreen = () => {
 
         {/* Readonly Rating */}
         <Card margin="md">
-          <CardHeader title="Readonly Rating" subtitle="Non-interactive rating display" />
+          <CardHeader
+            title="Readonly Rating"
+            subtitle="Non-interactive rating display"
+          />
           <CardContent>
             <Rating
               defaultRating={4}
@@ -157,7 +174,10 @@ const RatingScreen = () => {
 
         {/* Bell Rating */}
         <Card margin="md">
-          <CardHeader title="Bell Rating" subtitle="Notification style rating" />
+          <CardHeader
+            title="Bell Rating"
+            subtitle="Notification style rating"
+          />
           <CardContent>
             <SwipeRating
               type="bell"
@@ -174,7 +194,10 @@ const RatingScreen = () => {
 
         {/* Large Size Rating */}
         <Card margin="md">
-          <CardHeader title="Large Size Rating" subtitle="Extra large star size" />
+          <CardHeader
+            title="Large Size Rating"
+            subtitle="Extra large star size"
+          />
           <CardContent>
             <Rating
               size="lg"
@@ -189,7 +212,10 @@ const RatingScreen = () => {
 
         {/* Jump Value Rating */}
         <Card margin="md" style={{ marginBottom: 30 }}>
-          <CardHeader title="Jump Value Rating" subtitle="0.5 step increments" />
+          <CardHeader
+            title="Jump Value Rating"
+            subtitle="0.5 step increments"
+          />
           <CardContent>
             <SwipeRating
               jumpValue={0.5}
@@ -215,6 +241,7 @@ const styles = StyleSheet.create({
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
   },
   scrollContent: {
-    paddingVertical: 20,
+    padding: 16,
+    gap: 16,
   },
 });

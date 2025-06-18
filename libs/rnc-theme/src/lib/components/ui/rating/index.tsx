@@ -131,6 +131,16 @@ const Rating = forwardRef<View, RatingProps>(
       return selectedColor;
     };
 
+    const getReviewColor = () => {
+      if (enableDynamicColors && customColors.length > 0 && rating > 0) {
+        // Use same color logic as stars for consistency
+        const colorIndex = Math.min(Math.floor(rating) - 1, customColors.length - 1);
+        return customColors[Math.max(0, colorIndex)];
+      }
+      
+      return reviewColor;
+    };
+
     const renderStars = () => {
       return Array.from({ length: count }, (_, index) => {
         const starIndex = index + 1;
@@ -168,7 +178,7 @@ const Rating = forwardRef<View, RatingProps>(
             style={[
               styles.reviewText,
               {
-                color: reviewColor,
+                color: getReviewColor(),
                 fontSize: reviewSize,
               },
             ]}
