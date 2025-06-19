@@ -23,7 +23,7 @@ import {
   Animated,
   StyleProp,
 } from 'react-native';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../context/RNCProvider';
 import { Theme } from '../../../types/theme';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';

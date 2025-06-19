@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
 import { TooltipContentProps } from '../types';
-import { useTheme } from '../../../../context/ThemeContext';
+import { useTheme } from '../../../../context/RNCProvider';
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 

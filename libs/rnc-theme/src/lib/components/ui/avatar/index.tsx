@@ -16,7 +16,7 @@ import Animated, {
   withSpring,
   withTiming,
 } from 'react-native-reanimated';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { resolveColor } from '../../../utils';

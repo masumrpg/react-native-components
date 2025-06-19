@@ -1,6 +1,6 @@
 import { ViewStyle } from 'react-native';
 import { Calendar as RNCalendar, CalendarProps as RNCalendarProps } from 'react-native-calendars';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import {

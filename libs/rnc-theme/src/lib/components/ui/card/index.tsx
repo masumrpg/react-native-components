@@ -1,6 +1,6 @@
 import React, { forwardRef, createContext, useContext } from 'react';
 import { Text, TextStyle, View, ViewStyle } from 'react-native';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import {

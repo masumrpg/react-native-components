@@ -6,7 +6,7 @@ import Animated, {
   withSpring,
 } from 'react-native-reanimated';
 import { DotProps } from '../types';
-import { useTheme } from '../../../../context/ThemeContext';
+import { useTheme } from '../../../../context/RNCProvider';
 
 const Dot = ({ x, index, size, dotStyle, activeDotStyle }: DotProps) => {
   const { theme } = useTheme();

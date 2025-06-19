@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { StyleSheet } from 'react-native';
-import { useTheme } from '../context/ThemeContext';
+import { useTheme } from '../context/RNCProvider';
 import { Theme } from '../types/theme';
 
 export const useThemedStyles = <T extends StyleSheet.NamedStyles<T>>(

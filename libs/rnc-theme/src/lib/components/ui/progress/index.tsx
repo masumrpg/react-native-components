@@ -6,7 +6,7 @@ import Animated, {
   withTiming,
   Easing,
 } from 'react-native-reanimated';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { ComponentSize, ComponentVariant } from '../../../types/ui';

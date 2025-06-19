@@ -8,7 +8,7 @@ import Animated, {
   interpolateColor,
   runOnJS,
 } from 'react-native-reanimated';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { BaseComponentProps } from '../../../types/ui';

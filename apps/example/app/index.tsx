@@ -38,6 +38,7 @@ import {
   ToggleRight,
   User,
   Calendar,
+  Languages,
 } from 'lucide-react-native';
 import { ReactElement } from 'react';
 
@@ -229,6 +230,12 @@ export default function HomeScreen() {
       title: 'Calendar',
       path: '/calendar',
       icon: <Calendar size={30} color={'black'} />,
+    },
+    {
+      id: 31,
+      title: 'Language',
+      path: '/i18n',
+      icon: <Languages size={30} color={'black'} />,
     },
   ];
 

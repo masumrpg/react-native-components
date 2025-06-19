@@ -13,7 +13,7 @@ import Animated, {
   interpolate,
 } from 'react-native-reanimated';
 import { CustomImageProps } from '../types';
-import { useTheme } from '../../../../context/ThemeContext';
+import { useTheme } from '../../../../context/RNCProvider';
 
 const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
 

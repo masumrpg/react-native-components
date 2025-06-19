@@ -13,7 +13,7 @@ import Animated, {
   interpolateColor,
 } from 'react-native-reanimated';
 import { Sun, Moon } from 'lucide-react-native';
-import { useTheme } from '../../context/ThemeContext';
+import { useTheme } from '../../context/RNCProvider';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 import { Theme } from '../../types/theme';
 

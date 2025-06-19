@@ -24,7 +24,7 @@ import Animated, {
   SharedValue,
 } from 'react-native-reanimated';
 import { Theme } from '../../../types/theme';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
 import { Spinner } from '../spinner';

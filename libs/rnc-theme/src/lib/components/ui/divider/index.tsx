@@ -1,6 +1,6 @@
 import React, { forwardRef } from 'react';
 import { View, ViewStyle, DimensionValue, StyleProp } from 'react-native';
-import { useTheme } from '../../../context/ThemeContext';
+import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
 import { Theme } from '../../../types/theme';

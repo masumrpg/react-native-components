@@ -17,6 +17,7 @@ import { ToastProvider } from '../components/ui/toast/context/ToastContext';
 import { ToastPosition } from '../components/ui/toast/types';
 import { Toast } from '../components/ui/toast/components/ToastContainer';
 import { PortalProvider } from '../components/ui/portal/context/PortalContext';
+import { I18nConfig, LanguageProvider } from '../i18n/context/LanguageProvider';
 
 interface ThemeContextType {
   theme: Theme;
@@ -58,6 +59,7 @@ interface ThemeProviderProps {
     position?: ToastPosition;
     maxToasts?: number | undefined;
   };
+  i18nConfig?: I18nConfig;
 }
 
 export const RNCProvider: React.FC<ThemeProviderProps> = ({
@@ -67,6 +69,7 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
   customDarkTheme,
   bottomSheetProps,
   toast,
+  i18nConfig,
 }) => {
   const [themeMode, setThemeModeState] = useState<ThemeMode>(defaultTheme);
   const [customTheme, setCustomTheme] = useState<{
@@ -269,34 +272,36 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
 
   return (
     <ThemeContext.Provider value={value}>
-      <ToastProvider maxToasts={toast?.maxToasts ?? 5}>
-        <PortalProvider>
-          <BottomSheetProvider
-            backgroundColor={theme.colors.surface}
-            lineBackgroundColor={theme.colors.text}
-            borderTopLeftRadius={
-              bottomSheetProps?.borderTopLeftRadius ??
-              theme.components.borderRadius.md < 5
-                ? theme.components.borderRadius.md
-                : theme.components.borderRadius.md + 10
-            }
-            borderTopRightRadius={
-              bottomSheetProps?.borderTopRightRadius ??
-              theme.components.borderRadius.md < 5
-                ? theme.components.borderRadius.md
-                : theme.components.borderRadius.md + 10
-            }
-            {...bottomSheetProps}
-          >
-            {children}
-          </BottomSheetProvider>
-        </PortalProvider>
-        <Toast
-          theme={theme}
-          position={toast?.position ?? 'top'}
-          maxToasts={toast?.maxToasts ?? 5}
-        />
-      </ToastProvider>
+      <LanguageProvider i18nConfig={i18nConfig}>
+        <ToastProvider maxToasts={toast?.maxToasts ?? 5}>
+          <PortalProvider>
+            <BottomSheetProvider
+              backgroundColor={theme.colors.surface}
+              lineBackgroundColor={theme.colors.text}
+              borderTopLeftRadius={
+                bottomSheetProps?.borderTopLeftRadius ??
+                theme.components.borderRadius.md < 5
+                  ? theme.components.borderRadius.md
+                  : theme.components.borderRadius.md + 10
+              }
+              borderTopRightRadius={
+                bottomSheetProps?.borderTopRightRadius ??
+                theme.components.borderRadius.md < 5
+                  ? theme.components.borderRadius.md
+                  : theme.components.borderRadius.md + 10
+              }
+              {...bottomSheetProps}
+            >
+              {children}
+            </BottomSheetProvider>
+          </PortalProvider>
+          <Toast
+            theme={theme}
+            position={toast?.position ?? 'top'}
+            maxToasts={toast?.maxToasts ?? 5}
+          />
+        </ToastProvider>
+      </LanguageProvider>
     </ThemeContext.Provider>
   );
 };
