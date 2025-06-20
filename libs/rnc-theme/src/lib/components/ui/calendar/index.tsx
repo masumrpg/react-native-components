@@ -107,6 +107,7 @@ const Calendar = ({ ...props }: CalendarProps) => {
       renderHeader={(date) => <CustomHeader month={date} theme={globalTheme} />}
       hideExtraDays={false}
       firstDay={0} // Start week on Sunday
+      enableSwipeMonths={true}
       {...props}
     />
   );
