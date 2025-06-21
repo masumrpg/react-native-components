@@ -425,11 +425,11 @@ const DraggableItem = <T extends DragItem>({
       const moveY = translateY.value;
       const newIndex = Math.round(index + moveY / itemHeight);
       const clampedIndex = Math.max(0, Math.min(data.length - 1, newIndex));
-      
+
       if (clampedIndex !== index) {
         runOnJS(onDragEnd)(index, clampedIndex);
       }
-      
+
       translateY.value = withSpring(0, { damping: 20, stiffness: 300 });
       isDragging.value = false;
       scale.value = withSpring(1, { damping: 20, stiffness: 300 });
@@ -439,18 +439,25 @@ const DraggableItem = <T extends DragItem>({
 
   const animatedStyle = useAnimatedStyle(() => {
     const currentDraggedIndex = draggedIndex.value;
-    const shouldOffset = currentDraggedIndex !== -1 && currentDraggedIndex !== index;
-    
+    const shouldOffset =
+      currentDraggedIndex !== -1 && currentDraggedIndex !== index;
+
     if (shouldOffset) {
       if (currentDraggedIndex < index) {
-        offsetY.value = withSpring(-itemHeight * 0.1, { damping: 15, stiffness: 200 });
+        offsetY.value = withSpring(-itemHeight * 0.1, {
+          damping: 15,
+          stiffness: 200,
+        });
       } else if (currentDraggedIndex > index) {
-        offsetY.value = withSpring(itemHeight * 0.1, { damping: 15, stiffness: 200 });
+        offsetY.value = withSpring(itemHeight * 0.1, {
+          damping: 15,
+          stiffness: 200,
+        });
       }
     } else {
       offsetY.value = withSpring(0, { damping: 15, stiffness: 200 });
     }
-    
+
     return {
       transform: [
         { translateY: translateY.value + offsetY.value },
@@ -471,7 +478,9 @@ const DraggableItem = <T extends DragItem>({
 
   return (
     <GestureDetector gesture={panGesture}>
-      <Animated.View style={[{ height: itemHeight }, animatedStyle]}>
+      <Animated.View
+        style={[{ height: itemHeight, marginBottom: 20 }, animatedStyle]}
+      >
         {renderItem({ item, index, isDragging: isDraggingDerived.value })}
       </Animated.View>
     </GestureDetector>
