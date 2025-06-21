@@ -403,7 +403,7 @@ export default function FormControlExample() {
               <FormControlLabelText>Birth Date</FormControlLabelText>
             </FormControlLabel>
             <DatePicker
-              useFormControl={true}
+              state={errors.birthDate ? 'error' : 'default'}
               placeholder="Select your birth date"
               value={formData.birthDate}
               onDateSelect={(date) => {

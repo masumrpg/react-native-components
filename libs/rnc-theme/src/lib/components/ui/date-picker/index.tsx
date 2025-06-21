@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import {
   View,
   Text,
@@ -16,26 +16,18 @@ import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
 import { Theme } from '../../../types/theme';
-import { ComponentSize, ComponentVariant } from '../../../types/ui';
+import { ComponentSize, ComponentVariant, ComponentState } from '../../../types/ui';
 import { DateData } from 'react-native-calendars';
 import { ChevronDown, Calendar as CalendarIcon } from 'lucide-react-native';
-import {
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-  FormControlHelper,
-  FormControlHelperText,
-  FormControlError,
-  FormControlErrorIcon,
-  FormControlErrorText,
-  useFormControlOptional,
-} from '../form-control';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
   withTiming,
   withSpring,
+  interpolateColor,
+  runOnJS,
 } from 'react-native-reanimated';
+import { ANIMATION_CONSTANTS } from '../../../constants/ui';
 
 // Types
 export interface DatePickerProps {
@@ -46,6 +38,7 @@ export interface DatePickerProps {
   disabled?: boolean;
   size?: ComponentSize;
   variant?: ComponentVariant;
+  state?: ComponentState;
   dateFormat?: 'DD/MM/YYYY' | 'MM/DD/YYYY' | 'YYYY-MM-DD' | 'DD MMM YYYY';
   minDate?: string;
   maxDate?: string;
@@ -65,11 +58,8 @@ export interface DatePickerProps {
   helperText?: string;
   error?: string;
   required?: boolean;
-  // FormControl integration
-  useFormControl?: boolean;
-  state?: 'default' | 'error' | 'success' | 'warning' | 'disabled';
-  formControlSize?: 'sm' | 'md' | 'lg';
-  spacing?: keyof Theme['spacing'];
+  animated?: boolean;
+  onChange?: (date: string) => void;
 }
 
 // Helper function to format date
@@ -121,6 +111,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
   disabled = false,
   size = 'md',
   variant = 'default',
+  state = 'default',
   dateFormat = 'DD/MM/YYYY',
   minDate,
   maxDate,
@@ -140,36 +131,50 @@ const DatePicker: React.FC<DatePickerProps> = ({
   helperText,
   error,
   required = false,
-  // FormControl integration
-  useFormControl = false,
-  state = 'default',
-  formControlSize = 'md',
-  spacing = 'sm',
+  animated = true,
+  onChange,
 }) => {
   const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | undefined>(value);
   const [isFocused, setIsFocused] = useState(false);
 
-  // FormControl integration
-  const formControl = useFormControlOptional();
-  const isInFormControl = !!formControl;
-
-  // Use FormControl state if available
-  const effectiveState = isInFormControl
-    ? formControl.state
-    : error
-    ? 'error'
-    : state;
-  const effectiveDisabled = isInFormControl ? formControl.disabled : disabled;
-  const effectiveRequired = isInFormControl ? formControl.required : required;
-  const effectiveSize = isInFormControl ? formControl.size : formControlSize;
-
+  // Animation values - similar to Input component
+  const focusAnimation = useSharedValue(0);
+  const errorAnimation = useSharedValue(0);
+  const borderAnimation = useSharedValue(0);
+  const scaleAnimation = useSharedValue(1);
   const backdropOpacityValue = useSharedValue(0);
   const calendarScaleValue = useSharedValue(0.8);
   const calendarOpacityValue = useSharedValue(0);
-  const scaleAnimation = useSharedValue(1);
-  const borderAnimation = useSharedValue(0);
+
+  // Computed values - similar to Input component
+  const hasError = useMemo(
+    () => state === 'error' || Boolean(error),
+    [state, error]
+  );
+
+  // UI thread safe functions
+  const setFocusedJS = useCallback((focused: boolean) => {
+    setIsFocused(focused);
+  }, []);
+
+  // Update selectedDate when value prop changes
+  useEffect(() => {
+    setSelectedDate(value);
+  }, [value]);
+
+  // Update error animation when error state changes
+  useEffect(() => {
+    if (animated) {
+      errorAnimation.value = withTiming(
+        hasError ? 1 : 0,
+        {
+          duration: ANIMATION_CONSTANTS.DURATION.NORMAL,
+        }
+      );
+    }
+  }, [hasError, animated, errorAnimation]);
 
   const styles = useThemedStyles((theme: Theme) =>
     createStyles(theme, size, variant, borderRadius)
@@ -183,20 +188,24 @@ const DatePicker: React.FC<DatePickerProps> = ({
   }, [selectedDate, dateFormat]);
 
   const handleOpen = useCallback(() => {
-    if (effectiveDisabled) return;
+    if (disabled) return;
+    
+    runOnJS(setFocusedJS)(true);
     setIsOpen(true);
-    setIsFocused(true);
 
-    // Border animation
-    borderAnimation.value = withTiming(1, {
-      duration: 200,
-    });
-
-    // Scale animation
-    scaleAnimation.value = withSpring(0.98, {
-      damping: 15,
-      stiffness: 300,
-    });
+    if (animated) {
+      focusAnimation.value = withTiming(1, {
+        duration: ANIMATION_CONSTANTS.DURATION.NORMAL,
+      });
+      borderAnimation.value = withSpring(
+        1,
+        ANIMATION_CONSTANTS.SPRING_CONFIG.DEFAULT
+      );
+      scaleAnimation.value = withSpring(1.02, {
+        ...ANIMATION_CONSTANTS.SPRING_CONFIG.DEFAULT,
+        stiffness: 200,
+      });
+    }
 
     backdropOpacityValue.value = withTiming(backdropOpacity, {
       duration: animationDuration,
@@ -209,27 +218,34 @@ const DatePicker: React.FC<DatePickerProps> = ({
       duration: animationDuration,
     });
   }, [
-    effectiveDisabled,
+    disabled,
+    animated,
     backdropOpacity,
     animationDuration,
+    focusAnimation,
+    borderAnimation,
+    scaleAnimation,
     backdropOpacityValue,
     calendarScaleValue,
     calendarOpacityValue,
-    borderAnimation,
-    scaleAnimation,
+    setFocusedJS,
   ]);
 
   const handleClose = useCallback(() => {
-    setIsFocused(false);
+    runOnJS(setFocusedJS)(false);
 
-    // Reset animations
-    borderAnimation.value = withTiming(0, {
-      duration: 200,
-    });
-    scaleAnimation.value = withSpring(1, {
-      damping: 15,
-      stiffness: 300,
-    });
+    if (animated) {
+      focusAnimation.value = withTiming(0, {
+        duration: ANIMATION_CONSTANTS.DURATION.NORMAL,
+      });
+      borderAnimation.value = withTiming(0, {
+        duration: ANIMATION_CONSTANTS.DURATION.NORMAL,
+      });
+      scaleAnimation.value = withSpring(1, {
+        ...ANIMATION_CONSTANTS.SPRING_CONFIG.DEFAULT,
+        stiffness: 200,
+      });
+    }
 
     backdropOpacityValue.value = withTiming(0, {
       duration: animationDuration,
@@ -245,24 +261,28 @@ const DatePicker: React.FC<DatePickerProps> = ({
       setIsOpen(false);
     }, animationDuration);
   }, [
+    animated,
     animationDuration,
+    focusAnimation,
+    borderAnimation,
+    scaleAnimation,
     backdropOpacityValue,
     calendarScaleValue,
     calendarOpacityValue,
-    borderAnimation,
-    scaleAnimation,
+    setFocusedJS,
   ]);
 
   const handleDateSelect = useCallback(
     (day: DateData) => {
       setSelectedDate(day.dateString);
       onDateSelect?.(day.dateString);
+      onChange?.(day.dateString);
 
       if (closeOnSelect) {
         handleClose();
       }
     },
-    [onDateSelect, closeOnSelect, handleClose]
+    [onDateSelect, onChange, closeOnSelect, handleClose]
   );
 
   const backdropAnimatedStyle = useAnimatedStyle(() => {
@@ -285,15 +305,21 @@ const DatePicker: React.FC<DatePickerProps> = ({
   });
 
   const borderAnimatedStyle = useAnimatedStyle(() => {
-    return {
-      borderColor:
-        borderAnimation.value === 1
-          ? theme.colors.primary
-          : effectiveState === 'error'
+    const borderColor = interpolateColor(
+      borderAnimation.value,
+      [0, 1],
+      [
+        hasError
           ? theme.colors.error
-          : effectiveState === 'success'
+          : state === 'success'
           ? theme.colors.success
           : theme.colors.border,
+        theme.colors.primary,
+      ]
+    );
+
+    return {
+      borderColor,
       shadowOpacity: borderAnimation.value * 0.1,
       shadowRadius: borderAnimation.value * 4,
       shadowColor: theme.colors.primary,
@@ -316,7 +342,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
       <IconComponent
         size={iconSize}
         color={
-          effectiveDisabled ? theme.colors.muted : theme.colors.textSecondary
+          disabled ? theme.colors.muted : theme.colors.textSecondary
         }
       />
     );
@@ -396,9 +422,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
   const inputContainerStyle = [
     styles.inputContainer,
     styles.variant,
-    effectiveDisabled && styles.disabled,
-    effectiveState === 'error' && styles.error,
-    effectiveState === 'success' && styles.success,
+    disabled && styles.disabled,
+    hasError && styles.error,
+    state === 'success' && styles.success,
     isFocused && styles.focused,
     inputStyle,
   ];
@@ -412,112 +438,18 @@ const DatePicker: React.FC<DatePickerProps> = ({
     styles.inputText,
     styles[getTextSizeKey(size)],
     !displayValue && styles.placeholder,
-    effectiveDisabled && styles.disabledText,
-    effectiveState === 'error' && styles.errorText,
+    disabled && styles.disabledText,
+    hasError && styles.errorText,
     !displayValue && placeholderStyle,
   ];
 
-  // Render with FormControl if enabled
-  if (useFormControl || isInFormControl) {
-    return (
-      <FormControl
-        state={effectiveState}
-        size={effectiveSize}
-        disabled={effectiveDisabled}
-        required={effectiveRequired}
-        style={style}
-        spacing={spacing}
-      >
-        {label && (
-          <FormControlLabel>
-            <FormControlLabelText style={labelStyle}>
-              {label}
-            </FormControlLabelText>
-          </FormControlLabel>
-        )}
-
-        <Animated.View style={inputAnimatedStyle}>
-          <Animated.View style={[inputContainerStyle, borderAnimatedStyle]}>
-            <TouchableOpacity
-              style={touchableContainerStyle}
-              onPress={handleOpen}
-              disabled={effectiveDisabled}
-              activeOpacity={0.8}
-            >
-              {showIcon && iconPosition === 'left' && (
-                <View style={styles.leftIcon}>{renderIcon()}</View>
-              )}
-
-              <Text style={textStyle}>{displayValue || placeholder}</Text>
-
-              {showIcon && iconPosition === 'right' && (
-                <View style={styles.rightIcon}>{renderIcon()}</View>
-              )}
-            </TouchableOpacity>
-          </Animated.View>
-        </Animated.View>
-
-        {helperText && (
-          <FormControlHelper>
-            <FormControlHelperText>{helperText}</FormControlHelperText>
-          </FormControlHelper>
-        )}
-
-        {error && (
-          <FormControlError>
-            <FormControlErrorIcon />
-            <FormControlErrorText>{error}</FormControlErrorText>
-          </FormControlError>
-        )}
-
-        {isOpen && (
-          <Portal name="date-picker-portal">
-            <View style={styles.overlay}>
-              <Animated.View style={[styles.backdrop, backdropAnimatedStyle]}>
-                <TouchableWithoutFeedback onPress={handleClose}>
-                  <View style={StyleSheet.absoluteFill} />
-                </TouchableWithoutFeedback>
-              </Animated.View>
-
-              <Animated.View
-                style={[
-                  styles.calendarContainer,
-                  calendarAnimatedStyle,
-                  calendarStyle,
-                ]}
-              >
-                <Calendar
-                  onDayPress={handleDateSelect}
-                  selectedDate={
-                    selectedDate
-                      ? {
-                          dateString: selectedDate,
-                          day: new Date(selectedDate).getDate(),
-                          month: new Date(selectedDate).getMonth() + 1,
-                          year: new Date(selectedDate).getFullYear(),
-                          timestamp: new Date(selectedDate).getTime(),
-                        }
-                      : undefined
-                  }
-                  markedDates={markedDates}
-                  minDate={minDate}
-                  maxDate={maxDate}
-                />
-              </Animated.View>
-            </View>
-          </Portal>
-        )}
-      </FormControl>
-    );
-  }
-
-  // Original render without FormControl
+  // Render DatePicker
   return (
     <View style={[styles.container, style]}>
       {label && (
         <Text style={[styles.label, labelStyle]}>
           {label}
-          {effectiveRequired && <Text style={styles.required}> *</Text>}
+          {required && <Text style={styles.required}> *</Text>}
         </Text>
       )}
 
@@ -526,7 +458,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
           <TouchableOpacity
             style={touchableContainerStyle}
             onPress={handleOpen}
-            disabled={effectiveDisabled}
+            disabled={disabled}
             activeOpacity={0.8}
           >
             {showIcon && iconPosition === 'left' && (
@@ -803,13 +735,4 @@ const createStyles = (
   });
 };
 
-// Enhanced DatePicker with FormControl integration
-const DatePickerWithFormControl: React.FC<
-  DatePickerProps & { children?: React.ReactNode }
-> = (props) => {
-  return <DatePicker {...props} useFormControl={true} />;
-};
-
-DatePickerWithFormControl.displayName = 'DatePickerWithFormControl';
-
-export { DatePicker, DatePickerWithFormControl };
+export { DatePicker };
