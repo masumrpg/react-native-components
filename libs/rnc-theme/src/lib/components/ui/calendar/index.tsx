@@ -251,63 +251,6 @@ const CustomHeader = ({ month, theme, onMonthChange }: CustomHeaderProps) => {
   );
 };
 
-// Custom Arrow Components
-const CustomLeftArrow = ({
-  theme,
-  onPress,
-  disabled,
-}: {
-  theme: Theme;
-  onPress?: () => void;
-  disabled?: boolean;
-}) => (
-  <TouchableOpacity
-    style={[
-      styles.arrowButton,
-      {
-        backgroundColor: theme.colors.primary + '15',
-        opacity: disabled ? 0.5 : 1,
-      },
-    ]}
-    onPress={onPress}
-    disabled={disabled}
-    activeOpacity={0.7}
-  >
-    <ChevronLeft
-      size={20}
-      color={disabled ? theme.colors.muted : theme.colors.primary}
-    />
-  </TouchableOpacity>
-);
-
-const CustomRightArrow = ({
-  theme,
-  onPress,
-  disabled,
-}: {
-  theme: Theme;
-  onPress?: () => void;
-  disabled?: boolean;
-}) => (
-  <TouchableOpacity
-    style={[
-      styles.arrowButton,
-      {
-        backgroundColor: theme.colors.primary + '15',
-        opacity: disabled ? 0.5 : 1,
-      },
-    ]}
-    onPress={onPress}
-    disabled={disabled}
-    activeOpacity={0.7}
-  >
-    <ChevronRight
-      size={20}
-      color={disabled ? theme.colors.muted : theme.colors.primary}
-    />
-  </TouchableOpacity>
-);
-
 const Calendar = ({ current, onMonthChange, ...props }: CalendarProps) => {
   const { theme: globalTheme } = useTheme();
   const [currentDate, setCurrentDate] = useState(
@@ -382,70 +325,88 @@ const Calendar = ({ current, onMonthChange, ...props }: CalendarProps) => {
   };
 
   return (
-    <RNCalendar
-      key={currentDate} // Force re-render when date changes
-      style={{
-        borderRadius: 10,
-        elevation: 4,
-        margin: 10,
-        shadowColor: '#000',
-        shadowOffset: {
-          width: 0,
-          height: 2,
-        },
-        shadowOpacity: 0.25,
-        shadowRadius: 3.84,
-        overflow: 'hidden',
-        padding: 5,
-      }}
-      theme={calendarTheme}
-      renderHeader={(date) => (
-        <CustomHeader
-          month={date || new Date(currentDate)}
-          theme={globalTheme}
-          onMonthChange={(dateObj) => {
-            setCurrentDate(dateObj.dateString);
-            if (onMonthChange) {
-              onMonthChange(dateObj);
-            }
-          }}
-        />
-      )}
-      // Custom Arrow Components
-      renderArrow={(direction) => {
-        if (direction === 'left') {
-          return (
-            <CustomLeftArrow
-              theme={globalTheme}
-              onPress={() => navigateToMonth('prev')}
-            />
-          );
-        }
-        return (
-          <CustomRightArrow
+    <View style={styles.calendarWrapper}>
+      <RNCalendar
+        key={currentDate} // Force re-render when date changes
+        style={{
+          borderRadius: 10,
+          elevation: 4,
+          margin: 10,
+          shadowColor: '#000',
+          shadowOffset: {
+            width: 0,
+            height: 2,
+          },
+          shadowOpacity: 0.25,
+          shadowRadius: 3.84,
+          overflow: 'hidden',
+          padding: 5,
+        }}
+        theme={calendarTheme}
+        renderHeader={(date) => (
+          <CustomHeader
+            month={date || new Date(currentDate)}
             theme={globalTheme}
-            onPress={() => navigateToMonth('next')}
+            onMonthChange={(dateObj) => {
+              setCurrentDate(dateObj.dateString);
+              if (onMonthChange) {
+                onMonthChange(dateObj);
+              }
+            }}
           />
-        );
-      }}
-      current={currentDate}
-      onMonthChange={(month) => {
-        setCurrentDate(month.dateString);
-        if (onMonthChange) {
-          onMonthChange(month);
-        }
-      }}
-      hideExtraDays={false}
-      firstDay={0} // Start week on Sunday
-      enableSwipeMonths={true}
-      {...props}
-    />
+        )}
+        // Hide default arrows by returning null
+        renderArrow={() => null}
+        current={currentDate}
+        onMonthChange={(month) => {
+          setCurrentDate(month.dateString);
+          if (onMonthChange) {
+            onMonthChange(month);
+          }
+        }}
+        hideExtraDays={false}
+        firstDay={0} // Start week on Sunday
+        enableSwipeMonths={true}
+        {...props}
+      />
+
+      {/* Fixed Arrow Overlay */}
+      <TouchableOpacity
+        style={[
+          styles.fixedArrowLeft,
+          {
+            backgroundColor: globalTheme.colors.primary + '15',
+          },
+        ]}
+        onPress={() => navigateToMonth('prev')}
+        activeOpacity={0.7}
+      >
+        <ChevronLeft size={20} color={globalTheme.colors.primary} />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+        style={[
+          styles.fixedArrowRight,
+          {
+            backgroundColor: globalTheme.colors.primary + '15',
+          },
+        ]}
+        onPress={() => navigateToMonth('next')}
+        activeOpacity={0.7}
+      >
+        <ChevronRight size={20} color={globalTheme.colors.primary} />
+      </TouchableOpacity>
+    </View>
   );
 };
 
 const { width: screenWidth, height: screenHeight } = Dimensions.get('window');
 
 const styles = StyleSheet.create({
+  // Wrapper untuk calendar dengan positioning
+  calendarWrapper: {
+    position: 'relative',
+  },
   headerContainer: {
     alignItems: 'center',
     paddingVertical: 16,
@@ -467,13 +428,35 @@ const styles = StyleSheet.create({
   chevronIcon: {
     marginLeft: 8,
   },
-  // Custom Arrow Button Styles
+  // Custom Arrow Button Styles dengan posisi absolut fix
   arrowButton: {
     width: 32,
     height: 32,
     borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  fixedArrowLeft: {
+    position: 'absolute',
+    left: 30,
+    top: 40, // Sesuaikan dengan posisi header
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000,
+  },
+  fixedArrowRight: {
+    position: 'absolute',
+    right: 30,
+    top: 40, // Sesuaikan dengan posisi header
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000,
   },
   modalOverlay: {
     flex: 1,
