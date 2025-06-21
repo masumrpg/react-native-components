@@ -15,12 +15,15 @@ interface FormControlContextType {
   state: FormControlState;
   size: FormControlSize;
   disabled: boolean;
-  required: boolean;
   hasError: boolean;
   hasHelper: boolean;
   labelId?: string;
   helperId?: string;
   errorId?: string;
+}
+
+interface FormFieldContextType {
+  required: boolean;
 }
 
 interface FormControlProps {
@@ -29,7 +32,6 @@ interface FormControlProps {
   state?: FormControlState;
   size?: FormControlSize;
   disabled?: boolean;
-  required?: boolean;
   style?: StyleProp<ViewStyle>;
   spacing?: keyof Theme['spacing'];
 }
@@ -83,10 +85,13 @@ interface FormContentProps {
 interface FormFieldProps {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  required?: boolean;
+  spacing?: keyof Theme['spacing'];
 }
 
 // Context
 const FormControlContext = createContext<FormControlContextType | null>(null);
+const FormFieldContext = createContext<FormFieldContextType | null>(null);
 
 const useFormControl = () => {
   const context = useContext(FormControlContext);
@@ -98,6 +103,10 @@ const useFormControl = () => {
 
 const useFormControlOptional = () => {
   return useContext(FormControlContext);
+};
+
+const useFormField = () => {
+  return useContext(FormFieldContext);
 };
 
 // Styles
@@ -188,7 +197,6 @@ const FormControl = forwardRef<
       state = 'default',
       size = 'md',
       disabled = false,
-      required = false,
       style,
       spacing = 'sm', // Changed from 'md' to 'sm' for tighter spacing
       ...props
@@ -223,7 +231,6 @@ const FormControl = forwardRef<
         state: state,
         size,
         disabled,
-        required,
         hasError,
         hasHelper,
         labelId,
@@ -235,7 +242,6 @@ const FormControl = forwardRef<
         state,
         size,
         disabled,
-        required,
         hasError,
         hasHelper,
         labelId,
@@ -288,8 +294,10 @@ const FormControlLabelText = forwardRef<
   FormControlLabelTextProps
 >(({ children, style, variant, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
-  const { size, disabled, required } = useFormControl();
+  const { size, disabled } = useFormControl();
+  const formField = useFormField();
   const { theme } = useTheme();
+  const required = formField?.required || false;
 
   const textStyle = useMemo(() => {
     let baseStyle = styles.labelText;
@@ -493,22 +501,37 @@ const FormContent = forwardRef<
   );
 });
 
-const FormField = forwardRef<
-  React.ComponentRef<typeof View>,
-  FormFieldProps
->(({ children, style, ...props }, ref) => {
-  const styles = useThemedStyles(createFormControlStyles);
+const FormField = forwardRef<React.ComponentRef<typeof View>, FormFieldProps>(
+  ({ children, style, required = false, spacing = 'sm', ...props }, ref) => {
+    const { theme } = useTheme();
+    const styles = useThemedStyles(createFormControlStyles);
 
-  return (
-    <View
-      ref={ref}
-      style={[styles.fieldContainer, style]}
-      {...props}
-    >
-      {children}
-    </View>
-  );
-});
+    const fieldContextValue: FormFieldContextType = useMemo(
+      () => ({
+        required,
+      }),
+      [required]
+    );
+
+    return (
+      <FormFieldContext.Provider value={fieldContextValue}>
+        <View
+          ref={ref}
+          style={[
+            styles.fieldContainer,
+            {
+              gap: theme.spacing[spacing],
+            },
+            style,
+          ]}
+          {...props}
+        >
+          {children}
+        </View>
+      </FormFieldContext.Provider>
+    );
+  }
+);
 
 // Set display names
 FormControl.displayName = 'FormControl';
@@ -535,6 +558,7 @@ export {
   FormControlErrorText,
   useFormControl,
   useFormControlOptional,
+  useFormField,
 };
 
 export type {
@@ -549,4 +573,5 @@ export type {
   FormControlErrorIconProps,
   FormControlErrorTextProps,
   FormControlContextType,
+  FormFieldContextType,
 };
