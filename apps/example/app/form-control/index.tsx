@@ -275,102 +275,96 @@ export default function FormControlExample() {
 
               {/* Password Field */}
               <FormField required>
-                  <FormControlLabel>
-                    <FormControlLabelText>Password</FormControlLabelText>
-                  </FormControlLabel>
-                  <Input
-                    placeholder="Enter your password"
-                    value={formData.password}
-                    onChangeText={(text) => {
-                      setFormData((prev) => ({ ...prev, password: text }));
-                      if (errors.password) {
-                        setErrors((prev) => ({ ...prev, password: undefined }));
-                      }
-                    }}
-                    state={errors.password ? 'error' : 'default'}
-                    secureTextEntry
-                  />
-                  {!errors.password && (
-                    <FormControlHelper>
-                      <FormControlHelperText>
-                        Password must be at least 8 characters long.
-                      </FormControlHelperText>
-                    </FormControlHelper>
-                  )}
-                  <FormControlError>
-                    <FormControlErrorIcon />
-                    <FormControlErrorText>
-                      {errors.password}
-                    </FormControlErrorText>
-                  </FormControlError>
+                <FormControlLabel>
+                  <FormControlLabelText>Password</FormControlLabelText>
+                </FormControlLabel>
+                <Input
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChangeText={(text) => {
+                    setFormData((prev) => ({ ...prev, password: text }));
+                    if (errors.password) {
+                      setErrors((prev) => ({ ...prev, password: undefined }));
+                    }
+                  }}
+                  state={errors.password ? 'error' : 'default'}
+                  secureTextEntry
+                />
+                {!errors.password && (
+                  <FormControlHelper>
+                    <FormControlHelperText>
+                      Password must be at least 8 characters long.
+                    </FormControlHelperText>
+                  </FormControlHelper>
+                )}
+                <FormControlError>
+                  <FormControlErrorIcon />
+                  <FormControlErrorText>{errors.password}</FormControlErrorText>
+                </FormControlError>
               </FormField>
 
               {/* Confirm Password Field */}
               <FormField required>
-
-                  <FormControlLabel>
-                    <FormControlLabelText>
-                      Confirm Password
-                    </FormControlLabelText>
-                  </FormControlLabel>
-                  <Input
-                    placeholder="Confirm your password"
-                    value={formData.confirmPassword}
-                    onChangeText={(text) => {
-                      setFormData((prev) => ({
+                <FormControlLabel>
+                  <FormControlLabelText>Confirm Password</FormControlLabelText>
+                </FormControlLabel>
+                <Input
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChangeText={(text) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      confirmPassword: text,
+                    }));
+                    if (errors.confirmPassword) {
+                      setErrors((prev) => ({
                         ...prev,
-                        confirmPassword: text,
+                        confirmPassword: undefined,
                       }));
-                      if (errors.confirmPassword) {
-                        setErrors((prev) => ({
-                          ...prev,
-                          confirmPassword: undefined,
-                        }));
-                      }
-                    }}
-                    state={errors.confirmPassword ? 'error' : 'default'}
-                    secureTextEntry
-                  />
-                  <FormControlError>
-                    <FormControlErrorIcon />
-                    <FormControlErrorText>
-                      {errors.confirmPassword}
-                    </FormControlErrorText>
-                  </FormControlError>
+                    }
+                  }}
+                  state={errors.confirmPassword ? 'error' : 'default'}
+                  secureTextEntry
+                />
+                <FormControlError>
+                  <FormControlErrorIcon />
+                  <FormControlErrorText>
+                    {errors.confirmPassword}
+                  </FormControlErrorText>
+                </FormControlError>
               </FormField>
 
               {/* Country Combobox */}
               <FormField required>
-                  <FormControlLabel>
-                    <FormControlLabelText>Country</FormControlLabelText>
-                  </FormControlLabel>
-                  <Combobox
-                    placeholder="Select your country"
-                    options={countryOptions}
-                    value={formData.country}
-                    onValueChange={(value) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        country: value as string,
-                      }));
-                      if (errors.country) {
-                        setErrors((prev) => ({ ...prev, country: undefined }));
-                      }
-                    }}
-                    searchable
-                    clearable
-                  />
-                  <FormControlHelper>
-                    <FormControlHelperText>
-                      Select the country where you currently reside.
-                    </FormControlHelperText>
-                  </FormControlHelper>
-                  <FormControlError>
-                    <FormControlErrorIcon />
-                    <FormControlErrorText>
-                      {errors.country}
-                    </FormControlErrorText>
-                  </FormControlError>
+                <FormControlLabel>
+                  <FormControlLabelText>Country</FormControlLabelText>
+                </FormControlLabel>
+                <Combobox
+                  state={errors.country ? 'error' : 'default'}
+                  placeholder="Select your country"
+                  options={countryOptions}
+                  value={formData.country}
+                  onValueChange={(value) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      country: value as string,
+                    }));
+                    if (errors.country) {
+                      setErrors((prev) => ({ ...prev, country: undefined }));
+                    }
+                  }}
+                  searchable
+                  clearable
+                />
+                <FormControlHelper>
+                  <FormControlHelperText>
+                    Select the country where you currently reside.
+                  </FormControlHelperText>
+                </FormControlHelper>
+                <FormControlError>
+                  <FormControlErrorIcon />
+                  <FormControlErrorText>{errors.country}</FormControlErrorText>
+                </FormControlError>
               </FormField>
 
               {/* Hobbies Multiple Combobox */}
@@ -424,43 +418,41 @@ export default function FormControlExample() {
                     Choose your strongest technical skill.
                   </FormControlHelperText>
                 </FormControlHelper>
-              </FormField>;
+              </FormField>
 
-              {
-                /* Birth Date DatePicker */
-              }
+              {/* Birth Date DatePicker */}
               <FormField required>
-                  <FormControlLabel>
-                    <FormControlLabelText>Birth Date</FormControlLabelText>
-                  </FormControlLabel>
-                  <DatePicker
-                    state={errors.birthDate ? 'error' : 'default'}
-                    placeholder="Select your birth date"
-                    value={formData.birthDate}
-                    onDateSelect={(date) => {
-                      setFormData((prev) => ({ ...prev, birthDate: date }));
-                      if (errors.birthDate) {
-                        setErrors((prev) => ({
-                          ...prev,
-                          birthDate: undefined,
-                        }));
-                      }
-                    }}
-                    dateFormat="DD/MM/YYYY"
-                    maxDate={new Date().toISOString().split('T')[0]} // Cannot select future dates
-                  />
-                  <FormControlHelper>
-                    <FormControlHelperText>
-                      Select your date of birth for age verification.
-                    </FormControlHelperText>
-                  </FormControlHelper>
-                  <FormControlError>
-                    <FormControlErrorIcon />
-                    <FormControlErrorText>
-                      {errors.birthDate}
-                    </FormControlErrorText>
-                  </FormControlError>
-              </FormField>;
+                <FormControlLabel>
+                  <FormControlLabelText>Birth Date</FormControlLabelText>
+                </FormControlLabel>
+                <DatePicker
+                  state={errors.birthDate ? 'error' : 'default'}
+                  placeholder="Select your birth date"
+                  value={formData.birthDate}
+                  onDateSelect={(date) => {
+                    setFormData((prev) => ({ ...prev, birthDate: date }));
+                    if (errors.birthDate) {
+                      setErrors((prev) => ({
+                        ...prev,
+                        birthDate: undefined,
+                      }));
+                    }
+                  }}
+                  dateFormat="DD/MM/YYYY"
+                  maxDate={new Date().toISOString().split('T')[0]} // Cannot select future dates
+                />
+                <FormControlHelper>
+                  <FormControlHelperText>
+                    Select your date of birth for age verification.
+                  </FormControlHelperText>
+                </FormControlHelper>
+                <FormControlError>
+                  <FormControlErrorIcon />
+                  <FormControlErrorText>
+                    {errors.birthDate}
+                  </FormControlErrorText>
+                </FormControlError>
+              </FormField>
               {/* Appointment Date DatePicker */}
               <FormField>
                 <FormControlLabel>
@@ -513,61 +505,61 @@ export default function FormControlExample() {
 
               {/* Gender Radio Group */}
               <FormField required>
-                  <FormControlLabel>
-                    <FormControlLabelText>Gender</FormControlLabelText>
-                  </FormControlLabel>
-                  <RadioGroup
-                    value={formData.gender}
-                    onValueChange={(value) => {
-                      setFormData((prev) => ({ ...prev, gender: value }));
-                      if (errors.gender) {
-                        setErrors((prev) => ({ ...prev, gender: undefined }));
-                      }
-                    }}
-                  >
-                    <View style={{ gap: theme.spacing.sm }}>
-                      <Radio value="male">
-                        <RadioLabel>
-                          <Text
-                            style={{
-                              ...theme.typography.body,
-                              color: theme.colors.text,
-                            }}
-                          >
-                            Male
-                          </Text>
-                        </RadioLabel>
-                      </Radio>
-                      <Radio value="female">
-                        <RadioLabel>
-                          <Text
-                            style={{
-                              ...theme.typography.body,
-                              color: theme.colors.text,
-                            }}
-                          >
-                            Female
-                          </Text>
-                        </RadioLabel>
-                      </Radio>
-                      <Radio value="other">
-                        <RadioLabel>
-                          <Text
-                            style={{
-                              ...theme.typography.body,
-                              color: theme.colors.text,
-                            }}
-                          >
-                            Other
-                          </Text>
-                        </RadioLabel>
-                      </Radio>
-                    </View>
-                  </RadioGroup>
-                  <FormControlError>
-                    <FormControlErrorIcon />
-                    <FormControlErrorText>{errors.gender}</FormControlErrorText>
-                  </FormControlError>
+                <FormControlLabel>
+                  <FormControlLabelText>Gender</FormControlLabelText>
+                </FormControlLabel>
+                <RadioGroup
+                  value={formData.gender}
+                  onValueChange={(value) => {
+                    setFormData((prev) => ({ ...prev, gender: value }));
+                    if (errors.gender) {
+                      setErrors((prev) => ({ ...prev, gender: undefined }));
+                    }
+                  }}
+                >
+                  <View style={{ gap: theme.spacing.sm }}>
+                    <Radio value="male">
+                      <RadioLabel>
+                        <Text
+                          style={{
+                            ...theme.typography.body,
+                            color: theme.colors.text,
+                          }}
+                        >
+                          Male
+                        </Text>
+                      </RadioLabel>
+                    </Radio>
+                    <Radio value="female">
+                      <RadioLabel>
+                        <Text
+                          style={{
+                            ...theme.typography.body,
+                            color: theme.colors.text,
+                          }}
+                        >
+                          Female
+                        </Text>
+                      </RadioLabel>
+                    </Radio>
+                    <Radio value="other">
+                      <RadioLabel>
+                        <Text
+                          style={{
+                            ...theme.typography.body,
+                            color: theme.colors.text,
+                          }}
+                        >
+                          Other
+                        </Text>
+                      </RadioLabel>
+                    </Radio>
+                  </View>
+                </RadioGroup>
+                <FormControlError>
+                  <FormControlErrorIcon />
+                  <FormControlErrorText>{errors.gender}</FormControlErrorText>
+                </FormControlError>
               </FormField>
 
               {/* Age Slider */}
