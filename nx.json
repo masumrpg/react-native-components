@@ -9,6 +9,19 @@
     ],
     "sharedGlobals": []
   },
+  "targetDefaults": {
+    "dev": {
+      "cache": true
+    },
+    "build": {
+      "cache": true,
+      "dependsOn": ["^build"]
+    },
+    "preview": {
+      "cache": true,
+      "dependsOn": ["build"]
+    }
+  },
   "plugins": [
     {
       "plugin": "@nx/js/typescript",
