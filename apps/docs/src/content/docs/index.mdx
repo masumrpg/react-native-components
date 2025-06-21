@@ -1,36 +1,133 @@
 ---
-title: Welcome to Starlight
-description: Get started building your docs site with Starlight.
+title: Selamat Datang di rnc-theme
+description: Sistem tema yang powerful dan fleksibel untuk aplikasi React Native dengan dukungan TypeScript lengkap.
 template: splash
 hero:
-  tagline: Congrats on setting up a new Starlight project!
+  tagline: Bangun aplikasi React Native yang indah dan dapat diskalakan dengan rnc-theme - sistem tema yang powerful dengan dukungan TypeScript lengkap.
   image:
     file: ../../assets/houston.webp
   actions:
-    - text: Example Guide
-      link: /guides/example/
+    - text: Mulai Sekarang
+      link: /guides/getting-started/
       icon: right-arrow
-    - text: Read the Starlight docs
-      link: https://starlight.astro.build
+    - text: Lihat di GitHub
+      link: https://github.com/masumrpg/react-native-components
       icon: external
       variant: minimal
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
 
-## Next steps
+## Tentang rnc-theme
+
+**rnc-theme** adalah pustaka komponen UI React Native yang komprehensif dan sistem tema yang dirancang untuk mempercepat pengembangan aplikasi seluler Anda. Dengan fokus pada kustomisasi, kinerja, dan pengalaman pengembang yang luar biasa.
+
+## ✨ Fitur Utama
 
 <CardGrid stagger>
-	<Card title="Update content" icon="pencil">
-		Edit `src/content/docs/index.mdx` to see this page change.
+	<Card title="🎨 Dynamic Theme Switching" icon="seti:react">
+		Beralih antara mode terang dan gelap dengan mulus, atau buat tema kustom Anda sendiri.
 	</Card>
-	<Card title="Add new content" icon="add-document">
-		Add Markdown or MDX files to `src/content/docs` to create new pages.
+	<Card title="🎯 Type-Safe" icon="approve-check">
+		Dukungan TypeScript lengkap dengan definisi tipe yang komprehensif untuk pengalaman development yang aman.
 	</Card>
-	<Card title="Configure your site" icon="setting">
-		Edit your `sidebar` and other config in `astro.config.mjs`.
+	<Card title="🔧 Highly Customizable" icon="setting">
+		Sesuaikan setiap aspek komponen dengan mudah menggunakan sistem tema yang fleksibel.
 	</Card>
-	<Card title="Read the docs" icon="open-book">
-		Learn more in [the Starlight Docs](https://starlight.astro.build/).
+	<Card title="📱 React Native Optimized" icon="rocket">
+		Dibuat khusus untuk React Native dengan performa optimal dan pengalaman native yang sempurna.
+	</Card>
+	<Card title="💾 Persistent Storage" icon="document">
+		Otomatis menyimpan preferensi tema pengguna untuk konsistensi pengalaman.
+	</Card>
+	<Card title="🎭 Multiple Presets" icon="star">
+		Hadir dengan berbagai preset tema built-in yang siap pakai dan dapat dikustomisasi.
+	</Card>
+</CardGrid>
+
+## 🚀 Instalasi Cepat
+
+```bash
+npm install rnc-theme
+# atau
+yarn add rnc-theme
+```
+
+## 💡 Penggunaan Dasar
+
+```tsx
+import React from 'react';
+import { View } from 'react-native';
+import { RNCProvider, Button, Typography } from 'rnc-theme';
+
+const App = () => {
+  return (
+    <RNCProvider>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Typography variant="h1">Selamat Datang!</Typography>
+        <Button onPress={() => console.log('Tombol ditekan!')}>
+          <Typography color="white">Tekan Saya</Typography>
+        </Button>
+      </View>
+    </RNCProvider>
+  );
+};
+
+export default App;
+```
+
+## 🧩 Komponen Tersedia
+
+rnc-theme menyediakan lebih dari **30+ komponen UI** yang siap pakai:
+
+<CardGrid stagger>
+	<Card title="Button & FAB" icon="approve-check">
+		Tombol yang dapat disesuaikan dengan berbagai varian, ukuran, dan Floating Action Button.
+	</Card>
+	<Card title="Typography" icon="document">
+		Sistem tipografi yang lengkap dengan berbagai varian heading, body, dan caption.
+	</Card>
+	<Card title="Form Controls" icon="list-format">
+		Input, Checkbox, Radio, Switcher, Toggle, Slider, dan Form Control yang terintegrasi.
+	</Card>
+	<Card title="Layout & Navigation" icon="puzzle">
+		Card, Divider, Layout components, Modal, Bottom Sheet, dan Accordion.
+	</Card>
+	<Card title="Data Display" icon="information">
+		Table, Badge, Avatar, Progress, Rating, dan Skeleton loading.
+	</Card>
+	<Card title="Feedback & Interaction" icon="warning">
+		Toast notifications, Tooltip, Spinner, dan berbagai komponen interaktif lainnya.
+	</Card>
+	<Card title="Media & Content" icon="picture">
+		Image Carousel, Calendar, Date Picker untuk menampilkan konten multimedia.
+	</Card>
+	<Card title="Advanced Features" icon="rocket">
+		Combobox, Scroll components, dan dukungan Internationalization (i18n).
+	</Card>
+</CardGrid>
+
+## 🎯 Mengapa Memilih rnc-theme?
+
+- **🔥 Production Ready** - Telah diuji dan digunakan dalam aplikasi production
+- **📚 Dokumentasi Lengkap** - Panduan detail dan contoh untuk setiap komponen
+- **🎨 Design System** - Konsisten dengan prinsip-prinsip design system modern
+- **⚡ Performance First** - Dioptimalkan untuk performa aplikasi mobile
+- **🌍 Community Driven** - Dikembangkan dengan masukan dari komunitas developer
+
+## 📖 Jelajahi Dokumentasi
+
+<CardGrid>
+	<Card title="🚀 Getting Started" icon="rocket">
+		Panduan lengkap untuk memulai menggunakan rnc-theme dalam proyek Anda.
+	</Card>
+	<Card title="🎨 Theming Guide" icon="palette">
+		Pelajari cara membuat dan mengkustomisasi tema sesuai brand Anda.
+	</Card>
+	<Card title="🧩 Components" icon="puzzle">
+		Jelajahi semua komponen yang tersedia dengan contoh penggunaan lengkap.
+	</Card>
+	<Card title="💡 Examples" icon="open-book">
+		Lihat contoh implementasi nyata dan best practices.
 	</Card>
 </CardGrid>
