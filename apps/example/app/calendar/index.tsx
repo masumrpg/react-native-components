@@ -1,26 +1,28 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View, Alert } from 'react-native';
-import {
-  Calendar,
-  Card,
-  CardContent,
-  CardHeader,
-  Typography,
-  Button,
-  ButtonText,
-  useTheme,
-  VStack,
-} from 'rnc-theme';
+import { ScrollView, StyleSheet } from 'react-native';
+import { Calendar, useTheme, VStack, ListMarkedDates } from 'rnc-theme';
 import { DateData } from 'react-native-calendars';
-import { Text } from 'react-native';
 
 const CalendarScreen = () => {
   const { theme } = useTheme();
 
-  const [selectedDate, setSelectedDate] = useState<string | null>(null);
+  const listMarkedDates: ListMarkedDates = [
+    {
+      date: '2025-06-20',
+      marked: true,
+    },
+    {
+      date: '2025-06-22',
+      marked: true,
+    },
+  ];
+
+  const [selectedDate, setSelectedDate] = useState<DateData | undefined>(
+    undefined
+  );
 
   const handleDayPress = (day: DateData) => {
-    setSelectedDate(day.dateString);
+    setSelectedDate(day);
   };
 
   return (
@@ -31,18 +33,8 @@ const CalendarScreen = () => {
       <VStack>
         <Calendar
           onDayPress={handleDayPress}
-          markedDates={{
-            '2025-06-21': {
-              marked: true,
-              // disabled: true,
-              // disableTouchEvent: true,
-            },
-            ...(selectedDate && {
-              [selectedDate]: {
-                selected: true,
-              },
-            }),
-          }}
+          selectedDate={selectedDate}
+          listMarkedDates={listMarkedDates}
         />
       </VStack>
     </ScrollView>
