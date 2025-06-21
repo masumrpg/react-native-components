@@ -74,6 +74,17 @@ interface FormControlErrorTextProps {
   variant?: keyof Theme['typography'];
 }
 
+interface FormContentProps {
+  children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+  spacing?: keyof Theme['spacing'];
+}
+
+interface FormFieldProps {
+  children: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+}
+
 // Context
 const FormControlContext = createContext<FormControlContextType | null>(null);
 
@@ -92,6 +103,12 @@ const useFormControlOptional = () => {
 // Styles
 const createFormControlStyles = (theme: Theme) => ({
   container: {
+    width: '100%',
+  } as ViewStyle,
+  contentContainer: {
+    width: '100%',
+  } as ViewStyle,
+  fieldContainer: {
     width: '100%',
   } as ViewStyle,
   labelContainer: {
@@ -452,8 +469,51 @@ const FormControlErrorText = forwardRef<
   );
 });
 
+const FormContent = forwardRef<
+  React.ComponentRef<typeof View>,
+  FormContentProps
+>(({ children, style, spacing = 'md', ...props }, ref) => {
+  const styles = useThemedStyles(createFormControlStyles);
+  const { theme } = useTheme();
+
+  return (
+    <View
+      ref={ref}
+      style={[
+        styles.contentContainer,
+        {
+          gap: theme.spacing[spacing],
+        },
+        style,
+      ]}
+      {...props}
+    >
+      {children}
+    </View>
+  );
+});
+
+const FormField = forwardRef<
+  React.ComponentRef<typeof View>,
+  FormFieldProps
+>(({ children, style, ...props }, ref) => {
+  const styles = useThemedStyles(createFormControlStyles);
+
+  return (
+    <View
+      ref={ref}
+      style={[styles.fieldContainer, style]}
+      {...props}
+    >
+      {children}
+    </View>
+  );
+});
+
 // Set display names
 FormControl.displayName = 'FormControl';
+FormContent.displayName = 'FormContent';
+FormField.displayName = 'FormField';
 FormControlLabel.displayName = 'FormControlLabel';
 FormControlLabelText.displayName = 'FormControlLabelText';
 FormControlHelper.displayName = 'FormControlHelper';
@@ -464,6 +524,8 @@ FormControlErrorText.displayName = 'FormControlErrorText';
 
 export {
   FormControl,
+  FormContent,
+  FormField,
   FormControlLabel,
   FormControlLabelText,
   FormControlHelper,
@@ -477,6 +539,8 @@ export {
 
 export type {
   FormControlProps,
+  FormContentProps,
+  FormFieldProps,
   FormControlLabelProps,
   FormControlLabelTextProps,
   FormControlHelperProps,

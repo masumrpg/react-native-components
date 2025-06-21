@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { ScrollView, View, Text, Alert } from 'react-native';
 import {
   FormControl,
+  FormContent,
+  FormField,
   FormControlLabel,
   FormControlLabelText,
   FormControlHelper,
@@ -237,360 +239,387 @@ export default function FormControlExample() {
             User Registration Form
           </Text>
         </CardHeader>
-        <CardContent style={{ gap: theme.spacing.md }}>
-          {/* Email Field */}
-          <FormControl state={errors.email ? 'error' : 'default'} required>
-            <FormControlLabel>
-              <FormControlLabelText>Email Address</FormControlLabelText>
-            </FormControlLabel>
-            <Input
-              placeholder="Enter your email"
-              value={formData.email}
-              onChangeText={(text) => {
-                setFormData((prev) => ({ ...prev, email: text }));
-                if (errors.email) {
-                  setErrors((prev) => ({ ...prev, email: undefined }));
-                }
-              }}
-              state={errors.email ? 'error' : 'default'}
-              keyboardType="email-address"
-              autoCapitalize="none"
-            />
-            <FormControlHelper>
-              <FormControlHelperText>
-                We'll never share your email with anyone else.
-              </FormControlHelperText>
-            </FormControlHelper>
-            <FormControlError>
-              <FormControlErrorIcon />
-              <FormControlErrorText>{errors.email}</FormControlErrorText>
-            </FormControlError>
-          </FormControl>
-          {/* Password Field */}
-          <FormControl state={errors.password ? 'error' : 'default'} required>
-            <FormControlLabel>
-              <FormControlLabelText>Password</FormControlLabelText>
-            </FormControlLabel>
-            <Input
-              placeholder="Enter your password"
-              value={formData.password}
-              onChangeText={(text) => {
-                setFormData((prev) => ({ ...prev, password: text }));
-                if (errors.password) {
-                  setErrors((prev) => ({ ...prev, password: undefined }));
-                }
-              }}
-              secureTextEntry
-            />
-            <FormControlHelper>
-              <FormControlHelperText>
-                Password must be at least 8 characters long.
-              </FormControlHelperText>
-            </FormControlHelper>
-            <FormControlError>
-              <FormControlErrorIcon />
-              <FormControlErrorText>{errors.password}</FormControlErrorText>
-            </FormControlError>
-          </FormControl>
-          {/* Confirm Password Field */}
-          <FormControl
-            state={errors.confirmPassword ? 'error' : 'default'}
-            required
-          >
-            <FormControlLabel>
-              <FormControlLabelText>Confirm Password</FormControlLabelText>
-            </FormControlLabel>
-            <Input
-              placeholder="Confirm your password"
-              value={formData.confirmPassword}
-              onChangeText={(text) => {
-                setFormData((prev) => ({ ...prev, confirmPassword: text }));
-                if (errors.confirmPassword) {
-                  setErrors((prev) => ({
-                    ...prev,
-                    confirmPassword: undefined,
-                  }));
-                }
-              }}
-              secureTextEntry
-            />
-            <FormControlError>
-              <FormControlErrorIcon />
-              <FormControlErrorText>
-                {errors.confirmPassword}
-              </FormControlErrorText>
-            </FormControlError>
-          </FormControl>
-          {/* Country Combobox */}
-          <FormControl state={errors.country ? 'error' : 'default'} required>
-            <FormControlLabel>
-              <FormControlLabelText>Country</FormControlLabelText>
-            </FormControlLabel>
-            <Combobox
-              placeholder="Select your country"
-              options={countryOptions}
-              value={formData.country}
-              onValueChange={(value) => {
-                setFormData((prev) => ({ ...prev, country: value as string }));
-                if (errors.country) {
-                  setErrors((prev) => ({ ...prev, country: undefined }));
-                }
-              }}
-              searchable
-              clearable
-            />
-            <FormControlHelper>
-              <FormControlHelperText>
-                Select the country where you currently reside.
-              </FormControlHelperText>
-            </FormControlHelper>
-            <FormControlError>
-              <FormControlErrorIcon />
-              <FormControlErrorText>{errors.country}</FormControlErrorText>
-            </FormControlError>
-          </FormControl>
-          {/* Hobbies Multiple Combobox */}
+        <CardContent>
           <FormControl>
-            <FormControlLabel>
-              <FormControlLabelText>
-                Hobbies (Multiple Selection)
-              </FormControlLabelText>
-            </FormControlLabel>
-            <Combobox
-              placeholder="Select your hobbies"
-              options={hobbyOptions}
-              value={formData.hobbies}
-              onValueChange={(value) => {
-                setFormData((prev) => ({
-                  ...prev,
-                  hobbies: value as string[],
-                }));
-              }}
-              multiple
-              searchable
-              clearable
-            />
-            <FormControlHelper>
-              <FormControlHelperText>
-                You can select multiple hobbies that interest you.
-              </FormControlHelperText>
-            </FormControlHelper>
-          </FormControl>
-          {/* Skills Combobox with Search */}
-          <FormControl>
-            <FormControlLabel>
-              <FormControlLabelText>Primary Skill</FormControlLabelText>
-            </FormControlLabel>
-            <Combobox
-              placeholder="Search and select your primary skill"
-              options={skillOptions}
-              value={formData.skills}
-              onValueChange={(value) => {
-                setFormData((prev) => ({ ...prev, skills: value as string }));
-              }}
-              searchable
-              clearable
-            />
-            <FormControlHelper>
-              <FormControlHelperText>
-                Choose your strongest technical skill.
-              </FormControlHelperText>
-            </FormControlHelper>
-          </FormControl>
-          {/* Birth Date DatePicker */}
-          <FormControl state={errors.birthDate ? 'error' : 'default'} required>
-            <FormControlLabel>
-              <FormControlLabelText>Birth Date</FormControlLabelText>
-            </FormControlLabel>
-            <DatePicker
-              state={errors.birthDate ? 'error' : 'default'}
-              placeholder="Select your birth date"
-              value={formData.birthDate}
-              onDateSelect={(date) => {
-                setFormData((prev) => ({ ...prev, birthDate: date }));
-                if (errors.birthDate) {
-                  setErrors((prev) => ({ ...prev, birthDate: undefined }));
-                }
-              }}
-              dateFormat="DD/MM/YYYY"
-              maxDate={new Date().toISOString().split('T')[0]} // Cannot select future dates
-            />
-            <FormControlHelper>
-              <FormControlHelperText>
-                Select your date of birth for age verification.
-              </FormControlHelperText>
-            </FormControlHelper>
-            <FormControlError>
-              <FormControlErrorIcon />
-              <FormControlErrorText>{errors.birthDate}</FormControlErrorText>
-            </FormControlError>
-          </FormControl>
-          {/* Appointment Date DatePicker */}
-          <FormControl>
-            <FormControlLabel>
-              <FormControlLabelText>
-                Preferred Appointment Date
-              </FormControlLabelText>
-            </FormControlLabel>
-            <DatePicker
-              // useFormControl={true}
-              placeholder="Select appointment date"
-              value={formData.appointmentDate}
-              onDateSelect={(date) => {
-                setFormData((prev) => ({ ...prev, appointmentDate: date }));
-              }}
-              dateFormat="DD MMM YYYY"
-              minDate={new Date().toISOString().split('T')[0]} // Cannot select past dates
-              variant="filled"
-              size="lg"
-            />
-            <FormControlHelper>
-              <FormControlHelperText>
-                Choose your preferred appointment date (optional).
-              </FormControlHelperText>
-            </FormControlHelper>
-          </FormControl>
-          {/* Newsletter Checkbox */}
-          <FormControl>
-            <Checkbox
-              value="newsletter"
-              checked={formData.newsletter}
-              onCheckedChange={(checked) => {
-                setFormData((prev) => ({ ...prev, newsletter: checked }));
-              }}
-            >
-              <CheckboxIndicator>
-                <CheckboxIcon />
-              </CheckboxIndicator>
-              <CheckboxLabel>
-                <FormControlLabelText>
-                  Subscribe to our newsletter
-                </FormControlLabelText>
-              </CheckboxLabel>
-            </Checkbox>
-            <FormControlHelper>
-              <FormControlHelperText>
-                Get updates about new features and promotions.
-              </FormControlHelperText>
-            </FormControlHelper>
-          </FormControl>
-          {/* Gender Radio Group */}
-          <FormControl state={errors.gender ? 'error' : 'default'} required>
-            <FormControlLabel>
-              <FormControlLabelText>Gender</FormControlLabelText>
-            </FormControlLabel>
-            <RadioGroup
-              value={formData.gender}
-              onValueChange={(value) => {
-                setFormData((prev) => ({ ...prev, gender: value }));
-                if (errors.gender) {
-                  setErrors((prev) => ({ ...prev, gender: undefined }));
-                }
-              }}
-            >
-              <View style={{ gap: theme.spacing.sm }}>
-                <Radio value="male">
-                  <RadioLabel>
-                    <Text
-                      style={{
-                        ...theme.typography.body,
-                        color: theme.colors.text,
-                      }}
-                    >
-                      Male
-                    </Text>
-                  </RadioLabel>
-                </Radio>
-                <Radio value="female">
-                  <RadioLabel>
-                    <Text
-                      style={{
-                        ...theme.typography.body,
-                        color: theme.colors.text,
-                      }}
-                    >
-                      Female
-                    </Text>
-                  </RadioLabel>
-                </Radio>
-                <Radio value="other">
-                  <RadioLabel>
-                    <Text
-                      style={{
-                        ...theme.typography.body,
-                        color: theme.colors.text,
-                      }}
-                    >
-                      Other
-                    </Text>
-                  </RadioLabel>
-                </Radio>
-              </View>
-            </RadioGroup>
-            <FormControlError>
-              <FormControlErrorIcon />
-              <FormControlErrorText>{errors.gender}</FormControlErrorText>
-            </FormControlError>
-          </FormControl>
-          {/* Age Slider */}
-          <FormControl>
-            <FormControlLabel>
-              <FormControlLabelText>Age: {formData.age}</FormControlLabelText>
-            </FormControlLabel>
-            <Slider
-              initialValue={formData.age}
-              onValueChange={(value) => {
-                setFormData((prev) => ({ ...prev, age: value }));
-              }}
-              min={18}
-              max={100}
-              step={1}
-            />
-            <FormControlHelper>
-              <FormControlHelperText>
-                Select your age (18-100 years).
-              </FormControlHelperText>
-            </FormControlHelper>
-          </FormControl>
-          {/* Notifications Switcher */}
-          <FormControl>
-            <View
-              style={{
-                flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
-              }}
-            >
-              <View style={{ flex: 1 }}>
+            <FormContent spacing="md">
+              {/* Email Field */}
+              <View>
                 <FormControlLabel>
-                  <FormControlLabelText>
-                    Push Notifications
-                  </FormControlLabelText>
+                  <FormControlLabelText>Email Address</FormControlLabelText>
                 </FormControlLabel>
+                <Input
+                  placeholder="Enter your email"
+                  value={formData.email}
+                  onChangeText={(text) => {
+                    setFormData((prev) => ({ ...prev, email: text }));
+                    if (errors.email) {
+                      setErrors((prev) => ({ ...prev, email: undefined }));
+                    }
+                  }}
+                  state={errors.email ? 'error' : 'default'}
+                  keyboardType="email-address"
+                  autoCapitalize="none"
+                />
+                {!errors.email && (
+                  <FormControlHelper>
+                    <FormControlHelperText>
+                      We'll never share your email with anyone else.
+                    </FormControlHelperText>
+                  </FormControlHelper>
+                )}
+                {errors.email && (
+                  <FormControlError>
+                    <FormControlErrorIcon />
+                    <FormControlErrorText>{errors.email}</FormControlErrorText>
+                  </FormControlError>
+                )}
+              </View>
+
+              {/* Password Field */}
+              <View>
+                <FormControlLabel>
+                  <FormControlLabelText>Password</FormControlLabelText>
+                </FormControlLabel>
+                <Input
+                  placeholder="Enter your password"
+                  value={formData.password}
+                  onChangeText={(text) => {
+                    setFormData((prev) => ({ ...prev, password: text }));
+                    if (errors.password) {
+                      setErrors((prev) => ({ ...prev, password: undefined }));
+                    }
+                  }}
+                  state={errors.password ? 'error' : 'default'}
+                  secureTextEntry
+                />
+                {!errors.password && (
+                  <FormControlHelper>
+                    <FormControlHelperText>
+                      Password must be at least 8 characters long.
+                    </FormControlHelperText>
+                  </FormControlHelper>
+                )}
+                {errors.password && (
+                  <FormControlError>
+                    <FormControlErrorIcon />
+                    <FormControlErrorText>{errors.password}</FormControlErrorText>
+                  </FormControlError>
+                )}
+              </View>
+
+              {/* Confirm Password Field */}
+              <View>
+                <FormControlLabel>
+                  <FormControlLabelText>Confirm Password</FormControlLabelText>
+                </FormControlLabel>
+                <Input
+                  placeholder="Confirm your password"
+                  value={formData.confirmPassword}
+                  onChangeText={(text) => {
+                    setFormData((prev) => ({ ...prev, confirmPassword: text }));
+                    if (errors.confirmPassword) {
+                      setErrors((prev) => ({
+                        ...prev,
+                        confirmPassword: undefined,
+                      }));
+                    }
+                  }}
+                  state={errors.confirmPassword ? 'error' : 'default'}
+                  secureTextEntry
+                />
+                {errors.confirmPassword && (
+                  <FormControlError>
+                    <FormControlErrorIcon />
+                    <FormControlErrorText>
+                      {errors.confirmPassword}
+                    </FormControlErrorText>
+                  </FormControlError>
+                )}
+              </View>
+
+              {/* Country Combobox */}
+              <View>
+                <FormControlLabel>
+                  <FormControlLabelText>Country</FormControlLabelText>
+                </FormControlLabel>
+                <Combobox
+                  placeholder="Select your country"
+                  options={countryOptions}
+                  value={formData.country}
+                  onValueChange={(value) => {
+                    setFormData((prev) => ({ ...prev, country: value as string }));
+                    if (errors.country) {
+                      setErrors((prev) => ({ ...prev, country: undefined }));
+                    }
+                  }}
+                  searchable
+                  clearable
+                />
                 <FormControlHelper>
                   <FormControlHelperText>
-                    Receive notifications about important updates.
+                    Select the country where you currently reside.
+                  </FormControlHelperText>
+                </FormControlHelper>
+                <FormControlError>
+                  <FormControlErrorIcon />
+                  <FormControlErrorText>{errors.country}</FormControlErrorText>
+                </FormControlError>
+              </View>
+
+              {/* Hobbies Multiple Combobox */}
+              <View>
+                <FormControlLabel>
+                  <FormControlLabelText>
+                    Hobbies (Multiple Selection)
+                  </FormControlLabelText>
+                </FormControlLabel>
+                <Combobox
+                  placeholder="Select your hobbies"
+                  options={hobbyOptions}
+                  value={formData.hobbies}
+                  onValueChange={(value) => {
+                    setFormData((prev) => ({
+                      ...prev,
+                      hobbies: value as string[],
+                    }));
+                  }}
+                  multiple
+                  searchable
+                  clearable
+                />
+                <FormControlHelper>
+                  <FormControlHelperText>
+                    You can select multiple hobbies that interest you.
                   </FormControlHelperText>
                 </FormControlHelper>
               </View>
-              <Switcher
-                value={formData.notifications}
-                onValueChange={(value) => {
-                  setFormData((prev) => ({ ...prev, notifications: value }));
-                }}
-              />
-            </View>
+
+              {/* Skills Combobox with Search */}
+              <View>
+                <FormControlLabel>
+                  <FormControlLabelText>Primary Skill</FormControlLabelText>
+                </FormControlLabel>
+                <Combobox
+                  placeholder="Search and select your primary skill"
+                  options={skillOptions}
+                  value={formData.skills}
+                  onValueChange={(value) => {
+                    setFormData((prev) => ({ ...prev, skills: value as string }));
+                  }}
+                  searchable
+                  clearable
+                />
+                <FormControlHelper>
+                  <FormControlHelperText>
+                    Choose your strongest technical skill.
+                  </FormControlHelperText>
+                </FormControlHelper>
+              </View>
+
+              {/* Birth Date DatePicker */}
+              <View>
+                <FormControlLabel>
+                  <FormControlLabelText>Birth Date</FormControlLabelText>
+                </FormControlLabel>
+                <DatePicker
+                  state={errors.birthDate ? 'error' : 'default'}
+                  placeholder="Select your birth date"
+                  value={formData.birthDate}
+                  onDateSelect={(date) => {
+                    setFormData((prev) => ({ ...prev, birthDate: date }));
+                    if (errors.birthDate) {
+                      setErrors((prev) => ({ ...prev, birthDate: undefined }));
+                    }
+                  }}
+                  dateFormat="DD/MM/YYYY"
+                  maxDate={new Date().toISOString().split('T')[0]} // Cannot select future dates
+                />
+                <FormControlHelper>
+                  <FormControlHelperText>
+                    Select your date of birth for age verification.
+                  </FormControlHelperText>
+                </FormControlHelper>
+                {errors.birthDate && (
+                  <FormControlError>
+                    <FormControlErrorIcon />
+                    <FormControlErrorText>{errors.birthDate}</FormControlErrorText>
+                  </FormControlError>
+                )}
+              </View>
+              {/* Appointment Date DatePicker */}
+              <View>
+                <FormControlLabel>
+                  <FormControlLabelText>
+                    Preferred Appointment Date
+                  </FormControlLabelText>
+                </FormControlLabel>
+                <DatePicker
+                  placeholder="Select appointment date"
+                  value={formData.appointmentDate}
+                  onDateSelect={(date) => {
+                    setFormData((prev) => ({ ...prev, appointmentDate: date }));
+                  }}
+                  dateFormat="DD MMM YYYY"
+                  minDate={new Date().toISOString().split('T')[0]} // Cannot select past dates
+                  variant="filled"
+                  size="lg"
+                />
+                <FormControlHelper>
+                  <FormControlHelperText>
+                    Choose your preferred appointment date (optional).
+                  </FormControlHelperText>
+                </FormControlHelper>
+              </View>
+
+              {/* Newsletter Checkbox */}
+              <View>
+                <Checkbox
+                  value="newsletter"
+                  checked={formData.newsletter}
+                  onCheckedChange={(checked) => {
+                    setFormData((prev) => ({ ...prev, newsletter: checked }));
+                  }}
+                >
+                  <CheckboxIndicator>
+                    <CheckboxIcon />
+                  </CheckboxIndicator>
+                  <CheckboxLabel>
+                    <FormControlLabelText>
+                      Subscribe to our newsletter
+                    </FormControlLabelText>
+                  </CheckboxLabel>
+                </Checkbox>
+                <FormControlHelper>
+                  <FormControlHelperText>
+                    Get updates about new features and promotions.
+                  </FormControlHelperText>
+                </FormControlHelper>
+              </View>
+
+              {/* Gender Radio Group */}
+              <View>
+                <FormControlLabel>
+                  <FormControlLabelText>Gender</FormControlLabelText>
+                </FormControlLabel>
+                <RadioGroup
+                  value={formData.gender}
+                  onValueChange={(value) => {
+                    setFormData((prev) => ({ ...prev, gender: value }));
+                    if (errors.gender) {
+                      setErrors((prev) => ({ ...prev, gender: undefined }));
+                    }
+                  }}
+                >
+                  <View style={{ gap: theme.spacing.sm }}>
+                    <Radio value="male">
+                      <RadioLabel>
+                        <Text
+                          style={{
+                            ...theme.typography.body,
+                            color: theme.colors.text,
+                          }}
+                        >
+                          Male
+                        </Text>
+                      </RadioLabel>
+                    </Radio>
+                    <Radio value="female">
+                      <RadioLabel>
+                        <Text
+                          style={{
+                            ...theme.typography.body,
+                            color: theme.colors.text,
+                          }}
+                        >
+                          Female
+                        </Text>
+                      </RadioLabel>
+                    </Radio>
+                    <Radio value="other">
+                      <RadioLabel>
+                        <Text
+                          style={{
+                            ...theme.typography.body,
+                            color: theme.colors.text,
+                          }}
+                        >
+                          Other
+                        </Text>
+                      </RadioLabel>
+                    </Radio>
+                  </View>
+                </RadioGroup>
+                {errors.gender && (
+                  <FormControlError>
+                    <FormControlErrorIcon />
+                    <FormControlErrorText>{errors.gender}</FormControlErrorText>
+                  </FormControlError>
+                )}
+              </View>
+
+              {/* Age Slider */}
+              <View>
+                <FormControlLabel>
+                  <FormControlLabelText>Age: {formData.age}</FormControlLabelText>
+                </FormControlLabel>
+                <Slider
+                  initialValue={formData.age}
+                  onValueChange={(value) => {
+                    setFormData((prev) => ({ ...prev, age: value }));
+                  }}
+                  min={18}
+                  max={100}
+                  step={1}
+                />
+                <FormControlHelper>
+                  <FormControlHelperText>
+                    Select your age (18-100 years).
+                  </FormControlHelperText>
+                </FormControlHelper>
+              </View>
+
+              {/* Notifications Switcher */}
+              <View>
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  <View style={{ flex: 1 }}>
+                    <FormControlLabel>
+                      <FormControlLabelText>
+                        Push Notifications
+                      </FormControlLabelText>
+                    </FormControlLabel>
+                    <FormControlHelper>
+                      <FormControlHelperText>
+                        Receive notifications about important updates.
+                      </FormControlHelperText>
+                    </FormControlHelper>
+                  </View>
+                  <Switcher
+                    value={formData.notifications}
+                    onValueChange={(value) => {
+                      setFormData((prev) => ({ ...prev, notifications: value }));
+                    }}
+                  />
+                </View>
+              </View>
+
+              {/* Submit Button */}
+              <Button
+                onPress={handleSubmit}
+                disabled={isSubmitting}
+                style={{ marginTop: theme.spacing.md }}
+              >
+                <ButtonText>
+                  {isSubmitting ? 'Submitting...' : 'Create Account'}
+                </ButtonText>
+              </Button>
+            </FormContent>
           </FormControl>
-          {/* Submit Button */}
-          <Button
-            onPress={handleSubmit}
-            disabled={isSubmitting}
-            style={{ marginTop: theme.spacing.md }}
-          >
-            <ButtonText>
-              {isSubmitting ? 'Submitting...' : 'Create Account'}
-            </ButtonText>
-          </Button>
         </CardContent>
       </Card>
 
