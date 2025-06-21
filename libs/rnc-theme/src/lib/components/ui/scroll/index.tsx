@@ -15,8 +15,6 @@ import Animated, {
   useSharedValue,
   withTiming,
   runOnJS,
-  interpolate,
-  Extrapolate,
 } from 'react-native-reanimated';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
