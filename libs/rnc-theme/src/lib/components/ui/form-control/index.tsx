@@ -320,7 +320,7 @@ const FormControlLabelText = forwardRef<
   }, [styles, variant, theme, size, disabled]);
 
   return (
-    <>
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
       <Text ref={ref} style={[textStyle, style]} {...props}>
         {children}
       </Text>
@@ -334,7 +334,7 @@ const FormControlLabelText = forwardRef<
           *
         </Text>
       )}
-    </>
+    </View>
   );
 });
 
@@ -344,9 +344,11 @@ const FormControlHelper = forwardRef<
 >(({ children, style, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
   const { helperId, hasError } = useFormControl();
+  const formField = useFormField();
+  const required = formField?.required || false;
 
-  // Don't render helper if there's an error
-  if (hasError) {
+  // Don't render helper if there's an error AND the field is required
+  if (hasError && required) {
     return null;
   }
 
@@ -366,9 +368,11 @@ const FormControlHelperText = forwardRef<
   React.ComponentRef<typeof Text>,
   FormControlHelperTextProps
 >(({ children, style, variant, ...props }, ref) => {
+  const { theme } = useTheme();
   const styles = useThemedStyles(createFormControlStyles);
   const { disabled, hasError } = useFormControl();
-  const { theme } = useTheme();
+  const formField = useFormField();
+  const required = formField?.required || false;
 
   const textStyle = useMemo(() => {
     let baseStyle = styles.helperText;
@@ -384,8 +388,8 @@ const FormControlHelperText = forwardRef<
     return baseStyle;
   }, [styles, variant, theme, disabled]);
 
-  // Don't render helper text if there's an error
-  if (hasError) {
+  // Don't render helper text if there's an error AND the field is required
+  if (hasError && required) {
     return null;
   }
 
