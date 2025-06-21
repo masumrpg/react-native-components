@@ -252,6 +252,7 @@ export default function FormControlExample() {
                   setErrors((prev) => ({ ...prev, email: undefined }));
                 }
               }}
+              state={errors.email ? 'error' : 'default'}
               keyboardType="email-address"
               autoCapitalize="none"
             />
@@ -432,7 +433,7 @@ export default function FormControlExample() {
               </FormControlLabelText>
             </FormControlLabel>
             <DatePicker
-              useFormControl={true}
+              // useFormControl={true}
               placeholder="Select appointment date"
               value={formData.appointmentDate}
               onDateSelect={(date) => {
