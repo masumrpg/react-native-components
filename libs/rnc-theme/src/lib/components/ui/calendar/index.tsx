@@ -424,6 +424,8 @@ const Calendar = ({
           borderRadius: globalTheme.components.borderRadius.md,
           overflow: 'hidden',
           padding: 5,
+          borderWidth: 1,
+          borderColor: globalTheme.colors.border,
         }}
         theme={calendarTheme}
         renderHeader={(date) => (

@@ -25,6 +25,7 @@ import {
   Slider,
   Switcher,
   Combobox,
+  DatePicker,
   useTheme,
 } from 'rnc-theme';
 
@@ -40,6 +41,8 @@ interface FormData {
   country: string;
   hobbies: string[];
   skills: string;
+  birthDate: string;
+  appointmentDate: string;
 }
 
 interface FormErrors {
@@ -53,6 +56,8 @@ interface FormErrors {
   country?: string;
   hobbies?: string;
   skills?: string;
+  birthDate?: string;
+  appointmentDate?: string;
 }
 
 // Data untuk combobox
@@ -108,6 +113,8 @@ export default function FormControlExample() {
     country: '',
     hobbies: [],
     skills: '',
+    birthDate: '',
+    appointmentDate: '',
   });
 
   const [errors, setErrors] = useState<FormErrors>({});
@@ -151,6 +158,14 @@ export default function FormControlExample() {
     return undefined;
   };
 
+  const validateBirthDate = (birthDate: string): string | undefined => {
+    if (!birthDate) return 'Birth date is required';
+    const today = new Date();
+    const birth = new Date(birthDate);
+    if (birth > today) return 'Birth date cannot be in the future';
+    return undefined;
+  };
+
   // Handle form submission
   const handleSubmit = async () => {
     setIsSubmitting(true);
@@ -165,6 +180,7 @@ export default function FormControlExample() {
       ),
       gender: validateGender(formData.gender),
       country: validateCountry(formData.country),
+      birthDate: validateBirthDate(formData.birthDate),
     };
 
     // Remove undefined errors
@@ -377,6 +393,59 @@ export default function FormControlExample() {
             <FormControlHelper>
               <FormControlHelperText>
                 Choose your strongest technical skill.
+              </FormControlHelperText>
+            </FormControlHelper>
+          </FormControl>
+          {/* Birth Date DatePicker */}
+          <FormControl state={errors.birthDate ? 'error' : 'default'} required>
+            <FormControlLabel>
+              <FormControlLabelText>Birth Date</FormControlLabelText>
+            </FormControlLabel>
+            <DatePicker
+              useFormControl={true}
+              placeholder="Select your birth date"
+              value={formData.birthDate}
+              onDateSelect={(date) => {
+                setFormData((prev) => ({ ...prev, birthDate: date }));
+                if (errors.birthDate) {
+                  setErrors((prev) => ({ ...prev, birthDate: undefined }));
+                }
+              }}
+              dateFormat="DD/MM/YYYY"
+              maxDate={new Date().toISOString().split('T')[0]} // Cannot select future dates
+            />
+            <FormControlHelper>
+              <FormControlHelperText>
+                Select your date of birth for age verification.
+              </FormControlHelperText>
+            </FormControlHelper>
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>{errors.birthDate}</FormControlErrorText>
+            </FormControlError>
+          </FormControl>
+          {/* Appointment Date DatePicker */}
+          <FormControl>
+            <FormControlLabel>
+              <FormControlLabelText>
+                Preferred Appointment Date
+              </FormControlLabelText>
+            </FormControlLabel>
+            <DatePicker
+              useFormControl={true}
+              placeholder="Select appointment date"
+              value={formData.appointmentDate}
+              onDateSelect={(date) => {
+                setFormData((prev) => ({ ...prev, appointmentDate: date }));
+              }}
+              dateFormat="DD MMM YYYY"
+              minDate={new Date().toISOString().split('T')[0]} // Cannot select past dates
+              variant="filled"
+              size="lg"
+            />
+            <FormControlHelper>
+              <FormControlHelperText>
+                Choose your preferred appointment date (optional).
               </FormControlHelperText>
             </FormControlHelper>
           </FormControl>

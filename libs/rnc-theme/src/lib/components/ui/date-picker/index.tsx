@@ -8,15 +8,28 @@ import {
   TextStyle,
   ViewStyle,
   Dimensions,
+  Platform,
 } from 'react-native';
 import { Calendar, CalendarProps } from '../calendar';
 import { Portal } from '../portal';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
+import { resolveColor } from '../../../utils';
 import { Theme } from '../../../types/theme';
 import { ComponentSize, ComponentVariant } from '../../../types/ui';
 import { DateData } from 'react-native-calendars';
 import { ChevronDown, Calendar as CalendarIcon } from 'lucide-react-native';
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlHelper,
+  FormControlHelperText,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+  useFormControlOptional,
+} from '../form-control';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -52,22 +65,40 @@ export interface DatePickerProps {
   helperText?: string;
   error?: string;
   required?: boolean;
+  // FormControl integration
+  useFormControl?: boolean;
+  state?: 'default' | 'error' | 'success' | 'warning' | 'disabled';
+  formControlSize?: 'sm' | 'md' | 'lg';
+  spacing?: keyof Theme['spacing'];
 }
 
 // Helper function to format date
-const formatDate = (dateString: string, format: DatePickerProps['dateFormat'] = 'DD/MM/YYYY'): string => {
+const formatDate = (
+  dateString: string,
+  format: DatePickerProps['dateFormat'] = 'DD/MM/YYYY'
+): string => {
   if (!dateString) return '';
-  
+
   const date = new Date(dateString);
   const day = date.getDate().toString().padStart(2, '0');
   const month = (date.getMonth() + 1).toString().padStart(2, '0');
   const year = date.getFullYear();
-  
+
   const monthNames = [
-    'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-    'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
+    'Jan',
+    'Feb',
+    'Mar',
+    'Apr',
+    'May',
+    'Jun',
+    'Jul',
+    'Aug',
+    'Sep',
+    'Oct',
+    'Nov',
+    'Dec',
   ];
-  
+
   switch (format) {
     case 'DD/MM/YYYY':
       return `${day}/${month}/${year}`;
@@ -109,16 +140,40 @@ const DatePicker: React.FC<DatePickerProps> = ({
   helperText,
   error,
   required = false,
+  // FormControl integration
+  useFormControl = false,
+  state = 'default',
+  formControlSize = 'md',
+  spacing = 'sm',
 }) => {
   const { theme } = useTheme();
   const [isOpen, setIsOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<string | undefined>(value);
-  
+  const [isFocused, setIsFocused] = useState(false);
+
+  // FormControl integration
+  const formControl = useFormControlOptional();
+  const isInFormControl = !!formControl;
+
+  // Use FormControl state if available
+  const effectiveState = isInFormControl
+    ? formControl.state
+    : error
+    ? 'error'
+    : state;
+  const effectiveDisabled = isInFormControl ? formControl.disabled : disabled;
+  const effectiveRequired = isInFormControl ? formControl.required : required;
+  const effectiveSize = isInFormControl ? formControl.size : formControlSize;
+
   const backdropOpacityValue = useSharedValue(0);
   const calendarScaleValue = useSharedValue(0.8);
   const calendarOpacityValue = useSharedValue(0);
+  const scaleAnimation = useSharedValue(1);
+  const borderAnimation = useSharedValue(0);
 
-  const styles = useThemedStyles((theme: Theme) => createStyles(theme, size, variant, borderRadius));
+  const styles = useThemedStyles((theme: Theme) =>
+    createStyles(theme, size, variant, borderRadius)
+  );
 
   const displayValue = useMemo(() => {
     if (selectedDate) {
@@ -128,9 +183,21 @@ const DatePicker: React.FC<DatePickerProps> = ({
   }, [selectedDate, dateFormat]);
 
   const handleOpen = useCallback(() => {
-    if (disabled) return;
+    if (effectiveDisabled) return;
     setIsOpen(true);
-    
+    setIsFocused(true);
+
+    // Border animation
+    borderAnimation.value = withTiming(1, {
+      duration: 200,
+    });
+
+    // Scale animation
+    scaleAnimation.value = withSpring(0.98, {
+      damping: 15,
+      stiffness: 300,
+    });
+
     backdropOpacityValue.value = withTiming(backdropOpacity, {
       duration: animationDuration,
     });
@@ -141,9 +208,29 @@ const DatePicker: React.FC<DatePickerProps> = ({
     calendarOpacityValue.value = withTiming(1, {
       duration: animationDuration,
     });
-  }, [disabled, backdropOpacity, animationDuration, backdropOpacityValue, calendarScaleValue, calendarOpacityValue]);
+  }, [
+    effectiveDisabled,
+    backdropOpacity,
+    animationDuration,
+    backdropOpacityValue,
+    calendarScaleValue,
+    calendarOpacityValue,
+    borderAnimation,
+    scaleAnimation,
+  ]);
 
   const handleClose = useCallback(() => {
+    setIsFocused(false);
+
+    // Reset animations
+    borderAnimation.value = withTiming(0, {
+      duration: 200,
+    });
+    scaleAnimation.value = withSpring(1, {
+      damping: 15,
+      stiffness: 300,
+    });
+
     backdropOpacityValue.value = withTiming(0, {
       duration: animationDuration,
     });
@@ -153,20 +240,30 @@ const DatePicker: React.FC<DatePickerProps> = ({
     calendarOpacityValue.value = withTiming(0, {
       duration: animationDuration,
     });
-    
+
     setTimeout(() => {
       setIsOpen(false);
     }, animationDuration);
-  }, [animationDuration, backdropOpacityValue, calendarScaleValue, calendarOpacityValue]);
+  }, [
+    animationDuration,
+    backdropOpacityValue,
+    calendarScaleValue,
+    calendarOpacityValue,
+    borderAnimation,
+    scaleAnimation,
+  ]);
 
-  const handleDateSelect = useCallback((day: DateData) => {
-    setSelectedDate(day.dateString);
-    onDateSelect?.(day.dateString);
-    
-    if (closeOnSelect) {
-      handleClose();
-    }
-  }, [onDateSelect, closeOnSelect, handleClose]);
+  const handleDateSelect = useCallback(
+    (day: DateData) => {
+      setSelectedDate(day.dateString);
+      onDateSelect?.(day.dateString);
+
+      if (closeOnSelect) {
+        handleClose();
+      }
+    },
+    [onDateSelect, closeOnSelect, handleClose]
+  );
 
   const backdropAnimatedStyle = useAnimatedStyle(() => {
     return {
@@ -181,69 +278,270 @@ const DatePicker: React.FC<DatePickerProps> = ({
     };
   });
 
+  const inputAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: scaleAnimation.value }],
+    };
+  });
+
+  const borderAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      borderColor:
+        borderAnimation.value === 1
+          ? theme.colors.primary
+          : effectiveState === 'error'
+          ? theme.colors.error
+          : effectiveState === 'success'
+          ? theme.colors.success
+          : theme.colors.border,
+      shadowOpacity: borderAnimation.value * 0.1,
+      shadowRadius: borderAnimation.value * 4,
+      shadowColor: theme.colors.primary,
+      ...(Platform.OS === 'android' && {
+        elevation: borderAnimation.value * 2,
+      }),
+    };
+  });
+
   const renderIcon = () => {
     if (!showIcon) return null;
-    
+
     if (customIcon) {
       return customIcon;
     }
-    
+
     const IconComponent = iconPosition === 'left' ? CalendarIcon : ChevronDown;
+    const iconSize = getSizeStyles(size, theme).iconSize;
     return (
       <IconComponent
-        size={theme.fontSizes[size] || 16}
-        color={disabled ? theme.colors.muted : theme.colors.textSecondary}
+        size={iconSize}
+        color={
+          effectiveDisabled ? theme.colors.muted : theme.colors.textSecondary
+        }
       />
     );
   };
 
+  // Get size styles similar to Combobox
+  const getSizeStyles = (size: ComponentSize, theme: Theme) => {
+    const sizeMap = {
+      xs: {
+        padding: { horizontal: theme.spacing.xs, vertical: theme.spacing.xs },
+        fontSize: theme.typography.caption?.fontSize || 12,
+        minHeight: 32,
+        iconSize: 16,
+      },
+      sm: {
+        padding: { horizontal: theme.spacing.sm, vertical: theme.spacing.xs },
+        fontSize: theme.typography.body?.fontSize || 14,
+        minHeight: 36,
+        iconSize: 18,
+      },
+      md: {
+        padding: {
+          horizontal: theme.spacing.md,
+          vertical: theme.spacing.sm,
+        },
+        fontSize: theme.typography.body?.fontSize || 16,
+        minHeight: 42,
+        iconSize: 20,
+      },
+      lg: {
+        padding: { horizontal: theme.spacing.lg, vertical: theme.spacing.md },
+        fontSize: theme.typography.subtitle?.fontSize || 18,
+        minHeight: 48,
+        iconSize: 24,
+      },
+      xl: {
+        padding: { horizontal: theme.spacing.xl, vertical: theme.spacing.lg },
+        fontSize: theme.typography.title?.fontSize || 20,
+        minHeight: 56,
+        iconSize: 28,
+      },
+    };
+    return sizeMap[size];
+  };
+
+  // Get size-specific styles using the same pattern as Input component
+  const getSizeStyleKey = (size: ComponentSize) => {
+    switch (size) {
+      case 'xs':
+        return 'sizeXs';
+      case 'sm':
+        return 'sizeSm';
+      case 'lg':
+        return 'sizeLg';
+      case 'xl':
+        return 'sizeXl';
+      default:
+        return 'sizeMd';
+    }
+  };
+
+  const getTextSizeKey = (size: ComponentSize) => {
+    switch (size) {
+      case 'xs':
+        return 'textXs';
+      case 'sm':
+        return 'textSm';
+      case 'lg':
+        return 'textLg';
+      case 'xl':
+        return 'textXl';
+      default:
+        return 'textMd';
+    }
+  };
+
   const inputContainerStyle = [
     styles.inputContainer,
-    disabled && styles.disabled,
-    error && styles.error,
+    styles.variant,
+    effectiveDisabled && styles.disabled,
+    effectiveState === 'error' && styles.error,
+    effectiveState === 'success' && styles.success,
+    isFocused && styles.focused,
     inputStyle,
+  ];
+
+  const touchableContainerStyle = [
+    styles.touchableContainer,
+    styles[getSizeStyleKey(size)],
   ];
 
   const textStyle = [
     styles.inputText,
+    styles[getTextSizeKey(size)],
     !displayValue && styles.placeholder,
-    disabled && styles.disabledText,
-    error && styles.errorText,
+    effectiveDisabled && styles.disabledText,
+    effectiveState === 'error' && styles.errorText,
     !displayValue && placeholderStyle,
   ];
 
+  // Render with FormControl if enabled
+  if (useFormControl || isInFormControl) {
+    return (
+      <FormControl
+        state={effectiveState}
+        size={effectiveSize}
+        disabled={effectiveDisabled}
+        required={effectiveRequired}
+        style={style}
+        spacing={spacing}
+      >
+        {label && (
+          <FormControlLabel>
+            <FormControlLabelText style={labelStyle}>
+              {label}
+            </FormControlLabelText>
+          </FormControlLabel>
+        )}
+
+        <Animated.View style={inputAnimatedStyle}>
+          <Animated.View style={[inputContainerStyle, borderAnimatedStyle]}>
+            <TouchableOpacity
+              style={touchableContainerStyle}
+              onPress={handleOpen}
+              disabled={effectiveDisabled}
+              activeOpacity={0.8}
+            >
+              {showIcon && iconPosition === 'left' && (
+                <View style={styles.leftIcon}>{renderIcon()}</View>
+              )}
+
+              <Text style={textStyle}>{displayValue || placeholder}</Text>
+
+              {showIcon && iconPosition === 'right' && (
+                <View style={styles.rightIcon}>{renderIcon()}</View>
+              )}
+            </TouchableOpacity>
+          </Animated.View>
+        </Animated.View>
+
+        {helperText && (
+          <FormControlHelper>
+            <FormControlHelperText>{helperText}</FormControlHelperText>
+          </FormControlHelper>
+        )}
+
+        {error && (
+          <FormControlError>
+            <FormControlErrorIcon />
+            <FormControlErrorText>{error}</FormControlErrorText>
+          </FormControlError>
+        )}
+
+        {isOpen && (
+          <Portal name="date-picker-portal">
+            <View style={styles.overlay}>
+              <Animated.View style={[styles.backdrop, backdropAnimatedStyle]}>
+                <TouchableWithoutFeedback onPress={handleClose}>
+                  <View style={StyleSheet.absoluteFill} />
+                </TouchableWithoutFeedback>
+              </Animated.View>
+
+              <Animated.View
+                style={[
+                  styles.calendarContainer,
+                  calendarAnimatedStyle,
+                  calendarStyle,
+                ]}
+              >
+                <Calendar
+                  onDayPress={handleDateSelect}
+                  selectedDate={
+                    selectedDate
+                      ? {
+                          dateString: selectedDate,
+                          day: new Date(selectedDate).getDate(),
+                          month: new Date(selectedDate).getMonth() + 1,
+                          year: new Date(selectedDate).getFullYear(),
+                          timestamp: new Date(selectedDate).getTime(),
+                        }
+                      : undefined
+                  }
+                  markedDates={markedDates}
+                  minDate={minDate}
+                  maxDate={maxDate}
+                />
+              </Animated.View>
+            </View>
+          </Portal>
+        )}
+      </FormControl>
+    );
+  }
+
+  // Original render without FormControl
   return (
     <View style={[styles.container, style]}>
       {label && (
         <Text style={[styles.label, labelStyle]}>
           {label}
-          {required && <Text style={styles.required}> *</Text>}
+          {effectiveRequired && <Text style={styles.required}> *</Text>}
         </Text>
       )}
-      
-      <TouchableOpacity
-        style={inputContainerStyle}
-        onPress={handleOpen}
-        disabled={disabled}
-        activeOpacity={0.7}
-      >
-        {showIcon && iconPosition === 'left' && (
-          <View style={styles.leftIcon}>
-            {renderIcon()}
-          </View>
-        )}
-        
-        <Text style={textStyle}>
-          {displayValue || placeholder}
-        </Text>
-        
-        {showIcon && iconPosition === 'right' && (
-          <View style={styles.rightIcon}>
-            {renderIcon()}
-          </View>
-        )}
-      </TouchableOpacity>
-      
+
+      <Animated.View style={inputAnimatedStyle}>
+        <Animated.View style={[inputContainerStyle, borderAnimatedStyle]}>
+          <TouchableOpacity
+            style={touchableContainerStyle}
+            onPress={handleOpen}
+            disabled={effectiveDisabled}
+            activeOpacity={0.8}
+          >
+            {showIcon && iconPosition === 'left' && (
+              <View style={styles.leftIcon}>{renderIcon()}</View>
+            )}
+
+            <Text style={textStyle}>{displayValue || placeholder}</Text>
+
+            {showIcon && iconPosition === 'right' && (
+              <View style={styles.rightIcon}>{renderIcon()}</View>
+            )}
+          </TouchableOpacity>
+        </Animated.View>
+      </Animated.View>
+
       {(helperText || error) && (
         <Text style={[styles.helperText, error && styles.errorText]}>
           {error || helperText}
@@ -258,17 +556,27 @@ const DatePicker: React.FC<DatePickerProps> = ({
                 <View style={StyleSheet.absoluteFill} />
               </TouchableWithoutFeedback>
             </Animated.View>
-            
-            <Animated.View style={[styles.calendarContainer, calendarAnimatedStyle, calendarStyle]}>
+
+            <Animated.View
+              style={[
+                styles.calendarContainer,
+                calendarAnimatedStyle,
+                calendarStyle,
+              ]}
+            >
               <Calendar
                 onDayPress={handleDateSelect}
-                selectedDate={selectedDate ? {
-                  dateString: selectedDate,
-                  day: new Date(selectedDate).getDate(),
-                  month: new Date(selectedDate).getMonth() + 1,
-                  year: new Date(selectedDate).getFullYear(),
-                  timestamp: new Date(selectedDate).getTime(),
-                } : undefined}
+                selectedDate={
+                  selectedDate
+                    ? {
+                        dateString: selectedDate,
+                        day: new Date(selectedDate).getDate(),
+                        month: new Date(selectedDate).getMonth() + 1,
+                        year: new Date(selectedDate).getFullYear(),
+                        timestamp: new Date(selectedDate).getTime(),
+                      }
+                    : undefined
+                }
                 markedDates={markedDates}
                 minDate={minDate}
                 maxDate={maxDate}
@@ -289,34 +597,6 @@ const createStyles = (
   variant: ComponentVariant,
   borderRadius: keyof Theme['components']['borderRadius']
 ) => {
-  const sizeStyles = {
-    xs: {
-      height: 32,
-      paddingHorizontal: theme.spacing.xs,
-      fontSize: theme.fontSizes.xs,
-    },
-    sm: {
-      height: 36,
-      paddingHorizontal: theme.spacing.sm,
-      fontSize: theme.fontSizes.sm,
-    },
-    md: {
-      height: 44,
-      paddingHorizontal: theme.spacing.md,
-      fontSize: theme.fontSizes.md,
-    },
-    lg: {
-      height: 52,
-      paddingHorizontal: theme.spacing.lg,
-      fontSize: theme.fontSizes.lg,
-    },
-    xl: {
-      height: 60,
-      paddingHorizontal: theme.spacing.xl,
-      fontSize: theme.fontSizes.xl,
-    },
-  };
-
   const variantStyles = {
     default: {
       backgroundColor: theme.colors.surface,
@@ -376,12 +656,10 @@ const createStyles = (
   };
 
   return StyleSheet.create({
-    container: {
-      marginBottom: theme.spacing.sm,
-    },
+    container: {},
     label: {
-      fontSize: theme.fontSizes.sm,
-      fontWeight: theme.typography.subtitle.fontWeight,
+      fontSize: theme.fontSizes?.sm || 14,
+      fontWeight: theme.typography.subtitle?.fontWeight || '600',
       color: theme.colors.text,
       marginBottom: theme.spacing.xs,
     },
@@ -389,17 +667,70 @@ const createStyles = (
       color: theme.colors.error,
     },
     inputContainer: {
+      borderRadius: theme.components.borderRadius[borderRadius],
+      shadowColor: resolveColor(theme, 'text', theme.colors.text),
+      shadowOffset: { width: 0, height: 1 },
+      shadowOpacity: 0.05,
+      shadowRadius: 2,
+      ...(Platform.OS === 'android' && {
+        elevation: 1,
+      }),
+    },
+    variant: {
+      ...variantStyles[variant],
+    },
+    touchableContainer: {
       flexDirection: 'row',
       alignItems: 'center',
-      borderRadius: theme.components.borderRadius[borderRadius],
-      ...sizeStyles[size],
-      ...variantStyles[variant],
+      flex: 1,
+    },
+    // Size styles - consistent with Input and Combobox
+    sizeXs: {
+      paddingHorizontal: theme.spacing.xs,
+      paddingVertical: theme.spacing.xs,
+      minHeight: 32,
+    },
+    sizeSm: {
+      paddingHorizontal: theme.spacing.sm,
+      paddingVertical: theme.spacing.xs,
+      minHeight: 36,
+    },
+    sizeMd: {
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.sm,
+      minHeight: 42,
+    },
+    sizeLg: {
+      paddingHorizontal: theme.spacing.lg,
+      paddingVertical: theme.spacing.md,
+      minHeight: 48,
+    },
+    sizeXl: {
+      paddingHorizontal: theme.spacing.xl,
+      paddingVertical: theme.spacing.lg,
+      minHeight: 56,
     },
     inputText: {
       flex: 1,
-      fontSize: sizeStyles[size].fontSize,
       color: theme.colors.text,
-      fontWeight: theme.typography.body.fontWeight,
+      fontWeight: theme.typography.body?.fontWeight || '400',
+      letterSpacing: 0.1,
+    },
+    // Text size styles
+    textXs: {
+      fontSize: theme.typography.caption?.fontSize || 12,
+    },
+    textSm: {
+      fontSize: theme.typography.body?.fontSize || 14,
+    },
+    textMd: {
+      fontSize: theme.typography.body?.fontSize || 16,
+    },
+    textLg: {
+      fontSize: theme.typography.subtitle?.fontSize || 18,
+    },
+    textXl: {
+      fontSize: theme.typography.title?.fontSize || 20,
     },
     placeholder: {
       color: theme.colors.textSecondary,
@@ -411,20 +742,36 @@ const createStyles = (
       marginLeft: theme.spacing.sm,
     },
     disabled: {
-      backgroundColor: theme.colors.muted + '10',
-      borderColor: theme.colors.muted,
+      opacity: 0.6,
+      backgroundColor: resolveColor(
+        theme,
+        'background',
+        theme.colors.background
+      ),
     },
     disabledText: {
       color: theme.colors.muted,
     },
+    focused: {
+      borderColor: theme.colors.primary,
+      shadowColor: theme.colors.primary,
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      ...(Platform.OS === 'android' && {
+        elevation: 2,
+      }),
+    },
     error: {
       borderColor: theme.colors.error,
+    },
+    success: {
+      borderColor: theme.colors.success,
     },
     errorText: {
       color: theme.colors.error,
     },
     helperText: {
-      fontSize: theme.fontSizes.xs,
+      fontSize: theme.fontSizes?.xs || 12,
       color: theme.colors.textSecondary,
       marginTop: theme.spacing.xs,
     },
@@ -456,4 +803,13 @@ const createStyles = (
   });
 };
 
-export { DatePicker };
+// Enhanced DatePicker with FormControl integration
+const DatePickerWithFormControl: React.FC<
+  DatePickerProps & { children?: React.ReactNode }
+> = (props) => {
+  return <DatePicker {...props} useFormControl={true} />;
+};
+
+DatePickerWithFormControl.displayName = 'DatePickerWithFormControl';
+
+export { DatePicker, DatePickerWithFormControl };

@@ -529,26 +529,26 @@ const createCheckboxStyles = (theme: Theme) => ({
     width: 30,
     height: 30,
   },
-  // Container sizes - Proper alignment
+  // Container sizes - Consistent with Input component
   xsContainer: {
-    minHeight: 28,
-    paddingVertical: 2,
+    minHeight: 32,
+    paddingVertical: theme.spacing.xs,
   },
   smContainer: {
-    minHeight: 32,
-    paddingVertical: 4,
+    minHeight: 36,
+    paddingVertical: theme.spacing.xs,
   },
   mdContainer: {
-    minHeight: 36,
-    paddingVertical: 6,
+    minHeight: 42,
+    paddingVertical: theme.spacing.sm,
   },
   lgContainer: {
-    minHeight: 40,
-    paddingVertical: 8,
+    minHeight: 48,
+    paddingVertical: theme.spacing.md,
   },
   xlContainer: {
-    minHeight: 44,
-    paddingVertical: 10,
+    minHeight: 56,
+    paddingVertical: theme.spacing.lg,
   },
 });
 
