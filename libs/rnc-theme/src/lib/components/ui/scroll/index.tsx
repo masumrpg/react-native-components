@@ -18,7 +18,6 @@ import Animated, {
   useSharedValue,
   withSpring,
   runOnJS,
-  useDerivedValue,
 } from 'react-native-reanimated';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -45,7 +44,11 @@ interface DragItem {
 
 interface DraggableListProps<T extends DragItem> {
   data: T[];
-  renderItem: (item: { item: T; index: number; isDragging: boolean }) => React.ReactElement;
+  renderItem: (item: {
+    item: T;
+    index: number;
+    isDragging: boolean;
+  }) => React.ReactElement;
   onDragEnd: (data: T[]) => void;
   keyExtractor: (item: T) => string;
   padding?: keyof Theme['spacing'];
@@ -396,7 +399,11 @@ const DraggableItem = <T extends DragItem>({
 }: {
   item: T;
   index: number;
-  renderItem: (props: { item: T; index: number; isDragging: boolean }) => React.ReactElement;
+  renderItem: (props: {
+    item: T;
+    index: number;
+    isDragging: boolean;
+  }) => React.ReactElement;
   onDragEnd: (fromIndex: number, toIndex: number) => void;
   itemHeight: number;
   data: T[];
@@ -412,22 +419,30 @@ const DraggableItem = <T extends DragItem>({
     .onStart(() => {
       isDragging.value = true;
       draggedIndex.value = index;
-      scale.value = withSpring(1.02, { damping: 20, stiffness: 300 });
+      scale.value = withSpring(1.05, { damping: 20, stiffness: 300 });
       zIndex.value = 1000;
     })
     .onUpdate((event) => {
       translateY.value = event.translationY;
-      const newIndex = Math.round(index + event.translationY / itemHeight);
-      const clampedIndex = Math.max(0, Math.min(data.length - 1, newIndex));
-      draggedIndex.value = clampedIndex;
+      // Hitung posisi insert berdasarkan translationY
+      const moveDistance = event.translationY;
+      const itemsToMove = Math.round(moveDistance / itemHeight);
+      let targetIndex = index + itemsToMove;
+
+      // Clamp target index
+      targetIndex = Math.max(0, Math.min(data.length - 1, targetIndex));
+      draggedIndex.value = targetIndex;
     })
     .onEnd(() => {
       const moveY = translateY.value;
-      const newIndex = Math.round(index + moveY / itemHeight);
-      const clampedIndex = Math.max(0, Math.min(data.length - 1, newIndex));
+      const itemsToMove = Math.round(moveY / itemHeight);
+      let targetIndex = index + itemsToMove;
 
-      if (clampedIndex !== index) {
-        runOnJS(onDragEnd)(index, clampedIndex);
+      // Clamp target index
+      targetIndex = Math.max(0, Math.min(data.length - 1, targetIndex));
+
+      if (targetIndex !== index) {
+        runOnJS(onDragEnd)(index, targetIndex);
       }
 
       translateY.value = withSpring(0, { damping: 20, stiffness: 300 });
@@ -438,50 +453,50 @@ const DraggableItem = <T extends DragItem>({
     });
 
   const animatedStyle = useAnimatedStyle(() => {
-    const currentDraggedIndex = draggedIndex.value;
-    const shouldOffset =
-      currentDraggedIndex !== -1 && currentDraggedIndex !== index;
+    // Logika untuk membuat ruang kosong saat item di-drag
+    let offsetValue = 0;
 
-    if (shouldOffset) {
-      if (currentDraggedIndex < index) {
-        offsetY.value = withSpring(-itemHeight * 0.1, {
-          damping: 15,
-          stiffness: 200,
-        });
-      } else if (currentDraggedIndex > index) {
-        offsetY.value = withSpring(itemHeight * 0.1, {
-          damping: 15,
-          stiffness: 200,
-        });
+    if (draggedIndex.value !== -1 && draggedIndex.value !== index) {
+      // Jika ada item yang sedang di-drag dan bukan item ini
+      if (index >= draggedIndex.value) {
+        // Item di bawah posisi target bergerak ke bawah
+        offsetValue = itemHeight + 20; // itemHeight + marginBottom
       }
-    } else {
-      offsetY.value = withSpring(0, { damping: 15, stiffness: 200 });
     }
+
+    // Update offsetY dengan smooth animation
+    offsetY.value = withSpring(offsetValue, {
+      damping: 20,
+      stiffness: 300,
+    });
 
     return {
       transform: [
-        { translateY: translateY.value + offsetY.value },
+        { translateY: isDragging.value ? translateY.value : offsetY.value },
         { scale: scale.value },
       ],
       zIndex: zIndex.value,
-      elevation: isDragging.value ? 3 : 0,
-      shadowOpacity: isDragging.value ? 0.15 : 0,
-      shadowRadius: isDragging.value ? 6 : 0,
+      elevation: isDragging.value ? 5 : 0,
+      shadowOpacity: isDragging.value ? 0.2 : 0,
+      shadowRadius: isDragging.value ? 8 : 0,
       shadowOffset: {
         width: 0,
-        height: isDragging.value ? 3 : 0,
+        height: isDragging.value ? 4 : 0,
       },
     };
-  });
+  }, [index, itemHeight]);
 
-  const isDraggingDerived = useDerivedValue(() => isDragging.value);
+  // Gunakan callback untuk menghindari akses .value di render
+  const renderItemWithDragging = React.useCallback(() => {
+    return renderItem({ item, index, isDragging: false }); // Default false, akan diupdate via animatedStyle
+  }, [item, index, renderItem]);
 
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View
         style={[{ height: itemHeight, marginBottom: 20 }, animatedStyle]}
       >
-        {renderItem({ item, index, isDragging: isDraggingDerived.value })}
+        {renderItemWithDragging()}
       </Animated.View>
     </GestureDetector>
   );
