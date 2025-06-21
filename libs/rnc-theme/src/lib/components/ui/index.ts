@@ -24,6 +24,7 @@ export * from './skeleton';
 export * from './toast';
 export * from './portal';
 export * from './tooltip';
+export * from './dropdown';
 export * from './image-carousel';
 export * from './rating';
 export * from './calendar';
