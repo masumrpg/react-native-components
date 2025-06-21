@@ -281,13 +281,13 @@ const createComboboxStyles = (theme: Theme) => ({
 const getSizeStyles = (size: ComponentSize, theme: Theme) => {
   const sizeMap = {
     xs: {
-      padding: { horizontal: theme.spacing.xs, vertical: theme.spacing.xs },
+      padding: { horizontal: theme.spacing.xs, vertical: 0 },
       fontSize: theme.typography.caption.fontSize,
       minHeight: 32,
       iconSize: 16,
     },
     sm: {
-      padding: { horizontal: theme.spacing.sm, vertical: theme.spacing.xs },
+      padding: { horizontal: theme.spacing.sm, vertical: 0 },
       fontSize: theme.typography.body.fontSize,
       minHeight: 36,
       iconSize: 18,
@@ -295,20 +295,20 @@ const getSizeStyles = (size: ComponentSize, theme: Theme) => {
     md: {
       padding: {
         horizontal: theme.spacing.md,
-        vertical: theme.spacing.sm,
+        vertical: 0,
       },
       fontSize: theme.typography.body.fontSize,
       minHeight: 42,
       iconSize: 20,
     },
     lg: {
-      padding: { horizontal: theme.spacing.lg, vertical: theme.spacing.md },
+      padding: { horizontal: theme.spacing.lg, vertical: 0 },
       fontSize: theme.typography.subtitle.fontSize,
       minHeight: 48,
       iconSize: 24,
     },
     xl: {
-      padding: { horizontal: theme.spacing.xl, vertical: theme.spacing.lg },
+      padding: { horizontal: theme.spacing.xl, vertical: 0 },
       fontSize: theme.typography.title.fontSize,
       minHeight: 56,
       iconSize: 28,
