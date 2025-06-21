@@ -12,13 +12,19 @@ import {
 } from 'react-native';
 import { Theme } from '../../../types/theme';
 import { useState } from 'react';
-import { ChevronDown } from 'lucide-react-native';
+import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react-native';
 
 // Custom header component with month/year picker
 interface CustomHeaderProps {
   month: Date;
   theme: Theme;
-  onMonthChange?: (date: { dateString: string; day: number; month: number; year: number; timestamp: number }) => void;
+  onMonthChange?: (date: {
+    dateString: string;
+    day: number;
+    month: number;
+    year: number;
+    timestamp: number;
+  }) => void;
 }
 
 const CustomHeader = ({ month, theme, onMonthChange }: CustomHeaderProps) => {
@@ -42,9 +48,7 @@ const CustomHeader = ({ month, theme, onMonthChange }: CustomHeaderProps) => {
     'December',
   ];
 
-  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
   const today = new Date();
-  const dayName = dayNames[today.getDay()];
   const monthName = monthNames[currentDate.getMonth()];
   const year = currentDate.getFullYear();
   const day = today.getDate();
@@ -63,7 +67,7 @@ const CustomHeader = ({ month, theme, onMonthChange }: CustomHeaderProps) => {
         day: newDate.getDate(),
         month: newDate.getMonth() + 1,
         year: newDate.getFullYear(),
-        timestamp: newDate.getTime()
+        timestamp: newDate.getTime(),
       });
     }
     setShowPicker(false);
@@ -84,7 +88,7 @@ const CustomHeader = ({ month, theme, onMonthChange }: CustomHeaderProps) => {
           activeOpacity={0.7}
         >
           <Text style={[styles.headerDate, { color: theme.colors.primary }]}>
-            {dayName}, {monthName} {day}, {year}
+            {monthName} {day}, {year}
           </Text>
           <ChevronDown
             size={20}
@@ -247,11 +251,91 @@ const CustomHeader = ({ month, theme, onMonthChange }: CustomHeaderProps) => {
   );
 };
 
+// Custom Arrow Components
+const CustomLeftArrow = ({
+  theme,
+  onPress,
+  disabled,
+}: {
+  theme: Theme;
+  onPress?: () => void;
+  disabled?: boolean;
+}) => (
+  <TouchableOpacity
+    style={[
+      styles.arrowButton,
+      {
+        backgroundColor: theme.colors.primary + '15',
+        opacity: disabled ? 0.5 : 1,
+      },
+    ]}
+    onPress={onPress}
+    disabled={disabled}
+    activeOpacity={0.7}
+  >
+    <ChevronLeft
+      size={20}
+      color={disabled ? theme.colors.muted : theme.colors.primary}
+    />
+  </TouchableOpacity>
+);
+
+const CustomRightArrow = ({
+  theme,
+  onPress,
+  disabled,
+}: {
+  theme: Theme;
+  onPress?: () => void;
+  disabled?: boolean;
+}) => (
+  <TouchableOpacity
+    style={[
+      styles.arrowButton,
+      {
+        backgroundColor: theme.colors.primary + '15',
+        opacity: disabled ? 0.5 : 1,
+      },
+    ]}
+    onPress={onPress}
+    disabled={disabled}
+    activeOpacity={0.7}
+  >
+    <ChevronRight
+      size={20}
+      color={disabled ? theme.colors.muted : theme.colors.primary}
+    />
+  </TouchableOpacity>
+);
+
 const Calendar = ({ current, onMonthChange, ...props }: CalendarProps) => {
   const { theme: globalTheme } = useTheme();
   const [currentDate, setCurrentDate] = useState(
     current || new Date().toISOString().split('T')[0]
   );
+
+  // Navigation functions
+  const navigateToMonth = (direction: 'prev' | 'next') => {
+    const date = new Date(currentDate);
+    if (direction === 'prev') {
+      date.setMonth(date.getMonth() - 1);
+    } else {
+      date.setMonth(date.getMonth() + 1);
+    }
+
+    const newDateString = date.toISOString().split('T')[0];
+    setCurrentDate(newDateString);
+
+    if (onMonthChange) {
+      onMonthChange({
+        dateString: newDateString,
+        day: date.getDate(),
+        month: date.getMonth() + 1,
+        year: date.getFullYear(),
+        timestamp: date.getTime(),
+      });
+    }
+  };
 
   const calendarTheme: CalendarTheme = {
     // Enhanced Colors & Text with better contrast
@@ -282,13 +366,8 @@ const Calendar = ({ current, onMonthChange, ...props }: CalendarProps) => {
     selectedDayBackgroundColor: globalTheme.colors.primary,
     selectedDayTextColor: globalTheme.colors.surface,
 
-    // Navigation arrows
+    // Navigation arrows - These will be overridden by custom components
     arrowColor: globalTheme.colors.primary,
-    arrowStyle: {
-      padding: globalTheme.spacing.xs,
-      backgroundColor: globalTheme.colors.primary + '15',
-      borderRadius: globalTheme.components.borderRadius.md,
-    },
     disabledArrowColor: globalTheme.colors.muted,
 
     // Disabled and inactive dates
@@ -332,6 +411,23 @@ const Calendar = ({ current, onMonthChange, ...props }: CalendarProps) => {
           }}
         />
       )}
+      // Custom Arrow Components
+      renderArrow={(direction) => {
+        if (direction === 'left') {
+          return (
+            <CustomLeftArrow
+              theme={globalTheme}
+              onPress={() => navigateToMonth('prev')}
+            />
+          );
+        }
+        return (
+          <CustomRightArrow
+            theme={globalTheme}
+            onPress={() => navigateToMonth('next')}
+          />
+        );
+      }}
       current={currentDate}
       onMonthChange={(month) => {
         setCurrentDate(month.dateString);
@@ -370,6 +466,14 @@ const styles = StyleSheet.create({
   },
   chevronIcon: {
     marginLeft: 8,
+  },
+  // Custom Arrow Button Styles
+  arrowButton: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   modalOverlay: {
     flex: 1,
