@@ -9,15 +9,14 @@ import {
   NativeSyntheticEvent,
   View,
 } from 'react-native';
-import {
-  Gesture,
-  GestureDetector,
-} from 'react-native-gesture-handler';
+import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
-  withSpring,
+  withTiming,
   runOnJS,
+  interpolate,
+  Extrapolate,
 } from 'react-native-reanimated';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -387,7 +386,7 @@ const createHStyles = (theme: Theme) => ({
   },
 });
 
-// Draggable List Item Component
+// Safe & Smooth Draggable Item Component
 const DraggableItem = <T extends DragItem>({
   item,
   index,
@@ -396,6 +395,7 @@ const DraggableItem = <T extends DragItem>({
   itemHeight = 60,
   data,
   draggedIndex,
+  draggedFromIndex,
 }: {
   item: T;
   index: number;
@@ -408,101 +408,129 @@ const DraggableItem = <T extends DragItem>({
   itemHeight: number;
   data: T[];
   draggedIndex: Animated.SharedValue<number>;
+  draggedFromIndex: Animated.SharedValue<number>;
 }) => {
   const translateY = useSharedValue(0);
   const isDragging = useSharedValue(false);
   const scale = useSharedValue(1);
   const zIndex = useSharedValue(0);
-  const offsetY = useSharedValue(0);
+  const opacity = useSharedValue(1);
 
   const panGesture = Gesture.Pan()
     .onStart(() => {
       isDragging.value = true;
+      draggedFromIndex.value = index;
       draggedIndex.value = index;
-      scale.value = withSpring(1.05, { damping: 20, stiffness: 300 });
+
+      scale.value = withTiming(1.02, { duration: 120 });
+      opacity.value = withTiming(0.95, { duration: 120 });
       zIndex.value = 1000;
     })
     .onUpdate((event) => {
       translateY.value = event.translationY;
-      // Hitung posisi insert berdasarkan translationY
-      const moveDistance = event.translationY;
-      const itemsToMove = Math.round(moveDistance / itemHeight);
-      let targetIndex = index + itemsToMove;
 
-      // Clamp target index
+      const moveDistance = event.translationY;
+      const itemsToMove = Math.round(moveDistance / (itemHeight + 20));
+      let targetIndex = draggedFromIndex.value + itemsToMove;
+
       targetIndex = Math.max(0, Math.min(data.length - 1, targetIndex));
       draggedIndex.value = targetIndex;
     })
     .onEnd(() => {
       const moveY = translateY.value;
-      const itemsToMove = Math.round(moveY / itemHeight);
-      let targetIndex = index + itemsToMove;
+      const itemsToMove = Math.round(moveY / (itemHeight + 20));
+      let targetIndex = draggedFromIndex.value + itemsToMove;
 
-      // Clamp target index
       targetIndex = Math.max(0, Math.min(data.length - 1, targetIndex));
 
-      if (targetIndex !== index) {
-        runOnJS(onDragEnd)(index, targetIndex);
+      // Simple callback - no complex animations in onEnd
+      if (targetIndex !== draggedFromIndex.value) {
+        runOnJS(onDragEnd)(draggedFromIndex.value, targetIndex);
       }
 
-      translateY.value = withSpring(0, { damping: 20, stiffness: 300 });
+      // Smooth reset animations
+      translateY.value = withTiming(0, { duration: 180 });
       isDragging.value = false;
-      scale.value = withSpring(1, { damping: 20, stiffness: 300 });
+      scale.value = withTiming(1, { duration: 180 });
+      opacity.value = withTiming(1, { duration: 180 });
       zIndex.value = 0;
       draggedIndex.value = -1;
+      draggedFromIndex.value = -1;
     });
 
   const animatedStyle = useAnimatedStyle(() => {
-    // Logika untuk membuat ruang kosong saat item di-drag
     let offsetValue = 0;
 
-    if (draggedIndex.value !== -1 && draggedIndex.value !== index) {
-      // Jika ada item yang sedang di-drag dan bukan item ini
-      if (index >= draggedIndex.value) {
-        // Item di bawah posisi target bergerak ke bawah
-        offsetValue = itemHeight + 20; // itemHeight + marginBottom
+    // Reordering logic untuk items lain
+    if (
+      draggedIndex.value !== -1 &&
+      draggedFromIndex.value !== -1 &&
+      index !== draggedFromIndex.value
+    ) {
+      const draggedFrom = draggedFromIndex.value;
+      const draggedTo = draggedIndex.value;
+
+      if (draggedFrom < draggedTo) {
+        if (index > draggedFrom && index <= draggedTo) {
+          offsetValue = -(itemHeight + 20);
+        }
+      } else if (draggedFrom > draggedTo) {
+        if (index < draggedFrom && index >= draggedTo) {
+          offsetValue = itemHeight + 20;
+        }
       }
     }
 
-    // Update offsetY dengan smooth animation
-    offsetY.value = withSpring(offsetValue, {
-      damping: 20,
-      stiffness: 300,
-    });
+    const smoothOffset = withTiming(offsetValue, { duration: 180 });
+
+    const currentTranslateY =
+      isDragging.value && index === draggedFromIndex.value
+        ? translateY.value
+        : smoothOffset;
 
     return {
-      transform: [
-        { translateY: isDragging.value ? translateY.value : offsetY.value },
-        { scale: scale.value },
-      ],
+      transform: [{ translateY: currentTranslateY }, { scale: scale.value }],
       zIndex: zIndex.value,
-      elevation: isDragging.value ? 5 : 0,
-      shadowOpacity: isDragging.value ? 0.2 : 0,
-      shadowRadius: isDragging.value ? 8 : 0,
+      opacity: opacity.value,
+      shadowOpacity:
+        isDragging.value && index === draggedFromIndex.value ? 0.1 : 0,
+      shadowRadius:
+        isDragging.value && index === draggedFromIndex.value ? 4 : 0,
       shadowOffset: {
         width: 0,
-        height: isDragging.value ? 4 : 0,
+        height: isDragging.value && index === draggedFromIndex.value ? 2 : 0,
       },
+      shadowColor: '#000',
+      elevation: isDragging.value && index === draggedFromIndex.value ? 2 : 0,
     };
   }, [index, itemHeight]);
 
-  // Gunakan callback untuk menghindari akses .value di render
-  const renderItemWithDragging = React.useCallback(() => {
-    return renderItem({ item, index, isDragging: false }); // Default false, akan diupdate via animatedStyle
+  const renderItemMemo = React.useMemo(() => {
+    return renderItem({
+      item,
+      index,
+      isDragging: false, // You can enhance this to be reactive if needed
+    });
   }, [item, index, renderItem]);
 
   return (
     <GestureDetector gesture={panGesture}>
       <Animated.View
-        style={[{ height: itemHeight, marginBottom: 20 }, animatedStyle]}
+        style={[
+          {
+            height: itemHeight,
+            marginBottom: 20,
+          },
+          animatedStyle,
+        ]}
       >
-        {renderItemWithDragging()}
+        {renderItemMemo}
       </Animated.View>
     </GestureDetector>
   );
 };
 
-// Draggable List Component
+// Safe Draggable List Component
 const DraggableList = <T extends DragItem>({
   data,
   renderItem,
@@ -519,18 +547,29 @@ const DraggableList = <T extends DragItem>({
   const { theme } = useTheme();
   const [listData, setListData] = React.useState(data);
   const draggedIndex = useSharedValue(-1);
+  const draggedFromIndex = useSharedValue(-1);
 
   React.useEffect(() => {
     setListData(data);
   }, [data]);
 
-  const handleDragEnd = (fromIndex: number, toIndex: number) => {
-    const newData = [...listData];
-    const [movedItem] = newData.splice(fromIndex, 1);
-    newData.splice(toIndex, 0, movedItem);
-    setListData(newData);
-    onDragEnd(newData);
-  };
+  const handleDragEnd = React.useCallback(
+    (fromIndex: number, toIndex: number) => {
+      try {
+        const newData = [...listData];
+        const [movedItem] = newData.splice(fromIndex, 1);
+        newData.splice(toIndex, 0, movedItem);
+
+        setListData(newData);
+        onDragEnd(newData);
+      } catch (error) {
+        console.warn('Drag end error:', error);
+        // Fallback: reset to original data
+        setListData(data);
+      }
+    },
+    [listData, onDragEnd, data]
+  );
 
   const containerStyle: ViewStyle = {
     padding: padding ? theme.spacing[padding] : undefined,
@@ -557,6 +596,7 @@ const DraggableList = <T extends DragItem>({
           itemHeight={itemHeight}
           data={listData}
           draggedIndex={draggedIndex}
+          draggedFromIndex={draggedFromIndex}
         />
       ))}
     </View>
@@ -564,4 +604,10 @@ const DraggableList = <T extends DragItem>({
 };
 
 export { VScroll, HScroll, VList, HList, DraggableList };
-export type { ScrollProps, ListProps, InfiniteScrollProps, DraggableListProps, DragItem };
+export type {
+  ScrollProps,
+  ListProps,
+  InfiniteScrollProps,
+  DraggableListProps,
+  DragItem,
+};
