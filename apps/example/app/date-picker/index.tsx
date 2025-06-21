@@ -218,11 +218,6 @@ const DatePickerScreen = () => {
                 placeholder="Pilih tanggal event"
                 value={eventDate}
                 onDateSelect={handleEventSelect}
-                markedDates={{
-                  '2024-12-25': { marked: true, dotColor: 'red' },
-                  '2024-12-31': { marked: true, dotColor: 'blue' },
-                  '2025-01-01': { marked: true, dotColor: 'green' },
-                }}
                 closeOnSelect={false}
                 variant="outline"
                 helperText="Tanggal dengan tanda memiliki event khusus"

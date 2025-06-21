@@ -7,6 +7,7 @@ import {
   StyleSheet,
   TextStyle,
   ViewStyle,
+  Dimensions,
 } from 'react-native';
 import { Calendar, CalendarProps } from '../calendar';
 import { Portal } from '../portal';
@@ -261,15 +262,14 @@ const DatePicker: React.FC<DatePickerProps> = ({
             <Animated.View style={[styles.calendarContainer, calendarAnimatedStyle, calendarStyle]}>
               <Calendar
                 onDayPress={handleDateSelect}
-                markedDates={{
-                  ...markedDates,
-                  ...(selectedDate && {
-                    [selectedDate]: {
-                      selected: true,
-                      selectedColor: theme.colors.primary,
-                    },
-                  }),
-                }}
+                selectedDate={selectedDate ? {
+                  dateString: selectedDate,
+                  day: new Date(selectedDate).getDate(),
+                  month: new Date(selectedDate).getMonth() + 1,
+                  year: new Date(selectedDate).getFullYear(),
+                  timestamp: new Date(selectedDate).getTime(),
+                } : undefined}
+                markedDates={markedDates}
                 minDate={minDate}
                 maxDate={maxDate}
               />
@@ -280,6 +280,8 @@ const DatePicker: React.FC<DatePickerProps> = ({
     </View>
   );
 };
+
+const { width: screenWidth } = Dimensions.get('window');
 
 const createStyles = (
   theme: Theme,
@@ -440,6 +442,8 @@ const createStyles = (
       backgroundColor: theme.colors.surface,
       borderRadius: theme.components.borderRadius.lg,
       margin: theme.spacing.lg,
+      width: Math.min(screenWidth - 32, 380),
+      maxWidth: 380,
       elevation: 8,
       shadowColor: theme.colors.text,
       shadowOffset: {
