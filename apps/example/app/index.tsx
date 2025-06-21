@@ -38,6 +38,7 @@ import {
   ToggleRight,
   User,
   Calendar,
+  CalendarDays,
   Languages,
 } from 'lucide-react-native';
 import { ReactElement } from 'react';
@@ -233,6 +234,12 @@ export default function HomeScreen() {
     },
     {
       id: 31,
+      title: 'Date Picker',
+      path: '/date-picker',
+      icon: <CalendarDays size={30} color={'black'} />,
+    },
+    {
+      id: 32,
       title: 'Language',
       path: '/i18n',
       icon: <Languages size={30} color={'black'} />,
