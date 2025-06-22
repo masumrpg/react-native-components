@@ -280,12 +280,13 @@ const ThemeManagerExampleScreen: React.FC = () => {
     >
       {/* Additional demo content */}
       <Card style={styles.demoCard}>
-        <CardHeader title="🚀 Demo Content" />
+        <CardHeader title="Demo Content" />
         <CardContent>
           <Typography variant="body" style={styles.demoText}>
-            This content demonstrates how the theme changes affect the entire UI.
-            The ThemeManager component above handles all the theme logic internally,
-            while accepting custom theme configurations from outside.
+            This content demonstrates how the theme changes affect the entire
+            UI. The ThemeManager component above handles all the theme logic
+            internally, while accepting custom theme configurations from
+            outside.
           </Typography>
 
           <View style={styles.buttonContainer}>
@@ -303,12 +304,39 @@ const ThemeManagerExampleScreen: React.FC = () => {
           </View>
 
           <View style={styles.colorDemo}>
-            <View style={[styles.colorBox, { backgroundColor: theme.colors.primary }]} />
-            <View style={[styles.colorBox, { backgroundColor: theme.colors.secondary }]} />
-            <View style={[styles.colorBox, { backgroundColor: theme.colors.accent }]} />
-            <View style={[styles.colorBox, { backgroundColor: theme.colors.success }]} />
-            <View style={[styles.colorBox, { backgroundColor: theme.colors.warning }]} />
-            <View style={[styles.colorBox, { backgroundColor: theme.colors.error }]} />
+            <View
+              style={[
+                styles.colorBox,
+                { backgroundColor: theme.colors.primary },
+              ]}
+            />
+            <View
+              style={[
+                styles.colorBox,
+                { backgroundColor: theme.colors.secondary },
+              ]}
+            />
+            <View
+              style={[
+                styles.colorBox,
+                { backgroundColor: theme.colors.accent },
+              ]}
+            />
+            <View
+              style={[
+                styles.colorBox,
+                { backgroundColor: theme.colors.success },
+              ]}
+            />
+            <View
+              style={[
+                styles.colorBox,
+                { backgroundColor: theme.colors.warning },
+              ]}
+            />
+            <View
+              style={[styles.colorBox, { backgroundColor: theme.colors.error }]}
+            />
           </View>
         </CardContent>
       </Card>

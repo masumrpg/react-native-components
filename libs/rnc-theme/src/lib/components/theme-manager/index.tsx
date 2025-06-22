@@ -9,24 +9,8 @@ import { Card, CardContent, CardHeader } from '../ui/card';
 import { Switcher } from '../ui/switcher';
 import { Button, ButtonText } from '../ui/button';
 
-export type ThemePreset =
-  | 'default'
-  | 'material'
-  | 'neon'
-  | 'custom'
-  | 'ocean'
-  | 'sunset'
-  | 'forest'
-  | 'galaxy'
-  | 'vintage'
-  | 'cyberpunk'
-  | 'pastel'
-  | 'monochrome'
-  | 'autumn'
-  | 'arctic';
-
 export interface ThemePresetConfig {
-  key: ThemePreset;
+  key: string;
   label: string;
   config: CustomThemeConfigFactory;
 }
@@ -39,7 +23,7 @@ export interface ThemeManagerProps {
   /**
    * Initial theme preset to apply
    */
-  initialTheme?: ThemePreset;
+  initialTheme?: string;
   /**
    * Whether to show the theme controls section
    */
@@ -55,11 +39,11 @@ export interface ThemeManagerProps {
   /**
    * Callback when theme is applied
    */
-  onThemeApplied?: (theme: ThemePreset) => void;
+  onThemeApplied?: (theme: string) => void;
   /**
    * Callback when theme is previewed
    */
-  onThemePreview?: (theme: ThemePreset) => void;
+  onThemePreview?: (theme: string) => void;
 }
 
 export const ThemeManager: React.FC<ThemeManagerProps> = ({
@@ -71,21 +55,16 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
   onThemeApplied,
   onThemePreview,
 }) => {
-  const {
-    setThemeMode,
-    isDark,
-    updateCustomTheme,
-    resetTheme,
-  } = useTheme();
+  const { setThemeMode, isDark, updateCustomTheme, resetTheme } = useTheme();
   const styles = useThemedStyles(createStyles);
-  const [selectedPreset, setSelectedPreset] = useState<ThemePreset>(initialTheme);
-  const [appliedTheme, setAppliedTheme] = useState<ThemePreset>(initialTheme);
-  const [previewTheme, setPreviewTheme] = useState<ThemePreset | null>(null);
+  const [selectedPreset, setSelectedPreset] = useState<string>(initialTheme);
+  const [appliedTheme, setAppliedTheme] = useState<string>(initialTheme);
+  const [previewTheme, setPreviewTheme] = useState<string | null>(null);
   const [isDarkModeDisabled, setIsDarkModeDisabled] = useState(false);
 
   // Create theme configs map for easy lookup
   const themeConfigsMap = useMemo(() => {
-    const map = new Map<ThemePreset, CustomThemeConfigFactory>();
+    const map = new Map<string, CustomThemeConfigFactory>();
     themePresets.forEach(({ key, config }) => {
       map.set(key, config);
     });
@@ -126,7 +105,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
 
   // Helper function to get theme config by preset
   const getThemeConfig = useCallback(
-    (preset: ThemePreset) => {
+    (preset: string) => {
       return themeConfigsMap.get(preset) || null;
     },
     [themeConfigsMap]
@@ -134,7 +113,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
 
   // Preview theme function (doesn't change appliedTheme)
   const previewThemePreset = useCallback(
-    (preset: ThemePreset) => {
+    (preset: string) => {
       setSelectedPreset(preset);
       setPreviewTheme(preset);
       setIsDarkModeDisabled(preset !== 'default');
@@ -157,7 +136,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
 
   // Apply theme function (changes appliedTheme)
   const applyThemePreset = useCallback(
-    (preset: ThemePreset) => {
+    (preset: string) => {
       setAppliedTheme(preset);
       setPreviewTheme(null);
       setIsDarkModeDisabled(false);
@@ -226,7 +205,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                   opacity: isDarkModeDisabled ? 0.5 : 1,
                 }}
               >
-                Dark Mode {isDarkModeDisabled && '(Disabled during preview)'}
+                Dark Mode {isDarkModeDisabled && '(Disabled)'}
               </Typography>
               <Switcher
                 value={isDark}
@@ -243,7 +222,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                   style={styles.button}
                 >
                   <ButtonText>
-                  Apply{' '}
+                    Apply{' '}
                     {selectedPreset.charAt(0).toUpperCase() +
                       selectedPreset.slice(1)}{' '}
                     Theme
@@ -329,8 +308,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                   <ButtonText>
                     {label}
                     {appliedTheme === key && selectedPreset !== key}
-                    {selectedPreset === key &&
-                      previewTheme !== appliedTheme}
+                    {selectedPreset === key && previewTheme !== appliedTheme}
                   </ButtonText>
                 </Button>
               ))}
