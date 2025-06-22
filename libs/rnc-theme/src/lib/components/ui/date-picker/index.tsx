@@ -106,7 +106,7 @@ const formatDate = (
 const DatePicker: React.FC<DatePickerProps> = ({
   value,
   onDateSelect,
-  placeholder = 'Pilih tanggal',
+  placeholder = 'Choose date',
   label,
   disabled = false,
   size = 'md',
@@ -189,7 +189,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
   const handleOpen = useCallback(() => {
     if (disabled) return;
-    
+
     runOnJS(setFocusedJS)(true);
     setIsOpen(true);
 
