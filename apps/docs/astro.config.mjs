@@ -21,16 +21,22 @@ export default defineConfig({
         {
           label: 'Getting Started',
           items: [
-            // Each item here is one entry in the navigation menu.
-            {
-              label: 'Installation',
-              slug: 'getting-started/installation',
-            },
+            { label: 'Installation', slug: 'getting-started/installation' },
+            { label: 'Quick Start', slug: 'getting-started/quick-start' },
+            { label: 'Setup Guide', slug: 'getting-started/setup-guide' },
           ],
         },
         {
           label: 'Reference',
           autogenerate: { directory: 'reference' },
+        },
+        {
+          label: 'Components',
+          collapsed: false,
+          items: [
+            { label: 'Overview', slug: 'components/overview' },
+            { label: 'Layout', slug: 'components/layout' },
+          ],
         },
       ],
     }),
