@@ -1,0 +1,133 @@
+---
+title: Welcome to React Native Components Theme
+description: A powerful and flexible theme system for React Native applications with complete TypeScript support.
+template: splash
+hero:
+  tagline: Build beautiful and scalable React Native applications with rnc-theme - a powerful theme system with complete TypeScript support.
+  image:
+    file: ../../assets/logo.webp
+  actions:
+    - text: Get Started
+      link: /getting-started/installation
+      icon: right-arrow
+    - text: View on GitHub
+      link: https://github.com/masumrpg/react-native-components
+      icon: external
+      variant: minimal
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+## About React Native Components Theme
+
+**React Native Components Theme** is a comprehensive React Native UI component library and theme system designed to accelerate your mobile application development. With a focus on customization, performance, and exceptional developer experience.
+
+## ✨ Key Features
+
+<CardGrid stagger>
+	<Card title="🎨 Dynamic Theme Switching" icon="seti:react">
+		Seamlessly switch between light and dark modes, or create your own custom themes.
+	</Card>
+	<Card title="🎯 Type-Safe" icon="approve-check">
+		Complete TypeScript support with comprehensive type definitions for a safe development experience.
+	</Card>
+	<Card title="🔧 Highly Customizable" icon="setting">
+		Easily customize every aspect of components using a flexible theme system.
+	</Card>
+	<Card title="📱 React Native Optimized" icon="rocket">
+		Built specifically for React Native with optimal performance and perfect native experience.
+	</Card>
+	<Card title="💾 Persistent Storage" icon="document">
+		Automatically saves user theme preferences for consistent experience.
+	</Card>
+	<Card title="🎭 Multiple Presets" icon="star">
+		Comes with various built-in theme presets that are ready to use and customizable.
+	</Card>
+</CardGrid>
+
+## 🚀 Quick Installation
+
+```bash
+npm install rnc-theme
+# or
+yarn add rnc-theme
+```
+
+## 💡 Basic Usage
+
+```tsx
+import React from 'react';
+import { View } from 'react-native';
+import { RNCProvider, Button, Typography } from 'rnc-theme';
+
+const App = () => {
+  return (
+    <RNCProvider>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Typography variant="h1">Welcome!</Typography>
+        <Button onPress={() => console.log('Button pressed!')}>
+          <Typography color="white">Press Me</Typography>
+        </Button>
+      </View>
+    </RNCProvider>
+  );
+};
+
+export default App;
+```
+
+## 🧩 Available Components
+
+rnc-theme provides more than **30+ UI components** ready to use:
+
+<CardGrid stagger>
+	<Card title="Button & FAB" icon="approve-check">
+		Customizable buttons with various variants, sizes, and Floating Action Button.
+	</Card>
+	<Card title="Typography" icon="document">
+		Complete typography system with various heading, body, and caption variants.
+	</Card>
+	<Card title="Form Controls" icon="list-format">
+		Input, Checkbox, Radio, Switcher, Toggle, Slider, and integrated Form Control.
+	</Card>
+	<Card title="Layout & Navigation" icon="puzzle">
+		Card, Divider, Layout components, Modal, Bottom Sheet, and Accordion.
+	</Card>
+	<Card title="Data Display" icon="information">
+		Table, Badge, Avatar, Progress, Rating, and Skeleton loading.
+	</Card>
+	<Card title="Feedback & Interaction" icon="warning">
+		Toast notifications, Tooltip, Spinner, and various other interactive components.
+	</Card>
+	<Card title="Media & Content" icon="seti:image">
+		Image Carousel, Calendar, Date Picker for displaying multimedia content.
+	</Card>
+	<Card title="Advanced Features" icon="rocket">
+		Combobox, Scroll components, and Internationalization (i18n) support.
+	</Card>
+</CardGrid>
+
+{/* ## 🎯 Why Choose rnc-theme?
+
+- **🔥 Production Ready** - Tested and used in production applications
+- **📚 Complete Documentation** - Detailed guides and examples for every component
+- **🎨 Design System** - Consistent with modern design system principles
+- **⚡ Performance First** - Optimized for mobile application performance
+- **🌍 Community Driven** - Developed with input from the developer community */}
+
+## 📖 Explore Documentation
+
+<CardGrid>
+	<Card title="🚀 Getting Started" icon="rocket">
+		Complete guide to start using rnc-theme in your project.
+	</Card>
+	<Card title="🎨 Theming Guide" icon="seti:react">
+		Learn how to create and customize themes according to your brand.
+	</Card>
+	<Card title="🧩 Components" icon="puzzle">
+		Explore all available components with complete usage examples.
+	</Card>
+	<Card title="💡 Examples" icon="open-book">
+		See real implementation examples and best practices.
+	</Card>
+</CardGrid>
