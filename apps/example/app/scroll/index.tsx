@@ -5,7 +5,6 @@ import {
   VScroll,
   HScroll,
   HList,
-  DraggableList,
   Card,
   CardHeader,
   CardContent,
@@ -14,10 +13,8 @@ import {
   VStack,
   HStack,
   useThemedStyles,
-  useTheme,
   Theme,
   HideOnScrollResult,
-  DragItem,
 } from 'rnc-theme';
 
 interface Product {
@@ -33,14 +30,6 @@ interface Story {
   username: string;
   avatar: string;
   viewed: boolean;
-}
-
-interface Task extends DragItem {
-  id: string;
-  title: string;
-  description: string;
-  priority: 'high' | 'medium' | 'low';
-  completed: boolean;
 }
 
 // Sample data
@@ -185,51 +174,12 @@ const stories: Story[] = [
   },
 ];
 
-const initialTasks: Task[] = [
-  {
-    id: '1',
-    title: 'Design new UI components',
-    description: 'Create reusable components for the design system',
-    priority: 'high',
-    completed: false,
-  },
-  {
-    id: '2',
-    title: 'Review pull requests',
-    description: 'Check and approve pending code reviews',
-    priority: 'medium',
-    completed: false,
-  },
-  {
-    id: '3',
-    title: 'Update documentation',
-    description: 'Add examples and improve API documentation',
-    priority: 'low',
-    completed: true,
-  },
-  {
-    id: '4',
-    title: 'Fix responsive layout',
-    description: 'Ensure components work on all screen sizes',
-    priority: 'high',
-    completed: false,
-  },
-  {
-    id: '5',
-    title: 'Optimize performance',
-    description: 'Reduce bundle size and improve loading times',
-    priority: 'medium',
-    completed: false,
-  },
-];
-
 // FIXME bug VirtualizedLists should never be nested inside plain ScrollViews with the same orientation because it can break windowing and other functionality - use another VirtualizedList-backed container instead.
 
 const HEADER_HEIGHT = 100;
 
 const ScrollScreen = () => {
   const styles = useThemedStyles(createStyles);
-  const { theme } = useTheme();
   const [hideOnScrollResult, setHideOnScrollResult] =
     useState<HideOnScrollResult | null>(null);
 
@@ -239,9 +189,6 @@ const ScrollScreen = () => {
   );
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [hasMoreProducts, setHasMoreProducts] = useState(true);
-
-  // State untuk draggable list
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
 
   const loadMoreProducts = () => {
     if (isLoadingMore) return;
@@ -415,84 +362,6 @@ const ScrollScreen = () => {
                     </Box>
                   ) : null
                 }
-              />
-            </CardContent>
-          </Card>
-
-          {/* Draggable Task List */}
-          <Card>
-            <CardHeader
-              title="Draggable Task List"
-              subtitle="Drag and drop to reorder tasks"
-            />
-            <CardContent>
-              <DraggableList
-                data={tasks}
-                keyExtractor={(item) => item.id}
-                onDragEnd={(newTasks) => setTasks(newTasks)}
-                itemHeight={80}
-                backgroundColor="surface"
-                borderRadius="md"
-                themed
-                style={{ marginTop: 16 }}
-                renderItem={({ item, isDragging }) => {
-                  const priorityColor = {
-                    high: 'error',
-                    medium: 'warning',
-                    low: 'success',
-                  }[item.priority] as keyof Theme['colors'];
-
-                  return (
-                    <Box
-                      padding="md"
-                      margin="sm"
-                      backgroundColor={isDragging ? 'primary' : 'surface'}
-                      borderRadius="md"
-                      style={{
-                        borderLeftWidth: 4,
-                        borderLeftColor: theme.colors[priorityColor],
-                        opacity: isDragging ? 0.9 : 1,
-                        transform: [{ scale: isDragging ? 1.02 : 1 }],
-                      }}
-                    >
-                      <HStack spacing="md" style={{ alignItems: 'center' }}>
-                        <VStack spacing="xs" style={{ flex: 1 }}>
-                          <Typography
-                            variant="subtitle"
-                            weight="600"
-                            color={isDragging ? 'white' : 'text'}
-                            style={{
-                              textDecorationLine: item.completed
-                                ? 'line-through'
-                                : 'none',
-                            }}
-                          >
-                            {item.title}
-                          </Typography>
-                          <Typography
-                            variant="caption"
-                            color={isDragging ? 'white' : 'textSecondary'}
-                          >
-                            {item.description}
-                          </Typography>
-                        </VStack>
-                        <Box
-                          padding="xs"
-                          backgroundColor={priorityColor}
-                          borderRadius="sm"
-                        >
-                          <Typography
-                            variant="caption"
-                            color="white"
-                            weight="600"
-                          >
-                            {item.priority.toUpperCase()}
-                          </Typography>
-                        </Box>
-                      </HStack>
-                    </Box>
-                  );
-                }}
               />
             </CardContent>
           </Card>

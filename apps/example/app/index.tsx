@@ -40,7 +40,6 @@ import {
   Calendar,
   CalendarDays,
   Languages,
-  ChevronDown,
 } from 'lucide-react-native';
 import { ReactElement } from 'react';
 
@@ -244,12 +243,6 @@ export default function HomeScreen() {
       title: 'Language',
       path: '/i18n',
       icon: <Languages size={30} color={'black'} />,
-    },
-    {
-      id: 33,
-      title: 'Dropdown',
-      path: '/dropdown',
-      icon: <ChevronDown size={30} color={'black'} />,
     },
   ];
 
