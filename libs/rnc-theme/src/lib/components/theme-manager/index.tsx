@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { ScrollView, Alert, View } from 'react-native';
+import { Alert, View } from 'react-native';
 import { CustomThemeConfigFactory, Theme } from '../../types/theme';
 import { useTheme } from '../../context/RNCProvider';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
@@ -8,11 +8,63 @@ import { Typography } from '../ui/typography';
 import { Card, CardContent, CardHeader } from '../ui/card';
 import { Switcher } from '../ui/switcher';
 import { Button, ButtonText } from '../ui/button';
+import { VStack } from '../ui/layout';
 
 export interface ThemePresetConfig {
   key: string;
   label: string;
   config: CustomThemeConfigFactory;
+}
+
+export interface ThemeManagerCustomization {
+  /**
+   * Custom title for theme controls section
+   */
+  controlsTitle?: string;
+  /**
+   * Custom title for theme presets section
+   */
+  presetsTitle?: string;
+  /**
+   * Custom label for dark mode toggle
+   */
+  darkModeLabel?: string;
+  /**
+   * Custom label for disabled dark mode
+   */
+  darkModeDisabledLabel?: string;
+  /**
+   * Custom text for apply button
+   */
+  applyButtonText?: string;
+  /**
+   * Custom text for cancel preview button
+   */
+  cancelPreviewText?: string;
+  /**
+   * Custom text for reset button
+   */
+  resetButtonText?: string;
+  /**
+   * Custom text for default theme button
+   */
+  defaultThemeText?: string;
+  /**
+   * Custom success message when theme is applied
+   */
+  successMessage?: string;
+  /**
+   * Custom error message
+   */
+  errorMessage?: string;
+  /**
+   * Custom warning message
+   */
+  warningMessage?: string;
+  /**
+   * Custom info message
+   */
+  infoMessage?: string;
 }
 
 export interface ThemeManagerProps {
@@ -44,6 +96,10 @@ export interface ThemeManagerProps {
    * Callback when theme is previewed
    */
   onThemePreview?: (theme: string) => void;
+  /**
+   * Optional customization for labels and messages
+   */
+  customization?: ThemeManagerCustomization;
 }
 
 export const ThemeManager: React.FC<ThemeManagerProps> = ({
@@ -54,6 +110,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
   children,
   onThemeApplied,
   onThemePreview,
+  customization,
 }) => {
   const { setThemeMode, isDark, updateCustomTheme, resetTheme } = useTheme();
   const styles = useThemedStyles(createStyles);
@@ -176,14 +233,15 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
   const showAlert = useCallback(
     (type: 'success' | 'error' | 'warning' | 'info') => {
       const messages = {
-        success: 'Theme applied successfully!',
-        error: 'An error occurred!',
-        warning: 'Warning: Please check your input!',
-        info: 'Info: Theme has been updated!',
+        success: customization?.successMessage || 'Theme applied successfully!',
+        error: customization?.errorMessage || 'An error occurred!',
+        warning:
+          customization?.warningMessage || 'Warning: Please check your input!',
+        info: customization?.infoMessage || 'Info: Theme has been updated!',
       };
       Alert.alert('Notification', messages[type]);
     },
-    []
+    [customization]
   );
 
   const applySelectedTheme = useCallback(() => {
@@ -192,11 +250,13 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
   }, [selectedPreset, applyThemePreset, showAlert]);
 
   return (
-    <ScrollView style={styles.container}>
+    <VStack style={styles.container}>
       {/* Theme Controls */}
       {showControls && (
         <Card style={styles.card}>
-          <CardHeader title="Theme Controls" />
+          <CardHeader
+            title={customization?.controlsTitle || 'Theme Controls'}
+          />
           <CardContent>
             <View style={styles.row}>
               <Typography
@@ -205,7 +265,9 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                   opacity: isDarkModeDisabled ? 0.5 : 1,
                 }}
               >
-                Dark Mode {isDarkModeDisabled && '(Disabled)'}
+                {customization?.darkModeLabel || 'Dark Mode'}{' '}
+                {isDarkModeDisabled &&
+                  (customization?.darkModeDisabledLabel || '(Disabled)')}
               </Typography>
               <Switcher
                 value={isDark}
@@ -222,10 +284,11 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                   style={styles.button}
                 >
                   <ButtonText>
-                    Apply{' '}
-                    {selectedPreset.charAt(0).toUpperCase() +
-                      selectedPreset.slice(1)}{' '}
-                    Theme
+                    {customization?.applyButtonText ||
+                      `Apply ${
+                        selectedPreset.charAt(0).toUpperCase() +
+                        selectedPreset.slice(1)
+                      } Theme`}
                   </ButtonText>
                 </Button>
 
@@ -234,7 +297,9 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                   onPress={cancelPreview}
                   style={styles.button}
                 >
-                  <ButtonText>Cancel Preview</ButtonText>
+                  <ButtonText>
+                    {customization?.cancelPreviewText || 'Cancel Preview'}
+                  </ButtonText>
                 </Button>
               </View>
             ) : (
@@ -245,8 +310,9 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
               >
                 <ButtonText>
                   {selectedPreset === 'default'
-                    ? 'Reset to Default Theme'
-                    : `Apply ${
+                    ? customization?.resetButtonText || 'Reset to Default Theme'
+                    : customization?.applyButtonText ||
+                      `Apply ${
                         selectedPreset.charAt(0).toUpperCase() +
                         selectedPreset.slice(1)
                       } Theme`}
@@ -259,7 +325,9 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
               onPress={() => applyThemePreset('default')}
               style={styles.button}
             >
-              <ButtonText>Reset Theme</ButtonText>
+              <ButtonText>
+                {customization?.resetButtonText || 'Reset Theme'}
+              </ButtonText>
             </Button>
           </CardContent>
         </Card>
@@ -268,7 +336,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
       {/* Theme Presets */}
       {showPresets && (
         <Card style={styles.card}>
-          <CardHeader title="Theme Presets" />
+          <CardHeader title={customization?.presetsTitle || 'Theme Presets'} />
           <CardContent>
             <View style={styles.presetGrid}>
               <Button
@@ -285,7 +353,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                 style={styles.presetButton}
               >
                 <ButtonText>
-                  Default
+                  {customization?.defaultThemeText || 'Default'}
                   {appliedTheme === 'default' && selectedPreset !== 'default'}
                   {selectedPreset === 'default' &&
                     previewTheme !== appliedTheme}
@@ -319,13 +387,12 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
 
       {/* Additional content */}
       {children}
-    </ScrollView>
+    </VStack>
   );
 };
 
 const createStyles = (theme: Theme) => ({
   container: {
-    flex: 1,
     backgroundColor: theme.colors.background,
     padding: theme.spacing.md,
   },

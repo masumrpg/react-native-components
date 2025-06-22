@@ -13,6 +13,8 @@ import {
   useTheme,
   useThemedStyles,
   Theme,
+  VScroll,
+  Heading,
 } from 'rnc-theme';
 
 const ThemeManagerExampleScreen: React.FC = () => {
@@ -803,79 +805,181 @@ const ThemeManagerExampleScreen: React.FC = () => {
   };
 
   return (
-    <ThemeManager
-      themePresets={themePresets}
-      initialTheme="default"
-      onThemeApplied={handleThemeApplied}
-      onThemePreview={handleThemePreview}
-    >
-      {/* Additional demo content */}
-      <Card style={styles.demoCard}>
-        <CardHeader title="Demo Content" />
-        <CardContent>
-          <Typography variant="body" style={styles.demoText}>
-            This content demonstrates how the theme changes affect the entire
-            UI. The ThemeManager component above handles all the theme logic
-            internally, while accepting custom theme configurations from
-            outside.
-          </Typography>
+    <VScroll>
+      <View style={styles.container}>
+        {/* Default ThemeManager */}
+        <Heading style={{ paddingHorizontal: 16 }}>
+          Default Theme Manager
+        </Heading>
+        <ThemeManager
+          themePresets={themePresets}
+          initialTheme="default"
+          onThemeApplied={handleThemeApplied}
+          onThemePreview={handleThemePreview}
+        >
+          {/* Demo content for default version */}
+          <Card style={styles.demoCard}>
+            <CardHeader title="Demo Content - Default" />
+            <CardContent>
+              <Typography variant="body" style={styles.demoText}>
+                This is the default ThemeManager with standard labels and
+                messages.
+              </Typography>
 
-          <View style={styles.buttonContainer}>
-            <Button variant="primary" style={styles.demoButton}>
-              <ButtonText>Primary Button</ButtonText>
-            </Button>
+              <View style={styles.buttonContainer}>
+                <Button variant="primary" style={styles.demoButton}>
+                  <ButtonText>Primary Button</ButtonText>
+                </Button>
 
-            <Button variant="secondary" style={styles.demoButton}>
-              <ButtonText>Secondary Button</ButtonText>
-            </Button>
+                <Button variant="secondary" style={styles.demoButton}>
+                  <ButtonText>Secondary Button</ButtonText>
+                </Button>
 
-            <Button variant="outline" style={styles.demoButton}>
-              <ButtonText>Outline Button</ButtonText>
-            </Button>
-          </View>
+                <Button variant="outline" style={styles.demoButton}>
+                  <ButtonText>Outline Button</ButtonText>
+                </Button>
+              </View>
 
-          <View style={styles.colorDemo}>
-            <View
-              style={[
-                styles.colorBox,
-                { backgroundColor: theme.colors.primary },
-              ]}
-            />
-            <View
-              style={[
-                styles.colorBox,
-                { backgroundColor: theme.colors.secondary },
-              ]}
-            />
-            <View
-              style={[
-                styles.colorBox,
-                { backgroundColor: theme.colors.accent },
-              ]}
-            />
-            <View
-              style={[
-                styles.colorBox,
-                { backgroundColor: theme.colors.success },
-              ]}
-            />
-            <View
-              style={[
-                styles.colorBox,
-                { backgroundColor: theme.colors.warning },
-              ]}
-            />
-            <View
-              style={[styles.colorBox, { backgroundColor: theme.colors.error }]}
-            />
-          </View>
-        </CardContent>
-      </Card>
-    </ThemeManager>
+              <View style={styles.colorDemo}>
+                <View
+                  style={[
+                    styles.colorBox,
+                    { backgroundColor: theme.colors.primary },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.colorBox,
+                    { backgroundColor: theme.colors.secondary },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.colorBox,
+                    { backgroundColor: theme.colors.accent },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.colorBox,
+                    { backgroundColor: theme.colors.success },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.colorBox,
+                    { backgroundColor: theme.colors.warning },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.colorBox,
+                    { backgroundColor: theme.colors.error },
+                  ]}
+                />
+              </View>
+            </CardContent>
+          </Card>
+        </ThemeManager>
+
+        {/* Customized ThemeManager */}
+        <Heading style={{ paddingHorizontal: 16 }}>
+          Customized Caption Theme Manager
+        </Heading>
+        <ThemeManager
+          themePresets={themePresets}
+          initialTheme="default"
+          onThemeApplied={handleThemeApplied}
+          onThemePreview={handleThemePreview}
+          customization={{
+            controlsTitle: '🎨 Pengaturan Tema',
+            presetsTitle: '🌈 Koleksi Tema',
+            darkModeLabel: 'Mode Gelap',
+            darkModeDisabledLabel: '(Tidak Aktif)',
+            applyButtonText: 'Terapkan Tema',
+            cancelPreviewText: 'Batal Preview',
+            resetButtonText: 'Reset ke Default',
+            defaultThemeText: 'Tema Bawaan',
+            successMessage: 'Tema berhasil diterapkan! 🎉',
+            errorMessage: 'Terjadi kesalahan! ❌',
+            warningMessage: 'Peringatan: Silakan periksa input Anda! ⚠️',
+            infoMessage: 'Info: Tema telah diperbarui! ℹ️',
+          }}
+        >
+          <Card style={styles.demoCard}>
+            <CardHeader title="Demo Content - Customized" />
+            <CardContent>
+              <Typography variant="body" style={styles.demoText}>
+                This is the customized ThemeManager with Indonesian labels and
+                custom messages. Notice the difference in titles, button texts,
+                and messages compared to the default version above.
+              </Typography>
+
+              <View style={styles.buttonContainer}>
+                <Button variant="primary" style={styles.demoButton}>
+                  <ButtonText>Tombol Utama</ButtonText>
+                </Button>
+
+                <Button variant="secondary" style={styles.demoButton}>
+                  <ButtonText>Tombol Sekunder</ButtonText>
+                </Button>
+
+                <Button variant="outline" style={styles.demoButton}>
+                  <ButtonText>Tombol Outline</ButtonText>
+                </Button>
+              </View>
+
+              <View style={styles.colorDemo}>
+                <View
+                  style={[
+                    styles.colorBox,
+                    { backgroundColor: theme.colors.primary },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.colorBox,
+                    { backgroundColor: theme.colors.secondary },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.colorBox,
+                    { backgroundColor: theme.colors.accent },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.colorBox,
+                    { backgroundColor: theme.colors.success },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.colorBox,
+                    { backgroundColor: theme.colors.warning },
+                  ]}
+                />
+                <View
+                  style={[
+                    styles.colorBox,
+                    { backgroundColor: theme.colors.error },
+                  ]}
+                />
+              </View>
+            </CardContent>
+          </Card>
+        </ThemeManager>
+      </View>
+    </VScroll>
   );
 };
 
 const createStyles = (theme: Theme) => ({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+  },
   demoCard: {
     marginBottom: theme.spacing.lg,
   },
