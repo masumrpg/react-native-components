@@ -58,7 +58,11 @@ export default defineConfig({
               label: 'Form',
               collapsed: false,
               items: [
-                { label: 'Button', slug: 'components/form/button' },
+                {
+                  label: 'Button',
+                  slug: 'components/form/button',
+                  badge: { text: 'Stable', variant: 'success' },
+                },
                 { label: 'Input', slug: 'components/form/input' },
                 { label: 'Checkbox', slug: 'components/form/checkbox' },
                 { label: 'Radio', slug: 'components/form/radio' },
