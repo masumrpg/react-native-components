@@ -1,0 +1,402 @@
+---
+title: Combobox
+description: A versatile dropdown component for selecting single or multiple options with search functionality.
+---
+
+# Combobox
+
+A powerful and flexible dropdown component that provides an intuitive interface for selecting options from a list. The Combobox supports single and multiple selection modes, search functionality, custom styling, and smooth animations.
+
+## Features
+
+- **Single & Multiple Selection**: Support for both single and multiple option selection
+- **Search Functionality**: Built-in search to filter options dynamically
+- **Smooth Animations**: Fluid open/close animations with spring physics
+- **Responsive Positioning**: Intelligent dropdown positioning that adapts to screen space
+- **Customizable Styling**: Extensive theming and style customization options
+- **Accessibility**: Full accessibility support with proper ARIA attributes
+- **Form Integration**: Seamless integration with form libraries like react-hook-form
+- **Clear Functionality**: Optional clear button to reset selections
+- **Disabled States**: Support for disabled component and individual options
+- **Portal Rendering**: Dropdown renders in a modal for proper z-index handling
+
+## Basic Usage
+
+```tsx
+import { Combobox } from '@your-org/react-native-components';
+
+const options = [
+  { label: 'Apple', value: 'apple' },
+  { label: 'Banana', value: 'banana' },
+  { label: 'Orange', value: 'orange' },
+];
+
+function BasicExample() {
+  const [value, setValue] = useState('');
+
+  return (
+    <Combobox
+      label="Select Fruit"
+      placeholder="Choose a fruit..."
+      options={options}
+      value={value}
+      onValueChange={setValue}
+    />
+  );
+}
+```
+
+## Searchable Combobox
+
+```tsx
+function SearchableExample() {
+  const [value, setValue] = useState('');
+  const [searchText, setSearchText] = useState('');
+
+  return (
+    <Combobox
+      label="Search Countries"
+      placeholder="Type to search..."
+      options={countryOptions}
+      value={value}
+      onValueChange={setValue}
+      searchable
+      onSearchChange={setSearchText}
+    />
+  );
+}
+```
+
+## Multiple Selection
+
+```tsx
+function MultipleSelectionExample() {
+  const [values, setValues] = useState<string[]>([]);
+
+  return (
+    <Combobox
+      label="Select Technologies"
+      placeholder="Choose technologies..."
+      options={techOptions}
+      value={values}
+      onValueChange={setValues}
+      multiple
+      clearable
+      closeOnSelect={false}
+    />
+  );
+}
+```
+
+## Size Variants
+
+```tsx
+function SizeVariants() {
+  return (
+    <View style={{ gap: 16 }}>
+      <Combobox size="xs" placeholder="Extra Small" options={options} />
+      <Combobox size="sm" placeholder="Small" options={options} />
+      <Combobox size="md" placeholder="Medium (Default)" options={options} />
+      <Combobox size="lg" placeholder="Large" options={options} />
+      <Combobox size="xl" placeholder="Extra Large" options={options} />
+    </View>
+  );
+}
+```
+
+## Variants and States
+
+```tsx
+function VariantsAndStates() {
+  return (
+    <View style={{ gap: 16 }}>
+      {/* Variants */}
+      <Combobox variant="default" placeholder="Default" options={options} />
+      <Combobox variant="outline" placeholder="Outline" options={options} />
+      <Combobox variant="filled" placeholder="Filled" options={options} />
+      <Combobox variant="ghost" placeholder="Ghost" options={options} />
+
+      {/* States */}
+      <Combobox
+        state="error"
+        placeholder="Error State"
+        options={options}
+        errorText="Please select an option"
+      />
+      <Combobox
+        state="success"
+        placeholder="Success State"
+        options={options}
+        helperText="Great choice!"
+      />
+      <Combobox
+        disabled
+        placeholder="Disabled"
+        options={options}
+      />
+    </View>
+  );
+}
+```
+
+## Disabled Options
+
+```tsx
+const optionsWithDisabled = [
+  { label: 'Available Option', value: 'available' },
+  { label: 'Disabled Option', value: 'disabled', disabled: true },
+  { label: 'Another Available', value: 'available2' },
+];
+
+function DisabledOptionsExample() {
+  return (
+    <Combobox
+      label="Options with Disabled Items"
+      options={optionsWithDisabled}
+      placeholder="Select an option..."
+    />
+  );
+}
+```
+
+## Custom Styling
+
+```tsx
+function CustomStyledExample() {
+  return (
+    <Combobox
+      label="Custom Styled"
+      options={options}
+      borderRadius="xl"
+      backgroundColor="#f8f9fa"
+      style={{ marginVertical: 8 }}
+      inputStyle={{
+        borderWidth: 2,
+        borderColor: '#007bff'
+      }}
+      labelStyle={{
+        fontSize: 18,
+        fontWeight: 'bold',
+        color: '#007bff'
+      }}
+      dropdownStyle={{
+        borderRadius: 12,
+        elevation: 8
+      }}
+      optionStyle={{
+        paddingVertical: 16
+      }}
+    />
+  );
+}
+```
+
+## Form Integration
+
+```tsx
+import { useForm, Controller } from 'react-hook-form';
+
+interface FormData {
+  category: string;
+  tags: string[];
+}
+
+function FormIntegrationExample() {
+  const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
+
+  const onSubmit = (data: FormData) => {
+    console.log('Form data:', data);
+  };
+
+  return (
+    <View>
+      <Controller
+        control={control}
+        name="category"
+        rules={{ required: 'Category is required' }}
+        render={({ field: { onChange, value } }) => (
+          <Combobox
+            label="Category"
+            placeholder="Select category..."
+            options={categoryOptions}
+            value={value}
+            onValueChange={onChange}
+            state={errors.category ? 'error' : 'default'}
+            errorText={errors.category?.message}
+            required
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="tags"
+        render={({ field: { onChange, value } }) => (
+          <Combobox
+            label="Tags"
+            placeholder="Select tags..."
+            options={tagOptions}
+            value={value || []}
+            onValueChange={onChange}
+            multiple
+            searchable
+            clearable
+          />
+        )}
+      />
+
+      <Button onPress={handleSubmit(onSubmit)} title="Submit" />
+    </View>
+  );
+}
+```
+
+## Advanced Usage
+
+```tsx
+function AdvancedExample() {
+  const [value, setValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const [options, setOptions] = useState([]);
+
+  const handleSearch = async (searchText: string) => {
+    if (searchText.length < 2) return;
+
+    setIsLoading(true);
+    try {
+      // Simulate API call
+      const results = await searchAPI(searchText);
+      setOptions(results);
+    } catch (error) {
+      console.error('Search failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <Combobox
+      label="Dynamic Search"
+      placeholder="Type to search..."
+      options={options}
+      value={value}
+      onValueChange={setValue}
+      searchable
+      onSearchChange={handleSearch}
+      maxDropdownHeight={300}
+      animationEnabled
+      closeOnSelect
+      helperText={isLoading ? 'Searching...' : 'Type at least 2 characters'}
+    />
+  );
+}
+```
+
+## API Reference
+
+### ComboboxProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | - | Label text displayed above the combobox |
+| `placeholder` | `string` | `'Select an option...'` | Placeholder text when no option is selected |
+| `variant` | `ComponentVariant` | `'default'` | Visual variant of the combobox |
+| `size` | `ComponentSize` | `'md'` | Size of the combobox |
+| `state` | `ComponentState` | `'default'` | Current state (default, error, success) |
+| `helperText` | `string` | - | Helper text displayed below the combobox |
+| `errorText` | `string` | - | Error text displayed when state is 'error' |
+| `required` | `boolean` | `false` | Whether the field is required |
+| `disabled` | `boolean` | `false` | Whether the combobox is disabled |
+| `searchable` | `boolean` | `false` | Enable search functionality |
+| `clearable` | `boolean` | `false` | Show clear button when options are selected |
+| `multiple` | `boolean` | `false` | Allow multiple option selection |
+| `options` | `ComboboxOption[]` | `[]` | Array of available options |
+| `value` | `string \| string[]` | - | Current selected value(s) |
+| `onValueChange` | `(value: string \| string[]) => void` | - | Callback when selection changes |
+| `onSearchChange` | `(search: string) => void` | - | Callback when search text changes |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | `'md'` | Border radius from theme |
+| `style` | `StyleProp<ViewStyle>` | - | Custom container styles |
+| `inputStyle` | `TextStyle` | - | Custom input styles |
+| `labelStyle` | `TextStyle` | - | Custom label styles |
+| `helperTextStyle` | `TextStyle` | - | Custom helper text styles |
+| `dropdownStyle` | `StyleProp<ViewStyle>` | - | Custom dropdown styles |
+| `optionStyle` | `StyleProp<ViewStyle>` | - | Custom option styles |
+| `animationEnabled` | `boolean` | `true` | Enable open/close animations |
+| `maxDropdownHeight` | `number` | `250` | Maximum height of dropdown |
+| `closeOnSelect` | `boolean` | `true` | Close dropdown after selection (single mode) |
+| `backgroundColor` | `string` | - | Custom background color |
+| `padding` | `keyof Theme['spacing']` | - | Padding from theme |
+| `elevation` | `number` | `3` | Android elevation |
+| `shadowOpacity` | `number` | `0.1` | iOS shadow opacity |
+
+### ComboboxOption
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `label` | `string` | Display text for the option |
+| `value` | `string` | Unique value for the option |
+| `disabled` | `boolean` | Whether the option is disabled |
+
+## Best Practices
+
+### Do's
+
+- Use clear, descriptive labels for options
+- Provide helpful placeholder text
+- Use search functionality for lists with many options
+- Implement proper error handling and validation
+- Use appropriate size variants for your design
+- Provide helper text for complex selections
+- Use multiple selection sparingly and with clear indication
+
+### Don'ts
+
+- Don't use extremely long option labels
+- Don't disable the entire component without explanation
+- Don't use too many options without search functionality
+- Don't forget to handle loading states for dynamic options
+- Don't use multiple selection for simple yes/no choices
+
+### Accessibility
+
+- Always provide descriptive labels
+- Use proper error messages for validation
+- Ensure sufficient color contrast
+- Test with screen readers
+- Provide keyboard navigation support
+- Use semantic HTML structure
+
+## Troubleshooting
+
+### Common Issues
+
+**Dropdown not opening**
+- Check if the component is disabled
+- Verify that options array is not empty
+- Ensure proper event handling setup
+
+**Search not working**
+- Verify `searchable` prop is set to `true`
+- Check `onSearchChange` callback implementation
+- Ensure options are properly filtered
+
+**Animation issues**
+- Try disabling animations with `animationEnabled={false}`
+- Check for conflicting styles or transforms
+- Verify React Native Reanimated setup
+
+**Dropdown positioning problems**
+- Check screen dimensions and available space
+- Verify modal rendering permissions
+- Test on different screen sizes
+
+**Performance issues with large lists**
+- Implement virtualization for very large lists
+- Use search functionality to reduce visible options
+- Consider pagination for dynamic data
+- Optimize option rendering with `React.memo`
+
+**Multiple selection not working**
+- Ensure `multiple` prop is set to `true`
+- Verify value is an array when using multiple selection
+- Check `onValueChange` handles array values correctly

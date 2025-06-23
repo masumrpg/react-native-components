@@ -3,7 +3,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  Pressable,
   StyleSheet,
   TextStyle,
   ViewStyle,
@@ -16,7 +16,11 @@ import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
 import { Theme } from '../../../types/theme';
-import { ComponentSize, ComponentVariant, ComponentState } from '../../../types/ui';
+import {
+  ComponentSize,
+  ComponentVariant,
+  ComponentState,
+} from '../../../types/ui';
 import { DateData } from 'react-native-calendars';
 import { ChevronDown, Calendar as CalendarIcon } from 'lucide-react-native';
 import Animated, {
@@ -106,7 +110,7 @@ const formatDate = (
 const DatePicker: React.FC<DatePickerProps> = ({
   value,
   onDateSelect,
-  placeholder = 'Pilih tanggal',
+  placeholder = 'Choose date',
   label,
   disabled = false,
   size = 'md',
@@ -167,12 +171,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
   // Update error animation when error state changes
   useEffect(() => {
     if (animated) {
-      errorAnimation.value = withTiming(
-        hasError ? 1 : 0,
-        {
-          duration: ANIMATION_CONSTANTS.DURATION.NORMAL,
-        }
-      );
+      errorAnimation.value = withTiming(hasError ? 1 : 0, {
+        duration: ANIMATION_CONSTANTS.DURATION.NORMAL,
+      });
     }
   }, [hasError, animated, errorAnimation]);
 
@@ -189,7 +190,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
   const handleOpen = useCallback(() => {
     if (disabled) return;
-    
+
     runOnJS(setFocusedJS)(true);
     setIsOpen(true);
 
@@ -341,9 +342,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
     return (
       <IconComponent
         size={iconSize}
-        color={
-          disabled ? theme.colors.muted : theme.colors.textSecondary
-        }
+        color={disabled ? theme.colors.muted : theme.colors.textSecondary}
       />
     );
   };
@@ -484,9 +483,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
         <Portal name="date-picker-portal">
           <View style={styles.overlay}>
             <Animated.View style={[styles.backdrop, backdropAnimatedStyle]}>
-              <TouchableWithoutFeedback onPress={handleClose}>
+              <Pressable onPress={handleClose}>
                 <View style={StyleSheet.absoluteFill} />
-              </TouchableWithoutFeedback>
+              </Pressable>
             </Animated.View>
 
             <Animated.View

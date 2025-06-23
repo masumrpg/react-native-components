@@ -1,0 +1,555 @@
+---
+title: Theme Provider
+description: Complete guide to configuring and using the RNCProvider for theme management in your React Native application.
+sidebar:
+  order: 2
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+# Theme Provider
+
+The `RNCProvider` is the foundation of the RNC Theme system. It provides theme context to your entire application and manages theme state, persistence, and switching.
+
+## Basic Setup
+
+### Minimal Configuration
+
+```tsx
+import React from 'react';
+import { RNCProvider } from 'rnc-theme';
+import { YourApp } from './YourApp';
+
+export default function App() {
+  return (
+    <RNCProvider>
+      <YourApp />
+    </RNCProvider>
+  );
+}
+```
+
+### Recommended Configuration
+
+```tsx
+import React from 'react';
+import { RNCProvider } from 'rnc-theme';
+import { NavigationContainer } from '@react-navigation/native';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+
+export default function App() {
+  return (
+    <RNCProvider
+      defaultTheme="system"
+      persistTheme={true}
+      debugMode={__DEV__}
+    >
+      <GestureHandlerRootView style={{ flex: 1 }}>
+        <NavigationContainer>
+          {/* Your app navigation */}
+        </NavigationContainer>
+      </GestureHandlerRootView>
+    </RNCProvider>
+  );
+}
+```
+
+## Configuration Options
+
+### Core Properties
+
+<Tabs>
+  <TabItem label="defaultTheme">
+    ```tsx
+    type ThemeMode = 'light' | 'dark' | 'system';
+
+    <RNCProvider defaultTheme="system">
+      {/* App content */}
+    </RNCProvider>
+    ```
+
+    **Options:**
+    - `'light'` - Always use light theme
+    - `'dark'` - Always use dark theme
+    - `'system'` - Follow device system preference (recommended)
+  </TabItem>
+
+  <TabItem label="persistTheme">
+    ```tsx
+    <RNCProvider persistTheme={true}>
+      {/* App content */}
+    </RNCProvider>
+    ```
+
+    **When enabled:**
+    - Theme preference is saved to AsyncStorage
+    - Restored on app restart
+    - Overrides `defaultTheme` if saved preference exists
+  </TabItem>
+
+  <TabItem label="customTheme">
+    ```tsx
+    const customTheme = {
+      light: {
+        colors: {
+          primary: '#6366F1',
+          secondary: '#8B5CF6',
+          // ... other overrides
+        },
+      },
+      dark: {
+        colors: {
+          primary: '#818CF8',
+          secondary: '#A78BFA',
+          // ... other overrides
+        },
+      },
+    };
+
+    <RNCProvider customTheme={customTheme}>
+      {/* App content */}
+    </RNCProvider>
+    ```
+  </TabItem>
+
+  <TabItem label="debugMode">
+    ```tsx
+    <RNCProvider debugMode={__DEV__}>
+      {/* App content */}
+    </RNCProvider>
+    ```
+
+    **When enabled:**
+    - Logs theme changes to console
+    - Shows theme inspector overlay
+    - Validates theme structure
+    - Performance monitoring
+  </TabItem>
+</Tabs>
+
+### Advanced Configuration
+
+<Tabs>
+  <TabItem label="Toast Configuration">
+    ```tsx
+    const toastConfig = {
+      position: 'top' as const,
+      duration: 3000,
+      animationType: 'slide' as const,
+      maxToasts: 3,
+      offset: {
+        top: 50,
+        bottom: 50,
+      },
+    };
+
+    <RNCProvider toast={toastConfig}>
+      {/* App content */}
+    </RNCProvider>
+    ```
+  </TabItem>
+
+  <TabItem label="i18n Configuration">
+    ```tsx
+    const i18nConfig = {
+      defaultLanguage: 'en',
+      fallbackLanguage: 'en',
+      supportedLanguages: ['en', 'es', 'fr', 'de'],
+      rtlLanguages: ['ar', 'he'],
+    };
+
+    <RNCProvider i18nConfig={i18nConfig}>
+      {/* App content */}
+    </RNCProvider>
+    ```
+  </TabItem>
+
+  <TabItem label="Performance Options">
+    ```tsx
+    const performanceConfig = {
+      enableMemoization: true,
+      lazyLoadPresets: true,
+      animationDuration: 200,
+      throttleUpdates: true,
+    };
+
+    <RNCProvider performance={performanceConfig}>
+      {/* App content */}
+    </RNCProvider>
+    ```
+  </TabItem>
+</Tabs>
+
+## Integration Patterns
+
+### With Expo Router
+
+```tsx
+// app/_layout.tsx
+import { RNCProvider } from 'rnc-theme';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
+
+export default function RootLayout() {
+  return (
+    <RNCProvider
+      defaultTheme="system"
+      persistTheme={true}
+    >
+      <StatusBar style="auto" />
+      <Stack screenOptions={{ headerShown: false }} />
+    </RNCProvider>
+  );
+}
+```
+
+### With React Navigation
+
+```tsx
+// App.tsx
+import React from 'react';
+import { RNCProvider } from 'rnc-theme';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  return (
+    <RNCProvider defaultTheme="system">
+      <NavigationContainer>
+        <Stack.Navigator>
+          {/* Your screens */}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </RNCProvider>
+  );
+}
+```
+
+### With Redux/Zustand
+
+<Tabs>
+  <TabItem label="Redux">
+    ```tsx
+    import { Provider } from 'react-redux';
+    import { RNCProvider } from 'rnc-theme';
+    import { store } from './store';
+
+    export default function App() {
+      return (
+        <Provider store={store}>
+          <RNCProvider defaultTheme="system">
+            {/* App content */}
+          </RNCProvider>
+        </Provider>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Zustand">
+    ```tsx
+    import { RNCProvider } from 'rnc-theme';
+    import { useThemeStore } from './stores/themeStore';
+
+    export default function App() {
+      const { themeMode } = useThemeStore();
+
+      return (
+        <RNCProvider defaultTheme={themeMode}>
+          {/* App content */}
+        </RNCProvider>
+      );
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Platform-Specific Configuration
+
+### iOS Configuration
+
+```tsx
+import { Platform } from 'react-native';
+
+const iosConfig = {
+  statusBarStyle: 'auto',
+  safeAreaInsets: true,
+  hapticFeedback: true,
+};
+
+<RNCProvider
+  {...(Platform.OS === 'ios' && iosConfig)}
+>
+  {/* App content */}
+</RNCProvider>
+```
+
+### Android Configuration
+
+```tsx
+import { Platform } from 'react-native';
+
+const androidConfig = {
+  navigationBarStyle: 'auto',
+  edgeToEdge: true,
+  materialYou: true,
+};
+
+<RNCProvider
+  {...(Platform.OS === 'android' && androidConfig)}
+>
+  {/* App content */}
+</RNCProvider>
+```
+
+## Theme Context Access
+
+Once `RNCProvider` is set up, you can access theme context anywhere in your component tree:
+
+### Using useTheme Hook
+
+```tsx
+import { useTheme } from 'rnc-theme';
+
+function MyComponent() {
+  const {
+    theme,           // Current theme object
+    mode,            // Current theme mode
+    setMode,         // Function to change mode
+    isDark,          // Boolean for dark mode
+    updateCustomTheme, // Function to update custom theme
+    resetTheme,      // Function to reset to default
+  } = useTheme();
+
+  return (
+    <View style={{ backgroundColor: theme.colors.background }}>
+      <Text style={{ color: theme.colors.text }}>
+        Current mode: {mode}
+      </Text>
+    </View>
+  );
+}
+```
+
+### Using useThemedStyles Hook
+
+```tsx
+import { useThemedStyles } from 'rnc-theme';
+
+function StyledComponent() {
+  const styles = useThemedStyles(createStyles);
+
+  return <View style={styles.container} />;
+}
+
+const createStyles = (theme: Theme) => ({
+  container: {
+    backgroundColor: theme.colors.surface,
+    padding: theme.spacing.md,
+    borderRadius: theme.components.borderRadius.md,
+    shadowColor: theme.colors.text,
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+});
+```
+
+## Error Handling
+
+### Theme Validation
+
+```tsx
+import { validateTheme } from 'rnc-theme';
+
+const customTheme = {
+  colors: {
+    primary: '#invalid-color', // This will be caught
+  },
+};
+
+// Validate before using
+if (validateTheme(customTheme)) {
+  // Theme is valid
+} else {
+  console.warn('Invalid theme configuration');
+}
+```
+
+### Error Boundaries
+
+```tsx
+import React from 'react';
+import { RNCProvider } from 'rnc-theme';
+import { ErrorBoundary } from './ErrorBoundary';
+
+export default function App() {
+  return (
+    <ErrorBoundary>
+      <RNCProvider
+        defaultTheme="system"
+        onError={(error) => {
+          console.error('Theme error:', error);
+          // Report to crash analytics
+        }}
+      >
+        {/* App content */}
+      </RNCProvider>
+    </ErrorBoundary>
+  );
+}
+```
+
+## Performance Considerations
+
+<CardGrid>
+  <Card title="Memoization" icon="rocket">
+    All theme calculations are automatically memoized to prevent unnecessary re-renders.
+  </Card>
+  <Card title="Lazy Loading" icon="document">
+    Theme presets are loaded on-demand to reduce initial bundle size.
+  </Card>
+  <Card title="Efficient Updates" icon="setting">
+    Only components using changed theme properties re-render during theme switches.
+  </Card>
+  <Card title="Memory Management" icon="star">
+    Automatic cleanup of unused theme resources and event listeners.
+  </Card>
+</CardGrid>
+
+### Performance Monitoring
+
+```tsx
+<RNCProvider
+  debugMode={__DEV__}
+  onPerformanceMetrics={(metrics) => {
+    console.log('Theme performance:', metrics);
+    // {
+    //   renderTime: 12,
+    //   memoryUsage: 1024,
+    //   cacheHitRate: 0.95
+    // }
+  }}
+>
+  {/* App content */}
+</RNCProvider>
+```
+
+## Best Practices
+
+<Aside type="tip" title="Provider Placement">
+  Place `RNCProvider` as high as possible in your component tree, typically wrapping your entire app or navigation container.
+</Aside>
+
+<Aside type="note" title="Theme Persistence">
+  Always enable `persistTheme` for production apps to maintain user preferences across sessions.
+</Aside>
+
+<Aside type="caution" title="Debug Mode">
+  Only enable `debugMode` in development. It adds performance overhead and should not be used in production.
+</Aside>
+
+### Common Patterns
+
+```tsx
+// ✅ Good: Provider at app root
+export default function App() {
+  return (
+    <RNCProvider defaultTheme="system">
+      <NavigationContainer>
+        <AppNavigator />
+      </NavigationContainer>
+    </RNCProvider>
+  );
+}
+
+// ❌ Bad: Multiple providers
+function Screen() {
+  return (
+    <RNCProvider> {/* Don't nest providers */}
+      <Content />
+    </RNCProvider>
+  );
+}
+```
+
+## Troubleshooting
+
+### Common Issues
+
+<Tabs>
+  <TabItem label="Theme Not Applied">
+    **Problem:** Components don't reflect theme changes
+
+    **Solutions:**
+    - Ensure `RNCProvider` wraps your entire app
+    - Check that components use `useTheme` or `useThemedStyles`
+    - Verify theme object structure
+
+    ```tsx
+    // Check if theme is available
+    const { theme } = useTheme();
+    console.log('Current theme:', theme);
+    ```
+  </TabItem>
+
+  <TabItem label="Persistence Issues">
+    **Problem:** Theme preference not saved
+
+    **Solutions:**
+    - Enable `persistTheme={true}`
+    - Check AsyncStorage permissions
+    - Verify storage key conflicts
+
+    ```tsx
+    import AsyncStorage from '@react-native-async-storage/async-storage';
+
+    // Check stored theme
+    AsyncStorage.getItem('rnc-theme-mode').then(console.log);
+    ```
+  </TabItem>
+
+  <TabItem label="Performance Issues">
+    **Problem:** Slow theme switching or high memory usage
+
+    **Solutions:**
+    - Enable performance optimizations
+    - Use `useThemedStyles` instead of inline styles
+    - Avoid creating styles in render functions
+
+    ```tsx
+    // ✅ Good: Memoized styles
+    const styles = useThemedStyles(createStyles);
+
+    // ❌ Bad: Inline styles in render
+    <View style={{ backgroundColor: theme.colors.background }} />
+    ```
+  </TabItem>
+</Tabs>
+
+## Next Steps
+
+<CardGrid>
+  <Card title="Custom Themes" icon="palette">
+    Learn how to create and configure custom themes for your brand.
+    [Custom Theme Guide →](/theming/custom-theme)
+  </Card>
+  <Card title="Theme Registry" icon="list">
+    Manage multiple theme presets with the registry system.
+    [Registry Guide →](/theming/theme-registry)
+  </Card>
+  <Card title="Theme Switching" icon="setting">
+    Implement smooth theme switching with animations.
+    [Switching Guide →](/theming/theme-switching)
+  </Card>
+  <Card title="Hooks Reference" icon="code">
+    Detailed reference for all theme-related hooks.
+    [Hooks Documentation →](/hooks/overview)
+  </Card>
+</CardGrid>

@@ -1,0 +1,1263 @@
+---
+title: Radio
+description: A versatile radio button component with smooth animations, group support, multiple variants, and comprehensive accessibility features for single-selection scenarios in React Native applications.
+sidebar:
+  order: 4
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+# Radio
+
+A powerful, animated radio button component designed for single-selection scenarios. Built with React Native Reanimated for smooth animations and includes comprehensive group management functionality.
+
+## Features
+
+<CardGrid>
+  <Card title="🔘 Single Selection" icon="star">
+    Perfect for scenarios where only one option can be selected at a time.
+  </Card>
+  <Card title="👥 Group Management" icon="setting">
+    Built-in radio group functionality for managing single selections across multiple options.
+  </Card>
+  <Card title="🎨 Multiple Variants" icon="puzzle">
+    Support for default, primary, secondary, outline, filled, ghost, and state variants.
+  </Card>
+  <Card title="✨ Smooth Animations" icon="rocket">
+    Fluid spring animations for selection states and visual feedback.
+  </Card>
+  <Card title="📏 Multiple Sizes" icon="information">
+    Five size options from extra small to extra large.
+  </Card>
+  <Card title="♿ Accessibility" icon="star">
+    Full accessibility support with proper labels, states, and screen reader compatibility.
+  </Card>
+</CardGrid>
+
+## Basic Usage
+
+```tsx
+import { Radio } from 'rnc-theme';
+import { useState } from 'react';
+
+function BasicExample() {
+  const [selectedValue, setSelectedValue] = useState('');
+
+  return (
+    <View style={styles.container}>
+      <Radio.Group
+        value={selectedValue}
+        onValueChange={setSelectedValue}
+      >
+        <Radio value="option1">
+          <Radio.Label>Option 1</Radio.Label>
+        </Radio>
+
+        <Radio value="option2">
+          <Radio.Label>Option 2</Radio.Label>
+        </Radio>
+
+        <Radio value="option3">
+          <Radio.Label>Option 3</Radio.Label>
+        </Radio>
+      </Radio.Group>
+
+      <Text style={styles.result}>
+        Selected: {selectedValue || 'None'}
+      </Text>
+    </View>
+  );
+}
+```
+
+## Radio Variants
+
+The Radio component supports multiple visual variants to match different design requirements.
+
+<Tabs>
+  <TabItem label="Standard Variants">
+    ```tsx
+    import { Radio } from 'rnc-theme';
+
+    function VariantExample() {
+      const [selectedVariant, setSelectedVariant] = useState('default');
+
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>Choose a variant:</Text>
+
+          <Radio.Group
+            value={selectedVariant}
+            onValueChange={setSelectedVariant}
+          >
+            {/* Default variant */}
+            <Radio value="default" variant="default">
+              <Radio.Label>Default Radio</Radio.Label>
+            </Radio>
+
+            {/* Primary variant */}
+            <Radio value="primary" variant="primary">
+              <Radio.Label>Primary Radio</Radio.Label>
+            </Radio>
+
+            {/* Secondary variant */}
+            <Radio value="secondary" variant="secondary">
+              <Radio.Label>Secondary Radio</Radio.Label>
+            </Radio>
+
+            {/* Outline variant */}
+            <Radio value="outline" variant="outline">
+              <Radio.Label>Outline Radio</Radio.Label>
+            </Radio>
+
+            {/* Filled variant */}
+            <Radio value="filled" variant="filled">
+              <Radio.Label>Filled Radio</Radio.Label>
+            </Radio>
+
+            {/* Ghost variant */}
+            <Radio value="ghost" variant="ghost">
+              <Radio.Label>Ghost Radio</Radio.Label>
+            </Radio>
+          </Radio.Group>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="State Variants">
+    ```tsx
+    function StateVariantExample() {
+      const [selectedState, setSelectedState] = useState('success');
+
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>Choose a state:</Text>
+
+          <Radio.Group
+            value={selectedState}
+            onValueChange={setSelectedState}
+          >
+            {/* Success state */}
+            <Radio value="success" variant="success">
+              <Radio.Label>Success State</Radio.Label>
+            </Radio>
+
+            {/* Warning state */}
+            <Radio value="warning" variant="warning">
+              <Radio.Label>Warning State</Radio.Label>
+            </Radio>
+
+            {/* Error state */}
+            <Radio value="error" variant="error">
+              <Radio.Label>Error State</Radio.Label>
+            </Radio>
+
+            {/* Info state */}
+            <Radio value="info" variant="info">
+              <Radio.Label>Info State</Radio.Label>
+            </Radio>
+
+            {/* Destructive state */}
+            <Radio value="destructive" variant="destructive">
+              <Radio.Label>Destructive State</Radio.Label>
+            </Radio>
+          </Radio.Group>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Radio Groups
+
+Radio groups are essential for managing single-selection scenarios across multiple options.
+
+<Tabs>
+  <TabItem label="Basic Group">
+    ```tsx
+    import { Radio } from 'rnc-theme';
+    import { useState } from 'react';
+
+    function BasicGroupExample() {
+      const [paymentMethod, setPaymentMethod] = useState('credit');
+
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>Select Payment Method:</Text>
+
+          <Radio.Group
+            value={paymentMethod}
+            onValueChange={setPaymentMethod}
+          >
+            <Radio value="credit">
+              <Radio.Label>Credit Card</Radio.Label>
+            </Radio>
+
+            <Radio value="debit">
+              <Radio.Label>Debit Card</Radio.Label>
+            </Radio>
+
+            <Radio value="paypal">
+              <Radio.Label>PayPal</Radio.Label>
+            </Radio>
+
+            <Radio value="bank">
+              <Radio.Label>Bank Transfer</Radio.Label>
+            </Radio>
+          </Radio.Group>
+
+          <Text style={styles.result}>
+            Selected: {paymentMethod}
+          </Text>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Advanced Group">
+    ```tsx
+    function AdvancedGroupExample() {
+      const [subscription, setSubscription] = useState('basic');
+      const [notification, setNotification] = useState('email');
+
+      const subscriptionOptions = [
+        { value: 'free', label: 'Free Plan', description: 'Basic features only' },
+        { value: 'basic', label: 'Basic Plan', description: '$9.99/month' },
+        { value: 'pro', label: 'Pro Plan', description: '$19.99/month' },
+        { value: 'enterprise', label: 'Enterprise', description: 'Contact sales' },
+      ];
+
+      const notificationOptions = [
+        { value: 'email', label: 'Email Only', variant: 'primary' },
+        { value: 'sms', label: 'SMS Only', variant: 'secondary' },
+        { value: 'both', label: 'Email & SMS', variant: 'success' },
+        { value: 'none', label: 'No Notifications', variant: 'ghost' },
+      ];
+
+      return (
+        <View style={styles.container}>
+          {/* Subscription Selection */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Choose Your Plan</Text>
+
+            <Radio.Group
+              value={subscription}
+              onValueChange={setSubscription}
+            >
+              {subscriptionOptions.map((option) => (
+                <Radio
+                  key={option.value}
+                  value={option.value}
+                  variant={subscription === option.value ? 'primary' : 'default'}
+                >
+                  <View style={styles.optionContent}>
+                    <Radio.Label style={styles.optionLabel}>
+                      {option.label}
+                    </Radio.Label>
+                    <Text style={styles.optionDescription}>
+                      {option.description}
+                    </Text>
+                  </View>
+                </Radio>
+              ))}
+            </Radio.Group>
+          </View>
+
+          {/* Notification Preferences */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Notification Preferences</Text>
+
+            <Radio.Group
+              value={notification}
+              onValueChange={setNotification}
+            >
+              {notificationOptions.map((option) => (
+                <Radio
+                  key={option.value}
+                  value={option.value}
+                  variant={option.variant as any}
+                >
+                  <Radio.Label>{option.label}</Radio.Label>
+                </Radio>
+              ))}
+            </Radio.Group>
+          </View>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Disabled Group">
+    ```tsx
+    function DisabledGroupExample() {
+      const [readOnlyValue] = useState('option2');
+      const [partiallyDisabled, setPartiallyDisabled] = useState('available1');
+
+      return (
+        <View style={styles.container}>
+          {/* Completely disabled group */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Read-only Selection:</Text>
+
+            <Radio.Group
+              value={readOnlyValue}
+              onValueChange={() => {}} // No-op for read-only
+              disabled
+            >
+              <Radio value="option1">
+                <Radio.Label>Option 1</Radio.Label>
+              </Radio>
+
+              <Radio value="option2">
+                <Radio.Label>Option 2 (Selected)</Radio.Label>
+              </Radio>
+
+              <Radio value="option3">
+                <Radio.Label>Option 3</Radio.Label>
+              </Radio>
+            </Radio.Group>
+          </View>
+
+          {/* Partially disabled options */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Some Options Unavailable:</Text>
+
+            <Radio.Group
+              value={partiallyDisabled}
+              onValueChange={setPartiallyDisabled}
+            >
+              <Radio value="available1">
+                <Radio.Label>Available Option 1</Radio.Label>
+              </Radio>
+
+              <Radio value="available2">
+                <Radio.Label>Available Option 2</Radio.Label>
+              </Radio>
+
+              <Radio value="unavailable1" disabled>
+                <Radio.Label>Unavailable Option 1</Radio.Label>
+              </Radio>
+
+              <Radio value="unavailable2" disabled>
+                <Radio.Label>Unavailable Option 2</Radio.Label>
+              </Radio>
+            </Radio.Group>
+          </View>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Sizes and Styling
+
+### Radio Sizes
+
+```tsx
+import { Radio } from 'rnc-theme';
+
+function SizeExample() {
+  const [selectedSize, setSelectedSize] = useState('md');
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Choose a size:</Text>
+
+      <Radio.Group
+        value={selectedSize}
+        onValueChange={setSelectedSize}
+      >
+        <Radio value="xs" size="xs">
+          <Radio.Label>Extra Small (xs)</Radio.Label>
+        </Radio>
+
+        <Radio value="sm" size="sm">
+          <Radio.Label>Small (sm)</Radio.Label>
+        </Radio>
+
+        <Radio value="md" size="md">
+          <Radio.Label>Medium (md) - Default</Radio.Label>
+        </Radio>
+
+        <Radio value="lg" size="lg">
+          <Radio.Label>Large (lg)</Radio.Label>
+        </Radio>
+
+        <Radio value="xl" size="xl">
+          <Radio.Label>Extra Large (xl)</Radio.Label>
+        </Radio>
+      </Radio.Group>
+    </View>
+  );
+}
+```
+
+### Custom Styling
+
+```tsx
+function CustomStylingExample() {
+  const [theme, setTheme] = useState('light');
+
+  const customStyles = StyleSheet.create({
+    customContainer: {
+      backgroundColor: '#f8f9fa',
+      padding: 16,
+      borderRadius: 8,
+      marginVertical: 4,
+    },
+    customLabel: {
+      fontWeight: '600',
+      fontSize: 16,
+    },
+    darkContainer: {
+      backgroundColor: '#2d3748',
+      borderColor: '#4a5568',
+    },
+    darkLabel: {
+      color: '#e2e8f0',
+    },
+  });
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Theme Selection:</Text>
+
+      <Radio.Group
+        value={theme}
+        onValueChange={setTheme}
+      >
+        <Radio
+          value="light"
+          variant="primary"
+          style={customStyles.customContainer}
+        >
+          <Radio.Label style={customStyles.customLabel}>
+            Light Theme
+          </Radio.Label>
+        </Radio>
+
+        <Radio
+          value="dark"
+          variant="secondary"
+          style={[
+            customStyles.customContainer,
+            customStyles.darkContainer
+          ]}
+        >
+          <Radio.Label style={[
+            customStyles.customLabel,
+            customStyles.darkLabel
+          ]}>
+            Dark Theme
+          </Radio.Label>
+        </Radio>
+
+        <Radio
+          value="auto"
+          variant="info"
+          style={customStyles.customContainer}
+        >
+          <Radio.Label style={customStyles.customLabel}>
+            Auto (System)
+          </Radio.Label>
+        </Radio>
+      </Radio.Group>
+    </View>
+  );
+}
+```
+
+## Custom Icons and Indicators
+
+<Tabs>
+  <TabItem label="Custom Icons">
+    ```tsx
+    import { MaterialIcons } from '@expo/vector-icons';
+    import { Radio } from 'rnc-theme';
+
+    function CustomIconExample() {
+      const [priority, setPriority] = useState('medium');
+
+      const priorityOptions = [
+        {
+          value: 'low',
+          label: 'Low Priority',
+          icon: 'keyboard-arrow-down',
+          variant: 'success'
+        },
+        {
+          value: 'medium',
+          label: 'Medium Priority',
+          icon: 'remove',
+          variant: 'warning'
+        },
+        {
+          value: 'high',
+          label: 'High Priority',
+          icon: 'keyboard-arrow-up',
+          variant: 'error'
+        },
+      ];
+
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>Select Priority Level:</Text>
+
+          <Radio.Group
+            value={priority}
+            onValueChange={setPriority}
+          >
+            {priorityOptions.map((option) => (
+              <Radio
+                key={option.value}
+                value={option.value}
+                variant={option.variant as any}
+              >
+                <Radio.Indicator>
+                  <Radio.Icon
+                    icon={
+                      <MaterialIcons
+                        name={option.icon as any}
+                        size={12}
+                        color="white"
+                      />
+                    }
+                  />
+                </Radio.Indicator>
+                <Radio.Label>{option.label}</Radio.Label>
+              </Radio>
+            ))}
+          </Radio.Group>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Indicators">
+    ```tsx
+    function CustomIndicatorExample() {
+      const [rating, setRating] = useState('4');
+
+      const CustomRatingIndicator = ({
+        selected,
+        rating
+      }: {
+        selected: boolean;
+        rating: number;
+      }) => (
+        <View style={[
+          styles.ratingIndicator,
+          selected && styles.ratingIndicatorSelected
+        ]}>
+          {selected && (
+            <Text style={styles.ratingText}>{rating}</Text>
+          )}
+        </View>
+      );
+
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>Rate this product:</Text>
+
+          <Radio.Group
+            value={rating}
+            onValueChange={setRating}
+          >
+            {[1, 2, 3, 4, 5].map((stars) => (
+              <Radio key={stars.toString()} value={stars.toString()}>
+                <Radio.Indicator>
+                  <CustomRatingIndicator
+                    selected={rating === stars.toString()}
+                    rating={stars}
+                  />
+                </Radio.Indicator>
+                <Radio.Label>
+                  {stars} Star{stars !== 1 ? 's' : ''}
+                  {stars === 5 && ' (Excellent)'}
+                  {stars === 4 && ' (Good)'}
+                  {stars === 3 && ' (Average)'}
+                  {stars === 2 && ' (Poor)'}
+                  {stars === 1 && ' (Terrible)'}
+                </Radio.Label>
+              </Radio>
+            ))}
+          </Radio.Group>
+        </View>
+      );
+    }
+
+    const styles = StyleSheet.create({
+      ratingIndicator: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        borderWidth: 2,
+        borderColor: '#ddd',
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      ratingIndicatorSelected: {
+        backgroundColor: '#FFD700',
+        borderColor: '#FFD700',
+      },
+      ratingText: {
+        color: 'white',
+        fontSize: 12,
+        fontWeight: 'bold',
+      },
+    });
+    ```
+  </TabItem>
+</Tabs>
+
+## Advanced Use Cases
+
+### Form Integration
+
+```tsx
+import { Radio, Button } from 'rnc-theme';
+import { useForm, Controller } from 'react-hook-form';
+
+interface SurveyFormData {
+  experience: string;
+  recommendation: string;
+  frequency: string;
+}
+
+function FormIntegrationExample() {
+  const { control, handleSubmit, formState: { errors } } = useForm<SurveyFormData>({
+    defaultValues: {
+      experience: '',
+      recommendation: '',
+      frequency: '',
+    },
+  });
+
+  const onSubmit = (data: SurveyFormData) => {
+    console.log('Survey submitted:', data);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Customer Survey</Text>
+
+      {/* Experience Rating */}
+      <View style={styles.section}>
+        <Text style={styles.questionTitle}>
+          How was your experience? *
+        </Text>
+        <Controller
+          control={control}
+          name="experience"
+          rules={{ required: 'Please rate your experience' }}
+          render={({ field: { onChange, value } }) => (
+            <Radio.Group
+              value={value}
+              onValueChange={onChange}
+            >
+              <Radio value="excellent" variant="success">
+                <Radio.Label>Excellent</Radio.Label>
+              </Radio>
+
+              <Radio value="good" variant="primary">
+                <Radio.Label>Good</Radio.Label>
+              </Radio>
+
+              <Radio value="average" variant="warning">
+                <Radio.Label>Average</Radio.Label>
+              </Radio>
+
+              <Radio value="poor" variant="error">
+                <Radio.Label>Poor</Radio.Label>
+              </Radio>
+            </Radio.Group>
+          )}
+        />
+        {errors.experience && (
+          <Text style={styles.errorText}>{errors.experience.message}</Text>
+        )}
+      </View>
+
+      {/* Recommendation */}
+      <View style={styles.section}>
+        <Text style={styles.questionTitle}>
+          Would you recommend us? *
+        </Text>
+        <Controller
+          control={control}
+          name="recommendation"
+          rules={{ required: 'Please select an option' }}
+          render={({ field: { onChange, value } }) => (
+            <Radio.Group
+              value={value}
+              onValueChange={onChange}
+            >
+              <Radio value="definitely" variant="success">
+                <Radio.Label>Definitely</Radio.Label>
+              </Radio>
+
+              <Radio value="probably" variant="primary">
+                <Radio.Label>Probably</Radio.Label>
+              </Radio>
+
+              <Radio value="maybe" variant="secondary">
+                <Radio.Label>Maybe</Radio.Label>
+              </Radio>
+
+              <Radio value="probably-not" variant="warning">
+                <Radio.Label>Probably Not</Radio.Label>
+              </Radio>
+
+              <Radio value="definitely-not" variant="error">
+                <Radio.Label>Definitely Not</Radio.Label>
+              </Radio>
+            </Radio.Group>
+          )}
+        />
+        {errors.recommendation && (
+          <Text style={styles.errorText}>{errors.recommendation.message}</Text>
+        )}
+      </View>
+
+      {/* Usage Frequency */}
+      <View style={styles.section}>
+        <Text style={styles.questionTitle}>
+          How often do you use our service?
+        </Text>
+        <Controller
+          control={control}
+          name="frequency"
+          render={({ field: { onChange, value } }) => (
+            <Radio.Group
+              value={value}
+              onValueChange={onChange}
+            >
+              <Radio value="daily" variant="info">
+                <Radio.Label>Daily</Radio.Label>
+              </Radio>
+
+              <Radio value="weekly" variant="info">
+                <Radio.Label>Weekly</Radio.Label>
+              </Radio>
+
+              <Radio value="monthly" variant="secondary">
+                <Radio.Label>Monthly</Radio.Label>
+              </Radio>
+
+              <Radio value="rarely" variant="ghost">
+                <Radio.Label>Rarely</Radio.Label>
+              </Radio>
+            </Radio.Group>
+          )}
+        />
+      </View>
+
+      <Button
+        onPress={handleSubmit(onSubmit)}
+        variant="primary"
+        style={styles.submitButton}
+      >
+        Submit Survey
+      </Button>
+    </View>
+  );
+}
+```
+
+### Multi-Step Selection
+
+```tsx
+function MultiStepSelectionExample() {
+  const [step, setStep] = useState(1);
+  const [selections, setSelections] = useState({
+    category: '',
+    subcategory: '',
+    specific: '',
+  });
+
+  const categories = [
+    { value: 'electronics', label: 'Electronics' },
+    { value: 'clothing', label: 'Clothing' },
+    { value: 'books', label: 'Books' },
+  ];
+
+  const subcategories = {
+    electronics: [
+      { value: 'phones', label: 'Smartphones' },
+      { value: 'laptops', label: 'Laptops' },
+      { value: 'accessories', label: 'Accessories' },
+    ],
+    clothing: [
+      { value: 'mens', label: "Men's Clothing" },
+      { value: 'womens', label: "Women's Clothing" },
+      { value: 'kids', label: "Kids' Clothing" },
+    ],
+    books: [
+      { value: 'fiction', label: 'Fiction' },
+      { value: 'nonfiction', label: 'Non-Fiction' },
+      { value: 'textbooks', label: 'Textbooks' },
+    ],
+  };
+
+  const handleCategoryChange = (category: string) => {
+    setSelections(prev => ({
+      ...prev,
+      category,
+      subcategory: '',
+      specific: ''
+    }));
+    setStep(2);
+  };
+
+  const handleSubcategoryChange = (subcategory: string) => {
+    setSelections(prev => ({ ...prev, subcategory }));
+    setStep(3);
+  };
+
+  const resetSelection = () => {
+    setSelections({ category: '', subcategory: '', specific: '' });
+    setStep(1);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Product Category Selection</Text>
+
+      {/* Progress indicator */}
+      <View style={styles.progressContainer}>
+        <Text style={styles.progressText}>Step {step} of 3</Text>
+        <View style={styles.progressBar}>
+          <View style={[styles.progressFill, { width: `${(step / 3) * 100}%` }]} />
+        </View>
+      </View>
+
+      {/* Step 1: Category */}
+      {step === 1 && (
+        <View style={styles.stepContainer}>
+          <Text style={styles.stepTitle}>Choose a Category:</Text>
+
+          <Radio.Group
+            value={selections.category}
+            onValueChange={handleCategoryChange}
+          >
+            {categories.map((category) => (
+              <Radio
+                key={category.value}
+                value={category.value}
+                variant="primary"
+              >
+                <Radio.Label>{category.label}</Radio.Label>
+              </Radio>
+            ))}
+          </Radio.Group>
+        </View>
+      )}
+
+      {/* Step 2: Subcategory */}
+      {step === 2 && selections.category && (
+        <View style={styles.stepContainer}>
+          <Text style={styles.stepTitle}>
+            Choose a {categories.find(c => c.value === selections.category)?.label} subcategory:
+          </Text>
+
+          <Radio.Group
+            value={selections.subcategory}
+            onValueChange={handleSubcategoryChange}
+          >
+            {subcategories[selections.category as keyof typeof subcategories]?.map((sub) => (
+              <Radio
+                key={sub.value}
+                value={sub.value}
+                variant="secondary"
+              >
+                <Radio.Label>{sub.label}</Radio.Label>
+              </Radio>
+            ))}
+          </Radio.Group>
+
+          <Button
+            onPress={() => setStep(1)}
+            variant="ghost"
+            style={styles.backButton}
+          >
+            Back to Categories
+          </Button>
+        </View>
+      )}
+
+      {/* Step 3: Summary */}
+      {step === 3 && (
+        <View style={styles.stepContainer}>
+          <Text style={styles.stepTitle}>Selection Summary:</Text>
+
+          <View style={styles.summaryContainer}>
+            <Text style={styles.summaryItem}>
+              Category: {categories.find(c => c.value === selections.category)?.label}
+            </Text>
+            <Text style={styles.summaryItem}>
+              Subcategory: {subcategories[selections.category as keyof typeof subcategories]?.find(s => s.value === selections.subcategory)?.label}
+            </Text>
+          </View>
+
+          <View style={styles.actionButtons}>
+            <Button
+              onPress={() => setStep(2)}
+              variant="outline"
+              style={styles.actionButton}
+            >
+              Back
+            </Button>
+
+            <Button
+              onPress={resetSelection}
+              variant="ghost"
+              style={styles.actionButton}
+            >
+              Start Over
+            </Button>
+
+            <Button
+              onPress={() => console.log('Confirmed:', selections)}
+              variant="primary"
+              style={styles.actionButton}
+            >
+              Confirm
+            </Button>
+          </View>
+        </View>
+      )}
+    </View>
+  );
+}
+```
+
+## Accessibility
+
+The Radio component includes comprehensive accessibility support for screen readers and keyboard navigation.
+
+```tsx
+import { Radio } from 'rnc-theme';
+
+function AccessibilityExample() {
+  const [language, setLanguage] = useState('en');
+
+  return (
+    <View>
+      <Text
+        style={styles.title}
+        accessibilityRole="header"
+        accessibilityLevel={2}
+      >
+        Language Preferences
+      </Text>
+
+      <Radio.Group
+        value={language}
+        onValueChange={setLanguage}
+        accessibilityRole="radiogroup"
+        accessibilityLabel="Language selection"
+      >
+        <Radio
+          value="en"
+          accessibilityLabel="English language"
+          accessibilityHint="Set interface language to English"
+        >
+          <Radio.Label>English</Radio.Label>
+        </Radio>
+
+        <Radio
+          value="es"
+          accessibilityLabel="Spanish language"
+          accessibilityHint="Set interface language to Spanish"
+        >
+          <Radio.Label>Español</Radio.Label>
+        </Radio>
+
+        <Radio
+          value="fr"
+          accessibilityLabel="French language"
+          accessibilityHint="Set interface language to French"
+        >
+          <Radio.Label>Français</Radio.Label>
+        </Radio>
+
+        <Radio
+          value="de"
+          accessibilityLabel="German language"
+          accessibilityHint="Set interface language to German"
+        >
+          <Radio.Label>Deutsch</Radio.Label>
+        </Radio>
+      </Radio.Group>
+    </View>
+  );
+}
+```
+
+## API Reference
+
+### Radio Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | - | Unique identifier for the radio button |
+| `checked` | `boolean` | `false` | Controlled checked state |
+| `onCheckedChange` | `(checked: boolean) => void` | - | Callback when checked state changes |
+| `variant` | `ComponentVariant` | `'default'` | Visual style variant |
+| `size` | `ComponentSize` | `'md'` | Radio button size |
+| `disabled` | `boolean` | `false` | Disable the radio button |
+| `style` | `StyleProp<ViewStyle>` | - | Custom container styles |
+| `children` | `React.ReactNode` | - | Radio content (label, indicator) |
+
+### RadioGroup Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | `''` | Currently selected radio value |
+| `onValueChange` | `(value: string) => void` | - | Callback when selection changes |
+| `disabled` | `boolean` | `false` | Disable all radio buttons in group |
+| `style` | `StyleProp<ViewStyle>` | - | Custom group container styles |
+| `children` | `React.ReactNode` | - | Radio components |
+
+### RadioIndicator Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | `ComponentSize` | `'md'` | Indicator size |
+| `variant` | `ComponentVariant` | `'default'` | Indicator variant |
+| `style` | `StyleProp<ViewStyle>` | - | Custom indicator styles |
+| `children` | `React.ReactNode` | - | Custom indicator content |
+
+### RadioIcon Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `icon` | `React.ReactNode` | - | Custom icon element |
+| `size` | `ComponentSize` | `'md'` | Icon size |
+| `variant` | `ComponentVariant` | `'default'` | Icon variant |
+| `style` | `StyleProp<ViewStyle>` | - | Custom icon styles |
+
+### RadioLabel Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | `ComponentSize` | `'md'` | Label text size |
+| `style` | `TextStyle` | - | Custom label text styles |
+| `children` | `React.ReactNode` | - | Label text content |
+
+### Variants
+
+- `default` - Standard radio styling
+- `primary` - Primary theme color
+- `secondary` - Secondary theme color
+- `outline` - Outlined radio style
+- `filled` - Filled background style
+- `ghost` - Minimal styling
+- `success` - Success state (green)
+- `warning` - Warning state (yellow)
+- `error` - Error state (red)
+- `info` - Info state (blue)
+- `destructive` - Destructive action styling
+
+### Sizes
+
+- `xs` - Extra small (16x16)
+- `sm` - Small (18x18)
+- `md` - Medium (22x22) - Default
+- `lg` - Large (26x26)
+- `xl` - Extra large (30x30)
+
+## Best Practices
+
+<CardGrid>
+  <Card title="🎯 Single Selection" icon="star">
+    Use radio buttons only for single-selection scenarios. For multiple selections, use checkboxes.
+  </Card>
+  <Card title="🏷️ Clear Labels" icon="information">
+    Provide clear, descriptive labels that indicate what each option represents.
+  </Card>
+  <Card title="📱 Touch Targets" icon="setting">
+    Ensure adequate touch target size for easy interaction on mobile devices.
+  </Card>
+  <Card title="♿ Accessibility" icon="star">
+    Include proper accessibility labels and support for screen readers.
+  </Card>
+</CardGrid>
+
+### Do's and Don'ts
+
+<Tabs>
+  <TabItem label="✅ Do's">
+    ```tsx
+    // ✅ Use for single selection scenarios
+    <Radio.Group value={paymentMethod} onValueChange={setPaymentMethod}>
+      <Radio value="credit">Credit Card</Radio>
+      <Radio value="debit">Debit Card</Radio>
+      <Radio value="paypal">PayPal</Radio>
+    </Radio.Group>
+
+    // ✅ Provide clear, descriptive labels
+    <Radio value="express">
+      <Radio.Label>Express Shipping (1-2 days) - $15.99</Radio.Label>
+    </Radio>
+
+    // ✅ Use appropriate variants for context
+    <Radio value="delete" variant="error">
+      <Radio.Label>Permanently delete account</Radio.Label>
+    </Radio>
+
+    // ✅ Include accessibility support
+    <Radio
+      value="premium"
+      accessibilityLabel="Premium subscription plan"
+      accessibilityHint="Upgrade to premium for additional features"
+    >
+      <Radio.Label>Premium Plan</Radio.Label>
+    </Radio>
+    ```
+  </TabItem>
+
+  <TabItem label="❌ Don'ts">
+    ```tsx
+    // ❌ Don't use for multiple selections
+    <Radio.Group value={features} onValueChange={setFeatures}>
+      <Radio value="feature1">Feature 1</Radio>
+      <Radio value="feature2">Feature 2</Radio>
+      // Use Checkbox instead for multiple selections
+    </Radio.Group>
+
+    // ❌ Don't use vague labels
+    <Radio value="option1">
+      <Radio.Label>Option 1</Radio.Label>
+    </Radio>
+
+    // ❌ Don't mix different sizes inconsistently
+    <Radio size="xs">Small option</Radio>
+    <Radio size="xl">Large option</Radio>
+
+    // ❌ Don't forget accessibility
+    <Radio value="important" /> // No label or accessibility info
+    ```
+  </TabItem>
+</Tabs>
+
+<Aside type="tip" title="Performance Tip">
+  For large lists of radio options, consider implementing virtualization or pagination to maintain smooth performance.
+</Aside>
+
+<Aside type="note" title="Animation Performance">
+  The radio component uses optimized spring animations. The animations are automatically disabled on older devices for better performance.
+</Aside>
+
+## Troubleshooting
+
+### Common Issues
+
+<Tabs>
+  <TabItem label="State Management">
+    **Problem:** Radio selection not updating properly
+
+    **Solutions:**
+    ```tsx
+    // Ensure proper controlled component pattern
+    const [selected, setSelected] = useState('');
+
+    <Radio.Group
+      value={selected}
+      onValueChange={setSelected} // Make sure this is connected
+    >
+      <Radio value="option1">Option 1</Radio>
+      <Radio value="option2">Option 2</Radio>
+    </Radio.Group>
+
+    // For individual radios outside groups
+    const [checked, setChecked] = useState(false);
+
+    <Radio
+      value="standalone"
+      checked={checked}
+      onCheckedChange={setChecked}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="Animation Issues">
+    **Problem:** Animations not working smoothly
+
+    **Solutions:**
+    ```tsx
+    // Ensure react-native-reanimated is properly configured
+    import 'react-native-reanimated/plugin';
+
+    // Check for conflicting styles
+    <Radio
+      style={{
+        // Avoid transform conflicts
+        transform: undefined,
+      }}
+    />
+
+    // For performance issues on older devices,
+    // animations are automatically optimized
+    ```
+  </TabItem>
+
+  <TabItem label="Styling Issues">
+    **Problem:** Custom styles not applying correctly
+
+    **Solutions:**
+    ```tsx
+    // Use proper style props for different parts
+    <Radio
+      style={styles.radioContainer} // Container styles
+      value="example"
+    >
+      <Radio.Indicator style={styles.indicator} />
+      <Radio.Label style={styles.label}>Label</Radio.Label>
+    </Radio>
+
+    // Ensure theme compatibility
+    const styles = useThemedStyles((theme) => ({
+      radioContainer: {
+        backgroundColor: theme.colors.surface,
+      },
+      label: {
+        color: theme.colors.text,
+      },
+    }));
+    ```
+  </TabItem>
+</Tabs>
+
+## Next Steps
+
+<CardGrid>
+  <Card title="Checkbox Component" icon="setting">
+    Learn about checkboxes for multiple-selection scenarios.
+    [Checkbox Guide →](/components/form/checkbox)
+  </Card>
+  <Card title="Switch Component" icon="puzzle">
+    Explore toggle switches for binary choices.
+    [Switch Guide →](/components/form/switch)
+  </Card>
+  <Card title="Form Control" icon="information">
+    Group form elements with labels and validation.
+    [Form Control →](/components/form/form-control)
+  </Card>
+  <Card title="Theme Customization" icon="palette">
+    Customize radio appearance with custom themes.
+    [Custom Themes →](/theming/custom-theme)
+  </Card>
+</CardGrid>

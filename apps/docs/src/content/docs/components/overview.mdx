@@ -1,0 +1,306 @@
+---
+title: Components Overview
+description: Complete overview of all available components in React Native Components Theme
+---
+
+<div style={{
+  width: '100%',
+  maxWidth: '375px',
+  aspectRatio: '375 / 667',
+  margin: '0 auto',
+  border: '1px solid #ccc',
+  borderRadius: '1rem',
+  overflow: 'hidden',
+  boxShadow: '0 0 10px rgba(0,0,0,0.1)'
+}}>
+  <iframe
+    src="https://react-native-components-demo.vercel.app/"
+    style={{
+      width: '100%',
+      height: '100%',
+      border: '0'
+    }}
+    allowfullscreen
+    loading="lazy"
+  ></iframe>
+</div>
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+
+**React Native Components Theme** provides a comprehensive collection of UI components designed for modern React Native applications. All components are built with TypeScript support, theme integration, and accessibility in mind.
+
+## 🎨 Layout Components
+
+Flexible layout components for structuring your application interface.
+
+<CardGrid stagger>
+	<Card title="HStack & VStack" icon="seti:layout">
+		Horizontal and vertical stack layouts with flexible spacing and alignment options.
+	</Card>
+	<Card title="Grid" icon="seti:grid">
+		Responsive grid layout with configurable columns and spacing for organized content display.
+	</Card>
+	<Card title="Box" icon="seti:box">
+		Versatile container component with multiple variants (default, card, surface) and styling options.
+	</Card>
+	<Card title="Center" icon="seti:center">
+		Centers content both horizontally and vertically with theme support.
+	</Card>
+	<Card title="ZStack" icon="seti:stack">
+		Absolute positioned stack for creating layered interfaces and overlays.
+	</Card>
+</CardGrid>
+
+[View Layout Documentation →](/components/layout)
+
+## 🔘 Input Components
+
+Interactive components for user input and form handling.
+
+<CardGrid stagger>
+	<Card title="Button" icon="seti:button">
+		Customizable button component with multiple variants, sizes, and loading states.
+	</Card>
+	<Card title="Input" icon="seti:input">
+		Text input component with validation, icons, and various input types support.
+	</Card>
+	<Card title="Checkbox" icon="seti:checkbox">
+		Checkbox component with custom styling and controlled/uncontrolled modes.
+	</Card>
+	<Card title="Radio" icon="seti:radio">
+		Radio button component for single selection from multiple options.
+	</Card>
+	<Card title="Switcher" icon="seti:switch">
+		Toggle switch component for boolean settings and preferences.
+	</Card>
+	<Card title="Slider" icon="seti:slider">
+		Range slider component for selecting values within a specified range.
+	</Card>
+	<Card title="Form Control" icon="seti:form">
+		Wrapper component for form inputs with label, helper text, and error handling.
+	</Card>
+</CardGrid>
+
+## 📊 Data Display
+
+Components for displaying and organizing data effectively.
+
+<CardGrid stagger>
+	<Card title="Card" icon="seti:card">
+		Flexible card component for grouping related content with elevation and styling.
+	</Card>
+	<Card title="List" icon="seti:list">
+		Optimized list component for displaying collections of data with performance optimization.
+	</Card>
+	<Card title="Table" icon="seti:table">
+		Data table component with sorting, filtering, and pagination capabilities.
+	</Card>
+	<Card title="Avatar" icon="seti:avatar">
+		User avatar component with image, initials, and placeholder support.
+	</Card>
+	<Card title="Badge" icon="seti:badge">
+		Small status indicator component for notifications and labels.
+	</Card>
+	<Card title="Typography" icon="seti:text">
+		Text components with consistent styling and theme integration.
+	</Card>
+	<Card title="Divider" icon="seti:divider">
+		Horizontal and vertical dividers for separating content sections.
+	</Card>
+</CardGrid>
+
+## 🎭 Feedback Components
+
+Components for providing user feedback and status information.
+
+<CardGrid stagger>
+	<Card title="Toast" icon="seti:toast">
+		Non-intrusive notification system with multiple types and positioning options.
+	</Card>
+	<Card title="Modal" icon="seti:modal">
+		Overlay modal component for dialogs, confirmations, and detailed views.
+	</Card>
+	<Card title="Bottom Sheet" icon="seti:sheet">
+		Sliding bottom sheet component for mobile-first interactions and menus.
+	</Card>
+	<Card title="Tooltip" icon="seti:tooltip">
+		Contextual tooltip component for providing additional information on hover/press.
+	</Card>
+	<Card title="Progress" icon="seti:progress">
+		Progress indicators including linear and circular progress bars.
+	</Card>
+	<Card title="Spinner" icon="seti:spinner">
+		Loading spinner component with customizable size and color options.
+	</Card>
+	<Card title="Skeleton" icon="seti:skeleton">
+		Skeleton loading component for better perceived performance during data loading.
+	</Card>
+</CardGrid>
+
+## 🎯 Navigation Components
+
+Components for navigation and user interaction flows.
+
+<CardGrid stagger>
+	<Card title="FAB" icon="seti:fab">
+		Floating Action Button for primary actions with positioning and animation options.
+	</Card>
+	<Card title="Accordion" icon="seti:accordion">
+		Collapsible content component for organizing information in expandable sections.
+	</Card>
+	<Card title="Scroll" icon="seti:scroll">
+		Enhanced scroll view component with pull-to-refresh and infinite scroll support.
+	</Card>
+</CardGrid>
+
+## 📅 Date & Time Components
+
+Specialized components for date and time selection.
+
+<CardGrid stagger>
+	<Card title="Calendar" icon="seti:calendar">
+		Full-featured calendar component with date selection and range picking.
+	</Card>
+	<Card title="Date Picker" icon="seti:date">
+		Date picker component with native platform integration and custom styling.
+	</Card>
+</CardGrid>
+
+## 🎨 Media Components
+
+Components for handling media content and rich interactions.
+
+<CardGrid stagger>
+	<Card title="Image Carousel" icon="seti:image">
+		Image carousel component with swipe gestures, pagination, and zoom support.
+	</Card>
+	<Card title="Rating" icon="seti:star">
+		Star rating component for user feedback and review systems.
+	</Card>
+</CardGrid>
+
+## 🔧 Utility Components
+
+Utility components for enhanced functionality and developer experience.
+
+<CardGrid stagger>
+	<Card title="Portal" icon="seti:portal">
+		Portal component for rendering content outside the normal component tree.
+	</Card>
+	<Card title="Theme Manager" icon="seti:theme">
+		Theme management component for dynamic theme switching and customization.
+	</Card>
+	<Card title="Toggle" icon="seti:toggle">
+		Generic toggle component for various on/off states and preferences.
+	</Card>
+	<Card title="Combobox" icon="seti:combo">
+		Combination input and dropdown component for searchable selections.
+	</Card>
+</CardGrid>
+
+## 🎨 Theme Integration
+
+All components are built with comprehensive theme support:
+
+- **Dynamic Theme Switching**: Seamlessly switch between light, dark, and custom themes
+- **Consistent Spacing**: Unified spacing system across all components
+- **Color Palette**: Comprehensive color system with semantic color names
+- **Typography Scale**: Consistent text sizing and styling
+- **Border Radius**: Unified border radius system for consistent visual design
+- **Component Variants**: Multiple style variants for different use cases
+
+## 🔧 TypeScript Support
+
+Every component includes:
+
+- **Full Type Safety**: Complete TypeScript definitions for all props and methods
+- **IntelliSense Support**: Rich autocomplete and documentation in your IDE
+- **Generic Types**: Flexible typing for data-driven components
+- **Strict Mode Compatible**: Works perfectly with TypeScript strict mode
+
+## ♿ Accessibility
+
+Accessibility is built into every component:
+
+- **Screen Reader Support**: Proper ARIA labels and roles
+- **Keyboard Navigation**: Full keyboard accessibility for interactive components
+- **Focus Management**: Logical focus flow and visual focus indicators
+- **High Contrast**: Support for high contrast themes and color schemes
+- **Reduced Motion**: Respects user preferences for reduced motion
+
+## 📱 Platform Optimization
+
+Components are optimized for both platforms:
+
+- **iOS Design Guidelines**: Follows iOS Human Interface Guidelines
+- **Material Design**: Implements Material Design principles for Android
+- **Platform-Specific Behaviors**: Adapts to platform conventions automatically
+- **Performance Optimized**: Efficient rendering and memory usage
+
+## 🚀 Getting Started
+
+To start using these components in your project:
+
+1. **Install the package**:
+   ```bash
+   npm install rnc-theme
+   # or
+   yarn add rnc-theme
+   ```
+
+2. **Setup the theme provider**:
+   ```tsx
+   import { ThemeProvider } from 'rnc-theme';
+
+   function App() {
+     return (
+       <ThemeProvider>
+         {/* Your app content */}
+       </ThemeProvider>
+     );
+   }
+   ```
+
+3. **Import and use components**:
+   ```tsx
+   import { Button, VStack, Box, Text } from 'rnc-theme';
+
+   function MyScreen() {
+     return (
+       <VStack spacing="md" padding="lg">
+         <Box variant="card">
+           <Text>Welcome to RNC Theme!</Text>
+         </Box>
+         <Button onPress={() => console.log('Pressed!')}>
+           Get Started
+         </Button>
+       </VStack>
+     );
+   }
+   ```
+
+## 📚 Documentation Structure
+
+Each component documentation includes:
+
+- **Overview**: Component purpose and use cases
+- **Props API**: Complete props reference with types
+- **Examples**: Practical usage examples with code
+- **Variants**: Different styling options and configurations
+- **Best Practices**: Recommended usage patterns
+- **Accessibility**: Accessibility features and considerations
+- **TypeScript**: Type definitions and usage examples
+
+## 🤝 Contributing
+
+We welcome contributions! Each component is designed to be:
+
+- **Modular**: Independent and reusable
+- **Testable**: Comprehensive test coverage
+- **Documented**: Well-documented with examples
+- **Accessible**: Following accessibility best practices
+- **Performant**: Optimized for mobile performance
+
+---
+
+*Ready to build amazing React Native applications? Start with our [Layout Components](/components/layout) or check out the [Getting Started](/getting-started/installation) guide.*

@@ -1,4 +1,4 @@
-import { StyleSheet, TouchableWithoutFeedback } from 'react-native';
+import { StyleSheet, Pressable } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -18,35 +18,35 @@ const BackDrop = ({
       [closeHeight, openHeight],
       [0, 0.5]
     );
-    const display = opacity === 0 ? 'none' : 'flex';
+    const pointerEvents = opacity === 0 ? 'none' : 'auto';
     return {
       opacity,
-      display,
+      pointerEvents,
     };
   });
+
   return (
-    <TouchableWithoutFeedback
-      onPress={() => {
-        close();
-      }}
+    <Animated.View
+      style={[
+        styles.backDrop,
+        backDropAnimation,
+        { backgroundColor: backDropColor },
+      ]}
     >
-      <Animated.View
-        style={[
-          styles.backDrop,
-          backDropAnimation,
-          { backgroundColor: backDropColor },
-        ]}
+      <Pressable
+        style={StyleSheet.absoluteFillObject}
+        onPress={() => {
+          close();
+        }}
       />
-    </TouchableWithoutFeedback>
+    </Animated.View>
   );
 };
-
 
 const styles = StyleSheet.create({
   backDrop: {
     ...StyleSheet.absoluteFillObject,
-    display: 'none',
   },
 });
 
-export {BackDrop};
+export { BackDrop };

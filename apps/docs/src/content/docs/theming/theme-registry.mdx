@@ -1,0 +1,748 @@
+---
+title: Theme Registry
+description: Master the theme registry system to manage multiple theme presets, create dynamic theme collections, and implement advanced theme switching in your React Native app.
+sidebar:
+  order: 4
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+# Theme Registry
+
+The Theme Registry is a powerful system for managing multiple theme presets in your application. It allows you to register, organize, and switch between different themes dynamically.
+
+## Overview
+
+The registry acts as a centralized store for all your theme presets, providing:
+
+<CardGrid>
+  <Card title="🎨 Theme Management" icon="star">
+    Register and organize multiple theme presets with unique identifiers.
+  </Card>
+  <Card title="🔄 Dynamic Switching" icon="setting">
+    Switch between registered themes at runtime with smooth transitions.
+  </Card>
+  <Card title="💾 Persistence" icon="document">
+    Automatically persist active theme selection across app sessions.
+  </Card>
+  <Card title="🎭 Built-in Presets" icon="palette">
+    Access pre-designed themes like Material, Neon, Ocean, and more.
+  </Card>
+  <Card title="🔍 Theme Discovery" icon="magnifier">
+    List, search, and preview available themes in your registry.
+  </Card>
+  <Card title="⚡ Lazy Loading" icon="rocket">
+    Load theme presets on-demand for optimal performance.
+  </Card>
+</CardGrid>
+
+## Basic Usage
+
+### Importing the Registry
+
+```tsx
+import { themeRegistry } from 'rnc-theme';
+```
+
+### Registering Themes
+
+<Tabs>
+  <TabItem label="Static Theme">
+    ```tsx
+    import { themeRegistry } from 'rnc-theme';
+
+    // Register a static theme object
+    themeRegistry.register('corporate', {
+      colors: {
+        primary: '#1E40AF',
+        secondary: '#374151',
+        background: '#F9FAFB',
+        surface: '#FFFFFF',
+        text: '#111827',
+        textSecondary: '#6B7280',
+        border: '#D1D5DB',
+        error: '#DC2626',
+        warning: '#D97706',
+        success: '#059669',
+        info: '#2563EB',
+        muted: '#9CA3AF',
+        accent: '#059669',
+        destructive: '#B91C1C',
+      },
+      components: {
+        borderRadius: {
+          xs: 2,
+          sm: 4,
+          md: 6,
+          lg: 8,
+          xl: 10,
+          full: 9999,
+        },
+      },
+    });
+    ```
+  </TabItem>
+
+  <TabItem label="Dynamic Theme">
+    ```tsx
+    import { themeRegistry, CustomThemeConfigFactory } from 'rnc-theme';
+
+    // Register a dynamic theme factory
+    const createNeonTheme: CustomThemeConfigFactory = (isDark: boolean) => ({
+      colors: {
+        primary: '#00FF88',
+        secondary: '#FF0080',
+        background: isDark ? '#0A0A0A' : '#FFFFFF',
+        surface: isDark ? '#1A1A1A' : '#F5F5F5',
+        text: isDark ? '#00FF88' : '#000000',
+        textSecondary: isDark ? '#80FF80' : '#666666',
+        border: isDark ? '#333333' : '#E0E0E0',
+        error: '#FF4444',
+        warning: '#FFAA00',
+        success: '#00FF88',
+        info: '#0088FF',
+        muted: isDark ? '#666666' : '#999999',
+        accent: '#FF0080',
+        destructive: '#FF4444',
+      },
+      components: {
+        borderRadius: {
+          xs: 0,
+          sm: 2,
+          md: 4,
+          lg: 8,
+          xl: 12,
+          full: 9999,
+        },
+      },
+    });
+
+    themeRegistry.register('neon', createNeonTheme);
+    ```
+  </TabItem>
+
+  <TabItem label="Batch Registration">
+    ```tsx
+    import { themeRegistry } from 'rnc-theme';
+
+    // Register multiple themes at once
+    const themeCollection = {
+      material: createMaterialTheme,
+      corporate: createCorporateTheme,
+      creative: createCreativeTheme,
+      minimalist: createMinimalistTheme,
+    };
+
+    themeRegistry.registerBatch(themeCollection);
+    ```
+  </TabItem>
+</Tabs>
+
+## Built-in Theme Presets
+
+RNC Theme comes with several pre-registered theme presets:
+
+<CardGrid stagger>
+  <Card title="Material" icon="star">
+    <Badge text="material" variant="tip" />
+    Google Material Design inspired theme with clean, modern aesthetics.
+  </Card>
+  <Card title="Neon" icon="star">
+    <Badge text="neon" variant="note" />
+    High-contrast cyberpunk theme with electric colors.
+  </Card>
+  <Card title="Ocean" icon="star">
+    <Badge text="ocean" variant="success" />
+    Calming blue and teal tones inspired by ocean depths.
+  </Card>
+  <Card title="Sunset" icon="star">
+    <Badge text="sunset" variant="caution" />
+    Warm oranges and pinks reminiscent of sunset skies.
+  </Card>
+  <Card title="Forest" icon="star">
+    <Badge text="forest" variant="success" />
+    Natural earth tones and greens inspired by nature.
+  </Card>
+  <Card title="Galaxy" icon="star">
+    <Badge text="galaxy" variant="note" />
+    Deep space colors with cosmic purple and blue hues.
+  </Card>
+  <Card title="Vintage" icon="star">
+    <Badge text="vintage" variant="tip" />
+    Muted, classic colors with retro aesthetic.
+  </Card>
+  <Card title="Cyberpunk" icon="star">
+    <Badge text="cyberpunk" variant="danger" />
+    Futuristic high-tech theme with neon accents.
+  </Card>
+  <Card title="Pastel" icon="star">
+    <Badge text="pastel" variant="tip" />
+    Soft, gentle colors perfect for calm interfaces.
+  </Card>
+  <Card title="Monochrome" icon="star">
+    <Badge text="monochrome" variant="note" />
+    Black and white minimalist design.
+  </Card>
+  <Card title="Autumn" icon="star">
+    <Badge text="autumn" variant="caution" />
+    Warm fall colors with orange and brown tones.
+  </Card>
+  <Card title="Arctic" icon="star">
+    <Badge text="arctic" variant="success" />
+    Cool blues and whites inspired by arctic landscapes.
+  </Card>
+</CardGrid>
+
+### Using Built-in Presets
+
+```tsx
+import { useTheme } from 'rnc-theme';
+
+function ThemeSelector() {
+  const { setActivePreset } = useTheme();
+
+  return (
+    <View>
+      <Button onPress={() => setActivePreset('material')}>
+        Material Theme
+      </Button>
+      <Button onPress={() => setActivePreset('neon')}>
+        Neon Theme
+      </Button>
+      <Button onPress={() => setActivePreset('ocean')}>
+        Ocean Theme
+      </Button>
+    </View>
+  );
+}
+```
+
+## Registry Operations
+
+### Listing Registered Themes
+
+```tsx
+import { themeRegistry } from 'rnc-theme';
+
+// Get all registered theme names
+const themeNames = themeRegistry.list();
+console.log('Available themes:', themeNames);
+// Output: ['material', 'neon', 'ocean', 'corporate', ...]
+
+// Get detailed theme information
+const themeDetails = themeRegistry.listDetailed();
+console.log('Theme details:', themeDetails);
+// Output: [{ name: 'material', type: 'factory', ... }, ...]
+```
+
+### Checking Theme Existence
+
+```tsx
+// Check if a theme is registered
+if (themeRegistry.has('corporate')) {
+  console.log('Corporate theme is available');
+}
+
+// Get theme if it exists
+const theme = themeRegistry.get('corporate');
+if (theme) {
+  console.log('Found corporate theme:', theme);
+}
+```
+
+### Removing Themes
+
+```tsx
+// Remove a single theme
+themeRegistry.unregister('oldTheme');
+
+// Remove multiple themes
+themeRegistry.unregisterBatch(['theme1', 'theme2']);
+
+// Clear all custom themes (keeps built-ins)
+themeRegistry.clearCustom();
+
+// Clear everything
+themeRegistry.clear();
+```
+
+## Advanced Registry Features
+
+### Theme Categories
+
+```tsx
+import { themeRegistry } from 'rnc-theme';
+
+// Register themes with categories
+themeRegistry.register('corporate-blue', corporateBlueTheme, {
+  category: 'business',
+  description: 'Professional blue corporate theme',
+  tags: ['corporate', 'professional', 'blue'],
+});
+
+themeRegistry.register('startup-green', startupGreenTheme, {
+  category: 'business',
+  description: 'Modern startup theme with green accents',
+  tags: ['startup', 'modern', 'green'],
+});
+
+// Get themes by category
+const businessThemes = themeRegistry.getByCategory('business');
+```
+
+### Theme Metadata
+
+```tsx
+interface ThemeMetadata {
+  category?: string;
+  description?: string;
+  tags?: string[];
+  author?: string;
+  version?: string;
+  preview?: string; // URL to preview image
+}
+
+themeRegistry.register('my-theme', themeConfig, {
+  category: 'custom',
+  description: 'My awesome custom theme',
+  tags: ['custom', 'branded', 'modern'],
+  author: 'Your Name',
+  version: '1.0.0',
+  preview: 'https://example.com/theme-preview.png',
+});
+```
+
+### Theme Validation
+
+```tsx
+import { themeRegistry, validateTheme } from 'rnc-theme';
+
+// Register with validation
+try {
+  themeRegistry.register('validated-theme', themeConfig, {
+    validate: true, // Enable validation
+  });
+} catch (error) {
+  console.error('Theme validation failed:', error.message);
+}
+
+// Custom validation
+themeRegistry.register('custom-theme', themeConfig, {
+  validator: (theme) => {
+    if (!theme.colors?.primary) {
+      throw new Error('Primary color is required');
+    }
+    return true;
+  },
+});
+```
+
+## Dynamic Theme Management
+
+### Runtime Theme Registration
+
+```tsx
+import { useTheme, themeRegistry } from 'rnc-theme';
+
+function DynamicThemeManager() {
+  const { setActivePreset } = useTheme();
+  const [customThemes, setCustomThemes] = useState([]);
+
+  const createAndRegisterTheme = (name: string, colors: any) => {
+    const themeConfig = {
+      colors,
+      // ... other theme properties
+    };
+
+    themeRegistry.register(name, themeConfig);
+    setCustomThemes(prev => [...prev, name]);
+  };
+
+  const deleteCustomTheme = (name: string) => {
+    themeRegistry.unregister(name);
+    setCustomThemes(prev => prev.filter(t => t !== name));
+  };
+
+  return (
+    <View>
+      {customThemes.map(themeName => (
+        <View key={themeName}>
+          <Button onPress={() => setActivePreset(themeName)}>
+            {themeName}
+          </Button>
+          <Button onPress={() => deleteCustomTheme(themeName)}>
+            Delete
+          </Button>
+        </View>
+      ))}
+    </View>
+  );
+}
+```
+
+### Theme Import/Export
+
+```tsx
+import { themeRegistry } from 'rnc-theme';
+
+// Export themes
+const exportThemes = () => {
+  const themes = themeRegistry.export();
+  const json = JSON.stringify(themes, null, 2);
+  // Save to file or share
+  return json;
+};
+
+// Import themes
+const importThemes = (themesJson: string) => {
+  try {
+    const themes = JSON.parse(themesJson);
+    themeRegistry.import(themes);
+  } catch (error) {
+    console.error('Failed to import themes:', error);
+  }
+};
+
+// Backup current registry
+const backupRegistry = () => {
+  const backup = themeRegistry.backup();
+  AsyncStorage.setItem('theme-registry-backup', JSON.stringify(backup));
+};
+
+// Restore from backup
+const restoreRegistry = async () => {
+  const backup = await AsyncStorage.getItem('theme-registry-backup');
+  if (backup) {
+    themeRegistry.restore(JSON.parse(backup));
+  }
+};
+```
+
+## Theme Switching with Registry
+
+### Basic Theme Switching
+
+```tsx
+import { useTheme, themeRegistry } from 'rnc-theme';
+
+function ThemeSwitcher() {
+  const { activePreset, setActivePreset } = useTheme();
+  const availableThemes = themeRegistry.list();
+
+  return (
+    <ScrollView>
+      {availableThemes.map(themeName => (
+        <TouchableOpacity
+          key={themeName}
+          onPress={() => setActivePreset(themeName)}
+          style={[
+            styles.themeOption,
+            activePreset === themeName && styles.activeTheme
+          ]}
+        >
+          <Text>{themeName}</Text>
+          {activePreset === themeName && <Text>✓</Text>}
+        </TouchableOpacity>
+      ))}
+    </ScrollView>
+  );
+}
+```
+
+### Advanced Theme Picker
+
+```tsx
+import { useTheme, themeRegistry } from 'rnc-theme';
+
+function AdvancedThemePicker() {
+  const { activePreset, setActivePreset } = useTheme();
+  const [selectedCategory, setSelectedCategory] = useState('all');
+
+  const themeDetails = themeRegistry.listDetailed();
+  const categories = [...new Set(themeDetails.map(t => t.category).filter(Boolean))];
+
+  const filteredThemes = selectedCategory === 'all'
+    ? themeDetails
+    : themeDetails.filter(t => t.category === selectedCategory);
+
+  return (
+    <View>
+      {/* Category Filter */}
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        <TouchableOpacity onPress={() => setSelectedCategory('all')}>
+          <Text>All</Text>
+        </TouchableOpacity>
+        {categories.map(category => (
+          <TouchableOpacity
+            key={category}
+            onPress={() => setSelectedCategory(category)}
+          >
+            <Text>{category}</Text>
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+
+      {/* Theme Grid */}
+      <FlatList
+        data={filteredThemes}
+        numColumns={2}
+        renderItem={({ item }) => (
+          <ThemePreviewCard
+            theme={item}
+            isActive={activePreset === item.name}
+            onSelect={() => setActivePreset(item.name)}
+          />
+        )}
+      />
+    </View>
+  );
+}
+
+function ThemePreviewCard({ theme, isActive, onSelect }) {
+  const themeConfig = themeRegistry.get(theme.name);
+
+  return (
+    <TouchableOpacity onPress={onSelect} style={styles.themeCard}>
+      <View style={[
+        styles.preview,
+        { backgroundColor: themeConfig?.colors?.background }
+      ]}>
+        <View style={[
+          styles.colorSwatch,
+          { backgroundColor: themeConfig?.colors?.primary }
+        ]} />
+        <View style={[
+          styles.colorSwatch,
+          { backgroundColor: themeConfig?.colors?.secondary }
+        ]} />
+      </View>
+      <Text style={styles.themeName}>{theme.name}</Text>
+      {theme.description && (
+        <Text style={styles.themeDescription}>{theme.description}</Text>
+      )}
+      {isActive && <Text style={styles.activeIndicator}>✓</Text>}
+    </TouchableOpacity>
+  );
+}
+```
+
+## Performance Optimization
+
+### Lazy Loading
+
+```tsx
+import { themeRegistry } from 'rnc-theme';
+
+// Register theme with lazy loading
+themeRegistry.registerLazy('heavy-theme', () =>
+  import('./themes/heavy-theme').then(module => module.heavyTheme)
+);
+
+// Theme will only be loaded when first accessed
+const { setActivePreset } = useTheme();
+setActivePreset('heavy-theme'); // Triggers loading
+```
+
+### Memory Management
+
+```tsx
+// Unload unused themes to free memory
+themeRegistry.unloadUnused();
+
+// Set memory limits
+themeRegistry.setMemoryLimit(50); // Max 50 themes in memory
+
+// Enable automatic cleanup
+themeRegistry.enableAutoCleanup({
+  maxAge: 300000, // 5 minutes
+  maxUnused: 10,  // Max 10 unused themes
+});
+```
+
+## Registry Events
+
+### Listening to Registry Changes
+
+```tsx
+import { themeRegistry } from 'rnc-theme';
+
+// Listen to registry events
+const unsubscribe = themeRegistry.subscribe((event) => {
+  switch (event.type) {
+    case 'theme-registered':
+      console.log('New theme registered:', event.themeName);
+      break;
+    case 'theme-unregistered':
+      console.log('Theme removed:', event.themeName);
+      break;
+    case 'theme-activated':
+      console.log('Theme activated:', event.themeName);
+      break;
+  }
+});
+
+// Cleanup
+return () => unsubscribe();
+```
+
+### Custom Event Handlers
+
+```tsx
+function ThemeRegistryManager() {
+  const [registeredThemes, setRegisteredThemes] = useState([]);
+
+  useEffect(() => {
+    const handleRegistryChange = (event) => {
+      if (event.type === 'theme-registered') {
+        setRegisteredThemes(prev => [...prev, event.themeName]);
+      } else if (event.type === 'theme-unregistered') {
+        setRegisteredThemes(prev => prev.filter(name => name !== event.themeName));
+      }
+    };
+
+    const unsubscribe = themeRegistry.subscribe(handleRegistryChange);
+
+    // Initialize with current themes
+    setRegisteredThemes(themeRegistry.list());
+
+    return unsubscribe;
+  }, []);
+
+  return (
+    <View>
+      <Text>Registered Themes: {registeredThemes.length}</Text>
+      {registeredThemes.map(name => (
+        <Text key={name}>{name}</Text>
+      ))}
+    </View>
+  );
+}
+```
+
+## Best Practices
+
+<CardGrid>
+  <Card title="🏷️ Naming Convention" icon="star">
+    Use descriptive, consistent names for your themes (e.g., 'corporate-blue', 'startup-green').
+  </Card>
+  <Card title="📁 Organization" icon="setting">
+    Group related themes using categories and tags for better organization.
+  </Card>
+  <Card title="🔄 Lazy Loading" icon="rocket">
+    Use lazy loading for large or rarely used themes to improve performance.
+  </Card>
+  <Card title="💾 Persistence" icon="document">
+    Always persist theme selections to maintain user preferences.
+  </Card>
+</CardGrid>
+
+### Registry Structure
+
+```tsx
+// ✅ Good: Organized theme registration
+const registerBusinessThemes = () => {
+  themeRegistry.registerBatch({
+    'corporate-blue': createCorporateTheme('#1E40AF'),
+    'corporate-green': createCorporateTheme('#059669'),
+    'startup-modern': createStartupTheme(),
+    'enterprise-classic': createEnterpriseTheme(),
+  }, {
+    category: 'business',
+    tags: ['professional', 'corporate'],
+  });
+};
+
+// ❌ Bad: Unorganized registration
+themeRegistry.register('theme1', someTheme);
+themeRegistry.register('myTheme', anotherTheme);
+themeRegistry.register('blue', blueTheme);
+```
+
+<Aside type="tip" title="Theme Versioning">
+  Consider versioning your themes when making significant changes to maintain backward compatibility.
+</Aside>
+
+<Aside type="note" title="Memory Usage">
+  Monitor memory usage when registering many themes. Use lazy loading and cleanup for optimal performance.
+</Aside>
+
+## Troubleshooting
+
+### Common Issues
+
+<Tabs>
+  <TabItem label="Theme Not Found">
+    **Problem:** `setActivePreset('mytheme')` doesn't work
+
+    **Solutions:**
+    ```tsx
+    // Check if theme is registered
+    if (!themeRegistry.has('mytheme')) {
+      console.error('Theme not found:', 'mytheme');
+      console.log('Available themes:', themeRegistry.list());
+    }
+
+    // Register the theme first
+    themeRegistry.register('mytheme', myThemeConfig);
+    ```
+  </TabItem>
+
+  <TabItem label="Memory Leaks">
+    **Problem:** High memory usage with many themes
+
+    **Solutions:**
+    ```tsx
+    // Enable automatic cleanup
+    themeRegistry.enableAutoCleanup();
+
+    // Manually unload unused themes
+    themeRegistry.unloadUnused();
+
+    // Use lazy loading
+    themeRegistry.registerLazy('heavy-theme', () =>
+      import('./heavy-theme')
+    );
+    ```
+  </TabItem>
+
+  <TabItem label="Theme Conflicts">
+    **Problem:** Themes overriding each other
+
+    **Solutions:**
+    ```tsx
+    // Use unique names
+    themeRegistry.register('company-dark-v2', theme);
+
+    // Check before registering
+    if (themeRegistry.has('mytheme')) {
+      console.warn('Theme already exists, using different name');
+      themeRegistry.register('mytheme-v2', theme);
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Next Steps
+
+<CardGrid>
+  <Card title="Theme Switching" icon="setting">
+    Learn how to implement smooth theme transitions and animations.
+    [Switching Guide →](/theming/theme-switching)
+  </Card>
+  <Card title="Custom Themes" icon="palette">
+    Create your own custom themes to register in the system.
+    [Custom Theme Guide →](/theming/custom-theme)
+  </Card>
+  <Card title="Component Integration" icon="puzzle">
+    Apply registry themes to your components.
+    [Component Guide →](/components/overview)
+  </Card>
+  <Card title="Hooks Reference" icon="code">
+    Master the theme hooks for registry management.
+    [Hooks Documentation →](/hooks/overview)
+  </Card>
+</CardGrid>

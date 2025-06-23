@@ -38,7 +38,14 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
     position === 'bottom' ? [...visibleToasts].reverse() : visibleToasts;
 
   return (
-    <View style={containerStyle} pointerEvents="box-none">
+    <View
+      style={[
+        containerStyle,
+        {
+          pointerEvents: 'box-none',
+        },
+      ]}
+    >
       {orderedToasts.map((toast, renderIndex) => {
         // Untuk bottom, kita perlu menghitung ulang index yang benar
         const actualIndex =

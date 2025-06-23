@@ -1,0 +1,884 @@
+---
+title: Form Control
+description: A comprehensive form control system for building accessible and consistent form layouts with labels, helpers, and error states.
+---
+
+The Form Control component provides a structured way to build form fields with proper labeling, helper text, error handling, and accessibility features. It serves as a foundation for creating consistent form layouts.
+
+## Features
+
+- **Structured Layout**: Organized form field structure with labels, inputs, helpers, and errors
+- **Accessibility**: Built-in accessibility features with proper ARIA attributes
+- **State Management**: Automatic state handling for different form field states
+- **Context-based**: Uses React Context for seamless component communication
+- **Flexible Composition**: Composable components for different form field needs
+- **Error Handling**: Integrated error display with icons and messaging
+- **Helper Text**: Support for descriptive helper text
+- **Required Fields**: Visual indicators for required form fields
+- **Size Variants**: Multiple size options for different use cases
+
+## Basic Usage
+
+```tsx
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlHelper,
+  FormControlHelperText,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+} from '@rnc/theme';
+import { Input } from '@rnc/theme';
+import { View } from 'react-native';
+
+export default function BasicFormControlExample() {
+  return (
+    <View style={{ padding: 20 }}>
+      <FormControl>
+        <FormControlLabel>
+          <FormControlLabelText>Email Address</FormControlLabelText>
+        </FormControlLabel>
+
+        <Input
+          placeholder="Enter your email"
+          keyboardType="email-address"
+        />
+
+        <FormControlHelper>
+          <FormControlHelperText>
+            We'll never share your email with anyone else.
+          </FormControlHelperText>
+        </FormControlHelper>
+      </FormControl>
+    </View>
+  );
+}
+```
+
+## Form States
+
+The Form Control supports different states for various scenarios:
+
+```tsx
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlHelper,
+  FormControlHelperText,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+} from '@rnc/theme';
+import { Input } from '@rnc/theme';
+import { View } from 'react-native';
+
+export default function FormStatesExample() {
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      {/* Default State */}
+      <FormControl state="default">
+        <FormControlLabel>
+          <FormControlLabelText>Default State</FormControlLabelText>
+        </FormControlLabel>
+        <Input placeholder="Enter text" />
+        <FormControlHelper>
+          <FormControlHelperText>This is a normal form field.</FormControlHelperText>
+        </FormControlHelper>
+      </FormControl>
+
+      {/* Success State */}
+      <FormControl state="success">
+        <FormControlLabel>
+          <FormControlLabelText>Success State</FormControlLabelText>
+        </FormControlLabel>
+        <Input placeholder="Enter text" variant="success" />
+        <FormControlHelper>
+          <FormControlHelperText>Great! This looks good.</FormControlHelperText>
+        </FormControlHelper>
+      </FormControl>
+
+      {/* Warning State */}
+      <FormControl state="warning">
+        <FormControlLabel>
+          <FormControlLabelText>Warning State</FormControlLabelText>
+        </FormControlLabel>
+        <Input placeholder="Enter text" variant="warning" />
+        <FormControlHelper>
+          <FormControlHelperText>Please double-check this value.</FormControlHelperText>
+        </FormControlHelper>
+      </FormControl>
+
+      {/* Error State */}
+      <FormControl state="error">
+        <FormControlLabel>
+          <FormControlLabelText>Error State</FormControlLabelText>
+        </FormControlLabel>
+        <Input placeholder="Enter text" variant="error" />
+        <FormControlError>
+          <FormControlErrorIcon />
+          <FormControlErrorText>
+            This field is required and cannot be empty.
+          </FormControlErrorText>
+        </FormControlError>
+      </FormControl>
+
+      {/* Disabled State */}
+      <FormControl state="disabled" disabled>
+        <FormControlLabel>
+          <FormControlLabelText>Disabled State</FormControlLabelText>
+        </FormControlLabel>
+        <Input placeholder="Enter text" disabled />
+        <FormControlHelper>
+          <FormControlHelperText>This field is currently disabled.</FormControlHelperText>
+        </FormControlHelper>
+      </FormControl>
+    </View>
+  );
+}
+```
+
+## Required Fields
+
+Mark fields as required with visual indicators:
+
+```tsx
+import {
+  FormField,
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlHelper,
+  FormControlHelperText,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+} from '@rnc/theme';
+import { Input } from '@rnc/theme';
+import { View } from 'react-native';
+
+export default function RequiredFieldsExample() {
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <FormField required>
+        <FormControl>
+          <FormControlLabel>
+            <FormControlLabelText>Full Name</FormControlLabelText>
+          </FormControlLabel>
+          <Input placeholder="Enter your full name" />
+          <FormControlHelper>
+            <FormControlHelperText>
+              Please enter your first and last name.
+            </FormControlHelperText>
+          </FormControlHelper>
+        </FormControl>
+      </FormField>
+
+      <FormField required>
+        <FormControl state="error">
+          <FormControlLabel>
+            <FormControlLabelText>Email Address</FormControlLabelText>
+          </FormControlLabel>
+          <Input placeholder="Enter your email" variant="error" />
+          <FormControlError>
+            <FormControlErrorIcon />
+            <FormControlErrorText>
+              Please enter a valid email address.
+            </FormControlErrorText>
+          </FormControlError>
+        </FormControl>
+      </FormField>
+
+      <FormField>
+        <FormControl>
+          <FormControlLabel>
+            <FormControlLabelText>Phone Number (Optional)</FormControlLabelText>
+          </FormControlLabel>
+          <Input placeholder="Enter your phone number" />
+          <FormControlHelper>
+            <FormControlHelperText>
+              We may use this to contact you about your order.
+            </FormControlHelperText>
+          </FormControlHelper>
+        </FormControl>
+      </FormField>
+    </View>
+  );
+}
+```
+
+## Size Variants
+
+Choose from different sizes for various use cases:
+
+```tsx
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlHelper,
+  FormControlHelperText,
+} from '@rnc/theme';
+import { Input } from '@rnc/theme';
+import { View } from 'react-native';
+
+export default function FormSizesExample() {
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <FormControl size="sm">
+        <FormControlLabel>
+          <FormControlLabelText>Small Size</FormControlLabelText>
+        </FormControlLabel>
+        <Input size="sm" placeholder="Small input" />
+        <FormControlHelper>
+          <FormControlHelperText>Compact form field for tight spaces.</FormControlHelperText>
+        </FormControlHelper>
+      </FormControl>
+
+      <FormControl size="md">
+        <FormControlLabel>
+          <FormControlLabelText>Medium Size (Default)</FormControlLabelText>
+        </FormControlLabel>
+        <Input size="md" placeholder="Medium input" />
+        <FormControlHelper>
+          <FormControlHelperText>Standard form field size.</FormControlHelperText>
+        </FormControlHelper>
+      </FormControl>
+
+      <FormControl size="lg">
+        <FormControlLabel>
+          <FormControlLabelText>Large Size</FormControlLabelText>
+        </FormControlLabel>
+        <Input size="lg" placeholder="Large input" />
+        <FormControlHelper>
+          <FormControlHelperText>Larger form field for better accessibility.</FormControlHelperText>
+        </FormControlHelper>
+      </FormControl>
+    </View>
+  );
+}
+```
+
+## Custom Error Icons
+
+Customize error icons for different types of validation:
+
+```tsx
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+} from '@rnc/theme';
+import { Input } from '@rnc/theme';
+import { View } from 'react-native';
+import { AlertTriangle, XCircle, Info } from 'lucide-react-native';
+
+export default function CustomErrorIconsExample() {
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <FormControl state="error">
+        <FormControlLabel>
+          <FormControlLabelText>Password</FormControlLabelText>
+        </FormControlLabel>
+        <Input
+          placeholder="Enter password"
+          secureTextEntry
+          variant="error"
+        />
+        <FormControlError>
+          <FormControlErrorIcon
+            icon={<AlertTriangle size={16} color="#EF4444" />}
+          />
+          <FormControlErrorText>
+            Password must be at least 8 characters long.
+          </FormControlErrorText>
+        </FormControlError>
+      </FormControl>
+
+      <FormControl state="error">
+        <FormControlLabel>
+          <FormControlLabelText>Username</FormControlLabelText>
+        </FormControlLabel>
+        <Input placeholder="Enter username" variant="error" />
+        <FormControlError>
+          <FormControlErrorIcon
+            icon={<XCircle size={16} color="#EF4444" />}
+          />
+          <FormControlErrorText>
+            This username is already taken.
+          </FormControlErrorText>
+        </FormControlError>
+      </FormControl>
+
+      <FormControl state="error">
+        <FormControlLabel>
+          <FormControlLabelText>Credit Card</FormControlLabelText>
+        </FormControlLabel>
+        <Input placeholder="Enter card number" variant="error" />
+        <FormControlError>
+          <FormControlErrorIcon
+            icon={<Info size={16} color="#EF4444" />}
+          />
+          <FormControlErrorText>
+            Please enter a valid credit card number.
+          </FormControlErrorText>
+        </FormControlError>
+      </FormControl>
+    </View>
+  );
+}
+```
+
+## Form Layout with FormContent
+
+Use FormContent for organizing multiple form fields:
+
+```tsx
+import {
+  FormContent,
+  FormField,
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlHelper,
+  FormControlHelperText,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+} from '@rnc/theme';
+import { Input, Button } from '@rnc/theme';
+import { View } from 'react-native';
+
+export default function FormLayoutExample() {
+  return (
+    <View style={{ padding: 20 }}>
+      <FormContent spacing="lg">
+        <FormField required>
+          <FormControl>
+            <FormControlLabel>
+              <FormControlLabelText>First Name</FormControlLabelText>
+            </FormControlLabel>
+            <Input placeholder="Enter your first name" />
+          </FormControl>
+        </FormField>
+
+        <FormField required>
+          <FormControl>
+            <FormControlLabel>
+              <FormControlLabelText>Last Name</FormControlLabelText>
+            </FormControlLabel>
+            <Input placeholder="Enter your last name" />
+          </FormControl>
+        </FormField>
+
+        <FormField required>
+          <FormControl state="error">
+            <FormControlLabel>
+              <FormControlLabelText>Email</FormControlLabelText>
+            </FormControlLabel>
+            <Input
+              placeholder="Enter your email"
+              keyboardType="email-address"
+              variant="error"
+            />
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>
+                Please enter a valid email address.
+              </FormControlErrorText>
+            </FormControlError>
+          </FormControl>
+        </FormField>
+
+        <FormField>
+          <FormControl>
+            <FormControlLabel>
+              <FormControlLabelText>Phone Number</FormControlLabelText>
+            </FormControlLabel>
+            <Input
+              placeholder="Enter your phone number"
+              keyboardType="phone-pad"
+            />
+            <FormControlHelper>
+              <FormControlHelperText>
+                Optional. We'll only use this for order updates.
+              </FormControlHelperText>
+            </FormControlHelper>
+          </FormControl>
+        </FormField>
+
+        <Button variant="primary" size="lg">
+          Submit Form
+        </Button>
+      </FormContent>
+    </View>
+  );
+}
+```
+
+## Integration with Form Libraries
+
+Integrate with popular form libraries like `react-hook-form`:
+
+```tsx
+import { useForm, Controller } from 'react-hook-form';
+import {
+  FormContent,
+  FormField,
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlHelper,
+  FormControlHelperText,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+} from '@rnc/theme';
+import { Input, Button } from '@rnc/theme';
+import { View, Text } from 'react-native';
+
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  phone?: string;
+}
+
+export default function FormLibraryIntegrationExample() {
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      firstName: '',
+      lastName: '',
+      email: '',
+      phone: '',
+    },
+  });
+
+  const onSubmit = (data: FormData) => {
+    console.log('Form submitted:', data);
+  };
+
+  return (
+    <View style={{ padding: 20 }}>
+      <FormContent spacing="lg">
+        <FormField required>
+          <Controller
+            control={control}
+            name="firstName"
+            rules={{ required: 'First name is required' }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <FormControl state={errors.firstName ? 'error' : 'default'}>
+                <FormControlLabel>
+                  <FormControlLabelText>First Name</FormControlLabelText>
+                </FormControlLabel>
+                <Input
+                  placeholder="Enter your first name"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  variant={errors.firstName ? 'error' : 'default'}
+                />
+                {errors.firstName && (
+                  <FormControlError>
+                    <FormControlErrorIcon />
+                    <FormControlErrorText>
+                      {errors.firstName.message}
+                    </FormControlErrorText>
+                  </FormControlError>
+                )}
+              </FormControl>
+            )}
+          />
+        </FormField>
+
+        <FormField required>
+          <Controller
+            control={control}
+            name="lastName"
+            rules={{ required: 'Last name is required' }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <FormControl state={errors.lastName ? 'error' : 'default'}>
+                <FormControlLabel>
+                  <FormControlLabelText>Last Name</FormControlLabelText>
+                </FormControlLabel>
+                <Input
+                  placeholder="Enter your last name"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  variant={errors.lastName ? 'error' : 'default'}
+                />
+                {errors.lastName && (
+                  <FormControlError>
+                    <FormControlErrorIcon />
+                    <FormControlErrorText>
+                      {errors.lastName.message}
+                    </FormControlErrorText>
+                  </FormControlError>
+                )}
+              </FormControl>
+            )}
+          />
+        </FormField>
+
+        <FormField required>
+          <Controller
+            control={control}
+            name="email"
+            rules={{
+              required: 'Email is required',
+              pattern: {
+                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+                message: 'Please enter a valid email address',
+              },
+            }}
+            render={({ field: { onChange, onBlur, value } }) => (
+              <FormControl state={errors.email ? 'error' : 'default'}>
+                <FormControlLabel>
+                  <FormControlLabelText>Email Address</FormControlLabelText>
+                </FormControlLabel>
+                <Input
+                  placeholder="Enter your email"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  keyboardType="email-address"
+                  variant={errors.email ? 'error' : 'default'}
+                />
+                {errors.email && (
+                  <FormControlError>
+                    <FormControlErrorIcon />
+                    <FormControlErrorText>
+                      {errors.email.message}
+                    </FormControlErrorText>
+                  </FormControlError>
+                )}
+              </FormControl>
+            )}
+          />
+        </FormField>
+
+        <FormField>
+          <Controller
+            control={control}
+            name="phone"
+            render={({ field: { onChange, onBlur, value } }) => (
+              <FormControl>
+                <FormControlLabel>
+                  <FormControlLabelText>Phone Number</FormControlLabelText>
+                </FormControlLabel>
+                <Input
+                  placeholder="Enter your phone number"
+                  value={value}
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  keyboardType="phone-pad"
+                />
+                <FormControlHelper>
+                  <FormControlHelperText>
+                    Optional. We'll only use this for order updates.
+                  </FormControlHelperText>
+                </FormControlHelper>
+              </FormControl>
+            )}
+          />
+        </FormField>
+
+        <Button
+          variant="primary"
+          size="lg"
+          onPress={handleSubmit(onSubmit)}
+        >
+          Submit Form
+        </Button>
+      </FormContent>
+    </View>
+  );
+}
+```
+
+## Custom Spacing
+
+Control spacing between form elements:
+
+```tsx
+import {
+  FormContent,
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+} from '@rnc/theme';
+import { Input } from '@rnc/theme';
+import { View, Text } from 'react-native';
+
+export default function CustomSpacingExample() {
+  return (
+    <View style={{ gap: 30, padding: 20 }}>
+      <View>
+        <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 10 }}>
+          Tight Spacing (xs)
+        </Text>
+        <FormContent spacing="xs">
+          <FormControl spacing="xs">
+            <FormControlLabel>
+              <FormControlLabelText>Field 1</FormControlLabelText>
+            </FormControlLabel>
+            <Input placeholder="Enter text" />
+          </FormControl>
+          <FormControl spacing="xs">
+            <FormControlLabel>
+              <FormControlLabelText>Field 2</FormControlLabelText>
+            </FormControlLabel>
+            <Input placeholder="Enter text" />
+          </FormControl>
+        </FormContent>
+      </View>
+
+      <View>
+        <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 10 }}>
+          Normal Spacing (md)
+        </Text>
+        <FormContent spacing="md">
+          <FormControl spacing="md">
+            <FormControlLabel>
+              <FormControlLabelText>Field 1</FormControlLabelText>
+            </FormControlLabel>
+            <Input placeholder="Enter text" />
+          </FormControl>
+          <FormControl spacing="md">
+            <FormControlLabel>
+              <FormControlLabelText>Field 2</FormControlLabelText>
+            </FormControlLabel>
+            <Input placeholder="Enter text" />
+          </FormControl>
+        </FormContent>
+      </View>
+
+      <View>
+        <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 10 }}>
+          Loose Spacing (xl)
+        </Text>
+        <FormContent spacing="xl">
+          <FormControl spacing="xl">
+            <FormControlLabel>
+              <FormControlLabelText>Field 1</FormControlLabelText>
+            </FormControlLabel>
+            <Input placeholder="Enter text" />
+          </FormControl>
+          <FormControl spacing="xl">
+            <FormControlLabel>
+              <FormControlLabelText>Field 2</FormControlLabelText>
+            </FormControlLabel>
+            <Input placeholder="Enter text" />
+          </FormControl>
+        </FormContent>
+      </View>
+    </View>
+  );
+}
+```
+
+## API Reference
+
+### FormControl
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Form control content |
+| `id` | `string` | - | Unique identifier for the form control |
+| `state` | `'default' \| 'error' \| 'success' \| 'warning' \| 'disabled'` | `'default'` | Form control state |
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Form control size |
+| `disabled` | `boolean` | `false` | Whether the form control is disabled |
+| `spacing` | `keyof Theme['spacing']` | `'sm'` | Spacing between child elements |
+| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
+
+### FormField
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Form field content |
+| `required` | `boolean` | `false` | Whether the field is required |
+| `spacing` | `keyof Theme['spacing']` | `'sm'` | Spacing between child elements |
+| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
+
+### FormContent
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Form content |
+| `spacing` | `keyof Theme['spacing']` | `'md'` | Spacing between child elements |
+| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
+
+### FormControlLabel
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Label content |
+| `htmlFor` | `string` | - | Associated form control ID |
+| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
+
+### FormControlLabelText
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Label text content |
+| `variant` | `keyof Theme['typography']` | - | Typography variant |
+| `style` | `TextStyle` | - | Additional text styles |
+
+### FormControlHelper
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Helper content |
+| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
+
+### FormControlHelperText
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Helper text content |
+| `variant` | `keyof Theme['typography']` | - | Typography variant |
+| `style` | `TextStyle` | - | Additional text styles |
+
+### FormControlError
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Error content |
+| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
+
+### FormControlErrorIcon
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `icon` | `React.ReactNode` | `<AlertCircle />` | Custom error icon |
+| `size` | `number` | `16` | Icon size |
+| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
+
+### FormControlErrorText
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Error text content |
+| `variant` | `keyof Theme['typography']` | - | Typography variant |
+| `style` | `TextStyle` | - | Additional text styles |
+
+## Hooks
+
+### useFormControl
+
+Access form control context within child components:
+
+```tsx
+import { useFormControl } from '@rnc/theme';
+
+function CustomFormComponent() {
+  const {
+    id,
+    state,
+    size,
+    disabled,
+    hasError,
+    hasHelper,
+    labelId,
+    helperId,
+    errorId,
+  } = useFormControl();
+
+  // Use context values...
+}
+```
+
+### useFormControlOptional
+
+Optionally access form control context (returns null if not within FormControl):
+
+```tsx
+import { useFormControlOptional } from '@rnc/theme';
+
+function OptionalFormComponent() {
+  const formControl = useFormControlOptional();
+
+  if (formControl) {
+    // Use form control context
+  }
+}
+```
+
+### useFormField
+
+Access form field context:
+
+```tsx
+import { useFormField } from '@rnc/theme';
+
+function CustomFieldComponent() {
+  const formField = useFormField();
+  const required = formField?.required || false;
+
+  // Use field context...
+}
+```
+
+## Best Practices
+
+### Do's
+
+- Use FormField for required field indicators
+- Provide clear, descriptive labels for all form controls
+- Use helper text to guide users on expected input format
+- Show specific error messages that help users fix issues
+- Group related form controls using FormContent
+- Use appropriate sizes based on the form's context
+
+### Don'ts
+
+- Don't nest FormControl components
+- Don't use FormControl without proper labels
+- Avoid generic error messages like "Invalid input"
+- Don't show helper text and error text simultaneously for required fields
+- Don't use disabled state for readonly fields (use readonly inputs instead)
+
+### Accessibility
+
+- Form controls automatically generate proper ARIA attributes
+- Labels are properly associated with form inputs
+- Error messages are announced by screen readers
+- Required field indicators are accessible
+- Proper focus management is maintained
+
+## Troubleshooting
+
+### Common Issues
+
+**Form control context not available**
+- Ensure components are used within a FormControl wrapper
+- Check that you're using the correct hook (useFormControl vs useFormControlOptional)
+
+**Required indicator not showing**
+- Ensure the component is wrapped in FormField with required=true
+- Check that FormControlLabelText is used within the FormField context
+
+**Error state not displaying**
+- Verify that FormControl state is set to "error"
+- Ensure FormControlError components are used correctly
+- Check that error text is provided
+
+**Spacing issues**
+- Use the spacing prop on FormControl, FormField, or FormContent
+- Ensure consistent spacing values throughout your form
+- Consider using FormContent for better layout control
+
+**Accessibility warnings**
+- Ensure all form controls have proper labels
+- Verify that error messages are associated with their inputs
+- Test with screen readers to confirm proper announcements

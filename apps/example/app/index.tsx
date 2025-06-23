@@ -244,6 +244,12 @@ export default function HomeScreen() {
       path: '/i18n',
       icon: <Languages size={30} color={'black'} />,
     },
+    {
+      id: 33,
+      title: 'Theme Manager',
+      path: '/theme-manager',
+      icon: <Palette size={30} color={'blue'} />,
+    },
   ];
 
   return (
