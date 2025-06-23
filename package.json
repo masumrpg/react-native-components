@@ -6,6 +6,8 @@
     "create-lib": "node tools/scripts/create-lib.js",
     "start": "bunx nx start example",
     "start:clear": "bun run nx reset && bun start --clear",
+    "web:build": "bunx nx web:build example",
+    "web:start": "bunx nx web:start example",
     "docs:dev": "bunx nx dev docs",
     "docs:build": "bunx nx build docs",
     "docs:preview": "bunx nx preview docs",
