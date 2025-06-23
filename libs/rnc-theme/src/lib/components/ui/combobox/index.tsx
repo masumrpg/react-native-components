@@ -841,8 +841,11 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
             statusBarTranslucent
           >
             <Animated.View
-              style={[styles.overlay, overlayAnimatedStyle]}
-              pointerEvents={isModalReady ? 'auto' : 'none'}
+              style={[
+                styles.overlay,
+                overlayAnimatedStyle,
+                { pointerEvents: isModalReady ? 'auto' : 'none' },
+              ]}
             >
               <Pressable
                 style={{ flex: 1 }}
@@ -872,8 +875,8 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
                     },
                     dropdownStyle,
                     animationEnabled ? dropdownAnimatedStyle : {},
+                    { pointerEvents: 'box-none' },
                   ]}
-                  pointerEvents="box-none"
                 >
                   {searchable && (
                     <View style={styles.searchContainer}>

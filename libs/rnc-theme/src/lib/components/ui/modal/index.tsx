@@ -11,7 +11,7 @@ import {
   View,
   Text,
   TouchableOpacity,
-  TouchableWithoutFeedback,
+  Pressable,
   ViewStyle,
   TextStyle,
   Dimensions,
@@ -403,7 +403,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
 
     // FIXED: Initialize animation values dengan proper sequencing
     const initializeAnimationValues = useCallback(() => {
-      'worklet'
+      'worklet';
 
       // Reset ke initial state yang aman
       opacity.value = 0;
@@ -674,7 +674,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
         onRequestClose={handleClosePress}
         {...props}
       >
-        <TouchableWithoutFeedback onPress={handleBackdropPress}>
+        <Pressable onPress={handleBackdropPress}>
           <Animated.View
             style={[
               styles.overlay,
@@ -683,7 +683,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
               animatedOverlayStyle,
             ]}
           >
-            <TouchableWithoutFeedback>
+            <Pressable>
               <Animated.View
                 style={[
                   styles.container,
@@ -717,9 +717,9 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
                 )}
                 {children}
               </Animated.View>
-            </TouchableWithoutFeedback>
+            </Pressable>
           </Animated.View>
-        </TouchableWithoutFeedback>
+        </Pressable>
       </RNModal>
     );
   }
