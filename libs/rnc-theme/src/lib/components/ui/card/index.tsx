@@ -1,5 +1,5 @@
 import React, { forwardRef, createContext, useContext } from 'react';
-import { Text, TextStyle, View, ViewStyle } from 'react-native';
+import { Platform, Text, TextStyle, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
@@ -206,6 +206,9 @@ const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
         borderRadius: theme.components.borderRadius[borderRadius],
         shadowOpacity,
         elevation: disabled ? 0 : elevation,
+        ...(Platform.OS === 'web'
+          ? { boxShadow: '0px 4px 12px rgba(0,0,0,0.2)' }
+          : {}),
       },
       style,
     ];
