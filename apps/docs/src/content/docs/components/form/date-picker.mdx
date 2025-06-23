@@ -1,0 +1,716 @@
+---
+title: Date Picker
+description: A comprehensive date picker component with calendar interface, animations, and flexible formatting options for selecting dates in forms.
+---
+
+The Date Picker component provides an intuitive way to select dates through a calendar interface. It features smooth animations, multiple date formats, validation, and seamless integration with form libraries.
+
+## Features
+
+- **Calendar Interface**: Full calendar view with month/year navigation
+- **Multiple Formats**: Support for various date formats (DD/MM/YYYY, MM/DD/YYYY, etc.)
+- **Smooth Animations**: Fluid open/close animations with spring physics
+- **Date Validation**: Min/max date constraints and validation
+- **Marked Dates**: Highlight special dates with custom markers
+- **Responsive Design**: Adapts to different screen sizes
+- **Accessibility**: Full accessibility support with proper ARIA attributes
+- **Form Integration**: Works seamlessly with form libraries
+- **Customizable Styling**: Extensive theming and styling options
+- **Portal Rendering**: Modal overlay for better UX
+
+## Basic Usage
+
+```tsx
+import { DatePicker } from '@rnc/theme';
+import { View } from 'react-native';
+import { useState } from 'react';
+
+export default function BasicDatePickerExample() {
+  const [selectedDate, setSelectedDate] = useState<string>('');
+
+  return (
+    <View style={{ padding: 20 }}>
+      <DatePicker
+        label="Select Date"
+        placeholder="Choose a date"
+        value={selectedDate}
+        onDateSelect={setSelectedDate}
+      />
+    </View>
+  );
+}
+```
+
+## Date Formats
+
+Choose from multiple date format options:
+
+```tsx
+import { DatePicker } from '@rnc/theme';
+import { View } from 'react-native';
+import { useState } from 'react';
+
+export default function DateFormatsExample() {
+  const [date1, setDate1] = useState<string>('');
+  const [date2, setDate2] = useState<string>('');
+  const [date3, setDate3] = useState<string>('');
+  const [date4, setDate4] = useState<string>('');
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <DatePicker
+        label="DD/MM/YYYY Format"
+        placeholder="Select date"
+        value={date1}
+        onDateSelect={setDate1}
+        dateFormat="DD/MM/YYYY"
+      />
+
+      <DatePicker
+        label="MM/DD/YYYY Format"
+        placeholder="Select date"
+        value={date2}
+        onDateSelect={setDate2}
+        dateFormat="MM/DD/YYYY"
+      />
+
+      <DatePicker
+        label="YYYY-MM-DD Format"
+        placeholder="Select date"
+        value={date3}
+        onDateSelect={setDate3}
+        dateFormat="YYYY-MM-DD"
+      />
+
+      <DatePicker
+        label="DD MMM YYYY Format"
+        placeholder="Select date"
+        value={date4}
+        onDateSelect={setDate4}
+        dateFormat="DD MMM YYYY"
+      />
+    </View>
+  );
+}
+```
+
+## Size Variants
+
+Choose from different sizes for various use cases:
+
+```tsx
+import { DatePicker } from '@rnc/theme';
+import { View } from 'react-native';
+import { useState } from 'react';
+
+export default function DatePickerSizesExample() {
+  const [date, setDate] = useState<string>('');
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <DatePicker
+        size="xs"
+        label="Extra Small"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+      />
+
+      <DatePicker
+        size="sm"
+        label="Small"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+      />
+
+      <DatePicker
+        size="md"
+        label="Medium (Default)"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+      />
+
+      <DatePicker
+        size="lg"
+        label="Large"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+      />
+
+      <DatePicker
+        size="xl"
+        label="Extra Large"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+      />
+    </View>
+  );
+}
+```
+
+## Variants and States
+
+Different visual variants and states:
+
+```tsx
+import { DatePicker } from '@rnc/theme';
+import { View } from 'react-native';
+import { useState } from 'react';
+
+export default function DatePickerVariantsExample() {
+  const [date, setDate] = useState<string>('');
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <DatePicker
+        variant="default"
+        label="Default Variant"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+      />
+
+      <DatePicker
+        variant="primary"
+        label="Primary Variant"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+      />
+
+      <DatePicker
+        variant="outline"
+        label="Outline Variant"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+      />
+
+      <DatePicker
+        variant="filled"
+        label="Filled Variant"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+      />
+
+      <DatePicker
+        variant="ghost"
+        label="Ghost Variant"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+      />
+
+      <DatePicker
+        state="success"
+        label="Success State"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+        helperText="Date selected successfully"
+      />
+
+      <DatePicker
+        state="error"
+        label="Error State"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+        error="Please select a valid date"
+      />
+
+      <DatePicker
+        disabled
+        label="Disabled State"
+        placeholder="Select date"
+        value={date}
+        onDateSelect={setDate}
+      />
+    </View>
+  );
+}
+```
+
+## Date Constraints
+
+Set minimum and maximum date limits:
+
+```tsx
+import { DatePicker } from '@rnc/theme';
+import { View } from 'react-native';
+import { useState } from 'react';
+
+export default function DateConstraintsExample() {
+  const [birthDate, setBirthDate] = useState<string>('');
+  const [appointmentDate, setAppointmentDate] = useState<string>('');
+  const [eventDate, setEventDate] = useState<string>('');
+
+  const today = new Date().toISOString().split('T')[0];
+  const maxBirthDate = new Date(
+    new Date().setFullYear(new Date().getFullYear() - 18)
+  ).toISOString().split('T')[0];
+  const minAppointmentDate = today;
+  const maxAppointmentDate = new Date(
+    new Date().setMonth(new Date().getMonth() + 3)
+  ).toISOString().split('T')[0];
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <DatePicker
+        label="Birth Date (18+ only)"
+        placeholder="Select your birth date"
+        value={birthDate}
+        onDateSelect={setBirthDate}
+        maxDate={maxBirthDate}
+        helperText="Must be 18 years or older"
+      />
+
+      <DatePicker
+        label="Appointment Date"
+        placeholder="Select appointment date"
+        value={appointmentDate}
+        onDateSelect={setAppointmentDate}
+        minDate={minAppointmentDate}
+        maxDate={maxAppointmentDate}
+        helperText="Available for next 3 months"
+      />
+
+      <DatePicker
+        label="Event Date (Future only)"
+        placeholder="Select event date"
+        value={eventDate}
+        onDateSelect={setEventDate}
+        minDate={today}
+        helperText="Event must be in the future"
+      />
+    </View>
+  );
+}
+```
+
+## Marked Dates
+
+Highlight special dates with custom markers:
+
+```tsx
+import { DatePicker } from '@rnc/theme';
+import { View } from 'react-native';
+import { useState } from 'react';
+
+export default function MarkedDatesExample() {
+  const [selectedDate, setSelectedDate] = useState<string>('');
+
+  const markedDates = {
+    '2024-01-15': {
+      marked: true,
+      dotColor: '#FF6B6B',
+      activeOpacity: 0.7,
+    },
+    '2024-01-20': {
+      marked: true,
+      dotColor: '#4ECDC4',
+      activeOpacity: 0.7,
+    },
+    '2024-01-25': {
+      marked: true,
+      dotColor: '#45B7D1',
+      activeOpacity: 0.7,
+    },
+    '2024-01-30': {
+      marked: true,
+      dotColor: '#96CEB4',
+      activeOpacity: 0.7,
+    },
+  };
+
+  return (
+    <View style={{ padding: 20 }}>
+      <DatePicker
+        label="Event Calendar"
+        placeholder="Select event date"
+        value={selectedDate}
+        onDateSelect={setSelectedDate}
+        markedDates={markedDates}
+        helperText="Colored dots indicate special events"
+      />
+    </View>
+  );
+}
+```
+
+## Custom Icons
+
+Customize the picker icon:
+
+```tsx
+import { DatePicker } from '@rnc/theme';
+import { View } from 'react-native';
+import { useState } from 'react';
+import { Calendar, Clock, Star } from 'lucide-react-native';
+
+export default function CustomIconsExample() {
+  const [date1, setDate1] = useState<string>('');
+  const [date2, setDate2] = useState<string>('');
+  const [date3, setDate3] = useState<string>('');
+  const [date4, setDate4] = useState<string>('');
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <DatePicker
+        label="Default Icon (Right)"
+        placeholder="Select date"
+        value={date1}
+        onDateSelect={setDate1}
+      />
+
+      <DatePicker
+        label="Calendar Icon (Left)"
+        placeholder="Select date"
+        value={date2}
+        onDateSelect={setDate2}
+        iconPosition="left"
+        customIcon={<Calendar size={20} color="#666" />}
+      />
+
+      <DatePicker
+        label="Clock Icon"
+        placeholder="Select date"
+        value={date3}
+        onDateSelect={setDate3}
+        customIcon={<Clock size={20} color="#666" />}
+      />
+
+      <DatePicker
+        label="No Icon"
+        placeholder="Select date"
+        value={date4}
+        onDateSelect={setDate4}
+        showIcon={false}
+      />
+    </View>
+  );
+}
+```
+
+## Animation Configuration
+
+Customize animation behavior:
+
+```tsx
+import { DatePicker } from '@rnc/theme';
+import { View } from 'react-native';
+import { useState } from 'react';
+
+export default function AnimationConfigExample() {
+  const [date1, setDate1] = useState<string>('');
+  const [date2, setDate2] = useState<string>('');
+  const [date3, setDate3] = useState<string>('');
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <DatePicker
+        label="Fast Animation"
+        placeholder="Select date"
+        value={date1}
+        onDateSelect={setDate1}
+        animationDuration={150}
+        backdropOpacity={0.3}
+      />
+
+      <DatePicker
+        label="Slow Animation"
+        placeholder="Select date"
+        value={date2}
+        onDateSelect={setDate2}
+        animationDuration={600}
+        backdropOpacity={0.7}
+      />
+
+      <DatePicker
+        label="No Animation"
+        placeholder="Select date"
+        value={date3}
+        onDateSelect={setDate3}
+        animated={false}
+      />
+    </View>
+  );
+}
+```
+
+## Form Integration
+
+Integrate with form libraries like `react-hook-form`:
+
+```tsx
+import { useForm, Controller } from 'react-hook-form';
+import { DatePicker } from '@rnc/theme';
+import { Button } from '@rnc/theme';
+import { View, Text, Alert } from 'react-native';
+
+interface FormData {
+  birthDate: string;
+  startDate: string;
+  endDate: string;
+}
+
+export default function FormIntegrationExample() {
+  const {
+    control,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<FormData>({
+    defaultValues: {
+      birthDate: '',
+      startDate: '',
+      endDate: '',
+    },
+  });
+
+  const startDate = watch('startDate');
+  const today = new Date().toISOString().split('T')[0];
+
+  const onSubmit = (data: FormData) => {
+    Alert.alert('Form Submitted', JSON.stringify(data, null, 2));
+  };
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <Controller
+        control={control}
+        name="birthDate"
+        rules={{
+          required: 'Birth date is required',
+          validate: (value) => {
+            if (!value) return 'Birth date is required';
+            const birthDate = new Date(value);
+            const eighteenYearsAgo = new Date();
+            eighteenYearsAgo.setFullYear(eighteenYearsAgo.getFullYear() - 18);
+            return birthDate <= eighteenYearsAgo || 'Must be 18 years or older';
+          },
+        }}
+        render={({ field: { onChange, value } }) => (
+          <DatePicker
+            label="Birth Date"
+            placeholder="Select your birth date"
+            value={value}
+            onDateSelect={onChange}
+            state={errors.birthDate ? 'error' : 'default'}
+            error={errors.birthDate?.message}
+            required
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="startDate"
+        rules={{
+          required: 'Start date is required',
+          validate: (value) => {
+            if (!value) return 'Start date is required';
+            return value >= today || 'Start date must be today or later';
+          },
+        }}
+        render={({ field: { onChange, value } }) => (
+          <DatePicker
+            label="Start Date"
+            placeholder="Select start date"
+            value={value}
+            onDateSelect={onChange}
+            minDate={today}
+            state={errors.startDate ? 'error' : 'default'}
+            error={errors.startDate?.message}
+            required
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="endDate"
+        rules={{
+          required: 'End date is required',
+          validate: (value) => {
+            if (!value) return 'End date is required';
+            if (!startDate) return 'Please select start date first';
+            return value > startDate || 'End date must be after start date';
+          },
+        }}
+        render={({ field: { onChange, value } }) => (
+          <DatePicker
+            label="End Date"
+            placeholder="Select end date"
+            value={value}
+            onDateSelect={onChange}
+            minDate={startDate || today}
+            state={errors.endDate ? 'error' : 'default'}
+            error={errors.endDate?.message}
+            required
+          />
+        )}
+      />
+
+      <Button
+        variant="primary"
+        size="lg"
+        onPress={handleSubmit(onSubmit)}
+      >
+        Submit Form
+      </Button>
+    </View>
+  );
+}
+```
+
+## Advanced Usage
+
+Advanced configuration with custom styling:
+
+```tsx
+import { DatePicker } from '@rnc/theme';
+import { View } from 'react-native';
+import { useState } from 'react';
+
+export default function AdvancedDatePickerExample() {
+  const [selectedDate, setSelectedDate] = useState<string>('');
+
+  const handleDateChange = (date: string) => {
+    setSelectedDate(date);
+    console.log('Date selected:', date);
+  };
+
+  return (
+    <View style={{ padding: 20 }}>
+      <DatePicker
+        label="Advanced Date Picker"
+        placeholder="Choose your preferred date"
+        value={selectedDate}
+        onDateSelect={handleDateChange}
+        onChange={handleDateChange}
+        size="lg"
+        variant="primary"
+        dateFormat="DD MMM YYYY"
+        required
+        closeOnSelect={true}
+        animationDuration={400}
+        backdropOpacity={0.6}
+        borderRadius="lg"
+        style={{
+          marginVertical: 10,
+        }}
+        inputStyle={{
+          backgroundColor: '#F8F9FA',
+        }}
+        labelStyle={{
+          fontWeight: '700',
+          color: '#2D3748',
+        }}
+        calendarStyle={{
+          borderRadius: 16,
+          elevation: 12,
+        }}
+        helperText="Select a date for your appointment"
+      />
+    </View>
+  );
+}
+```
+
+## API Reference
+
+### DatePicker
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | - | Selected date value in YYYY-MM-DD format |
+| `onDateSelect` | `(date: string) => void` | - | Callback when date is selected |
+| `onChange` | `(date: string) => void` | - | Alternative callback for date changes |
+| `placeholder` | `string` | `'Choose date'` | Placeholder text |
+| `label` | `string` | - | Label text |
+| `disabled` | `boolean` | `false` | Whether the picker is disabled |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Size variant |
+| `variant` | `ComponentVariant` | `'default'` | Visual variant |
+| `state` | `'default' \| 'error' \| 'success' \| 'warning'` | `'default'` | Component state |
+| `dateFormat` | `'DD/MM/YYYY' \| 'MM/DD/YYYY' \| 'YYYY-MM-DD' \| 'DD MMM YYYY'` | `'DD/MM/YYYY'` | Date display format |
+| `minDate` | `string` | - | Minimum selectable date (YYYY-MM-DD) |
+| `maxDate` | `string` | - | Maximum selectable date (YYYY-MM-DD) |
+| `markedDates` | `CalendarProps['markedDates']` | - | Object with marked dates |
+| `showIcon` | `boolean` | `true` | Whether to show the picker icon |
+| `iconPosition` | `'left' \| 'right'` | `'right'` | Icon position |
+| `customIcon` | `React.ReactNode` | - | Custom icon component |
+| `closeOnSelect` | `boolean` | `true` | Whether to close picker on date selection |
+| `animationDuration` | `number` | `300` | Animation duration in milliseconds |
+| `backdropOpacity` | `number` | `0.5` | Backdrop opacity (0-1) |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | `'md'` | Border radius variant |
+| `helperText` | `string` | - | Helper text below the picker |
+| `error` | `string` | - | Error message |
+| `required` | `boolean` | `false` | Whether the field is required |
+| `animated` | `boolean` | `true` | Whether to use animations |
+| `style` | `ViewStyle` | - | Container style |
+| `inputStyle` | `ViewStyle` | - | Input container style |
+| `labelStyle` | `TextStyle` | - | Label text style |
+| `placeholderStyle` | `TextStyle` | - | Placeholder text style |
+| `calendarStyle` | `ViewStyle` | - | Calendar container style |
+
+## Best Practices
+
+### Do's
+
+- Use appropriate date formats for your target audience
+- Set reasonable min/max date constraints
+- Provide clear labels and helper text
+- Use marked dates to highlight important dates
+- Consider timezone implications for your use case
+- Test with different screen sizes
+
+### Don'ts
+
+- Don't use overly restrictive date ranges without explanation
+- Avoid complex date validation without clear error messages
+- Don't disable animations without good reason
+- Avoid using the component for time-sensitive selections without proper validation
+- Don't forget to handle edge cases like leap years
+
+### Accessibility
+
+- Date picker automatically provides proper ARIA labels
+- Calendar navigation is keyboard accessible
+- Screen readers announce selected dates
+- Focus management is handled automatically
+- High contrast mode is supported
+
+## Troubleshooting
+
+### Common Issues
+
+**Date picker not opening**
+- Ensure the component is not disabled
+- Check if there are any overlay conflicts
+- Verify that the Portal component is properly configured
+
+**Wrong date format displayed**
+- Check the `dateFormat` prop value
+- Ensure the input date is in YYYY-MM-DD format
+- Verify locale settings if using international formats
+
+**Animation issues**
+- Try reducing `animationDuration` for better performance
+- Set `animated={false}` to disable animations if needed
+- Check for conflicts with other animated components
+
+**Calendar not showing marked dates**
+- Ensure `markedDates` object uses YYYY-MM-DD format as keys
+- Check that the marked date properties are correctly formatted
+- Verify that dates are within the visible calendar range
+
+**Performance issues**
+- Reduce `animationDuration` for faster interactions
+- Consider using `closeOnSelect={true}` for quicker selection
+- Optimize marked dates object if it's very large

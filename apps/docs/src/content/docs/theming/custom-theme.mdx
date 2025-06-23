@@ -1,0 +1,751 @@
+---
+title: Custom Theme
+description: Learn how to create, customize, and implement your own themes in RNC Theme system with complete control over colors, typography, and component styling.
+sidebar:
+  order: 3
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+# Custom Theme
+
+Create unique, branded themes that perfectly match your application's design requirements. RNC Theme provides powerful customization capabilities while maintaining type safety and performance.
+
+## Theme Structure
+
+Every custom theme follows a consistent structure with five main categories:
+
+<CardGrid>
+  <Card title="🎨 Colors" icon="star">
+    Primary, secondary, background, surface, text, and semantic colors for your brand.
+  </Card>
+  <Card title="📝 Typography" icon="document">
+    Font sizes, line heights, and weights for consistent text styling.
+  </Card>
+  <Card title="📏 Spacing" icon="setting">
+    Consistent spacing values for margins, padding, and layout.
+  </Card>
+  <Card title="🧩 Components" icon="puzzle">
+    Component-specific styling like heights, padding, and border radius.
+  </Card>
+  <Card title="🔤 Font Sizes" icon="mobile">
+    Scalable font size system for responsive typography.
+  </Card>
+</CardGrid>
+
+## Creating a Custom Theme
+
+### Basic Custom Theme
+
+```tsx
+import { Theme } from 'rnc-theme';
+
+const myCustomTheme: Partial<Theme> = {
+  colors: {
+    primary: '#6366F1',      // Indigo
+    secondary: '#8B5CF6',    // Purple
+    background: '#F8FAFC',   // Slate 50
+    surface: '#FFFFFF',      // White
+    text: '#0F172A',         // Slate 900
+    textSecondary: '#64748B', // Slate 500
+    border: '#E2E8F0',       // Slate 200
+    error: '#EF4444',        // Red 500
+    warning: '#F59E0B',      // Amber 500
+    success: '#10B981',      // Emerald 500
+    info: '#3B82F6',         // Blue 500
+    muted: '#94A3B8',        // Slate 400
+    accent: '#EC4899',       // Pink 500
+    destructive: '#DC2626',  // Red 600
+  },
+  components: {
+    borderRadius: {
+      xs: 4,
+      sm: 6,
+      md: 8,
+      lg: 12,
+      xl: 16,
+      full: 9999,
+    },
+  },
+};
+```
+
+### Complete Custom Theme
+
+<Tabs>
+  <TabItem label="Colors">
+    ```tsx
+    const customColors = {
+      // Brand Colors
+      primary: '#6366F1',
+      secondary: '#8B5CF6',
+      accent: '#EC4899',
+
+      // Background Colors
+      background: '#F8FAFC',
+      surface: '#FFFFFF',
+
+      // Text Colors
+      text: '#0F172A',
+      textSecondary: '#64748B',
+      muted: '#94A3B8',
+
+      // Border Colors
+      border: '#E2E8F0',
+
+      // Semantic Colors
+      error: '#EF4444',
+      warning: '#F59E0B',
+      success: '#10B981',
+      info: '#3B82F6',
+      destructive: '#DC2626',
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Typography">
+    ```tsx
+    const customTypography = {
+      caption: {
+        fontSize: 12,
+        lineHeight: 16,
+        fontWeight: '400' as const,
+      },
+      small: {
+        fontSize: 14,
+        lineHeight: 20,
+        fontWeight: '400' as const,
+      },
+      body: {
+        fontSize: 16,
+        lineHeight: 24,
+        fontWeight: '400' as const,
+      },
+      subtitle: {
+        fontSize: 18,
+        lineHeight: 28,
+        fontWeight: '500' as const,
+      },
+      title: {
+        fontSize: 20,
+        lineHeight: 28,
+        fontWeight: '600' as const,
+      },
+      heading: {
+        fontSize: 24,
+        lineHeight: 32,
+        fontWeight: '700' as const,
+      },
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Spacing">
+    ```tsx
+    const customSpacing = {
+      xs: 4,   // 0.25rem
+      sm: 8,   // 0.5rem
+      md: 16,  // 1rem
+      lg: 24,  // 1.5rem
+      xl: 32,  // 2rem
+      xxl: 48, // 3rem
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Components">
+    ```tsx
+    const customComponents = {
+      height: {
+        xs: 32,  // Small buttons/inputs
+        sm: 36,  // Compact components
+        md: 40,  // Default size
+        lg: 44,  // Large components
+        xl: 48,  // Extra large
+      },
+      padding: {
+        xs: 8,   // Tight spacing
+        sm: 12,  // Small padding
+        md: 16,  // Default padding
+        lg: 20,  // Large padding
+        xl: 24,  // Extra large
+      },
+      borderRadius: {
+        xs: 4,    // Subtle rounding
+        sm: 6,    // Small radius
+        md: 8,    // Default radius
+        lg: 12,   // Large radius
+        xl: 16,   // Extra large
+        full: 9999, // Fully rounded
+      },
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Font Sizes">
+    ```tsx
+    const customFontSizes = {
+      xs: 12,  // Small text
+      sm: 14,  // Body text
+      md: 16,  // Default size
+      lg: 18,  // Large text
+      xl: 20,  // Extra large
+      xxl: 24, // Headings
+    };
+    ```
+  </TabItem>
+</Tabs>
+
+## Theme Configuration Patterns
+
+### Light and Dark Theme Variants
+
+```tsx
+import { CustomThemeConfigFactory } from 'rnc-theme';
+
+const createBrandTheme: CustomThemeConfigFactory = (isDark: boolean) => ({
+  colors: {
+    primary: '#6366F1',
+    secondary: '#8B5CF6',
+    background: isDark ? '#0F172A' : '#F8FAFC',
+    surface: isDark ? '#1E293B' : '#FFFFFF',
+    text: isDark ? '#F1F5F9' : '#0F172A',
+    textSecondary: isDark ? '#94A3B8' : '#64748B',
+    border: isDark ? '#334155' : '#E2E8F0',
+    error: '#EF4444',
+    warning: '#F59E0B',
+    success: '#10B981',
+    info: '#3B82F6',
+    muted: isDark ? '#64748B' : '#94A3B8',
+    accent: '#EC4899',
+    destructive: '#DC2626',
+  },
+  components: {
+    borderRadius: {
+      xs: 4,
+      sm: 6,
+      md: 8,
+      lg: 12,
+      xl: 16,
+      full: 9999,
+    },
+    padding: {
+      xs: 8,
+      sm: 12,
+      md: 16,
+      lg: 20,
+      xl: 24,
+    },
+    height: {
+      xs: 32,
+      sm: 36,
+      md: 40,
+      lg: 44,
+      xl: 48,
+    },
+  },
+  spacing: {
+    xs: 4,
+    sm: 8,
+    md: 16,
+    lg: 24,
+    xl: 32,
+    xxl: 48,
+  },
+});
+```
+
+### Brand-Specific Themes
+
+<Tabs>
+  <TabItem label="Corporate">
+    ```tsx
+    const corporateTheme = {
+      colors: {
+        primary: '#1E40AF',    // Professional blue
+        secondary: '#374151',  // Neutral gray
+        accent: '#059669',     // Success green
+        background: '#F9FAFB',
+        surface: '#FFFFFF',
+        text: '#111827',
+        textSecondary: '#6B7280',
+        border: '#D1D5DB',
+        error: '#DC2626',
+        warning: '#D97706',
+        success: '#059669',
+        info: '#2563EB',
+        muted: '#9CA3AF',
+        destructive: '#B91C1C',
+      },
+      components: {
+        borderRadius: {
+          xs: 2,
+          sm: 4,
+          md: 6,
+          lg: 8,
+          xl: 10,
+          full: 9999,
+        },
+      },
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Creative">
+    ```tsx
+    const creativeTheme = {
+      colors: {
+        primary: '#8B5CF6',    // Vibrant purple
+        secondary: '#EC4899',  // Hot pink
+        accent: '#06B6D4',     // Cyan
+        background: '#FAFAFA',
+        surface: '#FFFFFF',
+        text: '#18181B',
+        textSecondary: '#71717A',
+        border: '#E4E4E7',
+        error: '#EF4444',
+        warning: '#F59E0B',
+        success: '#22C55E',
+        info: '#3B82F6',
+        muted: '#A1A1AA',
+        destructive: '#DC2626',
+      },
+      components: {
+        borderRadius: {
+          xs: 8,
+          sm: 12,
+          md: 16,
+          lg: 20,
+          xl: 24,
+          full: 9999,
+        },
+      },
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Minimalist">
+    ```tsx
+    const minimalistTheme = {
+      colors: {
+        primary: '#000000',    // Pure black
+        secondary: '#404040',  // Dark gray
+        accent: '#000000',     // Black accent
+        background: '#FFFFFF',
+        surface: '#FAFAFA',
+        text: '#000000',
+        textSecondary: '#666666',
+        border: '#E0E0E0',
+        error: '#D32F2F',
+        warning: '#F57C00',
+        success: '#388E3C',
+        info: '#1976D2',
+        muted: '#9E9E9E',
+        destructive: '#C62828',
+      },
+      components: {
+        borderRadius: {
+          xs: 0,
+          sm: 0,
+          md: 2,
+          lg: 4,
+          xl: 6,
+          full: 9999,
+        },
+      },
+    };
+    ```
+  </TabItem>
+</Tabs>
+
+## Implementation Methods
+
+### Method 1: Provider Configuration
+
+```tsx
+import { RNCProvider } from 'rnc-theme';
+
+const customTheme = {
+  light: {
+    colors: {
+      primary: '#6366F1',
+      // ... other light theme colors
+    },
+  },
+  dark: {
+    colors: {
+      primary: '#818CF8',
+      // ... other dark theme colors
+    },
+  },
+};
+
+export default function App() {
+  return (
+    <RNCProvider customTheme={customTheme}>
+      {/* Your app content */}
+    </RNCProvider>
+  );
+}
+```
+
+### Method 2: Runtime Theme Updates
+
+```tsx
+import { useTheme } from 'rnc-theme';
+
+function ThemeCustomizer() {
+  const { updateCustomTheme } = useTheme();
+
+  const applyBrandTheme = () => {
+    updateCustomTheme({
+      colors: {
+        primary: '#6366F1',
+        secondary: '#8B5CF6',
+        // ... other colors
+      },
+    });
+  };
+
+  return (
+    <Button onPress={applyBrandTheme}>
+      Apply Brand Theme
+    </Button>
+  );
+}
+```
+
+### Method 3: Theme Registry
+
+```tsx
+import { themeRegistry } from 'rnc-theme';
+
+// Register custom theme
+themeRegistry.register('brand', createBrandTheme);
+
+// Use in component
+function ThemeSwitcher() {
+  const { setActivePreset } = useTheme();
+
+  return (
+    <Button onPress={() => setActivePreset('brand')}>
+      Switch to Brand Theme
+    </Button>
+  );
+}
+```
+
+## Advanced Customization
+
+### Dynamic Theme Generation
+
+```tsx
+import { generateThemeFromColor } from 'rnc-theme';
+
+function ColorBasedTheme() {
+  const [primaryColor, setPrimaryColor] = useState('#6366F1');
+  const { updateCustomTheme } = useTheme();
+
+  const generateTheme = useCallback((color: string) => {
+    const generatedTheme = generateThemeFromColor(color);
+    updateCustomTheme(generatedTheme);
+  }, [updateCustomTheme]);
+
+  useEffect(() => {
+    generateTheme(primaryColor);
+  }, [primaryColor, generateTheme]);
+
+  return (
+    <ColorPicker
+      color={primaryColor}
+      onColorChange={setPrimaryColor}
+    />
+  );
+}
+```
+
+### Conditional Theme Properties
+
+```tsx
+import { Platform } from 'react-native';
+
+const platformAwareTheme = {
+  colors: {
+    primary: '#6366F1',
+    // ... other colors
+  },
+  components: {
+    borderRadius: {
+      xs: Platform.OS === 'ios' ? 6 : 4,
+      sm: Platform.OS === 'ios' ? 8 : 6,
+      md: Platform.OS === 'ios' ? 10 : 8,
+      lg: Platform.OS === 'ios' ? 12 : 10,
+      xl: Platform.OS === 'ios' ? 16 : 12,
+      full: 9999,
+    },
+    height: {
+      xs: Platform.OS === 'ios' ? 34 : 32,
+      sm: Platform.OS === 'ios' ? 38 : 36,
+      md: Platform.OS === 'ios' ? 42 : 40,
+      lg: Platform.OS === 'ios' ? 46 : 44,
+      xl: Platform.OS === 'ios' ? 50 : 48,
+    },
+  },
+};
+```
+
+### Theme Inheritance
+
+```tsx
+import { lightTheme } from 'rnc-theme';
+
+// Extend existing theme
+const extendedTheme = {
+  ...lightTheme,
+  colors: {
+    ...lightTheme.colors,
+    primary: '#6366F1',     // Override primary
+    secondary: '#8B5CF6',   // Override secondary
+    // Keep all other colors from lightTheme
+  },
+  components: {
+    ...lightTheme.components,
+    borderRadius: {
+      ...lightTheme.components.borderRadius,
+      md: 12, // Override medium border radius
+    },
+  },
+};
+```
+
+## Theme Validation
+
+### Built-in Validation
+
+```tsx
+import { validateTheme, ThemeValidationError } from 'rnc-theme';
+
+const customTheme = {
+  colors: {
+    primary: '#invalid-color', // This will fail validation
+  },
+};
+
+try {
+  const isValid = validateTheme(customTheme);
+  if (isValid) {
+    console.log('Theme is valid!');
+  }
+} catch (error) {
+  if (error instanceof ThemeValidationError) {
+    console.error('Theme validation failed:', error.message);
+    console.error('Invalid properties:', error.invalidProperties);
+  }
+}
+```
+
+### Custom Validation Rules
+
+```tsx
+const validateBrandTheme = (theme: Partial<Theme>) => {
+  const errors: string[] = [];
+
+  // Check brand color requirements
+  if (!theme.colors?.primary?.startsWith('#')) {
+    errors.push('Primary color must be a hex value');
+  }
+
+  // Check accessibility contrast
+  if (theme.colors && !hasGoodContrast(theme.colors.text, theme.colors.background)) {
+    errors.push('Text and background colors must have sufficient contrast');
+  }
+
+  return errors;
+};
+```
+
+## Color Utilities
+
+### Color Manipulation
+
+```tsx
+import {
+  lighten,
+  darken,
+  alpha,
+  getContrastRatio,
+  generateColorPalette
+} from 'rnc-theme/utils';
+
+const baseColor = '#6366F1';
+
+const colorVariants = {
+  primary: baseColor,
+  primaryLight: lighten(baseColor, 0.2),
+  primaryDark: darken(baseColor, 0.2),
+  primaryAlpha: alpha(baseColor, 0.1),
+};
+
+// Generate full palette
+const palette = generateColorPalette(baseColor);
+// Returns: { 50: '#...', 100: '#...', ..., 900: '#...' }
+```
+
+### Accessibility Helpers
+
+```tsx
+import { ensureAccessibility } from 'rnc-theme/utils';
+
+const accessibleTheme = ensureAccessibility({
+  colors: {
+    primary: '#6366F1',
+    background: '#FFFFFF',
+    text: '#000000',
+    // ... other colors
+  },
+});
+
+// Automatically adjusts colors to meet WCAG guidelines
+```
+
+## Testing Custom Themes
+
+### Theme Testing Utilities
+
+```tsx
+import { renderWithTheme, mockTheme } from 'rnc-theme/testing';
+import { render } from '@testing-library/react-native';
+
+const customTheme = mockTheme({
+  colors: {
+    primary: '#6366F1',
+  },
+});
+
+test('component renders with custom theme', () => {
+  const { getByText } = renderWithTheme(
+    <MyComponent />,
+    { theme: customTheme }
+  );
+
+  expect(getByText('Hello')).toBeTruthy();
+});
+```
+
+### Visual Regression Testing
+
+```tsx
+import { captureThemeSnapshot } from 'rnc-theme/testing';
+
+test('theme visual consistency', async () => {
+  const snapshot = await captureThemeSnapshot(customTheme);
+  expect(snapshot).toMatchSnapshot();
+});
+```
+
+## Best Practices
+
+<CardGrid>
+  <Card title="🎨 Color Consistency" icon="star">
+    Use a consistent color palette with proper contrast ratios for accessibility.
+  </Card>
+  <Card title="📏 Spacing Scale" icon="setting">
+    Maintain a consistent spacing scale (4px, 8px, 16px, 24px, 32px, 48px).
+  </Card>
+  <Card title="🔤 Typography Hierarchy" icon="document">
+    Establish clear typography hierarchy with appropriate font sizes and weights.
+  </Card>
+  <Card title="🧩 Component Consistency" icon="puzzle">
+    Keep component sizing consistent across your theme (heights, padding, border radius).
+  </Card>
+</CardGrid>
+
+### Do's and Don'ts
+
+<Tabs>
+  <TabItem label="✅ Do's">
+    ```tsx
+    // ✅ Use semantic color names
+    colors: {
+      primary: '#6366F1',
+      error: '#EF4444',
+      success: '#10B981',
+    }
+
+    // ✅ Maintain consistent spacing scale
+    spacing: {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+      xxl: 48,
+    }
+
+    // ✅ Use relative units for typography
+    typography: {
+      body: {
+        fontSize: 16,
+        lineHeight: 24, // 1.5x font size
+      },
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="❌ Don'ts">
+    ```tsx
+    // ❌ Don't use arbitrary color names
+    colors: {
+      myFavoriteBlue: '#6366F1',
+      thatNiceRed: '#EF4444',
+    }
+
+    // ❌ Don't use inconsistent spacing
+    spacing: {
+      xs: 3,
+      sm: 7,
+      md: 15,
+      lg: 23,
+    }
+
+    // ❌ Don't ignore accessibility
+    colors: {
+      text: '#CCCCCC',      // Too light
+      background: '#FFFFFF', // Poor contrast
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+<Aside type="tip" title="Design System Integration">
+  Consider creating your custom theme based on an existing design system like Material Design, Human Interface Guidelines, or your company's design tokens.
+</Aside>
+
+<Aside type="note" title="Performance Tip">
+  Use `useMemo` when creating complex theme objects to prevent unnecessary recalculations.
+</Aside>
+
+## Next Steps
+
+<CardGrid>
+  <Card title="Theme Registry" icon="list">
+    Learn how to manage multiple custom themes with the registry system.
+    [Registry Guide →](/theming/theme-registry)
+  </Card>
+  <Card title="Theme Switching" icon="setting">
+    Implement smooth transitions between your custom themes.
+    [Switching Guide →](/theming/theme-switching)
+  </Card>
+  <Card title="Component Theming" icon="puzzle">
+    Apply your custom theme to RNC components.
+    [Component Guide →](/components/overview)
+  </Card>
+  <Card title="Hooks Reference" icon="code">
+    Master the theme hooks for advanced customization.
+    [Hooks Documentation →](/hooks/overview)
+  </Card>
+</CardGrid>

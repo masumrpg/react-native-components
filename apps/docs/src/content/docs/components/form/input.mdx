@@ -1,0 +1,1117 @@
+---
+title: Input
+description: A powerful, animated input component with floating labels, validation states, icons, and specialized input types for React Native applications.
+sidebar:
+  order: 2
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+# Input
+
+A versatile, themeable input component with smooth animations, floating labels, validation states, icons, and specialized input types. Built with React Native Reanimated for fluid user experiences.
+
+## Features
+
+<CardGrid>
+  <Card title="🏷️ Floating Labels" icon="star">
+    Smooth animated labels that float above the input when focused or filled.
+  </Card>
+  <Card title="✅ Validation States" icon="setting">
+    Built-in error, success, warning, and info states with visual feedback.
+  </Card>
+  <Card title="🔧 Icon Support" icon="puzzle">
+    Left and right icons with customizable press handlers and animations.
+  </Card>
+  <Card title="🔒 Specialized Types" icon="information">
+    Password, search, and textarea variants with type-specific features.
+  </Card>
+  <Card title="✨ Smooth Animations" icon="rocket">
+    Fluid focus animations, label transitions, and error state feedback.
+  </Card>
+  <Card title="♿ Accessibility" icon="star">
+    Full accessibility support with proper labels, states, and screen reader compatibility.
+  </Card>
+</CardGrid>
+
+## Basic Usage
+
+```tsx
+import { Input } from 'rnc-theme';
+import { useState } from 'react';
+
+function BasicExample() {
+  const [value, setValue] = useState('');
+
+  return (
+    <View style={styles.container}>
+      <Input
+        label="Email Address"
+        placeholder="Enter your email"
+        value={value}
+        onChange={setValue}
+        keyboardType="email-address"
+        autoCapitalize="none"
+      />
+    </View>
+  );
+}
+```
+
+## Input Variants
+
+The Input component supports multiple visual variants to match different design requirements.
+
+<Tabs>
+  <TabItem label="Standard Variants">
+    ```tsx
+    import { Input } from 'rnc-theme';
+
+    function VariantExample() {
+      return (
+        <View style={styles.container}>
+          {/* Default - Standard input */}
+          <Input
+            variant="default"
+            label="Default Input"
+            placeholder="Enter text"
+          />
+
+          {/* Outline - Bordered input */}
+          <Input
+            variant="outline"
+            label="Outline Input"
+            placeholder="Enter text"
+          />
+
+          {/* Filled - Solid background */}
+          <Input
+            variant="filled"
+            label="Filled Input"
+            placeholder="Enter text"
+          />
+
+          {/* Ghost - Minimal styling */}
+          <Input
+            variant="ghost"
+            label="Ghost Input"
+            placeholder="Enter text"
+          />
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Floating Labels">
+    ```tsx
+    function FloatingLabelExample() {
+      const [values, setValues] = useState({
+        email: '',
+        password: '',
+        name: '',
+      });
+
+      return (
+        <View style={styles.container}>
+          <Input
+            label="Email Address"
+            placeholder="Enter your email"
+            value={values.email}
+            onChange={(text) => setValues(prev => ({ ...prev, email: text }))}
+            floatingLabel
+            keyboardType="email-address"
+          />
+
+          <Input
+            label="Full Name"
+            placeholder="Enter your name"
+            value={values.name}
+            onChange={(text) => setValues(prev => ({ ...prev, name: text }))}
+            floatingLabel
+          />
+
+          <Input
+            label="Password"
+            placeholder="Enter password"
+            value={values.password}
+            onChange={(text) => setValues(prev => ({ ...prev, password: text }))}
+            floatingLabel
+            isPasswordInput
+          />
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Validation States
+
+Provide visual feedback with different validation states and helper text.
+
+<Tabs>
+  <TabItem label="Error States">
+    ```tsx
+    import { Input } from 'rnc-theme';
+    import { useState } from 'react';
+
+    function ErrorStateExample() {
+      const [email, setEmail] = useState('');
+      const [password, setPassword] = useState('');
+
+      const emailError = email && !email.includes('@') ? 'Please enter a valid email address' : '';
+      const passwordError = password && password.length < 8 ? 'Password must be at least 8 characters' : '';
+
+      return (
+        <View style={styles.container}>
+          <Input
+            label="Email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={setEmail}
+            state={emailError ? 'error' : 'default'}
+            error={emailError}
+            helperText={emailError || 'We\'ll never share your email'}
+            keyboardType="email-address"
+          />
+
+          <Input
+            label="Password"
+            placeholder="Enter password"
+            value={password}
+            onChange={setPassword}
+            state={passwordError ? 'error' : 'default'}
+            error={passwordError}
+            helperText={passwordError || 'Must be at least 8 characters'}
+            isPasswordInput
+          />
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Success & Warning">
+    ```tsx
+    function ValidationStatesExample() {
+      const [username, setUsername] = useState('');
+      const [email, setEmail] = useState('');
+      const [phone, setPhone] = useState('');
+
+      const isValidUsername = username.length >= 3;
+      const isValidEmail = email.includes('@') && email.includes('.');
+      const hasPhoneNumber = phone.length > 0;
+
+      return (
+        <View style={styles.container}>
+          {/* Success state */}
+          <Input
+            label="Username"
+            placeholder="Choose a username"
+            value={username}
+            onChange={setUsername}
+            state={isValidUsername ? 'success' : 'default'}
+            helperText={isValidUsername ? 'Username is available!' : 'At least 3 characters required'}
+          />
+
+          {/* Success with validation */}
+          <Input
+            label="Email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={setEmail}
+            state={isValidEmail ? 'success' : email ? 'error' : 'default'}
+            helperText={isValidEmail ? 'Email format is correct' : email ? 'Invalid email format' : 'Enter your email address'}
+            keyboardType="email-address"
+          />
+
+          {/* Warning state */}
+          <Input
+            label="Phone Number"
+            placeholder="Optional phone number"
+            value={phone}
+            onChange={setPhone}
+            state={hasPhoneNumber ? 'default' : 'warning'}
+            helperText={hasPhoneNumber ? 'Phone number added' : 'Phone number is recommended for account recovery'}
+            keyboardType="phone-pad"
+          />
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Info State">
+    ```tsx
+    function InfoStateExample() {
+      const [apiKey, setApiKey] = useState('');
+      const [webhook, setWebhook] = useState('');
+
+      return (
+        <View style={styles.container}>
+          <Input
+            label="API Key"
+            placeholder="Enter your API key"
+            value={apiKey}
+            onChange={setApiKey}
+            state="info"
+            helperText="You can find your API key in the developer settings"
+            secureTextEntry
+          />
+
+          <Input
+            label="Webhook URL"
+            placeholder="https://your-app.com/webhook"
+            value={webhook}
+            onChange={setWebhook}
+            state="info"
+            helperText="This URL will receive real-time notifications"
+            keyboardType="url"
+            autoCapitalize="none"
+          />
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Specialized Input Types
+
+### Password Input
+
+```tsx
+import { Input } from 'rnc-theme';
+import { useState } from 'react';
+
+function PasswordExample() {
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const passwordsMatch = password === confirmPassword && password.length > 0;
+
+  return (
+    <View style={styles.container}>
+      <Input
+        label="Password"
+        placeholder="Enter your password"
+        value={password}
+        onChange={setPassword}
+        isPasswordInput
+        helperText="Must be at least 8 characters with numbers and symbols"
+      />
+
+      <Input
+        label="Confirm Password"
+        placeholder="Confirm your password"
+        value={confirmPassword}
+        onChange={setConfirmPassword}
+        isPasswordInput
+        state={confirmPassword ? (passwordsMatch ? 'success' : 'error') : 'default'}
+        helperText={
+          confirmPassword
+            ? (passwordsMatch ? 'Passwords match!' : 'Passwords do not match')
+            : 'Re-enter your password'
+        }
+      />
+    </View>
+  );
+}
+```
+
+### Search Input
+
+```tsx
+import { Input } from 'rnc-theme';
+import { useState, useEffect } from 'react';
+
+function SearchExample() {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [results, setResults] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
+
+  useEffect(() => {
+    if (searchQuery.length > 2) {
+      setIsSearching(true);
+      // Simulate search
+      const timer = setTimeout(() => {
+        setResults(['Result 1', 'Result 2', 'Result 3']);
+        setIsSearching(false);
+      }, 500);
+      return () => clearTimeout(timer);
+    } else {
+      setResults([]);
+    }
+  }, [searchQuery]);
+
+  return (
+    <View style={styles.container}>
+      <Input
+        label="Search"
+        placeholder="Search for items..."
+        value={searchQuery}
+        onChange={setSearchQuery}
+        isSearchInput
+        helperText={isSearching ? 'Searching...' : `${results.length} results found`}
+        rightIcon={isSearching ? <ActivityIndicator size="small" /> : undefined}
+      />
+
+      {results.length > 0 && (
+        <View style={styles.results}>
+          {results.map((result, index) => (
+            <Text key={index} style={styles.resultItem}>{result}</Text>
+          ))}
+        </View>
+      )}
+    </View>
+  );
+}
+```
+
+### Textarea Input
+
+```tsx
+function TextareaExample() {
+  const [message, setMessage] = useState('');
+  const [feedback, setFeedback] = useState('');
+
+  return (
+    <View style={styles.container}>
+      <Input
+        label="Message"
+        placeholder="Enter your message..."
+        value={message}
+        onChange={setMessage}
+        isTextAreaInput
+        multiline
+        numberOfLines={4}
+        maxLength={500}
+        showCharacterCount
+        helperText="Describe your issue in detail"
+      />
+
+      <Input
+        label="Feedback"
+        placeholder="Share your thoughts..."
+        value={feedback}
+        onChange={setFeedback}
+        multiline
+        numberOfLines={6}
+        maxLength={1000}
+        showCharacterCount
+        variant="filled"
+        helperText="Your feedback helps us improve"
+      />
+    </View>
+  );
+}
+```
+
+## Icons and Actions
+
+<Tabs>
+  <TabItem label="Left & Right Icons">
+    ```tsx
+    import { MaterialIcons } from '@expo/vector-icons';
+    import { Input } from 'rnc-theme';
+
+    function IconExample() {
+      const [email, setEmail] = useState('');
+      const [phone, setPhone] = useState('');
+      const [website, setWebsite] = useState('');
+
+      return (
+        <View style={styles.container}>
+          {/* Left icon */}
+          <Input
+            label="Email"
+            placeholder="Enter your email"
+            value={email}
+            onChange={setEmail}
+            leftIcon={
+              <MaterialIcons name="email" size={20} color="#666" />
+            }
+            keyboardType="email-address"
+          />
+
+          {/* Right icon with action */}
+          <Input
+            label="Phone Number"
+            placeholder="Enter phone number"
+            value={phone}
+            onChange={setPhone}
+            leftIcon={
+              <MaterialIcons name="phone" size={20} color="#666" />
+            }
+            rightIcon={
+              <MaterialIcons name="contacts" size={20} color="#007AFF" />
+            }
+            onRightIconPress={() => console.log('Open contacts')}
+            keyboardType="phone-pad"
+          />
+
+          {/* Both icons */}
+          <Input
+            label="Website"
+            placeholder="https://your-website.com"
+            value={website}
+            onChange={setWebsite}
+            leftIcon={
+              <MaterialIcons name="language" size={20} color="#666" />
+            }
+            rightIcon={
+              <MaterialIcons name="open-in-new" size={20} color="#007AFF" />
+            }
+            onRightIconPress={() => console.log('Open website')}
+            keyboardType="url"
+            autoCapitalize="none"
+          />
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Dynamic Icons">
+    ```tsx
+    function DynamicIconExample() {
+      const [searchQuery, setSearchQuery] = useState('');
+      const [isValid, setIsValid] = useState(false);
+
+      useEffect(() => {
+        setIsValid(searchQuery.length > 3);
+      }, [searchQuery]);
+
+      const clearSearch = () => {
+        setSearchQuery('');
+      };
+
+      return (
+        <View style={styles.container}>
+          <Input
+            label="Search"
+            placeholder="Search products..."
+            value={searchQuery}
+            onChange={setSearchQuery}
+            leftIcon={
+              <MaterialIcons name="search" size={20} color="#666" />
+            }
+            rightIcon={
+              searchQuery ? (
+                <TouchableOpacity onPress={clearSearch}>
+                  <MaterialIcons name="clear" size={20} color="#666" />
+                </TouchableOpacity>
+              ) : isValid ? (
+                <MaterialIcons name="check-circle" size={20} color="green" />
+              ) : null
+            }
+          />
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Icon Components">
+    ```tsx
+    function CustomIconExample() {
+      const [amount, setAmount] = useState('');
+      const [location, setLocation] = useState('');
+
+      const CurrencyIcon = () => (
+        <View style={styles.currencyIcon}>
+          <Text style={styles.currencyText}>$</Text>
+        </View>
+      );
+
+      const LocationIcon = ({ onPress }) => (
+        <TouchableOpacity onPress={onPress} style={styles.locationButton}>
+          <MaterialIcons name="my-location" size={20} color="#007AFF" />
+          <Text style={styles.locationText}>GPS</Text>
+        </TouchableOpacity>
+      );
+
+      return (
+        <View style={styles.container}>
+          <Input
+            label="Amount"
+            placeholder="0.00"
+            value={amount}
+            onChange={setAmount}
+            leftIcon={<CurrencyIcon />}
+            keyboardType="decimal-pad"
+          />
+
+          <Input
+            label="Location"
+            placeholder="Enter your location"
+            value={location}
+            onChange={setLocation}
+            rightIcon={
+              <LocationIcon onPress={() => console.log('Get GPS location')} />
+            }
+          />
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Sizes and Layout
+
+### Input Sizes
+
+```tsx
+import { Input } from 'rnc-theme';
+
+function SizeExample() {
+  return (
+    <View style={styles.container}>
+      <Input
+        size="xs"
+        label="Extra Small"
+        placeholder="Extra small input"
+      />
+
+      <Input
+        size="sm"
+        label="Small"
+        placeholder="Small input"
+      />
+
+      <Input
+        size="md"
+        label="Medium (Default)"
+        placeholder="Medium input"
+      />
+
+      <Input
+        size="lg"
+        label="Large"
+        placeholder="Large input"
+      />
+
+      <Input
+        size="xl"
+        label="Extra Large"
+        placeholder="Extra large input"
+      />
+    </View>
+  );
+}
+```
+
+### Character Count and Limits
+
+```tsx
+function CharacterCountExample() {
+  const [bio, setBio] = useState('');
+  const [title, setTitle] = useState('');
+
+  return (
+    <View style={styles.container}>
+      <Input
+        label="Bio"
+        placeholder="Tell us about yourself..."
+        value={bio}
+        onChange={setBio}
+        multiline
+        numberOfLines={4}
+        maxLength={150}
+        showCharacterCount
+        helperText="Keep it short and sweet"
+      />
+
+      <Input
+        label="Post Title"
+        placeholder="Enter post title"
+        value={title}
+        onChange={setTitle}
+        maxLength={60}
+        showCharacterCount
+        helperText="Choose a catchy title"
+      />
+    </View>
+  );
+}
+```
+
+## Advanced Features
+
+### Custom Styling
+
+```tsx
+import { Input } from 'rnc-theme';
+import { useThemedStyles } from 'rnc-theme';
+
+function CustomStyledExample() {
+  const styles = useThemedStyles((theme) => ({
+    customInput: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: 12,
+      borderWidth: 2,
+      borderColor: theme.colors.primary,
+    },
+    customLabel: {
+      fontSize: 16,
+      fontWeight: '600',
+      color: theme.colors.primary,
+    },
+    customHelper: {
+      fontSize: 12,
+      fontStyle: 'italic',
+      color: theme.colors.textSecondary,
+    },
+  }));
+
+  return (
+    <View>
+      <Input
+        label="Custom Styled Input"
+        placeholder="Enter text"
+        style={styles.customInput}
+        labelStyle={styles.customLabel}
+        helperTextStyle={styles.customHelper}
+        helperText="This input has custom styling"
+      />
+    </View>
+  );
+}
+```
+
+### Controlled vs Uncontrolled
+
+<Tabs>
+  <TabItem label="Controlled">
+    ```tsx
+    function ControlledExample() {
+      const [formData, setFormData] = useState({
+        firstName: '',
+        lastName: '',
+        email: '',
+      });
+
+      const updateField = (field: string) => (value: string) => {
+        setFormData(prev => ({ ...prev, [field]: value }));
+      };
+
+      return (
+        <View style={styles.container}>
+          <Input
+            label="First Name"
+            value={formData.firstName}
+            onChange={updateField('firstName')}
+            placeholder="Enter first name"
+          />
+
+          <Input
+            label="Last Name"
+            value={formData.lastName}
+            onChange={updateField('lastName')}
+            placeholder="Enter last name"
+          />
+
+          <Input
+            label="Email"
+            value={formData.email}
+            onChange={updateField('email')}
+            placeholder="Enter email"
+            keyboardType="email-address"
+          />
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Uncontrolled">
+    ```tsx
+    function UncontrolledExample() {
+      const firstNameRef = useRef(null);
+      const lastNameRef = useRef(null);
+      const emailRef = useRef(null);
+
+      const handleSubmit = () => {
+        const formData = {
+          firstName: firstNameRef.current?.value || '',
+          lastName: lastNameRef.current?.value || '',
+          email: emailRef.current?.value || '',
+        };
+        console.log('Form data:', formData);
+      };
+
+      return (
+        <View style={styles.container}>
+          <Input
+            ref={firstNameRef}
+            label="First Name"
+            defaultValue=""
+            placeholder="Enter first name"
+          />
+
+          <Input
+            ref={lastNameRef}
+            label="Last Name"
+            defaultValue=""
+            placeholder="Enter last name"
+          />
+
+          <Input
+            ref={emailRef}
+            label="Email"
+            defaultValue=""
+            placeholder="Enter email"
+            keyboardType="email-address"
+          />
+
+          <Button onPress={handleSubmit}>
+            Submit
+          </Button>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+### Form Integration
+
+```tsx
+import { Input, Button } from 'rnc-theme';
+import { useForm } from 'react-hook-form';
+
+function FormIntegrationExample() {
+  const { control, handleSubmit, formState: { errors } } = useForm();
+
+  const onSubmit = (data) => {
+    console.log('Form submitted:', data);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Controller
+        control={control}
+        name="email"
+        rules={{
+          required: 'Email is required',
+          pattern: {
+            value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
+            message: 'Invalid email address'
+          }
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            label="Email"
+            placeholder="Enter your email"
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
+            state={errors.email ? 'error' : 'default'}
+            error={errors.email?.message}
+            keyboardType="email-address"
+          />
+        )}
+      />
+
+      <Controller
+        control={control}
+        name="password"
+        rules={{
+          required: 'Password is required',
+          minLength: {
+            value: 8,
+            message: 'Password must be at least 8 characters'
+          }
+        }}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <Input
+            label="Password"
+            placeholder="Enter your password"
+            value={value}
+            onChange={onChange}
+            onBlur={onBlur}
+            state={errors.password ? 'error' : 'default'}
+            error={errors.password?.message}
+            isPasswordInput
+          />
+        )}
+      />
+
+      <Button onPress={handleSubmit(onSubmit)} variant="primary">
+        Submit
+      </Button>
+    </View>
+  );
+}
+```
+
+## Accessibility
+
+The Input component includes comprehensive accessibility support.
+
+```tsx
+import { Input } from 'rnc-theme';
+
+function AccessibilityExample() {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  return (
+    <View>
+      <Input
+        label="Email Address"
+        placeholder="Enter your email"
+        value={email}
+        onChange={setEmail}
+        accessibilityLabel="Email address input field"
+        accessibilityHint="Enter your email address to sign in"
+        accessibilityRole="text"
+        keyboardType="email-address"
+        autoComplete="email"
+        textContentType="emailAddress"
+      />
+
+      <Input
+        label="Password"
+        placeholder="Enter your password"
+        value={password}
+        onChange={setPassword}
+        accessibilityLabel="Password input field"
+        accessibilityHint="Enter your password to sign in"
+        accessibilityRole="text"
+        isPasswordInput
+        autoComplete="password"
+        textContentType="password"
+      />
+    </View>
+  );
+}
+```
+
+## API Reference
+
+### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | - | Input label text |
+| `placeholder` | `string` | - | Placeholder text |
+| `variant` | `ComponentVariant` | `'default'` | Visual style variant |
+| `size` | `ComponentSize` | `'md'` | Input size |
+| `state` | `ComponentState` | `'default'` | Validation state |
+| `value` | `string` | - | Controlled input value |
+| `defaultValue` | `string` | - | Default input value |
+| `onChange` | `(text: string) => void` | - | Change handler |
+| `onFocus` | `(event) => void` | - | Focus handler |
+| `onBlur` | `(event) => void` | - | Blur handler |
+| `helperText` | `string` | - | Helper text below input |
+| `error` | `string` | - | Error message |
+| `required` | `boolean` | `false` | Mark as required field |
+| `disabled` | `boolean` | `false` | Disable input |
+| `readOnly` | `boolean` | `false` | Make input read-only |
+| `leftIcon` | `React.ReactNode` | - | Left side icon |
+| `rightIcon` | `React.ReactNode` | - | Right side icon |
+| `onRightIconPress` | `() => void` | - | Right icon press handler |
+| `floatingLabel` | `boolean` | `false` | Enable floating label animation |
+| `multiline` | `boolean` | `false` | Enable multiline input |
+| `numberOfLines` | `number` | `1` | Number of lines for multiline |
+| `maxLength` | `number` | - | Maximum character length |
+| `showCharacterCount` | `boolean` | `false` | Show character counter |
+| `isPasswordInput` | `boolean` | `false` | Enable password input features |
+| `isSearchInput` | `boolean` | `false` | Enable search input features |
+| `isTextAreaInput` | `boolean` | `false` | Enable textarea input features |
+| `animated` | `boolean` | `true` | Enable animations |
+| `autoFocus` | `boolean` | `false` | Auto focus on mount |
+
+### Variants
+
+- `default` - Standard input with border
+- `outline` - Outlined input with border focus
+- `filled` - Filled background input
+- `ghost` - Minimal input without background
+
+### States
+
+- `default` - Normal state
+- `error` - Error state with red styling
+- `success` - Success state with green styling
+- `warning` - Warning state with yellow styling
+- `info` - Info state with blue styling
+
+### Sizes
+
+- `xs` - Extra small input
+- `sm` - Small input
+- `md` - Medium input (default)
+- `lg` - Large input
+- `xl` - Extra large input
+
+## Best Practices
+
+<CardGrid>
+  <Card title="🏷️ Clear Labels" icon="star">
+    Always provide descriptive labels that clearly indicate what input is expected.
+  </Card>
+  <Card title="💡 Helpful Placeholders" icon="information">
+    Use placeholders to show examples or provide additional context.
+  </Card>
+  <Card title="✅ Validation Feedback" icon="setting">
+    Provide immediate, clear feedback for validation errors and success states.
+  </Card>
+  <Card title="♿ Accessibility" icon="star">
+    Include proper accessibility labels and support for screen readers.
+  </Card>
+</CardGrid>
+
+### Do's and Don'ts
+
+<Tabs>
+  <TabItem label="✅ Do's">
+    ```tsx
+    // ✅ Use clear, descriptive labels
+    <Input label="Email Address" placeholder="john@example.com" />
+
+    // ✅ Provide helpful validation feedback
+    <Input
+      state={isValid ? 'success' : 'error'}
+      helperText={isValid ? 'Email is valid' : 'Please enter a valid email'}
+    />
+
+    // ✅ Use appropriate keyboard types
+    <Input keyboardType="email-address" autoCapitalize="none" />
+
+    // ✅ Include accessibility support
+    <Input
+      accessibilityLabel="Password input"
+      accessibilityHint="Enter your password to sign in"
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="❌ Don'ts">
+    ```tsx
+    // ❌ Vague or missing labels
+    <Input placeholder="Enter here" />
+
+    // ❌ No validation feedback
+    <Input value={invalidEmail} /> // No indication of error
+
+    // ❌ Wrong keyboard type
+    <Input
+      label="Email"
+      keyboardType="default" // Should be "email-address"
+    />
+
+    // ❌ Missing accessibility
+    <Input /> // No accessibility labels
+    ```
+  </TabItem>
+</Tabs>
+
+<Aside type="tip" title="Performance Tip">
+  Use `animated={false}` for forms with many inputs to improve performance on lower-end devices.
+</Aside>
+
+<Aside type="note" title="Floating Labels">
+  Floating labels work best with controlled inputs and provide a modern, space-efficient design.
+</Aside>
+
+## Troubleshooting
+
+### Common Issues
+
+<Tabs>
+  <TabItem label="Animation Issues">
+    **Problem:** Animations not working smoothly
+
+    **Solutions:**
+    ```tsx
+    // Ensure react-native-reanimated is properly configured
+    import 'react-native-reanimated/plugin';
+
+    // Disable animations if needed
+    <Input animated={false} />
+
+    // Check for conflicting styles
+    <Input style={{ transform: [] }} /> // Avoid transform conflicts
+    ```
+  </TabItem>
+
+  <TabItem label="Validation Issues">
+    **Problem:** Validation states not updating
+
+    **Solutions:**
+    ```tsx
+    // Ensure state is properly controlled
+    const [value, setValue] = useState('');
+    const [error, setError] = useState('');
+
+    <Input
+      value={value}
+      onChange={setValue}
+      state={error ? 'error' : 'default'}
+      error={error}
+    />
+
+    // Use useEffect for validation
+    useEffect(() => {
+      if (value && !isValid(value)) {
+        setError('Invalid input');
+      } else {
+        setError('');
+      }
+    }, [value]);
+    ```
+  </TabItem>
+
+  <TabItem label="Focus Issues">
+    **Problem:** Input not focusing properly
+
+    **Solutions:**
+    ```tsx
+    // Use ref for manual focus
+    const inputRef = useRef(null);
+
+    <Input
+      ref={inputRef}
+      onPress={() => inputRef.current?.focus()}
+    />
+
+    // Check for disabled state
+    <Input disabled={false} />
+
+    // Ensure proper keyboard handling
+    <Input
+      returnKeyType="next"
+      onSubmitEditing={() => nextInputRef.current?.focus()}
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+## Next Steps
+
+<CardGrid>
+  <Card title="Form Control" icon="setting">
+    Learn how to group inputs with Form Control component.
+    [Form Control →](/components/form/form-control)
+  </Card>
+  <Card title="Button Component" icon="puzzle">
+    Combine inputs with buttons for complete forms.
+    [Button Guide →](/components/form/button)
+  </Card>
+  <Card title="Validation" icon="information">
+    Implement comprehensive form validation patterns.
+    [Validation Guide →](/guides/form-validation)
+  </Card>
+  <Card title="Theme Customization" icon="palette">
+    Customize input appearance with custom themes.
+    [Custom Themes →](/theming/custom-theme)
+  </Card>
+</CardGrid>

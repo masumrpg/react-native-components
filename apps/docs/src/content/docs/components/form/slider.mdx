@@ -1,0 +1,770 @@
+---
+title: Slider
+description: Interactive slider components for selecting single values or ranges with smooth animations and customizable styling.
+---
+
+The Slider component provides an intuitive way to select numeric values within a specified range. It includes both single-value and range slider variants with smooth gesture-based interactions.
+
+## Features
+
+- **Single & Range Sliders**: Support for both single value and range selection
+- **Smooth Gestures**: Fluid pan gestures with spring animations
+- **Multiple Variants**: Different color schemes for various use cases
+- **Size Options**: Five different sizes from extra small to extra large
+- **Step Support**: Configurable step increments for precise value selection
+- **Live Labels**: Optional floating labels that show current values
+- **Custom Formatting**: Customizable label formatters for different value displays
+- **Accessibility**: Full accessibility support with proper semantics
+- **Imperative API**: Programmatic control via refs
+
+## Basic Usage
+
+### Single Value Slider
+
+```tsx
+import { useState } from 'react';
+import { Slider } from '@rnc/theme';
+import { View, Text } from 'react-native';
+
+export default function BasicSliderExample() {
+  const [value, setValue] = useState(50);
+
+  return (
+    <View style={{ padding: 20 }}>
+      <Text>Value: {value}</Text>
+      <Slider
+        initialValue={value}
+        min={0}
+        max={100}
+        step={1}
+        onValueChange={setValue}
+        width={300}
+      />
+    </View>
+  );
+}
+```
+
+### Range Slider
+
+```tsx
+import { useState } from 'react';
+import { RangeSlider } from '@rnc/theme';
+import { View, Text } from 'react-native';
+
+export default function BasicRangeSliderExample() {
+  const [values, setValues] = useState({ min: 20, max: 80 });
+
+  return (
+    <View style={{ padding: 20 }}>
+      <Text>Range: {values.min} - {values.max}</Text>
+      <RangeSlider
+        initialMinValue={values.min}
+        initialMaxValue={values.max}
+        min={0}
+        max={100}
+        step={1}
+        onValueChange={setValues}
+        width={300}
+      />
+    </View>
+  );
+}
+```
+
+## Variants
+
+The Slider component supports multiple variants for different use cases:
+
+```tsx
+import { Slider } from '@rnc/theme';
+import { View, Text } from 'react-native';
+
+export default function SliderVariantsExample() {
+  const [values, setValues] = useState({
+    primary: 50,
+    secondary: 60,
+    success: 70,
+    warning: 40,
+    error: 30,
+    info: 80,
+  });
+
+  const updateValue = (key: string) => (value: number) => {
+    setValues(prev => ({ ...prev, [key]: value }));
+  };
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <View>
+        <Text>Primary: {values.primary}</Text>
+        <Slider
+          variant="primary"
+          initialValue={values.primary}
+          onValueChange={updateValue('primary')}
+          width={300}
+        />
+      </View>
+
+      <View>
+        <Text>Secondary: {values.secondary}</Text>
+        <Slider
+          variant="secondary"
+          initialValue={values.secondary}
+          onValueChange={updateValue('secondary')}
+          width={300}
+        />
+      </View>
+
+      <View>
+        <Text>Success: {values.success}</Text>
+        <Slider
+          variant="success"
+          initialValue={values.success}
+          onValueChange={updateValue('success')}
+          width={300}
+        />
+      </View>
+
+      <View>
+        <Text>Warning: {values.warning}</Text>
+        <Slider
+          variant="warning"
+          initialValue={values.warning}
+          onValueChange={updateValue('warning')}
+          width={300}
+        />
+      </View>
+
+      <View>
+        <Text>Error: {values.error}</Text>
+        <Slider
+          variant="error"
+          initialValue={values.error}
+          onValueChange={updateValue('error')}
+          width={300}
+        />
+      </View>
+
+      <View>
+        <Text>Info: {values.info}</Text>
+        <Slider
+          variant="info"
+          initialValue={values.info}
+          onValueChange={updateValue('info')}
+          width={300}
+        />
+      </View>
+    </View>
+  );
+}
+```
+
+## Sizes
+
+Choose from five different sizes:
+
+```tsx
+import { Slider } from '@rnc/theme';
+import { View, Text } from 'react-native';
+
+export default function SliderSizesExample() {
+  const [value, setValue] = useState(50);
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <View>
+        <Text>Extra Small</Text>
+        <Slider
+          size="xs"
+          initialValue={value}
+          onValueChange={setValue}
+          width={300}
+        />
+      </View>
+
+      <View>
+        <Text>Small</Text>
+        <Slider
+          size="sm"
+          initialValue={value}
+          onValueChange={setValue}
+          width={300}
+        />
+      </View>
+
+      <View>
+        <Text>Medium</Text>
+        <Slider
+          size="md"
+          initialValue={value}
+          onValueChange={setValue}
+          width={300}
+        />
+      </View>
+
+      <View>
+        <Text>Large</Text>
+        <Slider
+          size="lg"
+          initialValue={value}
+          onValueChange={setValue}
+          width={300}
+        />
+      </View>
+
+      <View>
+        <Text>Extra Large</Text>
+        <Slider
+          size="xl"
+          initialValue={value}
+          onValueChange={setValue}
+          width={300}
+        />
+      </View>
+    </View>
+  );
+}
+```
+
+## Step Configuration
+
+Control the precision of value selection:
+
+```tsx
+import { useState } from 'react';
+import { Slider } from '@rnc/theme';
+import { View, Text } from 'react-native';
+
+export default function SliderStepExample() {
+  const [integerValue, setIntegerValue] = useState(50);
+  const [decimalValue, setDecimalValue] = useState(2.5);
+  const [largeStepValue, setLargeStepValue] = useState(50);
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <View>
+        <Text>Integer Steps (step=1): {integerValue}</Text>
+        <Slider
+          initialValue={integerValue}
+          min={0}
+          max={100}
+          step={1}
+          onValueChange={setIntegerValue}
+          width={300}
+        />
+      </View>
+
+      <View>
+        <Text>Decimal Steps (step=0.1): {decimalValue.toFixed(1)}</Text>
+        <Slider
+          initialValue={decimalValue}
+          min={0}
+          max={5}
+          step={0.1}
+          onValueChange={setDecimalValue}
+          width={300}
+        />
+      </View>
+
+      <View>
+        <Text>Large Steps (step=10): {largeStepValue}</Text>
+        <Slider
+          initialValue={largeStepValue}
+          min={0}
+          max={100}
+          step={10}
+          onValueChange={setLargeStepValue}
+          width={300}
+        />
+      </View>
+    </View>
+  );
+}
+```
+
+## Labels and Formatting
+
+Show live value labels with custom formatting:
+
+```tsx
+import { useState } from 'react';
+import { Slider } from '@rnc/theme';
+import { View, Text } from 'react-native';
+
+export default function SliderLabelsExample() {
+  const [temperature, setTemperature] = useState(22);
+  const [percentage, setPercentage] = useState(75);
+  const [price, setPrice] = useState(50);
+
+  return (
+    <View style={{ gap: 30, padding: 20 }}>
+      <View>
+        <Text>Temperature</Text>
+        <Slider
+          initialValue={temperature}
+          min={-10}
+          max={40}
+          step={1}
+          showLabel
+          labelFormatter={(value) => `${value}°C`}
+          onValueChange={setTemperature}
+          width={300}
+          variant="info"
+        />
+      </View>
+
+      <View>
+        <Text>Percentage</Text>
+        <Slider
+          initialValue={percentage}
+          min={0}
+          max={100}
+          step={5}
+          showLabel
+          labelFormatter={(value) => `${value}%`}
+          onValueChange={setPercentage}
+          width={300}
+          variant="success"
+        />
+      </View>
+
+      <View>
+        <Text>Price</Text>
+        <Slider
+          initialValue={price}
+          min={0}
+          max={100}
+          step={1}
+          showLabel
+          labelFormatter={(value) => `$${value}`}
+          onValueChange={setPrice}
+          width={300}
+          variant="warning"
+        />
+      </View>
+    </View>
+  );
+}
+```
+
+## Custom Colors
+
+Customize track and thumb colors:
+
+```tsx
+import { useState } from 'react';
+import { Slider } from '@rnc/theme';
+import { View, Text } from 'react-native';
+
+export default function CustomColorSliderExample() {
+  const [value1, setValue1] = useState(30);
+  const [value2, setValue2] = useState(70);
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <View>
+        <Text>Custom Pink Theme: {value1}</Text>
+        <Slider
+          initialValue={value1}
+          onValueChange={setValue1}
+          trackColor="#FFE4E6"
+          activeTrackColor="#FF6B9D"
+          thumbColor="#FFFFFF"
+          width={300}
+        />
+      </View>
+
+      <View>
+        <Text>Custom Blue Theme: {value2}</Text>
+        <Slider
+          initialValue={value2}
+          onValueChange={setValue2}
+          trackColor="#E0F2FE"
+          activeTrackColor="#0EA5E9"
+          thumbColor="#0369A1"
+          width={300}
+        />
+      </View>
+    </View>
+  );
+}
+```
+
+## Range Slider Advanced
+
+Advanced range slider with minimum distance:
+
+```tsx
+import { useState } from 'react';
+import { RangeSlider } from '@rnc/theme';
+import { View, Text } from 'react-native';
+
+export default function AdvancedRangeSliderExample() {
+  const [priceRange, setPriceRange] = useState({ min: 100, max: 500 });
+  const [ageRange, setAgeRange] = useState({ min: 25, max: 65 });
+
+  return (
+    <View style={{ gap: 30, padding: 20 }}>
+      <View>
+        <Text>Price Range: ${priceRange.min} - ${priceRange.max}</Text>
+        <RangeSlider
+          initialMinValue={priceRange.min}
+          initialMaxValue={priceRange.max}
+          min={0}
+          max={1000}
+          step={10}
+          minDistance={50}
+          showLabels
+          labelFormatter={(value) => `$${value}`}
+          onValueChange={setPriceRange}
+          width={300}
+          variant="success"
+        />
+      </View>
+
+      <View>
+        <Text>Age Range: {ageRange.min} - {ageRange.max} years</Text>
+        <RangeSlider
+          initialMinValue={ageRange.min}
+          initialMaxValue={ageRange.max}
+          min={18}
+          max={80}
+          step={1}
+          minDistance={5}
+          showLabels
+          labelFormatter={(value) => `${value}y`}
+          onValueChange={setAgeRange}
+          width={300}
+          variant="info"
+        />
+      </View>
+    </View>
+  );
+}
+```
+
+## Imperative API
+
+Control sliders programmatically using refs:
+
+```tsx
+import { useRef, useState } from 'react';
+import { Slider, RangeSlider, SliderRef, RangeSliderRef } from '@rnc/theme';
+import { View, Text, TouchableOpacity } from 'react-native';
+
+export default function ImperativeSliderExample() {
+  const sliderRef = useRef<SliderRef>(null);
+  const rangeSliderRef = useRef<RangeSliderRef>(null);
+  const [value, setValue] = useState(50);
+  const [rangeValues, setRangeValues] = useState({ min: 20, max: 80 });
+
+  const setRandomValue = () => {
+    const randomValue = Math.floor(Math.random() * 100);
+    sliderRef.current?.setValue(randomValue);
+  };
+
+  const setRandomRange = () => {
+    const min = Math.floor(Math.random() * 40);
+    const max = min + 20 + Math.floor(Math.random() * 40);
+    rangeSliderRef.current?.setValues(min, max);
+  };
+
+  const getCurrentValues = () => {
+    const currentValue = sliderRef.current?.getValue();
+    const currentRange = rangeSliderRef.current?.getValues();
+    console.log('Current slider value:', currentValue);
+    console.log('Current range values:', currentRange);
+  };
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <View>
+        <Text>Single Slider: {value}</Text>
+        <Slider
+          ref={sliderRef}
+          initialValue={value}
+          onValueChange={setValue}
+          width={300}
+        />
+        <TouchableOpacity
+          onPress={setRandomValue}
+          style={{
+            backgroundColor: '#007AFF',
+            padding: 10,
+            borderRadius: 5,
+            marginTop: 10,
+          }}
+        >
+          <Text style={{ color: 'white', textAlign: 'center' }}>
+            Set Random Value
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <View>
+        <Text>Range Slider: {rangeValues.min} - {rangeValues.max}</Text>
+        <RangeSlider
+          ref={rangeSliderRef}
+          initialMinValue={rangeValues.min}
+          initialMaxValue={rangeValues.max}
+          onValueChange={setRangeValues}
+          width={300}
+        />
+        <TouchableOpacity
+          onPress={setRandomRange}
+          style={{
+            backgroundColor: '#34C759',
+            padding: 10,
+            borderRadius: 5,
+            marginTop: 10,
+          }}
+        >
+          <Text style={{ color: 'white', textAlign: 'center' }}>
+            Set Random Range
+          </Text>
+        </TouchableOpacity>
+      </View>
+
+      <TouchableOpacity
+        onPress={getCurrentValues}
+        style={{
+          backgroundColor: '#FF9500',
+          padding: 10,
+          borderRadius: 5,
+        }}
+      >
+        <Text style={{ color: 'white', textAlign: 'center' }}>
+          Log Current Values
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+}
+```
+
+## Form Integration
+
+Integrate with form libraries:
+
+```tsx
+import { useForm, Controller } from 'react-hook-form';
+import { Slider, RangeSlider } from '@rnc/theme';
+import { View, Text, TouchableOpacity } from 'react-native';
+
+interface FormData {
+  volume: number;
+  priceRange: { min: number; max: number };
+  quality: number;
+}
+
+export default function FormIntegrationExample() {
+  const { control, handleSubmit, watch } = useForm<FormData>({
+    defaultValues: {
+      volume: 50,
+      priceRange: { min: 100, max: 500 },
+      quality: 80,
+    },
+  });
+
+  const formData = watch();
+
+  const onSubmit = (data: FormData) => {
+    console.log('Form data:', data);
+  };
+
+  return (
+    <View style={{ gap: 20, padding: 20 }}>
+      <View>
+        <Text>Volume: {formData.volume}</Text>
+        <Controller
+          control={control}
+          name="volume"
+          render={({ field: { onChange, value } }) => (
+            <Slider
+              initialValue={value}
+              min={0}
+              max={100}
+              step={1}
+              onValueChange={onChange}
+              variant="info"
+              width={300}
+            />
+          )}
+        />
+      </View>
+
+      <View>
+        <Text>
+          Price Range: ${formData.priceRange.min} - ${formData.priceRange.max}
+        </Text>
+        <Controller
+          control={control}
+          name="priceRange"
+          render={({ field: { onChange, value } }) => (
+            <RangeSlider
+              initialMinValue={value.min}
+              initialMaxValue={value.max}
+              min={0}
+              max={1000}
+              step={10}
+              minDistance={50}
+              onValueChange={onChange}
+              variant="success"
+              width={300}
+            />
+          )}
+        />
+      </View>
+
+      <View>
+        <Text>Quality: {formData.quality}</Text>
+        <Controller
+          control={control}
+          name="quality"
+          render={({ field: { onChange, value } }) => (
+            <Slider
+              initialValue={value}
+              min={0}
+              max={100}
+              step={5}
+              onValueChange={onChange}
+              variant="warning"
+              width={300}
+            />
+          )}
+        />
+      </View>
+
+      <TouchableOpacity
+        onPress={handleSubmit(onSubmit)}
+        style={{
+          backgroundColor: '#007AFF',
+          padding: 15,
+          borderRadius: 8,
+        }}
+      >
+        <Text style={{ color: 'white', textAlign: 'center', fontWeight: '600' }}>
+          Submit Form
+        </Text>
+      </TouchableOpacity>
+
+      <Text style={{ fontSize: 12, color: '#666' }}>
+        Current values: {JSON.stringify(formData, null, 2)}
+      </Text>
+    </View>
+  );
+}
+```
+
+## API Reference
+
+### Slider
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `initialValue` | `number` | `min` | Initial slider value |
+| `min` | `number` | `0` | Minimum value |
+| `max` | `number` | `100` | Maximum value |
+| `step` | `number` | `1` | Step increment |
+| `width` | `number` | `300` | Slider width |
+| `height` | `number` | - | Custom height (overrides size) |
+| `size` | `'xs' \| 'sm' \| 'md' \| 'lg' \| 'xl'` | `'md'` | Slider size |
+| `variant` | `'default' \| 'primary' \| 'secondary' \| 'success' \| 'warning' \| 'error' \| 'info' \| 'destructive' \| 'outline' \| 'filled' \| 'ghost'` | `'default'` | Color variant |
+| `disabled` | `boolean` | `false` | Whether slider is disabled |
+| `trackColor` | `string` | - | Custom track color |
+| `activeTrackColor` | `string` | - | Custom active track color |
+| `thumbColor` | `string` | - | Custom thumb color |
+| `thumbSize` | `number` | - | Custom thumb size |
+| `showLabel` | `boolean` | `false` | Show floating value label |
+| `labelFormatter` | `(value: number) => string` | `(value) => value.toString()` | Custom label formatter |
+| `onValueChange` | `(value: number) => void` | - | Value change callback |
+| `onSlidingStart` | `(value: number) => void` | - | Sliding start callback |
+| `onSlidingComplete` | `(value: number) => void` | - | Sliding complete callback |
+| `style` | `StyleProp<ViewStyle>` | - | Container styles |
+| `trackStyle` | `StyleProp<ViewStyle>` | - | Track styles |
+| `thumbStyle` | `StyleProp<ViewStyle>` | - | Thumb styles |
+| `labelStyle` | `TextStyle` | - | Label text styles |
+
+### RangeSlider
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `initialMinValue` | `number` | `min` | Initial minimum value |
+| `initialMaxValue` | `number` | `max` | Initial maximum value |
+| `minDistance` | `number` | `0` | Minimum distance between thumbs |
+| `showLabels` | `boolean` | `false` | Show floating value labels |
+| `onValueChange` | `(values: { min: number; max: number }) => void` | - | Value change callback |
+| `onSlidingStart` | `(values: { min: number; max: number }) => void` | - | Sliding start callback |
+| `onSlidingComplete` | `(values: { min: number; max: number }) => void` | - | Sliding complete callback |
+
+*All other props are inherited from the base Slider component.*
+
+### SliderRef
+
+| Method | Type | Description |
+|--------|------|-------------|
+| `setValue` | `(value: number) => void` | Set slider value programmatically |
+| `getValue` | `() => number` | Get current slider value |
+
+### RangeSliderRef
+
+| Method | Type | Description |
+|--------|------|-------------|
+| `setValues` | `(min: number, max: number) => void` | Set range values programmatically |
+| `getValues` | `() => { min: number; max: number }` | Get current range values |
+
+## Best Practices
+
+### Do's
+
+- Use appropriate step values for the data type (integers vs decimals)
+- Provide clear labels or descriptions for what the slider controls
+- Use meaningful value ranges that make sense for your use case
+- Consider showing current values alongside the slider
+- Use appropriate variants to convey meaning (success for positive values, warning for thresholds)
+
+### Don'ts
+
+- Don't use sliders for precise value entry (use text inputs instead)
+- Don't make sliders too narrow for comfortable interaction
+- Avoid using sliders for boolean values (use switches instead)
+- Don't use range sliders when a single value is sufficient
+- Don't forget to handle edge cases in your value change handlers
+
+### Accessibility
+
+- Sliders automatically include proper accessibility labels
+- Ensure sufficient color contrast for all visual states
+- Test with screen readers to verify proper value announcements
+- Consider providing alternative input methods for precise values
+- Use descriptive labels that explain the slider's purpose
+
+## Troubleshooting
+
+### Common Issues
+
+**Slider not responding to gestures**
+- Ensure react-native-gesture-handler is properly installed and configured
+- Check that the slider is not disabled
+- Verify that parent views don't have gesture conflicts
+
+**Values not updating correctly**
+- Ensure `onValueChange` callback is provided
+- Check that step values are appropriate for your range
+- Verify that min/max values are set correctly
+
+**Labels not showing**
+- Ensure `showLabel` (single slider) or `showLabels` (range slider) is set to true
+- Check that there's sufficient space above the slider for labels
+- Verify that label styles are not hiding the text
+
+**Performance issues with frequent updates**
+- Consider debouncing value change callbacks for expensive operations
+- Use `onSlidingComplete` instead of `onValueChange` for heavy operations
+- Implement proper memoization for complex label formatters
+
+**Range slider thumbs overlapping**
+- Set an appropriate `minDistance` value
+- Ensure the range between min and max values is sufficient
+- Check that initial values respect the minimum distance

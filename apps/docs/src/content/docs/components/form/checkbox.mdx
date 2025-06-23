@@ -1,0 +1,1188 @@
+---
+title: Checkbox
+description: A versatile checkbox component with smooth animations, group support, multiple variants, and comprehensive accessibility features for React Native applications.
+sidebar:
+  order: 3
+---
+
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+
+# Checkbox
+
+A powerful, animated checkbox component with group support, multiple variants, custom shapes, and smooth spring animations. Built with React Native Reanimated for fluid user experiences.
+
+## Features
+
+<CardGrid>
+  <Card title="✅ Group Support" icon="star">
+    Built-in checkbox group functionality for managing multiple selections.
+  </Card>
+  <Card title="🎨 Multiple Variants" icon="setting">
+    Support for default, primary, secondary, outline, filled, ghost, and state variants.
+  </Card>
+  <Card title="🔲 Custom Shapes" icon="puzzle">
+    Square and round checkbox shapes to match your design system.
+  </Card>
+  <Card title="✨ Smooth Animations" icon="rocket">
+    Fluid spring animations for check states, scaling, and visual feedback.
+  </Card>
+  <Card title="📏 Multiple Sizes" icon="information">
+    Five size options from extra small to extra large.
+  </Card>
+  <Card title="♿ Accessibility" icon="star">
+    Full accessibility support with proper labels, states, and screen reader compatibility.
+  </Card>
+</CardGrid>
+
+## Basic Usage
+
+```tsx
+import { Checkbox } from 'rnc-theme';
+import { useState } from 'react';
+
+function BasicExample() {
+  const [checked, setChecked] = useState(false);
+
+  return (
+    <View style={styles.container}>
+      <Checkbox
+        value="basic"
+        checked={checked}
+        onCheckedChange={setChecked}
+      >
+        <Checkbox.Label>Accept terms and conditions</Checkbox.Label>
+      </Checkbox>
+    </View>
+  );
+}
+```
+
+## Checkbox Variants
+
+The Checkbox component supports multiple visual variants to match different design requirements.
+
+<Tabs>
+  <TabItem label="Standard Variants">
+    ```tsx
+    import { Checkbox } from 'rnc-theme';
+
+    function VariantExample() {
+      const [values, setValues] = useState({
+        default: false,
+        primary: false,
+        secondary: false,
+        outline: false,
+        filled: false,
+        ghost: false,
+      });
+
+      const updateValue = (key: string) => (checked: boolean) => {
+        setValues(prev => ({ ...prev, [key]: checked }));
+      };
+
+      return (
+        <View style={styles.container}>
+          {/* Default variant */}
+          <Checkbox
+            variant="default"
+            value="default"
+            checked={values.default}
+            onCheckedChange={updateValue('default')}
+          >
+            <Checkbox.Label>Default Checkbox</Checkbox.Label>
+          </Checkbox>
+
+          {/* Primary variant */}
+          <Checkbox
+            variant="primary"
+            value="primary"
+            checked={values.primary}
+            onCheckedChange={updateValue('primary')}
+          >
+            <Checkbox.Label>Primary Checkbox</Checkbox.Label>
+          </Checkbox>
+
+          {/* Secondary variant */}
+          <Checkbox
+            variant="secondary"
+            value="secondary"
+            checked={values.secondary}
+            onCheckedChange={updateValue('secondary')}
+          >
+            <Checkbox.Label>Secondary Checkbox</Checkbox.Label>
+          </Checkbox>
+
+          {/* Outline variant */}
+          <Checkbox
+            variant="outline"
+            value="outline"
+            checked={values.outline}
+            onCheckedChange={updateValue('outline')}
+          >
+            <Checkbox.Label>Outline Checkbox</Checkbox.Label>
+          </Checkbox>
+
+          {/* Filled variant */}
+          <Checkbox
+            variant="filled"
+            value="filled"
+            checked={values.filled}
+            onCheckedChange={updateValue('filled')}
+          >
+            <Checkbox.Label>Filled Checkbox</Checkbox.Label>
+          </Checkbox>
+
+          {/* Ghost variant */}
+          <Checkbox
+            variant="ghost"
+            value="ghost"
+            checked={values.ghost}
+            onCheckedChange={updateValue('ghost')}
+          >
+            <Checkbox.Label>Ghost Checkbox</Checkbox.Label>
+          </Checkbox>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="State Variants">
+    ```tsx
+    function StateVariantExample() {
+      const [values, setValues] = useState({
+        success: false,
+        warning: false,
+        error: false,
+        info: false,
+        destructive: false,
+      });
+
+      const updateValue = (key: string) => (checked: boolean) => {
+        setValues(prev => ({ ...prev, [key]: checked }));
+      };
+
+      return (
+        <View style={styles.container}>
+          {/* Success state */}
+          <Checkbox
+            variant="success"
+            value="success"
+            checked={values.success}
+            onCheckedChange={updateValue('success')}
+          >
+            <Checkbox.Label>Success Checkbox</Checkbox.Label>
+          </Checkbox>
+
+          {/* Warning state */}
+          <Checkbox
+            variant="warning"
+            value="warning"
+            checked={values.warning}
+            onCheckedChange={updateValue('warning')}
+          >
+            <Checkbox.Label>Warning Checkbox</Checkbox.Label>
+          </Checkbox>
+
+          {/* Error state */}
+          <Checkbox
+            variant="error"
+            value="error"
+            checked={values.error}
+            onCheckedChange={updateValue('error')}
+          >
+            <Checkbox.Label>Error Checkbox</Checkbox.Label>
+          </Checkbox>
+
+          {/* Info state */}
+          <Checkbox
+            variant="info"
+            value="info"
+            checked={values.info}
+            onCheckedChange={updateValue('info')}
+          >
+            <Checkbox.Label>Info Checkbox</Checkbox.Label>
+          </Checkbox>
+
+          {/* Destructive state */}
+          <Checkbox
+            variant="destructive"
+            value="destructive"
+            checked={values.destructive}
+            onCheckedChange={updateValue('destructive')}
+          >
+            <Checkbox.Label>Destructive Checkbox</Checkbox.Label>
+          </Checkbox>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Checkbox Groups
+
+Manage multiple checkboxes with the CheckboxGroup component for coordinated state management.
+
+<Tabs>
+  <TabItem label="Basic Group">
+    ```tsx
+    import { Checkbox } from 'rnc-theme';
+    import { useState } from 'react';
+
+    function BasicGroupExample() {
+      const [selectedItems, setSelectedItems] = useState<string[]>([]);
+
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>Select your interests:</Text>
+
+          <Checkbox.Group
+            value={selectedItems}
+            onValueChange={setSelectedItems}
+          >
+            <Checkbox value="technology">
+              <Checkbox.Label>Technology</Checkbox.Label>
+            </Checkbox>
+
+            <Checkbox value="design">
+              <Checkbox.Label>Design</Checkbox.Label>
+            </Checkbox>
+
+            <Checkbox value="business">
+              <Checkbox.Label>Business</Checkbox.Label>
+            </Checkbox>
+
+            <Checkbox value="science">
+              <Checkbox.Label>Science</Checkbox.Label>
+            </Checkbox>
+          </Checkbox.Group>
+
+          <Text style={styles.result}>
+            Selected: {selectedItems.join(', ') || 'None'}
+          </Text>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Advanced Group">
+    ```tsx
+    function AdvancedGroupExample() {
+      const [permissions, setPermissions] = useState<string[]>([]);
+      const [features, setFeatures] = useState<string[]>(['notifications']);
+
+      const allPermissions = ['read', 'write', 'delete', 'admin'];
+      const allFeatures = ['notifications', 'analytics', 'backup', 'sync'];
+
+      const toggleAll = (items: string[], setItems: (items: string[]) => void, allItems: string[]) => {
+        if (items.length === allItems.length) {
+          setItems([]);
+        } else {
+          setItems(allItems);
+        }
+      };
+
+      return (
+        <View style={styles.container}>
+          {/* Permissions Group */}
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Permissions</Text>
+              <TouchableOpacity
+                onPress={() => toggleAll(permissions, setPermissions, allPermissions)}
+              >
+                <Text style={styles.toggleText}>
+                  {permissions.length === allPermissions.length ? 'Deselect All' : 'Select All'}
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            <Checkbox.Group
+              value={permissions}
+              onValueChange={setPermissions}
+            >
+              <Checkbox value="read" variant="primary">
+                <Checkbox.Label>Read Access</Checkbox.Label>
+              </Checkbox>
+
+              <Checkbox value="write" variant="primary">
+                <Checkbox.Label>Write Access</Checkbox.Label>
+              </Checkbox>
+
+              <Checkbox value="delete" variant="warning">
+                <Checkbox.Label>Delete Access</Checkbox.Label>
+              </Checkbox>
+
+              <Checkbox value="admin" variant="error">
+                <Checkbox.Label>Admin Access</Checkbox.Label>
+              </Checkbox>
+            </Checkbox.Group>
+          </View>
+
+          {/* Features Group */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Features</Text>
+
+            <Checkbox.Group
+              value={features}
+              onValueChange={setFeatures}
+            >
+              <Checkbox value="notifications" variant="success">
+                <Checkbox.Label>Push Notifications</Checkbox.Label>
+              </Checkbox>
+
+              <Checkbox value="analytics" variant="info">
+                <Checkbox.Label>Analytics Tracking</Checkbox.Label>
+              </Checkbox>
+
+              <Checkbox value="backup" variant="secondary">
+                <Checkbox.Label>Auto Backup</Checkbox.Label>
+              </Checkbox>
+
+              <Checkbox value="sync" variant="secondary">
+                <Checkbox.Label>Cloud Sync</Checkbox.Label>
+              </Checkbox>
+            </Checkbox.Group>
+          </View>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Disabled Group">
+    ```tsx
+    function DisabledGroupExample() {
+      const [readOnlyItems] = useState<string[]>(['item1', 'item3']);
+
+      return (
+        <View style={styles.container}>
+          <Text style={styles.title}>Read-only Selection:</Text>
+
+          <Checkbox.Group
+            value={readOnlyItems}
+            onValueChange={() => {}} // No-op for read-only
+            disabled
+          >
+            <Checkbox value="item1">
+              <Checkbox.Label>Pre-selected Item 1</Checkbox.Label>
+            </Checkbox>
+
+            <Checkbox value="item2">
+              <Checkbox.Label>Unselected Item 2</Checkbox.Label>
+            </Checkbox>
+
+            <Checkbox value="item3">
+              <Checkbox.Label>Pre-selected Item 3</Checkbox.Label>
+            </Checkbox>
+
+            <Checkbox value="item4">
+              <Checkbox.Label>Unselected Item 4</Checkbox.Label>
+            </Checkbox>
+          </Checkbox.Group>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+## Shapes and Sizes
+
+### Checkbox Shapes
+
+```tsx
+import { Checkbox } from 'rnc-theme';
+
+function ShapeExample() {
+  const [squareChecked, setSquareChecked] = useState(false);
+  const [roundChecked, setRoundChecked] = useState(false);
+
+  return (
+    <View style={styles.container}>
+      {/* Square shape (default) */}
+      <Checkbox
+        shape="square"
+        value="square"
+        checked={squareChecked}
+        onCheckedChange={setSquareChecked}
+        variant="primary"
+      >
+        <Checkbox.Label>Square Checkbox</Checkbox.Label>
+      </Checkbox>
+
+      {/* Round shape */}
+      <Checkbox
+        shape="round"
+        value="round"
+        checked={roundChecked}
+        onCheckedChange={setRoundChecked}
+        variant="primary"
+      >
+        <Checkbox.Label>Round Checkbox</Checkbox.Label>
+      </Checkbox>
+    </View>
+  );
+}
+```
+
+### Checkbox Sizes
+
+```tsx
+function SizeExample() {
+  const [sizes, setSizes] = useState({
+    xs: false,
+    sm: false,
+    md: false,
+    lg: false,
+    xl: false,
+  });
+
+  const updateSize = (size: string) => (checked: boolean) => {
+    setSizes(prev => ({ ...prev, [size]: checked }));
+  };
+
+  return (
+    <View style={styles.container}>
+      <Checkbox
+        size="xs"
+        value="xs"
+        checked={sizes.xs}
+        onCheckedChange={updateSize('xs')}
+      >
+        <Checkbox.Label>Extra Small (xs)</Checkbox.Label>
+      </Checkbox>
+
+      <Checkbox
+        size="sm"
+        value="sm"
+        checked={sizes.sm}
+        onCheckedChange={updateSize('sm')}
+      >
+        <Checkbox.Label>Small (sm)</Checkbox.Label>
+      </Checkbox>
+
+      <Checkbox
+        size="md"
+        value="md"
+        checked={sizes.md}
+        onCheckedChange={updateSize('md')}
+      >
+        <Checkbox.Label>Medium (md) - Default</Checkbox.Label>
+      </Checkbox>
+
+      <Checkbox
+        size="lg"
+        value="lg"
+        checked={sizes.lg}
+        onCheckedChange={updateSize('lg')}
+      >
+        <Checkbox.Label>Large (lg)</Checkbox.Label>
+      </Checkbox>
+
+      <Checkbox
+        size="xl"
+        value="xl"
+        checked={sizes.xl}
+        onCheckedChange={updateSize('xl')}
+      >
+        <Checkbox.Label>Extra Large (xl)</Checkbox.Label>
+      </Checkbox>
+    </View>
+  );
+}
+```
+
+## Custom Icons and Indicators
+
+<Tabs>
+  <TabItem label="Custom Icons">
+    ```tsx
+    import { MaterialIcons } from '@expo/vector-icons';
+    import { Checkbox } from 'rnc-theme';
+
+    function CustomIconExample() {
+      const [favorites, setFavorites] = useState<string[]>([]);
+      const [bookmarks, setBookmarks] = useState<string[]>([]);
+
+      return (
+        <View style={styles.container}>
+          <Checkbox.Group
+            value={favorites}
+            onValueChange={setFavorites}
+          >
+            <Checkbox value="item1" variant="error">
+              <Checkbox.Indicator>
+                <Checkbox.Icon
+                  icon={
+                    <MaterialIcons
+                      name="favorite"
+                      size={16}
+                      color="white"
+                    />
+                  }
+                />
+              </Checkbox.Indicator>
+              <Checkbox.Label>Add to Favorites</Checkbox.Label>
+            </Checkbox>
+          </Checkbox.Group>
+
+          <Checkbox.Group
+            value={bookmarks}
+            onValueChange={setBookmarks}
+          >
+            <Checkbox value="item1" variant="info">
+              <Checkbox.Indicator>
+                <Checkbox.Icon
+                  icon={
+                    <MaterialIcons
+                      name="bookmark"
+                      size={16}
+                      color="white"
+                    />
+                  }
+                />
+              </Checkbox.Indicator>
+              <Checkbox.Label>Bookmark this page</Checkbox.Label>
+            </Checkbox>
+          </Checkbox.Group>
+        </View>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Indicators">
+    ```tsx
+    function CustomIndicatorExample() {
+      const [settings, setSettings] = useState<string[]>([]);
+
+      const CustomCheckIndicator = ({ checked }: { checked: boolean }) => (
+        <View style={[
+          styles.customIndicator,
+          checked && styles.customIndicatorChecked
+        ]}>
+          {checked && (
+            <Text style={styles.customCheckText}>✓</Text>
+          )}
+        </View>
+      );
+
+      return (
+        <View style={styles.container}>
+          <Checkbox.Group
+            value={settings}
+            onValueChange={setSettings}
+          >
+            <Checkbox value="notifications">
+              <Checkbox.Indicator>
+                <CustomCheckIndicator
+                  checked={settings.includes('notifications')}
+                />
+              </Checkbox.Indicator>
+              <Checkbox.Label>Enable Notifications</Checkbox.Label>
+            </Checkbox>
+
+            <Checkbox value="darkMode">
+              <Checkbox.Indicator>
+                <CustomCheckIndicator
+                  checked={settings.includes('darkMode')}
+                />
+              </Checkbox.Indicator>
+              <Checkbox.Label>Dark Mode</Checkbox.Label>
+            </Checkbox>
+          </Checkbox.Group>
+        </View>
+      );
+    }
+
+    const styles = StyleSheet.create({
+      customIndicator: {
+        width: 24,
+        height: 24,
+        borderRadius: 12,
+        borderWidth: 2,
+        borderColor: '#ddd',
+        backgroundColor: 'transparent',
+        justifyContent: 'center',
+        alignItems: 'center',
+      },
+      customIndicatorChecked: {
+        backgroundColor: '#007AFF',
+        borderColor: '#007AFF',
+      },
+      customCheckText: {
+        color: 'white',
+        fontSize: 14,
+        fontWeight: 'bold',
+      },
+    });
+    ```
+  </TabItem>
+</Tabs>
+
+## Advanced Features
+
+### Form Integration
+
+```tsx
+import { Checkbox, Button } from 'rnc-theme';
+import { useForm, Controller } from 'react-hook-form';
+
+interface FormData {
+  terms: boolean;
+  newsletter: boolean;
+  privacy: boolean;
+  features: string[];
+}
+
+function FormIntegrationExample() {
+  const { control, handleSubmit, watch, formState: { errors } } = useForm<FormData>({
+    defaultValues: {
+      terms: false,
+      newsletter: false,
+      privacy: false,
+      features: [],
+    },
+  });
+
+  const watchedTerms = watch('terms');
+  const watchedPrivacy = watch('privacy');
+
+  const onSubmit = (data: FormData) => {
+    console.log('Form submitted:', data);
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Registration Form</Text>
+
+      {/* Required checkboxes */}
+      <View style={styles.section}>
+        <Controller
+          control={control}
+          name="terms"
+          rules={{ required: 'You must accept the terms and conditions' }}
+          render={({ field: { onChange, value } }) => (
+            <Checkbox
+              value="terms"
+              checked={value}
+              onCheckedChange={onChange}
+              variant={errors.terms ? 'error' : 'primary'}
+            >
+              <Checkbox.Label>
+                I accept the{' '}
+                <Text style={styles.link}>Terms and Conditions</Text>
+                {' '}*
+              </Checkbox.Label>
+            </Checkbox>
+          )}
+        />
+        {errors.terms && (
+          <Text style={styles.errorText}>{errors.terms.message}</Text>
+        )}
+
+        <Controller
+          control={control}
+          name="privacy"
+          rules={{ required: 'You must accept the privacy policy' }}
+          render={({ field: { onChange, value } }) => (
+            <Checkbox
+              value="privacy"
+              checked={value}
+              onCheckedChange={onChange}
+              variant={errors.privacy ? 'error' : 'primary'}
+            >
+              <Checkbox.Label>
+                I accept the{' '}
+                <Text style={styles.link}>Privacy Policy</Text>
+                {' '}*
+              </Checkbox.Label>
+            </Checkbox>
+          )}
+        />
+        {errors.privacy && (
+          <Text style={styles.errorText}>{errors.privacy.message}</Text>
+        )}
+      </View>
+
+      {/* Optional checkbox */}
+      <View style={styles.section}>
+        <Controller
+          control={control}
+          name="newsletter"
+          render={({ field: { onChange, value } }) => (
+            <Checkbox
+              value="newsletter"
+              checked={value}
+              onCheckedChange={onChange}
+              variant="secondary"
+            >
+              <Checkbox.Label>
+                Subscribe to our newsletter for updates
+              </Checkbox.Label>
+            </Checkbox>
+          )}
+        />
+      </View>
+
+      {/* Feature selection */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Optional Features</Text>
+        <Controller
+          control={control}
+          name="features"
+          render={({ field: { onChange, value } }) => (
+            <Checkbox.Group
+              value={value}
+              onValueChange={onChange}
+            >
+              <Checkbox value="analytics" variant="info">
+                <Checkbox.Label>Analytics & Insights</Checkbox.Label>
+              </Checkbox>
+
+              <Checkbox value="notifications" variant="success">
+                <Checkbox.Label>Push Notifications</Checkbox.Label>
+              </Checkbox>
+
+              <Checkbox value="backup" variant="secondary">
+                <Checkbox.Label>Auto Backup</Checkbox.Label>
+              </Checkbox>
+            </Checkbox.Group>
+          )}
+        />
+      </View>
+
+      <Button
+        onPress={handleSubmit(onSubmit)}
+        variant="primary"
+        disabled={!watchedTerms || !watchedPrivacy}
+        style={styles.submitButton}
+      >
+        Create Account
+      </Button>
+    </View>
+  );
+}
+```
+
+### Conditional Logic
+
+```tsx
+function ConditionalLogicExample() {
+  const [mainFeatures, setMainFeatures] = useState<string[]>([]);
+  const [advancedFeatures, setAdvancedFeatures] = useState<string[]>([]);
+
+  const hasProFeature = mainFeatures.includes('pro');
+  const hasAnalytics = mainFeatures.includes('analytics');
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Feature Selection</Text>
+
+      {/* Main features */}
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Main Features</Text>
+        <Checkbox.Group
+          value={mainFeatures}
+          onValueChange={setMainFeatures}
+        >
+          <Checkbox value="basic" variant="primary">
+            <Checkbox.Label>Basic Features (Free)</Checkbox.Label>
+          </Checkbox>
+
+          <Checkbox value="pro" variant="success">
+            <Checkbox.Label>Pro Features ($9.99/month)</Checkbox.Label>
+          </Checkbox>
+
+          <Checkbox value="analytics" variant="info">
+            <Checkbox.Label>Analytics Dashboard</Checkbox.Label>
+          </Checkbox>
+        </Checkbox.Group>
+      </View>
+
+      {/* Advanced features - only show if pro is selected */}
+      {hasProFeature && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Pro Features</Text>
+          <Checkbox.Group
+            value={advancedFeatures}
+            onValueChange={setAdvancedFeatures}
+          >
+            <Checkbox value="customization" variant="secondary">
+              <Checkbox.Label>Advanced Customization</Checkbox.Label>
+            </Checkbox>
+
+            <Checkbox value="integrations" variant="secondary">
+              <Checkbox.Label>Third-party Integrations</Checkbox.Label>
+            </Checkbox>
+
+            <Checkbox value="priority" variant="warning">
+              <Checkbox.Label>Priority Support</Checkbox.Label>
+            </Checkbox>
+          </Checkbox.Group>
+        </View>
+      )}
+
+      {/* Analytics sub-features - only show if analytics is selected */}
+      {hasAnalytics && (
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Analytics Options</Text>
+          <Checkbox.Group
+            value={advancedFeatures}
+            onValueChange={setAdvancedFeatures}
+          >
+            <Checkbox value="realtime" variant="info">
+              <Checkbox.Label>Real-time Analytics</Checkbox.Label>
+            </Checkbox>
+
+            <Checkbox value="export" variant="info">
+              <Checkbox.Label>Data Export</Checkbox.Label>
+            </Checkbox>
+
+            <Checkbox value="alerts" variant="warning">
+              <Checkbox.Label>Custom Alerts</Checkbox.Label>
+            </Checkbox>
+          </Checkbox.Group>
+        </View>
+      )}
+
+      {/* Summary */}
+      <View style={styles.summary}>
+        <Text style={styles.summaryTitle}>Selected Features:</Text>
+        <Text style={styles.summaryText}>
+          Main: {mainFeatures.join(', ') || 'None'}
+        </Text>
+        {advancedFeatures.length > 0 && (
+          <Text style={styles.summaryText}>
+            Advanced: {advancedFeatures.join(', ')}
+          </Text>
+        )}
+      </View>
+    </View>
+  );
+}
+```
+
+## Accessibility
+
+The Checkbox component includes comprehensive accessibility support.
+
+```tsx
+import { Checkbox } from 'rnc-theme';
+
+function AccessibilityExample() {
+  const [preferences, setPreferences] = useState<string[]>([]);
+
+  return (
+    <View>
+      <Text
+        style={styles.title}
+        accessibilityRole="header"
+        accessibilityLevel={2}
+      >
+        Accessibility Preferences
+      </Text>
+
+      <Checkbox.Group
+        value={preferences}
+        onValueChange={setPreferences}
+        accessibilityRole="group"
+        accessibilityLabel="Accessibility preferences"
+      >
+        <Checkbox
+          value="highContrast"
+          accessibilityLabel="Enable high contrast mode"
+          accessibilityHint="Increases contrast for better visibility"
+        >
+          <Checkbox.Label>High Contrast Mode</Checkbox.Label>
+        </Checkbox>
+
+        <Checkbox
+          value="largeText"
+          accessibilityLabel="Enable large text"
+          accessibilityHint="Increases text size throughout the app"
+        >
+          <Checkbox.Label>Large Text</Checkbox.Label>
+        </Checkbox>
+
+        <Checkbox
+          value="reduceMotion"
+          accessibilityLabel="Reduce motion and animations"
+          accessibilityHint="Minimizes animations for users sensitive to motion"
+        >
+          <Checkbox.Label>Reduce Motion</Checkbox.Label>
+        </Checkbox>
+
+        <Checkbox
+          value="screenReader"
+          accessibilityLabel="Optimize for screen readers"
+          accessibilityHint="Enhances compatibility with screen reading software"
+        >
+          <Checkbox.Label>Screen Reader Optimization</Checkbox.Label>
+        </Checkbox>
+      </Checkbox.Group>
+    </View>
+  );
+}
+```
+
+## API Reference
+
+### Checkbox Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | - | Unique identifier for the checkbox |
+| `checked` | `boolean` | `false` | Controlled checked state |
+| `onCheckedChange` | `(checked: boolean) => void` | - | Callback when checked state changes |
+| `variant` | `ComponentVariant` | `'default'` | Visual style variant |
+| `size` | `ComponentSize` | `'md'` | Checkbox size |
+| `shape` | `'square' \| 'round'` | `'square'` | Checkbox shape |
+| `disabled` | `boolean` | `false` | Disable the checkbox |
+| `style` | `StyleProp<ViewStyle>` | - | Custom container styles |
+| `children` | `React.ReactNode` | - | Checkbox content (label, indicator) |
+
+### CheckboxGroup Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string[]` | `[]` | Array of selected checkbox values |
+| `onValueChange` | `(value: string[]) => void` | - | Callback when selection changes |
+| `disabled` | `boolean` | `false` | Disable all checkboxes in group |
+| `style` | `StyleProp<ViewStyle>` | - | Custom group container styles |
+| `children` | `React.ReactNode` | - | Checkbox components |
+
+### CheckboxIndicator Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `style` | `StyleProp<ViewStyle>` | - | Custom indicator styles |
+| `children` | `React.ReactNode` | - | Custom indicator content |
+
+### CheckboxIcon Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `icon` | `React.ReactNode` | - | Custom icon element |
+| `style` | `StyleProp<ViewStyle>` | - | Custom icon styles |
+
+### CheckboxLabel Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `style` | `TextStyle` | - | Custom label text styles |
+| `children` | `React.ReactNode` | - | Label text content |
+
+### Variants
+
+- `default` - Standard checkbox styling
+- `primary` - Primary theme color
+- `secondary` - Secondary theme color
+- `outline` - Outlined checkbox style
+- `filled` - Filled background style
+- `ghost` - Minimal styling
+- `success` - Success state (green)
+- `warning` - Warning state (yellow)
+- `error` - Error state (red)
+- `info` - Info state (blue)
+- `destructive` - Destructive action styling
+
+### Sizes
+
+- `xs` - Extra small (14x14)
+- `sm` - Small (18x18)
+- `md` - Medium (22x22) - Default
+- `lg` - Large (26x26)
+- `xl` - Extra large (30x30)
+
+### Shapes
+
+- `square` - Square checkbox (default)
+- `round` - Round checkbox
+
+## Best Practices
+
+<CardGrid>
+  <Card title="🏷️ Clear Labels" icon="star">
+    Use descriptive labels that clearly indicate what the checkbox controls.
+  </Card>
+  <Card title="📱 Touch Targets" icon="information">
+    Ensure adequate touch target size, especially for smaller checkboxes.
+  </Card>
+  <Card title="🎨 Consistent Styling" icon="setting">
+    Use consistent variants and sizes throughout your application.
+  </Card>
+  <Card title="♿ Accessibility" icon="star">
+    Include proper accessibility labels and support for screen readers.
+  </Card>
+</CardGrid>
+
+### Do's and Don'ts
+
+<Tabs>
+  <TabItem label="✅ Do's">
+    ```tsx
+    // ✅ Use clear, descriptive labels
+    <Checkbox value="terms">
+      <Checkbox.Label>I accept the Terms and Conditions</Checkbox.Label>
+    </Checkbox>
+
+    // ✅ Group related checkboxes
+    <Checkbox.Group value={permissions} onValueChange={setPermissions}>
+      <Checkbox value="read">Read Access</Checkbox>
+      <Checkbox value="write">Write Access</Checkbox>
+    </Checkbox.Group>
+
+    // ✅ Use appropriate variants for context
+    <Checkbox variant="error" value="delete">
+      <Checkbox.Label>Permanently delete account</Checkbox.Label>
+    </Checkbox>
+
+    // ✅ Include accessibility support
+    <Checkbox
+      value="notifications"
+      accessibilityLabel="Enable push notifications"
+      accessibilityHint="Receive alerts when new messages arrive"
+    >
+      <Checkbox.Label>Push Notifications</Checkbox.Label>
+    </Checkbox>
+    ```
+  </TabItem>
+
+  <TabItem label="❌ Don'ts">
+    ```tsx
+    // ❌ Vague or unclear labels
+    <Checkbox value="option1">
+      <Checkbox.Label>Option 1</Checkbox.Label>
+    </Checkbox>
+
+    // ❌ Too many checkboxes without grouping
+    <Checkbox value="a">A</Checkbox>
+    <Checkbox value="b">B</Checkbox>
+    <Checkbox value="c">C</Checkbox>
+    // ... 20 more individual checkboxes
+
+    // ❌ Inconsistent sizing
+    <Checkbox size="xs">Small option</Checkbox>
+    <Checkbox size="xl">Another option</Checkbox>
+
+    // ❌ Missing accessibility
+    <Checkbox value="important" /> // No label or accessibility info
+    ```
+  </TabItem>
+</Tabs>
+
+<Aside type="tip" title="Performance Tip">
+  When using large checkbox groups, consider implementing virtualization for lists with hundreds of items.
+</Aside>
+
+<Aside type="note" title="Animation Performance">
+  The checkbox uses optimized spring animations. For better performance on older devices, you can disable animations by customizing the theme.
+</Aside>
+
+## Troubleshooting
+
+### Common Issues
+
+<Tabs>
+  <TabItem label="State Management">
+    **Problem:** Checkbox state not updating properly
+
+    **Solutions:**
+    ```tsx
+    // Ensure proper controlled component pattern
+    const [checked, setChecked] = useState(false);
+
+    <Checkbox
+      value="example"
+      checked={checked}
+      onCheckedChange={setChecked} // Make sure this is connected
+    />
+
+    // For groups, ensure value array is properly managed
+    const [selectedItems, setSelectedItems] = useState<string[]>([]);
+
+    <Checkbox.Group
+      value={selectedItems}
+      onValueChange={setSelectedItems} // This should update the array
+    >
+      {/* checkboxes */}
+    </Checkbox.Group>
+    ```
+  </TabItem>
+
+  <TabItem label="Animation Issues">
+    **Problem:** Animations not working smoothly
+
+    **Solutions:**
+    ```tsx
+    // Ensure react-native-reanimated is properly configured
+    import 'react-native-reanimated/plugin';
+
+    // Check for conflicting styles
+    <Checkbox
+      style={{
+        // Avoid transform conflicts
+        transform: undefined,
+      }}
+    />
+
+    // For performance issues, consider reducing animation complexity
+    // This is handled automatically by the component
+    ```
+  </TabItem>
+
+  <TabItem label="Styling Issues">
+    **Problem:** Custom styles not applying correctly
+
+    **Solutions:**
+    ```tsx
+    // Use proper style props for different parts
+    <Checkbox
+      style={styles.checkboxContainer} // Container styles
+      value="example"
+    >
+      <Checkbox.Indicator style={styles.indicator} />
+      <Checkbox.Label style={styles.label}>Label</Checkbox.Label>
+    </Checkbox>
+
+    // Ensure theme compatibility
+    const styles = useThemedStyles((theme) => ({
+      checkboxContainer: {
+        backgroundColor: theme.colors.surface,
+      },
+      label: {
+        color: theme.colors.text,
+      },
+    }));
+    ```
+  </TabItem>
+</Tabs>
+
+## Next Steps
+
+<CardGrid>
+  <Card title="Radio Component" icon="setting">
+    Learn about radio buttons for single-selection scenarios.
+    [Radio Guide →](/components/form/radio)
+  </Card>
+  <Card title="Switch Component" icon="puzzle">
+    Explore toggle switches for binary choices.
+    [Switch Guide →](/components/form/switch)
+  </Card>
+  <Card title="Form Control" icon="information">
+    Group form elements with labels and validation.
+    [Form Control →](/components/form/form-control)
+  </Card>
+  <Card title="Theme Customization" icon="palette">
+    Customize checkbox appearance with custom themes.
+    [Custom Themes →](/theming/custom-theme)
+  </Card>
+</CardGrid>
