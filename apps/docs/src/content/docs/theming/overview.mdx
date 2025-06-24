@@ -219,25 +219,3 @@ All theme calculations are memoized to prevent unnecessary re-renders:
 ```tsx
 const styles = useThemedStyles(createStyles); // Memoized automatically
 ```
-
-## Integration Examples
-
-### Basic Setup
-
-```tsx
-import React from 'react';
-import { RNCProvider } from 'rnc-theme';
-import { NavigationContainer } from '@react-navigation/native';
-
-export default function App() {
-  return (
-    <RNCProvider
-      defaultTheme="system"
-    >
-      <NavigationContainer>
-        {/* Your navigation structure */}
-      </NavigationContainer>
-    </RNCProvider>
-  );
-}
-```
