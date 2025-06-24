@@ -3,38 +3,57 @@ title: Quick Start
 description: Get up and running with RNC Theme in just a few minutes with this step-by-step guide.
 ---
 
-import { FileTree, Tabs, TabItem } from '@astrojs/starlight/components';
+import {
+  FileTree,
+  Tabs,
+  TabItem,
+  Card,
+  CardGrid,
+  Steps,
+  Aside,
+  Badge,
+  Code,
+  Icon
+} from '@astrojs/starlight/components';
 
-Get RNC Theme working in your Expo Router app in just a few minutes.
+<Card title="Quick Setup" icon="rocket">
+Get RNC Theme working in your Expo Router app in just a few minutes with this comprehensive guide.
+</Card>
 
-> **Prerequisites**: Make sure you have [installed RNC Theme and its dependencies](/getting-started/installation) and have an Expo Router project ready.
+:::tip[Prerequisites]
+Make sure you have [installed RNC Theme and its dependencies](/getting-started/installation) and have an Expo Router project ready.
+:::
 
 ## Create Expo Project
 
-Choose your package manager for initializing your expo project:
+Choose your preferred package manager to initialize your Expo project:
 
 <Tabs syncKey="package">
   <TabItem label="npm" icon='npm'>
-    ```bash
-    npx create-expo-app@latest
+    ```bash title="Create with npm"
+    npx create-expo-app@latest my-rnc-app
+    cd my-rnc-app
     ```
   </TabItem>
 
   <TabItem label="yarn" icon="seti:yarn">
-    ```bash
-    yarn create expo-app
+    ```bash title="Create with Yarn"
+    yarn create expo-app my-rnc-app
+    cd my-rnc-app
     ```
   </TabItem>
 
   <TabItem label="pnpm" icon='pnpm'>
-    ```bash
-    pnpm create expo-app
+    ```bash title="Create with pnpm"
+    pnpm create expo-app my-rnc-app
+    cd my-rnc-app
     ```
   </TabItem>
 
   <TabItem label="bun" icon='bun'>
-    ```bash
-    bun create expo
+    ```bash title="Create with Bun"
+    bun create expo my-rnc-app
+    cd my-rnc-app
     ```
   </TabItem>
 </Tabs>
@@ -42,251 +61,394 @@ Choose your package manager for initializing your expo project:
 ## Project Structure
 
 <FileTree>
-- app
-  - (tabs)
+- app/
+  - (tabs)/
     - _layout.tsx
     - index.tsx
     - explore.tsx
+    - profile.tsx
+  - _layout.tsx <Badge text="Root Layout" variant="note" size="small" />
+  - +not-found.tsx
 - components/
-  - ThemeToggle.tsx
+  - ThemeToggle.tsx <Badge text="Custom" variant="tip" size="small" />
+- assets/
+  - fonts/
+    - SpaceMono-Regular.ttf
+- package.json
+- app.json
 </FileTree>
 
-## Step 1: Setup the Provider
+## Setup Steps
 
-**Setup in your root layout file:**
+<Steps>
 
-```tsx title="app/_layout.tsx"
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import { StatusBar } from 'expo-status-bar';
-import { RNCProvider } from 'rnc-theme';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import 'react-native-reanimated';
+1. **Setup the Provider**
 
-export default function RootLayout() {
-  const [loaded] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
-  });
+   Configure RNC Theme in your root layout file to enable theming across your entire app.
 
-  if (!loaded) {
-    return null;
-  }
+   ```tsx title="app/_layout.tsx" {5,11,17} ins={5,11,17}
+   import { useFonts } from 'expo-font';
+   import { Stack } from 'expo-router';
+   import { StatusBar } from 'expo-status-bar';
+   import { RNCProvider } from 'rnc-theme';
+   import { GestureHandlerRootView } from 'react-native-gesture-handler';
+   import 'react-native-reanimated';
 
-  return (
-    <RNCProvider defaultTheme="system">
-      <GestureHandlerRootView>
-        <Stack>
-          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-          <Stack.Screen name="+not-found" />
-        </Stack>
-        <StatusBar style="auto" />
-      </GestureHandlerRootView>
-    </RNCProvider>
-  );
-}
-```
+   export default function RootLayout() {
+     const [loaded] = useFonts({
+       SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+     });
 
-## Step 2: Create Your First Screen
+     if (!loaded) {
+       return null;
+     }
 
-```tsx title="app/index.tsx"
-import { Link } from "expo-router";
-import { Moon, Sun } from "lucide-react-native";
-import React from "react";
-import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
-import { Theme, useTheme, useThemedStyles } from "rnc-theme";
+     return (
+       <RNCProvider defaultTheme="system">
+         <GestureHandlerRootView>
+           <Stack>
+             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+             <Stack.Screen name="+not-found" />
+           </Stack>
+           <StatusBar style="auto" />
+         </GestureHandlerRootView>
+       </RNCProvider>
+     );
+   }
+   ```
 
-export default function HomeScreen() {
-  const { theme, setThemeMode, isDark } = useTheme();
-  const styles = useThemedStyles(createStyles);
+   :::note[Theme Configuration]
+   The `defaultTheme="system"` automatically adapts to the user's system preference (light/dark mode).
+   :::
 
-  const toggleTheme = () => {
-    setThemeMode(isDark ? "light" : "dark");
-  };
+2. **Create Your First Screen**
 
-  return (
-    <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, justifyContent: "center", alignItems: "center" }}>
-      <Text style={styles.title}>Welcome to RNC Theme!</Text>
-      <Text style={styles.subtitle}>Current theme: {isDark ? "dark" : "light"}</Text>
+   Build a home screen that demonstrates basic theming capabilities:
 
-      <TouchableOpacity style={styles.button} onPress={toggleTheme}>
-        {isDark ? (
-          <Sun color={theme.colors.text} size={20} />
-        ) : (
-          <Moon color={theme.colors.text} size={20} />
-        )}
-        <Text style={styles.buttonText}>Toggle Theme</Text>
-      </TouchableOpacity>
+   ```tsx title="app/index.tsx" {8-9,12,15-17} ins={8-9,12,15-17}
+   import { Link } from "expo-router";
+   import { Moon, Sun } from "lucide-react-native";
+   import React from "react";
+   import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
+   import { Theme, useTheme, useThemedStyles } from "rnc-theme";
 
-      <Link href="/explore" style={styles.link}>
-        <Text style={styles.linkText}>Go to Explore</Text>
-      </Link>
-    </ScrollView>
-  );
-}
+   export default function HomeScreen() {
+     const { theme, setThemeMode, isDark } = useTheme();
+     const styles = useThemedStyles(createStyles);
 
-const createStyles = (theme: Theme) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-    padding: theme.spacing.lg,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: "bold",
-    color: theme.colors.text,
-    textAlign: "center",
-    marginBottom: theme.spacing.sm,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: theme.colors.textSecondary,
-    textAlign: "center",
-    marginBottom: theme.spacing.xl,
-  },
-  button: {
-    backgroundColor: theme.colors.primary,
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.md,
-    borderRadius: theme.components.borderRadius.md,
-    gap: theme.spacing.sm,
-    marginBottom: theme.spacing.lg,
-  },
-  buttonText: {
-    color: theme.colors.text,
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  link: {
-    alignSelf: "center",
-  },
-  linkText: {
-    color: theme.colors.primary,
-    fontSize: 16,
-    fontWeight: "500",
-  },
-});
-```
+     const toggleTheme = () => {
+       setThemeMode(isDark ? "light" : "dark");
+     };
 
-## Step 3: Try Built-in Components
+     return (
+       <ScrollView
+         style={styles.container}
+         contentContainerStyle={{
+           flexGrow: 1,
+           justifyContent: "center",
+           alignItems: "center"
+         }}
+       >
+         <Text style={styles.title}>Welcome to RNC Theme!</Text>
+         <Text style={styles.subtitle}>
+           Current theme: {isDark ? "dark" : "light"}
+         </Text>
 
-```tsx title="app/profile.tsx"
-import { Settings, User } from "lucide-react-native";
-import React, { useState } from "react";
-import {
-  Avatar,
-  Box,
-  Button,
-  ButtonIcon,
-  ButtonText,
-  Card,
-  Center,
-  Heading,
-  HStack,
-  Input,
-  Subtitle,
-  Switcher,
-  Title,
-  useTheme,
-  useToast,
-  VStack
-} from "rnc-theme";
+         <TouchableOpacity style={styles.button} onPress={toggleTheme}>
+           {isDark ? (
+             <Sun color={theme.colors.text} size={20} />
+           ) : (
+             <Moon color={theme.colors.text} size={20} />
+           )}
+           <Text style={styles.buttonText}>Toggle Theme</Text>
+         </TouchableOpacity>
 
-export default function ProfileScreen() {
-  const [name, setName] = useState("");
-  const [notifications, setNotifications] = useState(false);
-  const { theme } = useTheme();
-  const { toast } = useToast();
+         <Link href="/explore" style={styles.link}>
+           <Text style={styles.linkText}>Go to Explore</Text>
+         </Link>
+       </ScrollView>
+     );
+   }
 
-  const showToast = () => {
-    toast({
-      title: "Default Toast",
-      description: "This is a default toast message.",
-    });
-  };
+   const createStyles = (theme: Theme) => StyleSheet.create({
+     container: {
+       flex: 1,
+       backgroundColor: theme.colors.background,
+       padding: theme.spacing.lg,
+     },
+     title: {
+       fontSize: 28,
+       fontWeight: "bold",
+       color: theme.colors.text,
+       textAlign: "center",
+       marginBottom: theme.spacing.sm,
+     },
+     subtitle: {
+       fontSize: 16,
+       color: theme.colors.textSecondary,
+       textAlign: "center",
+       marginBottom: theme.spacing.xl,
+     },
+     button: {
+       backgroundColor: theme.colors.primary,
+       flexDirection: "row",
+       alignItems: "center",
+       justifyContent: "center",
+       paddingHorizontal: theme.spacing.lg,
+       paddingVertical: theme.spacing.md,
+       borderRadius: theme.components.borderRadius.md,
+       gap: theme.spacing.sm,
+       marginBottom: theme.spacing.lg,
+     },
+     buttonText: {
+       color: theme.colors.text,
+       fontSize: 16,
+       fontWeight: "600",
+     },
+     link: {
+       alignSelf: "center",
+     },
+     linkText: {
+       color: theme.colors.primary,
+       fontSize: 16,
+       fontWeight: "500",
+     },
+   });
+   ```
 
-  return (
-    <Box
-      flex={1}
-      backgroundColor="background"
-      padding="lg"
-      style={{ paddingTop: 80 }}
-    >
-      <VStack spacing="lg">
-        <Card padding="lg">
-          <VStack spacing="md" align="center">
-            <Avatar
-              source={{ uri: "https://github.com/masumrpg.png" }}
-              size="xl"
-              borderWidth={2}
-              borderColor={theme.colors.primary}
-            />
-            <Center>
-              <Heading>Masum</Heading>
-              <Title>Software Developer</Title>
-            </Center>
-          </VStack>
-        </Card>
+   :::tip[Styling Best Practice]
+   Use `useThemedStyles` hook to create styles that automatically adapt to theme changes.
+   :::
 
-        <Card padding="lg">
-          <VStack spacing="md">
-            <Box>
-              <Title>Settings</Title>
-            </Box>
+3. **Try Built-in Components**
 
-            <Input
-              placeholder="Enter your name..."
-              value={name}
-              onChangeText={setName}
-              leftIcon={<User color={theme.colors.text} size={20} />}
-            />
+   Create a profile screen showcasing RNC Theme's pre-built components:
 
-            <HStack align="center" justify="space-between">
-              <Box>
-                <Subtitle>Enable notifications</Subtitle>
-              </Box>
-              <Switcher
-                value={notifications}
-                onValueChange={setNotifications}
-              />
-            </HStack>
+   ```tsx title="app/profile.tsx" {15-20,30-35,45-50} ins={15-20,30-35,45-50}
+   import { Settings, User } from "lucide-react-native";
+   import React, { useState } from "react";
+   import {
+     Avatar,
+     Box,
+     Button,
+     ButtonIcon,
+     ButtonText,
+     Card,
+     Center,
+     Heading,
+     HStack,
+     Input,
+     Subtitle,
+     Switcher,
+     Title,
+     useTheme,
+     useToast,
+     VStack
+   } from "rnc-theme";
 
-            <HStack spacing="sm">
-              <Button variant="default" onPress={showToast}>
-                <ButtonText>Save</ButtonText>
-              </Button>
-              <Button variant="outline">
-                <ButtonIcon
-                  icon={<Settings color={theme.colors.primary} size={20} />}
-                />
-                <ButtonText>More Settings</ButtonText>
-              </Button>
-            </HStack>
-          </VStack>
-        </Card>
-      </VStack>
-    </Box>
-  );
-}
-```
+   export default function ProfileScreen() {
+     const [name, setName] = useState("");
+     const [notifications, setNotifications] = useState(false);
+     const { theme } = useTheme();
+     const { toast } = useToast();
+
+     const showToast = () => {
+       toast({
+         title: "Settings Saved",
+         description: "Your preferences have been updated successfully.",
+         variant: "success"
+       });
+     };
+
+     return (
+       <Box
+         flex={1}
+         backgroundColor="background"
+         padding="lg"
+         style={{ paddingTop: 80 }}
+       >
+         <VStack spacing="lg">
+           <Card padding="lg">
+             <VStack spacing="md" align="center">
+               <Avatar
+                 source={{ uri: "https://github.com/masumrpg.png" }}
+                 size="xl"
+                 borderWidth={2}
+                 borderColor={theme.colors.primary}
+               />
+               <Center>
+                 <Heading>Masum</Heading>
+                 <Title>Software Developer</Title>
+               </Center>
+             </VStack>
+           </Card>
+
+           <Card padding="lg">
+             <VStack spacing="md">
+               <Box>
+                 <Title>Settings</Title>
+               </Box>
+
+               <Input
+                 placeholder="Enter your name..."
+                 value={name}
+                 onChangeText={setName}
+                 leftIcon={<User color={theme.colors.text} size={20} />}
+               />
+
+               <HStack align="center" justify="space-between">
+                 <Box>
+                   <Subtitle>Enable notifications</Subtitle>
+                 </Box>
+                 <Switcher
+                   value={notifications}
+                   onValueChange={setNotifications}
+                 />
+               </HStack>
+
+               <HStack spacing="sm">
+                 <Button variant="default" onPress={showToast}>
+                   <ButtonText>Save Changes</ButtonText>
+                 </Button>
+                 <Button variant="outline">
+                   <ButtonIcon
+                     icon={<Settings color={theme.colors.primary} size={20} />}
+                   />
+                   <ButtonText>More Settings</ButtonText>
+                 </Button>
+               </HStack>
+             </VStack>
+           </Card>
+         </VStack>
+       </Box>
+     );
+   }
+   ```
+
+</Steps>
 
 ## What You Get
 
-- ✅ **Automatic theming** - Light/dark mode with system preference
-- ✅ **30+ components** - Pre-built, accessible components
-- ✅ **TypeScript support** - Full type safety
-- ✅ **Consistent styling** - Unified spacing and colors
-- ✅ **Performance optimized** - Efficient re-renders
+<CardGrid stagger>
+  <Card title="Automatic Theming" icon="seti:image">
+    Light/dark mode with system preference support and smooth transitions.
+  </Card>
+
+  <Card title="30+ Components" icon="puzzle">
+    Pre-built, accessible components that follow design system principles.
+  </Card>
+
+  <Card title="TypeScript Support" icon="seti:typescript">
+    Full type safety with IntelliSense and auto-completion.
+  </Card>
+
+  <Card title="Consistent Styling" icon="setting">
+    Unified spacing, colors, and typography across your entire app.
+  </Card>
+
+  <Card title="Performance Optimized" icon="rocket">
+    Efficient re-renders and optimized component lifecycle management.
+  </Card>
+</CardGrid>
+
+## Testing Your Setup
+
+<Tabs syncKey="testing">
+  <TabItem label="iOS Simulator" icon="apple">
+    ```bash
+    npm run ios
+    # or
+    npx expo run:ios
+    ```
+  </TabItem>
+
+  <TabItem label="Android Emulator" icon="android">
+    ```bash
+    npm run android
+    # or
+    npx expo run:android
+    ```
+  </TabItem>
+
+  <TabItem label="Expo Go" icon="external">
+    ```bash
+    npm start
+    # Scan QR code with Expo Go app
+    ```
+  </TabItem>
+</Tabs>
+
+:::tip[Pro Tips]
+- Test theme switching in both light and dark system modes
+- Verify component responsiveness on different screen sizes
+:::
+
+## Common Issues and Solutions
+
+<Card title="Theme Not Persisting" icon="warning">
+  **Problem**: Theme changes don't persist between app restarts
+  **Solution**: Check AsyncStorage permissions and ensure the provider is at the root level
+  ```tsx
+  // Ensure RNCProvider wraps your entire app
+  <RNCProvider>
+    <App />
+  </RNCProvider>
+  ```
+</Card>
+<Card title="Styles Not Updating" icon="error">
+  **Problem**: Component styles don't update when theme changes
+  **Solution**: Use `useThemedStyles` instead of static styles
+  ```tsx
+  // ❌ Static styles won't update
+  const styles = StyleSheet.create({...});
+  // ✅ Dynamic styles update with theme
+  const styles = useThemedStyles(createStyles);
+  ```
+</Card>
+<Card title="Performance Issues" icon="rocket">
+  **Problem**: App feels sluggish with theme changes
+  **Solution**: Implement proper memoization and lazy loading
+  ```tsx
+  // Memoize expensive operations
+  const memoizedStyles = useThemedStyles(createStyles);
+  const memoizedData = useMemo(() => processData(data), [data]);
+  ```
+</Card>
+<Card title="TypeScript Errors" icon="information">
+  **Problem**: TypeScript complains about theme types
+  **Solution**: Update type definitions and use proper imports
+  ```tsx
+  import { Theme } from 'rnc-theme';
+  const createStyles = (theme: Theme) => StyleSheet.create({
+    // Your styles
+  });
+  ```
+</Card>
 
 ## Next Steps
 
-1. **Explore Components** - Check out the [Component Library](/components/overview)
-2. **Customize Themes** - Learn about [Theme Customization](/theming/overview)
-3. **Add More Screens** - Build out your app with consistent theming
+<Steps>
 
-## Need Help?
+1. **Explore Components**
 
-- 📖 [Full Documentation](/components/overview)
-- 🐛 [Report Issues](https://github.com/masumrpg/react-native-components/issues)
+   Dive deeper into the [Component Library](/components/overview) to discover all available components and their props.
+
+2. **Customize Themes**
+
+   Learn about [Theme Customization](/theming/overview) to match your brand colors and spacing.
+
+3. **Add More Screens**
+
+   Build out your app with consistent theming using the patterns you've learned.
+
+4. **Optimize Performance**
+
+   Check out [Performance Tips](/getting-started/setup-guide/#performance-optimization) for production-ready optimizations.
+
+</Steps>
+
+---
+
+<Aside type="tip" title="What's Next?">
+Now that you have RNC Theme set up, explore the [component library](/components/overview) to see what's possible, or jump into [theming customization](/theming/overview) to make it your own!
+</Aside>
