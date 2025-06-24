@@ -5,37 +5,27 @@ sidebar:
   order: 1
 ---
 
-{/* TODO untuk besok */}
-
 import { Card, CardGrid } from '@astrojs/starlight/components';
 import { Tabs, TabItem } from '@astrojs/starlight/components';
 import { Code } from '@astrojs/starlight/components';
 import { Badge } from '@astrojs/starlight/components';
-
-# Theming Overview
 
 RNC Theme is a comprehensive theming system designed for React Native applications. It provides type-safe, dynamic theme switching with extensive customization capabilities.
 
 ## Key Features
 
 <CardGrid>
-  <Card title="🎨 Type-Safe Theming" icon="star">
+  <Card title="Type-Safe Theming" icon="star">
     Full TypeScript support with intelligent autocomplete for all theme properties and values.
   </Card>
-  <Card title="🌓 Dynamic Theme Switching" icon="moon">
+  <Card title="Dynamic Theme Switching" icon="moon">
     Seamless switching between light, dark, and system themes with smooth animations.
   </Card>
-  <Card title="🎯 High Customization" icon="setting">
+  <Card title="High Customization" icon="setting">
     Extensive customization options for colors, typography, spacing, and component styles.
   </Card>
-  <Card title="💾 Persistent Storage" icon="document">
+  <Card title="Persistent Storage" icon="document">
     Automatic theme persistence across app sessions with AsyncStorage integration.
-  </Card>
-  <Card title="🎭 Built-in Presets" icon="palette">
-    Multiple pre-designed theme presets including Material, Neon, Ocean, and more.
-  </Card>
-  <Card title="📱 Platform Optimized" icon="mobile">
-    Optimized for both iOS and Android with platform-specific adaptations.
   </Card>
 </CardGrid>
 
@@ -143,7 +133,14 @@ Two primary hooks for accessing and using themes:
     import { useTheme } from 'rnc-theme';
 
     function MyComponent() {
-      const { theme, mode, setMode, updateCustomTheme } = useTheme();
+      const {
+        theme,
+        themeMode,
+        setThemeMode,
+        isDark,
+        updateCustomTheme,
+        resetTheme,
+      } = useTheme();
 
       return (
         <View style={{ backgroundColor: theme.colors.background }}>
@@ -196,45 +193,6 @@ const { setActivePreset } = useTheme();
 setActivePreset('myTheme');
 ```
 
-## Built-in Theme Presets
-
-RNC Theme comes with several beautiful preset themes:
-
-<CardGrid stagger>
-  <Card title="Material" icon="star">
-    <Badge text="Default" variant="tip" />
-    Google Material Design inspired theme with clean, modern aesthetics.
-  </Card>
-  <Card title="Neon" icon="star">
-    <Badge text="Vibrant" variant="note" />
-    High-contrast theme with bright, electric colors perfect for gaming apps.
-  </Card>
-  <Card title="Ocean" icon="star">
-    <Badge text="Calm" variant="success" />
-    Soothing blue and teal tones inspired by ocean depths.
-  </Card>
-  <Card title="Sunset" icon="star">
-    <Badge text="Warm" variant="caution" />
-    Warm oranges and pinks reminiscent of a beautiful sunset.
-  </Card>
-  <Card title="Forest" icon="star">
-    <Badge text="Natural" variant="success" />
-    Earth tones and greens inspired by nature.
-  </Card>
-  <Card title="Galaxy" icon="star">
-    <Badge text="Cosmic" variant="note" />
-    Deep purples and blues with cosmic inspiration.
-  </Card>
-  <Card title="Vintage" icon="star">
-    <Badge text="Classic" variant="tip" />
-    Muted, classic colors with a retro feel.
-  </Card>
-  <Card title="Cyberpunk" icon="star">
-    <Badge text="Futuristic" variant="danger" />
-    High-tech aesthetic with neon accents.
-  </Card>
-</CardGrid>
-
 ## Theme Modes
 
 Supports three theme modes:
@@ -244,13 +202,13 @@ Supports three theme modes:
 - **System Mode**: Automatically follows device settings
 
 ```tsx
-const { mode, setMode } = useTheme();
+const { themeMode,setThemeMode, } = useTheme();
 
 // Switch to dark mode
-setMode('dark');
+setThemeMode('dark');
 
 // Follow system preference
-setMode('system');
+setThemeMode('system');
 ```
 
 ## Performance Optimizations
@@ -261,21 +219,6 @@ All theme calculations are memoized to prevent unnecessary re-renders:
 ```tsx
 const styles = useThemedStyles(createStyles); // Memoized automatically
 ```
-
-### Lazy Loading
-Theme presets are loaded on-demand to reduce initial bundle size.
-
-### Efficient Updates
-Only components using changed theme properties re-render during theme switches.
-
-## Accessibility
-
-RNC Theme includes built-in accessibility features:
-
-- **High Contrast Support**: Automatic contrast adjustments
-- **Reduced Motion**: Respects system motion preferences
-- **Screen Reader Support**: Semantic color naming
-- **Focus Indicators**: Clear focus states for all interactive elements
 
 ## Integration Examples
 
@@ -290,7 +233,6 @@ export default function App() {
   return (
     <RNCProvider
       defaultTheme="system"
-      persistTheme={true}
     >
       <NavigationContainer>
         {/* Your navigation structure */}
@@ -299,59 +241,3 @@ export default function App() {
   );
 }
 ```
-
-### Custom Theme Configuration
-
-```tsx
-const customThemeConfig = {
-  colors: {
-    primary: '#6366F1',
-    secondary: '#8B5CF6',
-    background: '#F8FAFC',
-    surface: '#FFFFFF',
-    // ... other colors
-  },
-  components: {
-    borderRadius: {
-      xs: 4,
-      sm: 6,
-      md: 8,
-      lg: 12,
-      xl: 16,
-      full: 9999,
-    },
-  },
-};
-
-<RNCProvider customTheme={customThemeConfig}>
-  {/* Your app */}
-</RNCProvider>
-```
-
-## Next Steps
-
-<CardGrid>
-  <Card title="Theme Provider Setup" icon="rocket">
-    Learn how to configure and customize the RNCProvider for your app.
-    [Setup Guide →](/theming/theme-provider)
-  </Card>
-  <Card title="Custom Themes" icon="palette">
-    Create your own custom themes and color schemes.
-    [Custom Themes →](/theming/custom-theme)
-  </Card>
-  <Card title="Theme Registry" icon="list">
-    Manage multiple themes with the theme registry system.
-    [Registry Guide →](/theming/theme-registry)
-  </Card>
-  <Card title="Dynamic Switching" icon="setting">
-    Implement smooth theme switching in your app.
-    [Switching Guide →](/theming/theme-switching)
-  </Card>
-</CardGrid>
-
-## Resources
-
-- [Theme Hooks Reference](/hooks/overview)
-- [Component Theming](/components/overview)
-- [Migration Guide](/getting-started/setup-guide#migration)
-- [Best Practices](/getting-started/setup-guide#best-practices)
