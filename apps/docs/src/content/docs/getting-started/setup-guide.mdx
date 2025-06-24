@@ -3,147 +3,285 @@ title: Setup Guide
 description: Comprehensive guide for configuring RNC Theme with advanced options and customizations.
 ---
 
-import { Aside } from '@astrojs/starlight/components';
+import { Aside, Card, CardGrid, Code, LinkCard, Steps, Tabs, TabItem, Badge, Icon, FileTree } from '@astrojs/starlight/components';
 
 This guide covers advanced configuration options for RNC Theme, including custom themes, internationalization, and performance optimizations.
+
+<Aside type="tip" title="Quick Start">
+New to RNC Theme? Check out our [Quick Start Guide](/getting-started/quick-start) for basic setup instructions.
+</Aside>
+
+## Overview
+
+RNC Theme provides a comprehensive theming solution for React Native applications with built-in support for:
+
+<CardGrid>
+  <Card title="Dynamic Theming" icon="puzzle">
+    Light/dark mode with custom theme support
+  </Card>
+  <Card title="Internationalization" icon="translate">
+    Multi-language support with auto-detection
+  </Card>
+  <Card title="Toast System" icon="information">
+    Configurable toast notifications
+  </Card>
+  <Card title="⚡ Performance" icon="rocket">
+    Optimized with memoization and lazy loading
+  </Card>
+</CardGrid>
 
 ## RNCProvider Configuration
 
 The `RNCProvider` is the core component that provides theme context to your entire application. Here are all available configuration options:
 
-```tsx title="_layout.tsx"
-import { RNCProvider } from 'rnc-theme';
+<Tabs>
+  <TabItem label="Basic Setup">
+    ```tsx title="_layout.tsx"
+    import { RNCProvider } from 'rnc-theme';
 
-export default function RootLayout() {
-  return (
-    <RNCProvider
-      // Theme Configuration
-      defaultTheme="system" // 'light' | 'dark' | 'system'
+    export default function RootLayout() {
+      return (
+        <RNCProvider defaultTheme="system">
+          {/* Your app content */}
+        </RNCProvider>
+      );
+    }
+    ```
+  </TabItem>
+  <TabItem label="Full Configuration">
+    ```tsx title="_layout.tsx"
+    import { RNCProvider } from 'rnc-theme';
 
-      // Toast Configuration
-      toast={{
-        maxToasts: 4, // Maximum number of toasts
-        position: "bottom", // 'top' | 'bottom'
-      }}
+    export default function RootLayout() {
+      return (
+        <RNCProvider
+          // Theme Configuration
+          defaultTheme="system" // 'light' | 'dark' | 'system'
 
-      // Internationalization
-      i18nConfig={{
-        defaultLocale: "en", // Default locale
-        translations: {
-          en: {
-            /* English translations */
-          },
-          id: {
-            /* Indonesian translations */
-          },
-        },
-      }}
+          // Toast Configuration
+          toast={{
+            maxToasts: 4, // Maximum number of toasts
+            position: "bottom", // 'top' | 'bottom'
+          }}
 
-      // Bottom Sheet Configuration
-      bottomSheetProps={{}}
+          // Internationalization
+          i18nConfig={{
+            defaultLocale: "en", // Default locale
+            translations: {
+              en: {
+                /* English translations */
+              },
+              id: {
+                /* Indonesian translations */
+              },
+            },
+          }}
 
-      // Theme Colors
-      customLightTheme={}
-      customDarkTheme={}
-    >
-      {/* App */}
-    </RNCProvider>
-  );
-};
-```
+          // Bottom Sheet Configuration
+          bottomSheetProps={{}}
+
+          // Theme Colors
+          customLightTheme={{}}
+          customDarkTheme={{}}
+        >
+          {/* Your app content */}
+        </RNCProvider>
+      );
+    }
+    ```
+  </TabItem>
+</Tabs>
+
+### Configuration Options
+
+| Option | Type | Default | Description |
+|--------|------|---------|-------------|
+| `defaultTheme` | `'light' \| 'dark' \| 'system'` | `'system'` | Initial theme mode |
+| `toast` | `ToastConfig` | `{}` | Toast notification settings |
+| `i18nConfig` | `I18nConfig` | `undefined` | Internationalization configuration |
+| `bottomSheetProps` | `BottomSheetProps` | `{}` | Bottom sheet component props |
+| `customLightTheme` | `ThemeConfig` | `{}` | Custom light theme override |
+| `customDarkTheme` | `ThemeConfig` | `{}` | Custom dark theme override |
 
 ## Theme Configuration
 
-### Basic Theme Setup
+### Basic Theme Operations
 
-```tsx
-import { useTheme, themeRegistry } from 'rnc-theme';
+<Steps>
+1. **Import the required hooks**
+   ```tsx
+   import { useTheme, themeRegistry } from 'rnc-theme';
+   ```
 
-const ThemeSetup = () => {
-  const { theme, themeMode } = useTheme();
+2. **Access theme in your component**
+   ```tsx
+   const ThemeSetup = () => {
+     const { theme, themeMode, setThemeMode } = useTheme();
 
-  // Basic theme operations
-  const handleThemeChange = () => {
-    setThemeMode('dark');       // Set theme mode
-  };
+     return (
+       <View style={{
+         backgroundColor: theme.colors.background,
+       }}>
+         <Text style={{ color: theme.colors.text }}>
+           Current theme: {themeMode}
+         </Text>
+       </View>
+     );
+   };
+   ```
 
-  return (
-    <View style={{
-      backgroundColor: theme.colors.background,
-    }} />
-  );
-};
-```
+3. **Handle theme changes**
+   ```tsx
+   const handleThemeChange = (newTheme: 'light' | 'dark' | 'system') => {
+     setThemeMode(newTheme);
+   };
+   ```
+</Steps>
 
 ### Custom Theme Registration
 
-Register custom themes using the theme registry:
+Register custom themes using the theme registry for advanced customization:
+
+<Aside type="note">
+Custom themes are dynamically generated based on the current theme mode (light/dark).
+</Aside>
 
 ```tsx
 import { themeRegistry, CustomThemeConfigFactory } from 'rnc-theme';
+import { useMemo } from 'react';
 
-// Static theme configuration
 const customThemeConfig: CustomThemeConfigFactory = useMemo(
-    () => (isDark: boolean) => ({
-      colors: {
-        primary: isDark ? '#FF6B6B' : '#4ECDC4',
-        secondary: isDark ? '#FFE66D' : '#45B7D1',
-        background: isDark ? '#1a1a1a' : '#f8f9fa',
-        surface: isDark ? '#2d2d2d' : '#ffffff',
-        text: isDark ? '#ffffff' : '#333333',
-        textSecondary: isDark ? '#b0b0b0' : '#666666',
-        border: isDark ? '#404040' : '#e0e0e0',
-        error: '#FF5252',
-        warning: '#FF9800',
-        success: '#4CAF50',
-        info: '#2196F3',
-        muted: isDark ? '#666666' : '#999999',
-        accent: isDark ? '#FF6B6B' : '#4ECDC4',
-        destructive: '#FF5252',
+  () => (isDark: boolean) => ({
+    colors: {
+      primary: isDark ? '#FF6B6B' : '#4ECDC4',
+      secondary: isDark ? '#FFE66D' : '#45B7D1',
+      background: isDark ? '#1a1a1a' : '#f8f9fa',
+      surface: isDark ? '#2d2d2d' : '#ffffff',
+      text: isDark ? '#ffffff' : '#333333',
+      textSecondary: isDark ? '#b0b0b0' : '#666666',
+      border: isDark ? '#404040' : '#e0e0e0',
+      error: '#FF5252',
+      warning: '#FF9800',
+      success: '#4CAF50',
+      info: '#2196F3',
+      muted: isDark ? '#666666' : '#999999',
+      accent: isDark ? '#FF6B6B' : '#4ECDC4',
+      destructive: '#FF5252',
+    },
+    components: {
+      height: {
+        xs: 32,
+        sm: 36,
+        md: 40,
+        lg: 44,
+        xl: 48,
       },
-      components: {
-        height: {
-          xs: 32,
-          sm: 36,
-          md: 40,
-          lg: 44,
-          xl: 48,
-        },
-        padding: {
-          xs: 8,
-          sm: 12,
-          md: 16,
-          lg: 20,
-          xl: 24,
-        },
-        borderRadius: {
-          xs: 4,
-          sm: 4,
-          md: 8,
-          lg: 16,
-          xl: 24,
-          full: 9999,
-        },
-      },
-      spacing: {
-        xs: 4,
-        sm: 8,
+      padding: {
+        xs: 8,
+        sm: 12,
         md: 16,
-        lg: 24,
-        xl: 32,
-        xxl: 48,
+        lg: 20,
+        xl: 24,
       },
-    }),
-    []
-  );
+      borderRadius: {
+        xs: 4,
+        sm: 4,
+        md: 8,
+        lg: 16,
+        xl: 24,
+        full: 9999,
+      },
+    },
+    spacing: {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+      xxl: 48,
+    },
+  }),
+  []
+);
 
-// Register dynamic theme
+// Register the custom theme
 themeRegistry.registerPreset('custom', customThemeConfig);
 ```
 
+### Theme Structure
+
+<Tabs>
+  <TabItem label="Colors">
+    ```tsx
+    interface ThemeColors {
+      primary: string;
+      secondary: string;
+      background: string;
+      surface: string;
+      text: string;
+      textSecondary: string;
+      border: string;
+      error: string;
+      warning: string;
+      success: string;
+      info: string;
+      muted: string;
+      accent: string;
+      destructive: string;
+    }
+    ```
+  </TabItem>
+  <TabItem label="Components">
+    ```tsx
+    interface ComponentConfig {
+      height: {
+        xs: number;
+        sm: number;
+        md: number;
+        lg: number;
+        xl: number;
+      };
+      padding: {
+        xs: number;
+        sm: number;
+        md: number;
+        lg: number;
+        xl: number;
+      };
+      borderRadius: {
+        xs: number;
+        sm: number;
+        md: number;
+        lg: number;
+        xl: number;
+        full: number;
+      };
+    }
+    ```
+  </TabItem>
+  <TabItem label="Spacing">
+    ```tsx
+    interface SpacingConfig {
+      xs: number;
+      sm: number;
+      md: number;
+      lg: number;
+      xl: number;
+      xxl: number;
+    }
+    ```
+  </TabItem>
+</Tabs>
+
 ## Internationalization (i18n)
 
-### Basic i18n Setup
+### Complete i18n Setup
+
+<LinkCard
+  title="Expo Localization"
+  description="Learn more about Expo's localization features"
+  href="https://docs.expo.dev/versions/latest/sdk/localization/"
+/>
 
 ```tsx
 import { RNCProvider } from 'rnc-theme';
@@ -157,8 +295,7 @@ const i18nConfig: I18nConfig = {
       currentLanguage: 'Current Language',
       switchLanguage: 'Switch Language',
       greeting: 'Hello, World!',
-      description:
-        'This is a demonstration of the i18n functionality in the rnc-theme library.',
+      description: 'This is a demonstration of the i18n functionality in the rnc-theme library.',
       features: {
         title: 'Features',
         dynamicSwitching: 'Dynamic language switching',
@@ -178,8 +315,7 @@ const i18nConfig: I18nConfig = {
       currentLanguage: 'Bahasa Saat Ini',
       switchLanguage: 'Ganti Bahasa',
       greeting: 'Halo, Dunia!',
-      description:
-        'Ini adalah demonstrasi fungsionalitas i18n dalam library rnc-theme.',
+      description: 'Ini adalah demonstrasi fungsionalitas i18n dalam library rnc-theme.',
       features: {
         title: 'Fitur',
         dynamicSwitching: 'Pergantian bahasa dinamis',
@@ -199,8 +335,7 @@ const i18nConfig: I18nConfig = {
       currentLanguage: 'Langue Actuelle',
       switchLanguage: 'Changer de Langue',
       greeting: 'Bonjour le Monde!',
-      description:
-        'Ceci est une démonstration de la fonctionnalité i18n dans la bibliothèque rnc-theme.',
+      description: 'Ceci est une démonstration de la fonctionnalité i18n dans la bibliothèque rnc-theme.',
       features: {
         title: 'Fonctionnalités',
         dynamicSwitching: 'Changement de langue dynamique',
@@ -222,75 +357,199 @@ const i18nConfig: I18nConfig = {
 
 const App = () => (
   <RNCProvider i18nConfig={i18nConfig}>
-    {/* Your app */}
+    {/* Your app content */}
   </RNCProvider>
 );
 ```
 
-### Using Language
+### Using Translations
 
-```tsx
-import { useLanguage } from 'rnc-theme';
+<Tabs>
+  <TabItem label="Basic Usage">
+    ```tsx
+    import { useLanguage } from 'rnc-theme';
 
-const MyComponent = () => {
-  const {i18n: {t}} = useLanguage();
+    const MyComponent = () => {
+      const { i18n: { t } } = useLanguage();
 
-  return (
-    <View>
-      <Text>{t('title')}</Text>
-    </View>
-  );
-};
-```
+      return (
+        <View>
+          <Text>{t('title')}</Text>
+          <Text>{t('features.title')}</Text>
+        </View>
+      );
+    };
+    ```
+  </TabItem>
+  <TabItem label="With Parameters">
+    ```tsx
+    // In translations
+    const translations = {
+      welcome: 'Welcome, {{name}}!',
+      itemCount: 'You have {{count}} items',
+    };
+
+    // In component
+    const MyComponent = () => {
+      const { i18n: { t } } = useLanguage();
+
+      return (
+        <View>
+          <Text>{t('welcome', { name: 'John' })}</Text>
+          <Text>{t('itemCount', { count: 5 })}</Text>
+        </View>
+      );
+    };
+    ```
+  </TabItem>
+  <TabItem label="Language Switching">
+    ```tsx
+    import { useLanguage } from 'rnc-theme';
+
+    const LanguageSwitcher = () => {
+      const { locale, setLocale, i18n } = useLanguage();
+
+      const handleLanguageChange = async (newLocale: string) => {
+        setIsLoading(true);
+        await setLocale(newLocale);
+        setTimeout(() => setIsLoading(false), 300); // Small delay for smooth transition
+      };
+
+      const languages = [
+        { code: 'en', name: i18n.t('buttons.english') },
+        { code: 'id', name: i18n.t('buttons.indonesian') },
+        { code: 'fr', name: i18n.t('buttons.french') },
+      ];
+
+      return (
+        <View>
+          <Text>Current: {locale}</Text>
+          {{languages.map((language) => (
+                <Button
+                  key={language.code}
+                  variant={locale === language.code ? 'primary' : 'outline'}
+                  size="md"
+                  onPress={() => handleLanguageChange(language.code)}
+                  disabled={isLoading}
+                  style={styles.languageButton}
+                >
+                  <ButtonText
+                    variant={locale === language.code ? 'primary' : 'outline'}
+                  >
+                    {language.name}
+                  </ButtonText>
+                </Button>
+              ))}
+        </View>
+      );
+    };
+    ```
+  </TabItem>
+</Tabs>
 
 ## Toast Configuration
 
 ### Global Toast Setup
 
+Configure toast notifications at the provider level:
+
 ```tsx
-<RNCProvider toast={{
-        maxToasts: 4, // Maximum number of toasts
-        position: "bottom", // 'top' | 'bottom'
-      }}>
-  {/* Your app */}
+<RNCProvider
+  toast={{
+    maxToasts: 3,        // Maximum number of visible toasts
+    position: "bottom",  // 'top' | 'bottom'
+  }}
+>
+  {/* Your app content */}
 </RNCProvider>
 ```
 
-### Using Toasts
+### Toast Usage Examples
 
-```tsx
-import { useToast } from 'rnc-theme';
+<Tabs>
+  <TabItem label="Basic Toasts">
+    ```tsx
+    import { useToast } from 'rnc-theme';
 
-const MyComponent = () => {
-  const { toast } = useToast();
+    const MyComponent = () => {
+      const { toast } = useToast();
 
-  const handleSuccess = () => {
-    toast({
-      title: 'Default Toast',
-      description: 'This is a default toast message.',
-    });
+      const showBasicToast = () => {
+        toast({
+          title: 'Success!',
+          description: 'Your action was completed successfully.',
+        });
+      };
+
+      const showErrorToast = () => {
+        toast({
+          variant: 'error',
+          title: 'Error occurred',
+          description: 'Something went wrong. Please try again.',
+        });
+      };
+
+      return (
+        <View>
+          <Button onPress={showBasicToast}>Show Success</Button>
+          <Button onPress={showErrorToast}>Show Error</Button>
+        </View>
+      );
+    };
+    ```
+  </TabItem>
+  <TabItem label="Advanced Toasts">
+    ```tsx
+    const {toastAsync} = useToast()
+
+    const showAsyncWithCustomMessages = async () => {
+    if (isLoading) return;
+
+    setIsLoading(true);
+    try {
+      await toastAsync(
+        {
+          title: 'Syncing Data',
+          loadingText: 'Synchronizing with server...',
+        },
+        async () => {
+          // Simulasi sync process
+          await new Promise((resolve) => setTimeout(resolve, 2500));
+          return { syncedItems: 150 };
+        }
+      );
+    } catch (error) {
+      console.log('Sync failed:', error);
+    } finally {
+      setIsLoading(false);
+    }
   };
+    ```
+  </TabItem>
+</Tabs>
 
-  const handleError = () => {
-    toast({
-      variant: 'error',
-      title: 'Error occurred',
-      description: 'Something went wrong. Please try again.',
-    });
-  };
+### Toast Variants
 
-  return (
-    <View>
-      <Button onPress={handleSuccess}>Show Success</Button>
-      <Button onPress={handleError}>Show Error</Button>
-    </View>
-  );
-};
-```
+<CardGrid stagger>
+  <Card title="Default" icon="information">
+    Standard informational toast
+  </Card>
+  <Card title="Success" icon="approve-check">
+    Success confirmation toast
+  </Card>
+  <Card title="Warning" icon="warning">
+    Warning or caution toast
+  </Card>
+  <Card title="Error" icon="error">
+    Error or failure toast
+  </Card>
+</CardGrid>
 
 ## Performance Optimization
 
 ### Lazy Loading Components
+
+Implement lazy loading for better performance:
 
 ```tsx
 import { lazy, Suspense } from 'react';
@@ -298,32 +557,52 @@ import { Spinner } from 'rnc-theme';
 
 // Lazy load heavy components
 const HeavyComponent = lazy(() => import('./HeavyComponent'));
+const AnotherHeavyComponent = lazy(() => import('./AnotherHeavyComponent'));
 
 const App = () => (
-  <Suspense fallback={<Spinner size="lg" />}>
-    <HeavyComponent />
-  </Suspense>
+  <View>
+    <Suspense fallback={<Spinner size="lg" />}>
+      <HeavyComponent />
+    </Suspense>
+
+    <Suspense fallback={<Spinner size="md" />}>
+      <AnotherHeavyComponent />
+    </Suspense>
+  </View>
 );
 ```
 
 ### Memoization Best Practices
 
+<Aside type="tip" title="Performance Tip">
+The `useThemedStyles` hook automatically memoizes styles based on theme changes, reducing unnecessary re-renders.
+</Aside>
+
 ```tsx
 import { memo, useMemo, useCallback } from 'react';
 import { useThemedStyles, Theme } from 'rnc-theme';
+import { StyleSheet } from 'react-native';
 
 const OptimizedComponent = memo(({ data }) => {
-  // useThemedStyles memoize include
+  // useThemedStyles includes memoization
   const styles = useThemedStyles(createStyles);
 
   // Memoize expensive calculations
   const processedData = useMemo(() => {
-    return data.map(item => ({ ...item, processed: true }));
+    return data.map(item => ({
+      ...item,
+      processed: true,
+      timestamp: Date.now()
+    }));
   }, [data]);
 
-  // Memoize callbacks
+  // Memoize callbacks to prevent child re-renders
   const handlePress = useCallback((id: string) => {
-    console.log('Pressed:', id);
+    console.log('Item pressed:', id);
+  }, []);
+
+  const handleLongPress = useCallback((id: string) => {
+    console.log('Item long pressed:', id);
   }, []);
 
   return (
@@ -331,141 +610,367 @@ const OptimizedComponent = memo(({ data }) => {
       {processedData.map(item => (
         <TouchableOpacity
           key={item.id}
+          style={styles.item}
           onPress={() => handlePress(item.id)}
+          onLongPress={() => handleLongPress(item.id)}
         >
-          <Text>{item.name}</Text>
+          <Text style={styles.text}>{item.name}</Text>
+          <Text style={styles.subtitle}>{item.description}</Text>
         </TouchableOpacity>
       ))}
     </View>
   );
 });
 
-const createStyles = (theme: Theme) => ({
+const createStyles = (theme: Theme) => StyleSheet.create({
+  container: {
+    backgroundColor: theme.colors.background,
+    padding: theme.spacing.md,
+    flex: 1,
+  },
+  item: {
+    backgroundColor: theme.colors.surface,
+    padding: theme.spacing.sm,
+    marginBottom: theme.spacing.xs,
+    borderRadius: theme.components.borderRadius.md,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  text: {
+    color: theme.colors.text,
+    fontSize: 16,
+    fontWeight: '600',
+  },
+  subtitle: {
+    color: theme.colors.textSecondary,
+    fontSize: 14,
+    marginTop: theme.spacing.xs,
+  },
+});
+
+// Set display name for debugging
+OptimizedComponent.displayName = 'OptimizedComponent';
+
+export default OptimizedComponent;
+```
+
+<Aside type="caution" title="TypeScript Tip">
+If TypeScript complains about `useThemedStyles`, wrap your styles with `StyleSheet.create()`:
+
+```tsx
+import { StyleSheet } from "react-native";
+
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     backgroundColor: theme.colors.background,
     padding: theme.spacing.md,
   },
 });
 ```
-
-<Aside title='Caution' type='caution'>
-  If typescript complaint in `useThemedStyles` hook, please use
-  ```tsx
-  import {StyleSheet} from "react-native"
-
-  const createStyles = (theme: Theme) => StyleSheet.create({
-  container: {
-    backgroundColor: theme.colors.background,
-    padding: theme.spacing.md,
-  },
-});
-  ```
 </Aside>
 
 ## Platform-Specific Configuration
 
-### iOS Specific Setup
+### iOS Specific Adaptations
 
-```tsx
-import { Platform } from 'react-native';
+<Tabs>
+  <TabItem label="Heights & Spacing">
+    ```tsx
+    import { Platform } from 'react-native';
 
-const iosSpecificConfig = {
-  // iOS specific theme adjustments
-  components: {
-    height: {
-      xs: Platform.OS === 'ios' ? 34 : 32,
-      sm: Platform.OS === 'ios' ? 38 : 36,
-      md: Platform.OS === 'ios' ? 42 : 40,
-      lg: Platform.OS === 'ios' ? 46 : 44,
-      xl: Platform.OS === 'ios' ? 50 : 48,
-    },
-    borderRadius: {
-      xs: Platform.OS === 'ios' ? 6 : 4,
-      sm: Platform.OS === 'ios' ? 8 : 6,
-      md: Platform.OS === 'ios' ? 10 : 8,
-      lg: Platform.OS === 'ios' ? 14 : 12,
-      xl: Platform.OS === 'ios' ? 18 : 16,
-    },
-  },
-};
-```
+    const iosSpecificConfig = {
+      components: {
+        height: {
+          xs: Platform.OS === 'ios' ? 34 : 32,
+          sm: Platform.OS === 'ios' ? 38 : 36,
+          md: Platform.OS === 'ios' ? 42 : 40,
+          lg: Platform.OS === 'ios' ? 46 : 44,
+          xl: Platform.OS === 'ios' ? 50 : 48,
+        },
+        borderRadius: {
+          xs: Platform.OS === 'ios' ? 6 : 4,
+          sm: Platform.OS === 'ios' ? 8 : 6,
+          md: Platform.OS === 'ios' ? 10 : 8,
+          lg: Platform.OS === 'ios' ? 14 : 12,
+          xl: Platform.OS === 'ios' ? 18 : 16,
+        },
+        padding: {
+          xs: Platform.OS === 'ios' ? 10 : 8,
+          sm: Platform.OS === 'ios' ? 14 : 12,
+          md: Platform.OS === 'ios' ? 18 : 16,
+          lg: Platform.OS === 'ios' ? 22 : 20,
+          xl: Platform.OS === 'ios' ? 26 : 24,
+        },
+      },
+    };
+    ```
+  </TabItem>
+  <TabItem label="iOS Colors">
+    ```tsx
+    const iosColors = {
+      primary: '#007AFF',     // iOS Blue
+      secondary: '#5AC8FA',   // iOS Light Blue
+      success: '#34C759',     // iOS Green
+      warning: '#FF9500',     // iOS Orange
+      error: '#FF3B30',       // iOS Red
+      background: '#F2F2F7',  // iOS Light Gray
+      surface: '#FFFFFF',
+    };
+    ```
+  </TabItem>
+</Tabs>
 
-### Android Specific Setup
+### Android Specific Adaptations
 
-```tsx
-const androidSpecificConfig = {
-  // Android specific theme adjustments
-  colors: {
-    // Use Material Design colors on Android
-    primary: Platform.OS === 'android' ? '#6200EE' : '#007AFF',
-    secondary: Platform.OS === 'android' ? '#03DAC6' : '#5AC8FA',
-  },
-  components: {
-    elevation: Platform.OS === 'android' ? {
-      xs: 1,
-      sm: 2,
-      md: 4,
-      lg: 8,
-      xl: 12,
-    } : undefined,
-  },
-};
-```
+<Tabs>
+  <TabItem label="Material Design">
+    ```tsx
+    const androidSpecificConfig = {
+      colors: {
+        // Material Design 3 colors
+        primary: Platform.OS === 'android' ? '#6750A4' : '#007AFF',
+        secondary: Platform.OS === 'android' ? '#625B71' : '#5AC8FA',
+        success: Platform.OS === 'android' ? '#4CAF50' : '#34C759',
+        warning: Platform.OS === 'android' ? '#FF9800' : '#FF9500',
+        error: Platform.OS === 'android' ? '#F44336' : '#FF3B30',
+      },
+      components: {
+        // Android-specific elevation
+        elevation: Platform.OS === 'android' ? {
+          xs: 1,
+          sm: 2,
+          md: 4,
+          lg: 8,
+          xl: 12,
+        } : undefined,
+        // Android ripple effect
+        ripple: Platform.OS === 'android' ? {
+          color: 'rgba(0, 0, 0, 0.12)',
+          borderless: false,
+        } : undefined,
+      },
+    };
+    ```
+  </TabItem>
+  <TabItem label="Android Shadows">
+    ```tsx
+    const androidShadowStyles = (theme: Theme) => StyleSheet.create({
+      card: {
+        backgroundColor: theme.colors.surface,
+        borderRadius: theme.components.borderRadius.md,
+        ...(Platform.OS === 'android' ? {
+          elevation: 4,
+        } : {
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+        }),
+      },
+    });
+    ```
+  </TabItem>
+</Tabs>
 
 ## Best Practices
 
-### 1. Theme Organization
+### 1. Project Structure
+
+Organize your theme-related files for better maintainability:
+
+<FileTree>
+- src
+  - themes/
+    - index.ts          # Main theme exports
+    - presets.ts        # Custom theme presets
+    - colors.ts         # Color definitions
+    - tokens.ts         # Design tokens
+</FileTree>
+
+### 2. Theme Token Usage
+
+Always prefer theme tokens over hardcoded values:
+
+<Tabs>
+  <TabItem label="❌ Avoid">
+    ```tsx
+    const createStyles = () => StyleSheet.create({
+      container: {
+        backgroundColor: '#FFFFFF',     // Hardcoded color
+        padding: 16,                   // Hardcoded spacing
+        borderRadius: 12,              // Hardcoded radius
+        borderWidth: 1,
+        borderColor: '#E0E0E0',        // Hardcoded border
+      },
+      text: {
+        color: '#333333',              // Hardcoded text color
+        fontSize: 16,
+      },
+    });
+    ```
+  </TabItem>
+  <TabItem label="✅ Good Practice">
+    ```tsx
+    const createStyles = (theme: Theme) => StyleSheet.create({
+      container: {
+        backgroundColor: theme.colors.background,
+        padding: theme.spacing.md,
+        borderRadius: theme.components.borderRadius.lg,
+        borderWidth: 1,
+        borderColor: theme.colors.border,
+      },
+      text: {
+        color: theme.colors.text,
+        fontSize: 16, // OK for standard sizes
+      },
+    });
+    ```
+  </TabItem>
+</Tabs>
+
+### 3. Performance Optimization
+
+<Steps>
+1. **Use memoization for expensive computations**
+   ```tsx
+   const expensiveValue = useMemo(() => computeExpensiveValue(data), [data]);
+   ```
+
+2. **Memoize callbacks to prevent unnecessary re-renders**
+   ```tsx
+   const handlePress = useCallback(() => {
+     // Handle press
+   }, [dependency]);
+   ```
+
+3. **Use `useThemedStyles` for dynamic styling**
+   ```tsx
+   const styles = useThemedStyles(createStyles); // Auto-memoized
+   ```
+
+4. **Implement lazy loading for heavy components**
+   ```tsx
+   const HeavyComponent = lazy(() => import('./HeavyComponent'));
+   ```
+</Steps>
+
+### 4. Accessibility
+
+Ensure your themed components are accessible:
 
 ```tsx
-// themes/index.ts
-export const lightTheme = { /* ... */ };
-export const darkTheme = { /* ... */ };
-export const customThemes = { /* ... */ };
-
-// themes/presets.ts
-export const materialPreset = { /* ... */ };
-export const neonPreset = { /* ... */ };
-```
-
-### 2. Component Styling
-
-```tsx
-// Use useThemedStyles for dynamic styling
-const styles = useThemedStyles(createStyles);
-
-// Prefer theme tokens over hardcoded values
-const createStyles = (theme) => ({
-  container: {
-    backgroundColor: theme.colors.background, // ✅ Good
-    // backgroundColor: '#FFFFFF',           // ❌ Avoid
-    padding: theme.spacing.md,               // ✅ Good
-    // padding: 16,                          // ❌ Avoid
+const createAccessibleStyles = (theme: Theme) => StyleSheet.create({
+  button: {
+    backgroundColor: theme.colors.primary,
+    padding: theme.spacing.md,
+    borderRadius: theme.components.borderRadius.md,
+    minHeight: 44, // Minimum touch target size
+  },
+  buttonText: {
+    color: theme.colors.surface,
+    textAlign: 'center',
+    fontSize: 16,
+    fontWeight: '600',
   },
 });
-```
 
-### 3. Performance
+const AccessibleButton = ({ onPress, children }) => {
+  const styles = useThemedStyles(createAccessibleStyles);
 
-```tsx
-// style
-const createStyles = (theme: Theme) => StyleSheet.create({
-  backgroundColor: theme.colors.background
-})
-
-  // Memoize style creators
-const memoizedCreateStyles = useThemedStyles(createStyles);
+  return (
+    <TouchableOpacity
+      style={styles.button}
+      onPress={onPress}
+      accessible={true}
+      accessibilityRole="button"
+      accessibilityLabel={typeof children === 'string' ? children : 'Button'}
+    >
+      <Text style={styles.buttonText}>{children}</Text>
+    </TouchableOpacity>
+  );
+};
 ```
 
 ## Troubleshooting
 
-### Common Issues
+### Common Issues and Solutions
 
-1. **Theme not persisting**: Check AsyncStorage permissions
-2. **Styles not updating**: Ensure you're using `useThemedStyles`
-3. **Performance issues**: Use memoization and lazy loading
-4. **TypeScript errors**: Update to latest type definitions
+<Card title="Theme Not Persisting" icon="warning">
+  **Problem**: Theme changes don't persist between app restarts
+  **Solution**: Check AsyncStorage permissions and ensure the provider is at the root level
+  ```tsx
+  // Ensure RNCProvider wraps your entire app
+  <RNCProvider>
+    <App />
+  </RNCProvider>
+  ```
+</Card>
+<Card title="Styles Not Updating" icon="error">
+  **Problem**: Component styles don't update when theme changes
+  **Solution**: Use `useThemedStyles` instead of static styles
+  ```tsx
+  // ❌ Static styles won't update
+  const styles = StyleSheet.create({...});
+  // ✅ Dynamic styles update with theme
+  const styles = useThemedStyles(createStyles);
+  ```
+</Card>
+<Card title="Performance Issues" icon="rocket">
+  **Problem**: App feels sluggish with theme changes
+  **Solution**: Implement proper memoization and lazy loading
+  ```tsx
+  // Memoize expensive operations
+  const memoizedStyles = useThemedStyles(createStyles);
+  const memoizedData = useMemo(() => processData(data), [data]);
+  ```
+</Card>
+<Card title="TypeScript Errors" icon="information">
+  **Problem**: TypeScript complains about theme types
+  **Solution**: Update type definitions and use proper imports
+  ```tsx
+  import { Theme } from 'rnc-theme';
+  const createStyles = (theme: Theme) => StyleSheet.create({
+    // Your styles
+  });
+  ```
+</Card>
 
-### Getting Help
+### Performance Monitoring
 
-- [GitHub Issues](https://github.com/masumrpg/react-native-components/issues)
-- [Examples](https://github.com/masumrpg/react-native-components/tree/main/apps/example)
+Monitor theme performance with React DevTools Profiler:
+
+<Aside type="tip">
+Use React DevTools Profiler to identify performance bottlenecks in your themed components.
+</Aside>
+
+## Resources
+
+<CardGrid>
+  <LinkCard
+    title="GitHub Repository"
+    description="Source code, issues, and contributions"
+    href="https://github.com/masumrpg/react-native-components"
+  />
+  <LinkCard
+    title="Example App"
+    description="Complete example implementation"
+    href="https://github.com/masumrpg/react-native-components/tree/main/apps/example"
+  />
+  {/* TODO implement this */}
+  {/* <LinkCard
+    title="API Reference"
+    description="Detailed API documentation"
+    href="/api-reference"
+  />
+  <LinkCard
+    title="Contributing Guide"
+    description="How to contribute to the project"
+    href="/contributing"
+  /> */}
+</CardGrid>
+
+---
+
+<Aside type="note">
+Need help? create an issue on [GitHub](https://github.com/masumrpg/react-native-components/issues).
+</Aside>
