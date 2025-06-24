@@ -3,19 +3,50 @@ title: Quick Start
 description: Get up and running with RNC Theme in just a few minutes with this step-by-step guide.
 ---
 
-import { FileTree } from '@astrojs/starlight/components';
+import { FileTree, Tabs, TabItem } from '@astrojs/starlight/components';
 
 Get RNC Theme working in your Expo Router app in just a few minutes.
 
 > **Prerequisites**: Make sure you have [installed RNC Theme and its dependencies](/getting-started/installation) and have an Expo Router project ready.
 
+## Create Expo Project
+
+Choose your package manager for initializing your expo project:
+
+<Tabs syncKey="package">
+  <TabItem label="npm" icon='npm'>
+    ```bash
+    npx create-expo-app@latest
+    ```
+  </TabItem>
+
+  <TabItem label="yarn" icon="seti:yarn">
+    ```bash
+    yarn create expo-app
+    ```
+  </TabItem>
+
+  <TabItem label="pnpm" icon='pnpm'>
+    ```bash
+    pnpm create expo-app
+    ```
+  </TabItem>
+
+  <TabItem label="bun" icon='bun'>
+    ```bash
+    bun create expo
+    ```
+  </TabItem>
+</Tabs>
+
 ## Project Structure
 
 <FileTree>
 - app
-  - _layout.tsx
-  - index.tsx
-  - profile.tsx
+  - (tabs)
+    - _layout.tsx
+    - index.tsx
+    - explore.tsx
 - components/
   - ThemeToggle.tsx
 </FileTree>
@@ -25,26 +56,30 @@ Get RNC Theme working in your Expo Router app in just a few minutes.
 **Setup in your root layout file:**
 
 ```tsx title="app/_layout.tsx"
-import React from 'react';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
 import { RNCProvider } from 'rnc-theme';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'react-native-reanimated';
 
 export default function RootLayout() {
+  const [loaded] = useFonts({
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  });
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
     <RNCProvider defaultTheme="system">
-      <StatusBar style="auto" />
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <Stack
-          screenOptions={{
-            headerTitleAlign: 'center',
-            headerBackTitle: 'Back',
-          }}
-        >
-          <Stack.Screen name="index" options={{ title: 'Home' }} />
-          <Stack.Screen name="profile" options={{ title: 'Profile' }} />
+      <GestureHandlerRootView>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
         </Stack>
+        <StatusBar style="auto" />
       </GestureHandlerRootView>
     </RNCProvider>
   );
@@ -54,40 +89,42 @@ export default function RootLayout() {
 ## Step 2: Create Your First Screen
 
 ```tsx title="app/index.tsx"
-import React from 'react';
-import { ScrollView } from 'react-native';
-import { useTheme, useThemedStyles } from 'rnc-theme';
-import { Sun, Moon } from 'lucide-react-native';
-import { Link } from 'expo-router';
+import { Link } from "expo-router";
+import { Moon, Sun } from "lucide-react-native";
+import React from "react";
+import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { Theme, useTheme, useThemedStyles } from "rnc-theme";
 
 export default function HomeScreen() {
-  const { theme, toggleTheme } = useTheme();
+  const { theme, setThemeMode, isDark } = useTheme();
   const styles = useThemedStyles(createStyles);
 
+  const toggleTheme = () => {
+    setThemeMode(isDark ? "light" : "dark");
+  };
+
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={{ flexGrow: 1, justifyContent: "center", alignItems: "center" }}>
       <Text style={styles.title}>Welcome to RNC Theme!</Text>
-      <Text style={styles.subtitle}>
-        Current theme: {theme.mode}
-      </Text>
+      <Text style={styles.subtitle}>Current theme: {isDark ? "dark" : "light"}</Text>
 
       <TouchableOpacity style={styles.button} onPress={toggleTheme}>
-        {theme.mode === 'dark' ? (
-          <Sun color={theme.colors.primaryForeground} size={20} />
+        {isDark ? (
+          <Sun color={theme.colors.text} size={20} />
         ) : (
-          <Moon color={theme.colors.primaryForeground} size={20} />
+          <Moon color={theme.colors.text} size={20} />
         )}
         <Text style={styles.buttonText}>Toggle Theme</Text>
       </TouchableOpacity>
 
-      <Link href="/profile" style={styles.link}>
-        <Text style={styles.linkText}>Go to Profile</Text>
+      <Link href="/explore" style={styles.link}>
+        <Text style={styles.linkText}>Go to Explore</Text>
       </Link>
     </ScrollView>
   );
 }
 
-const createStyles = (theme) => ({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: theme.colors.background,
@@ -95,40 +132,40 @@ const createStyles = (theme) => ({
   },
   title: {
     fontSize: 28,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     color: theme.colors.text,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: theme.spacing.sm,
   },
   subtitle: {
     fontSize: 16,
     color: theme.colors.textSecondary,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: theme.spacing.xl,
   },
   button: {
     backgroundColor: theme.colors.primary,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
-    borderRadius: theme.borderRadius.md,
+    borderRadius: theme.components.borderRadius.md,
     gap: theme.spacing.sm,
     marginBottom: theme.spacing.lg,
   },
   buttonText: {
-    color: theme.colors.primaryForeground,
+    color: theme.colors.text,
     fontSize: 16,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   link: {
-    alignSelf: 'center',
+    alignSelf: "center",
   },
   linkText: {
     color: theme.colors.primary,
     fontSize: 16,
-    fontWeight: '500',
+    fontWeight: "500",
   },
 });
 ```
@@ -136,135 +173,101 @@ const createStyles = (theme) => ({
 ## Step 3: Try Built-in Components
 
 ```tsx title="app/profile.tsx"
-import React, { useState } from 'react';
+import { Settings, User } from "lucide-react-native";
+import React, { useState } from "react";
 import {
-  Box,
-  VStack,
-  HStack,
-  Button,
-  Input,
-  Card,
   Avatar,
-  Switch,
-  Toast,
-} from 'rnc-theme';
-import { User, Settings } from 'lucide-react-native';
+  Box,
+  Button,
+  ButtonIcon,
+  ButtonText,
+  Card,
+  Center,
+  Heading,
+  HStack,
+  Input,
+  Subtitle,
+  Switcher,
+  Title,
+  useTheme,
+  useToast,
+  VStack
+} from "rnc-theme";
 
 export default function ProfileScreen() {
-  const [name, setName] = useState('');
+  const [name, setName] = useState("");
   const [notifications, setNotifications] = useState(false);
+  const { theme } = useTheme();
+  const { toast } = useToast();
 
   const showToast = () => {
-    Toast.show({
-      title: 'Success!',
-      message: 'Profile updated successfully',
-      type: 'success',
+    toast({
+      title: "Default Toast",
+      description: "This is a default toast message.",
     });
   };
 
   return (
-    <Box flex={1} backgroundColor="background" padding="lg">
+    <Box
+      flex={1}
+      backgroundColor="background"
+      padding="lg"
+      style={{ paddingTop: 80 }}
+    >
       <VStack spacing="lg">
         <Card padding="lg">
-          <VStack spacing="md" alignItems="center">
+          <VStack spacing="md" align="center">
             <Avatar
-              source={{ uri: 'https://github.com/masumrpg.png' }}
+              source={{ uri: "https://github.com/masumrpg.png" }}
               size="xl"
-              fallback="JD"
+              borderWidth={2}
+              borderColor={theme.colors.primary}
             />
-            <Box fontSize="xl" fontWeight="bold" color="text">
-              John Doe
-            </Box>
-            <Box fontSize="sm" color="textSecondary">
-              Software Developer
-            </Box>
+            <Center>
+              <Heading>Masum</Heading>
+              <Title>Software Developer</Title>
+            </Center>
           </VStack>
         </Card>
 
         <Card padding="lg">
           <VStack spacing="md">
-            <Box fontSize="lg" fontWeight="semibold" color="text">
-              Settings
+            <Box>
+              <Title>Settings</Title>
             </Box>
 
             <Input
               placeholder="Enter your name..."
               value={name}
               onChangeText={setName}
-              icon={User}
+              leftIcon={<User color={theme.colors.text} size={20} />}
             />
 
-            <HStack alignItems="center" justifyContent="space-between">
-              <Box color="text">Enable notifications</Box>
-              <Switch
+            <HStack align="center" justify="space-between">
+              <Box>
+                <Subtitle>Enable notifications</Subtitle>
+              </Box>
+              <Switcher
                 value={notifications}
                 onValueChange={setNotifications}
               />
             </HStack>
 
             <HStack spacing="sm">
-              <Button
-                flex={1}
-                variant="default"
-                onPress={showToast}
-              >
-                Save
+              <Button variant="default" onPress={showToast}>
+                <ButtonText>Save</ButtonText>
               </Button>
-              <Button
-                flex={1}
-                variant="outline"
-                icon={Settings}
-              >
-                More Settings
+              <Button variant="outline">
+                <ButtonIcon
+                  icon={<Settings color={theme.colors.primary} size={20} />}
+                />
+                <ButtonText>More Settings</ButtonText>
               </Button>
             </HStack>
           </VStack>
         </Card>
       </VStack>
     </Box>
-  );
-}
-```
-
-## Step 4: Create a Reusable Theme Toggle
-
-```tsx title="app/components/ThemeToggle.tsx"
-import React from 'react';
-import { TouchableOpacity, Text } from 'react-native';
-import { useTheme } from 'rnc-theme';
-import { Sun, Moon } from 'lucide-react-native';
-
-export default function ThemeToggle() {
-  const { theme, toggleTheme } = useTheme();
-
-  return (
-    <TouchableOpacity
-      style={{
-        flexDirection: 'row',
-        alignItems: 'center',
-        backgroundColor: theme.colors.primary,
-        paddingHorizontal: theme.spacing.md,
-        paddingVertical: theme.spacing.sm,
-        borderRadius: theme.borderRadius.md,
-        gap: theme.spacing.xs,
-      }}
-      onPress={toggleTheme}
-    >
-      {theme.mode === 'dark' ? (
-        <Sun color={theme.colors.primaryForeground} size={16} />
-      ) : (
-        <Moon color={theme.colors.primaryForeground} size={16} />
-      )}
-      <Text
-        style={{
-          color: theme.colors.primaryForeground,
-          fontSize: 14,
-          fontWeight: '500',
-        }}
-      >
-        {theme.mode === 'dark' ? 'Light' : 'Dark'}
-      </Text>
-    </TouchableOpacity>
   );
 }
 ```

@@ -187,6 +187,14 @@ export const ToastItem: React.FC<ToastItemProps> = ({
     <Animated.View
       style={[
         styles.container,
+        {
+          borderColor:
+            toast.variant && toast.variant === 'default'
+              ? theme.colors.primary
+              : toast.variant
+              ? theme.colors[toast.variant as keyof typeof theme.colors]
+              : theme.colors.primary,
+        },
         styles[toast.variant || 'default'],
         animatedStyle,
         stackedStyle,
@@ -237,8 +245,7 @@ const createToastItemStyle = (theme: Theme) =>
       shadowOpacity: 0.1,
       shadowRadius: 8,
       elevation: 5,
-      borderWidth: 1,
-      borderColor: theme.colors.border,
+      borderLeftWidth: 1,
     },
     content: {
       flexDirection: 'row',
