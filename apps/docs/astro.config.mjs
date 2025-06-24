@@ -21,7 +21,14 @@ export default defineConfig({
         {
           label: 'Getting Started',
           items: [
-            { label: 'Installation', slug: 'getting-started/installation' },
+            {
+              label: 'Installation',
+              slug: 'getting-started/installation',
+              badge: {
+                text: 'Essential',
+                variant: 'tip',
+              },
+            },
             { label: 'Quick Start', slug: 'getting-started/quick-start' },
             { label: 'Setup Guide', slug: 'getting-started/setup-guide' },
           ],

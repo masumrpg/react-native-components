@@ -3,193 +3,304 @@ title: Installation
 description: Learn how to install RNC Theme and its dependencies in your React Native project.
 ---
 
-Get started with RNC Theme by installing the package and its required dependencies.
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
+import { Icon } from '@astrojs/starlight/components';
+
+Get started with RNC Theme by installing the package and its required dependencies. This guide will walk you through the complete installation process for different environments.
+
+<Aside type="tip" title="Quick Start">
+  New to RNC Theme? Follow our [Quick Start Guide](/getting-started/quick-start) after completing the installation for the fastest setup experience.
+</Aside>
 
 ## Package Installation
 
-Install the main package using your preferred package manager:
+<CardGrid>
+  <Card title="npm" icon="npm">
+    The most common package manager for Node.js projects.
+    ```bash
+    npm install rnc-theme
+    ```
+  </Card>
 
-```bash
-# Using npm
-npm install rnc-theme
+  <Card title="yarn" icon="seti:yarn">
+    Fast, reliable, and secure dependency management.
+    ```bash
+    yarn add rnc-theme
+    ```
+  </Card>
 
-# Using yarn
-yarn add rnc-theme
+  <Card title="pnpm" icon="pnpm">
+    Efficient package manager with shared dependencies.
+    ```bash
+    pnpm add rnc-theme
+    ```
+  </Card>
 
-# Using pnpm
-pnpm add rnc-theme
-
-# Using bun
-bun add rnc-theme
-```
+  <Card title="bun" icon="bun">
+    Ultra-fast JavaScript runtime and package manager.
+    ```bash
+    bun add rnc-theme
+    ```
+  </Card>
+</CardGrid>
 
 ## Required Dependencies
 
-RNC Theme requires several peer dependencies to function properly. Install them based on your project setup:
+RNC Theme requires several peer dependencies to function properly. Choose the installation method that matches your project setup:
 
-### Core Dependencies
+<Tabs syncKey="package">
+  <TabItem label="npm" icon='npm'>
+    <Steps>
+      1. **Install Core Dependencies with Expo CLI**
 
-```bash
-# React Native Reanimated (for animations)
-npm install react-native-reanimated
+         ```bash
+         npx expo install react-native-reanimated
+         npx expo install react-native-gesture-handler
+         npx expo install @react-native-async-storage/async-storage
+         npx expo install lucide-react-native
+         npx expo install react-native-calendars
+         ```
 
-# React Native Gesture Handler (for gestures)
-npm install react-native-gesture-handler
+      2. **Install Feature Dependencies** <Badge text="Feature Specific" variant="caution" />
 
-# AsyncStorage (for theme persistence)
-npm install @react-native-async-storage/async-storage
+         ```bash
+         npx expo install @react-navigation/native react-native-safe-area-context
+         npx expo install expo-localization i18n-js
+         ```
+    </Steps>
+  </TabItem>
 
-# Lucide React Native (for icons)
-npm install lucide-react-native
-```
+  <TabItem label="yarn" icon="seti:yarn">
+    <Steps>
+      1. **Install Core Dependencies with Expo CLI**
 
-### Navigation Dependencies (if using navigation features)
+         ```bash
+         yarn add install react-native-reanimated
+         yarn add install react-native-gesture-handler
+         yarn add install @react-native-async-storage/async-storage
+         yarn add install lucide-react-native
+         yarn add install react-native-calendars
+         ```
 
-```bash
-# React Navigation
-npm install @react-navigation/native
-npm install react-native-safe-area-context
-```
+      2. **Install Feature Dependencies** <Badge text="Feature Specific" variant="caution" />
 
-### Calendar Dependencies (if using calendar components)
+         ```bash
+         yarn add install @react-navigation/native react-native-safe-area-context
+         yarn add install expo-localization i18n-js
+         ```
+    </Steps>
+  </TabItem>
 
-```bash
-# React Native Calendars
-npm install react-native-calendars
-```
+  <TabItem label="pnpm" icon='pnpm'>
+    <Steps>
+      1. **Install Core Dependencies with Expo CLI**
 
-### Internationalization Dependencies (if using i18n features)
+         ```bash
+         pnpm add install react-native-reanimated
+         pnpm add install react-native-gesture-handler
+         pnpm add install @react-native-async-storage/async-storage
+         pnpm add install lucide-react-native
+         pnpm add install react-native-calendars
+         ```
 
-```bash
-# Expo Localization and i18n-js
-npm install expo-localization i18n-js
-```
+      2. **Install Feature Dependencies** <Badge text="Feature Specific" variant="caution" />
 
-## Platform Setup
+         ```bash
+         pnpm add install @react-navigation/native react-native-safe-area-context
+         pnpm add install expo-localization i18n-js
+         ```
+    </Steps>
+  </TabItem>
 
-### iOS Setup
+  <TabItem label="bun" icon='bun'>
+    <Steps>
+      1. **Install Core Dependencies with Expo CLI**
 
-For iOS, you need to install pods after adding the dependencies:
+         ```bash
+         bunx expo install react-native-reanimated
+         bunx expo install react-native-gesture-handler
+         bunx expo install @react-native-async-storage/async-storage
+         bunx expo install lucide-react-native
+         bunx expo install react-native-calendars
+         ```
 
-```bash
-cd ios && pod install
-```
+      2. **Install Feature Dependencies** <Badge text="Feature Specific" variant="caution" />
 
-### Android Setup
+         ```bash
+         bunx expo install @react-navigation/native react-native-safe-area-context
+         bunx expo install expo-localization i18n-js
+         ```
+    </Steps>
+  </TabItem>
+</Tabs>
 
-For Android, make sure to follow the setup instructions for:
+## Essential Configuration
 
-1. **React Native Reanimated**: Add the Reanimated plugin to your `babel.config.js`
-2. **React Native Gesture Handler**: Follow the Android installation guide
-3. **AsyncStorage**: No additional setup required for modern React Native versions
+### Babel Configuration
 
-## Expo Setup
+<Aside type="caution" title="Important">
+  The Reanimated plugin **must** be the last item in your plugins array.
+</Aside>
 
-If you're using Expo, install the dependencies using Expo CLI:
-
-```bash
-# Install core dependencies
-npx expo install react-native-reanimated react-native-gesture-handler
-npx expo install @react-native-async-storage/async-storage
-npx expo install lucide-react-native
-
-# Install optional dependencies as needed
-npx expo install @react-navigation/native react-native-safe-area-context
-npx expo install react-native-calendars
-npx expo install expo-localization i18n-js
-```
-
-## Babel Configuration
-
-Add the Reanimated plugin to your `babel.config.js`:
-
-```javascript
+```javascript title="babel.config.js"
 module.exports = {
   presets: ['module:metro-react-native-babel-preset'],
   plugins: [
-    'react-native-reanimated/plugin', // This should be last
+    // Other plugins...
+    'react-native-reanimated/plugin', // ⚠️ Must be last!
   ],
 };
 ```
 
-## TypeScript Support
+### TypeScript Configuration
 
-RNC Theme includes full TypeScript definitions. If you're using TypeScript, make sure your `tsconfig.json` includes:
+RNC Theme includes comprehensive TypeScript definitions. Update your `tsconfig.json`:
+<Aside type="tip">
+  Add the following to your `tsconfig.json` if you haven't already and using typeScript.
+</Aside>
 
-```json
+```json title="tsconfig.json"
 {
   "compilerOptions": {
     "strict": true,
     "esModuleInterop": true,
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+    "moduleResolution": "node",
+    "allowSyntheticDefaultImports": true
+  },
+  "include": [
+    "**/*.ts",
+    "**/*.tsx"
+  ]
 }
 ```
 
-## Version Compatibility
+## Version Compatibility Matrix
 
-Make sure your project meets the minimum version requirements:
+<Aside type="note">
+  Always use the latest compatible versions for the best experience and security updates.
+</Aside>
 
-| Package | Minimum Version |
-|---------|----------------|
-| React | 19.0.0+ |
-| React Native | 0.79.3+ |
-| React Native Reanimated | 3.0.0+ |
-| React Native Gesture Handler | 2.0.0+ |
-| AsyncStorage | 2.0.0+ |
-| Lucide React Native | 0.513.0+ |
+| Package | Minimum Version | Recommended | Status |
+|---------|----------------|-------------|---------|
+| React | 19.0.0+ | Latest | <Badge text="Required" variant="danger" /> |
+| React Native | 0.79.3+ | Latest | <Badge text="Required" variant="danger" /> |
+| React Native Reanimated | 3.0.0+ | 3.15.0+ | <Badge text="Required" variant="danger" /> |
+| React Native Gesture Handler | 2.0.0+ | 2.18.0+ | <Badge text="Required" variant="danger" /> |
+| AsyncStorage | 2.0.0+ | Latest | <Badge text="Required" variant="danger" /> |
+| Lucide React Native | 0.513.0+ | Latest | <Badge text="Required" variant="danger" /> |
+| React Navigation | 6.0.0+ | Latest | <Badge text="Required" variant="danger" /> |
+| React Native Calendars | 1.1200.0+ | Latest | <Badge text="Required" variant="danger" /> |
 
-## Verification
+## Installation Verification
 
-To verify that everything is installed correctly, create a simple test component:
+Create a test component to verify your installation:
 
-```tsx
-import React from 'react';
-import { View, Text } from 'react-native';
-import { RNCProvider, useTheme } from 'rnc-theme';
+<Tabs syncKey="lang">
+  <TabItem label="JavaScript" icon='seti:javascript'>
+    ```diff lang="js" title="_layout.tsx"
+    import { Stack, usePathname } from 'expo-router';
+    import { RNCProvider } from 'rnc-theme';
+    import { GestureHandlerRootView } from 'react-native-gesture-handler';
+    import 'react-native-reanimated';
 
-const TestComponent = () => {
-  const { theme } = useTheme();
+    export default function RootLayout() {
+      return <RootLayoutNav />;
+    }
 
-  return (
-    <View style={{ backgroundColor: theme.colors.background, padding: 20 }}>
-      <Text style={{ color: theme.colors.text }}>RNC Theme is working!</Text>
-    </View>
-  );
-};
+    function RootLayoutNav() {
+      return (
++        <RNCProvider>
++            <GestureHandlerRootView>
+                  {/* stack or children */}
+                  <Stack>
+                    <Stack.Screen name="index" />
+                  </Stack>
++            </GestureHandlerRootView>
++        </RNCProvider>
+      );
+    }
+    ```
+  </TabItem>
 
-const App = () => (
-  <RNCProvider>
-    <TestComponent />
-  </RNCProvider>
-);
+  <TabItem label="TypeScript" icon="seti:typescript">
+    ```diff lang="ts" title="_layout.tsx"
+    import { Stack, usePathname } from 'expo-router';
+    import { RNCProvider } from 'rnc-theme';
+    import { GestureHandlerRootView } from 'react-native-gesture-handler';
+    import 'react-native-reanimated';
 
-export default App;
-```
+    export default function RootLayout() {
+      return <RootLayoutNav />;
+    }
 
-If you see the text with themed colors, your installation is successful!
+    function RootLayoutNav() {
+      return (
++        <RNCProvider>
++            <GestureHandlerRootView>
+                  {/* stack or children */}
+                  <Stack>
+                    <Stack.Screen name="index" />
+                  </Stack>
++            </GestureHandlerRootView>
++        </RNCProvider>
+      );
+    }
+    ```
+  </TabItem>
+</Tabs>
 
-## Troubleshooting
+<Aside type="tip" title="Success Indicator">
+  If you see themed text with proper colors, congratulations! Your installation is complete and working correctly.
+</Aside>
 
-### Common Issues
+## Troubleshooting Common Issues
 
-1. **Metro bundler errors**: Clear Metro cache with `npx react-native start --reset-cache`
-2. **iOS build errors**: Clean and rebuild with `cd ios && xcodebuild clean && cd .. && npx react-native run-ios`
-3. **Android build errors**: Clean Gradle cache with `cd android && ./gradlew clean && cd ..`
-4. **Reanimated errors**: Make sure the Reanimated plugin is the last item in your Babel plugins array
+<Card title="Metro Bundler Errors" icon="warning">
+  **Solution:** Clear Metro cache
+  ```bash
+  npx react-native start --reset-cache
+  ```
+</Card>
+<Card title="Reanimated Errors" icon="error">
+  **Solution:** Check Babel configuration
+  - Ensure `react-native-reanimated/plugin` is last in plugins array
+  - Restart Metro bundler after changes
+</Card>
 
-### Getting Help
+## Getting Help & Support
 
-If you encounter issues during installation:
+<CardGrid>
+  <Card title="GitHub Issues" icon="github">
+    Report bugs and request features
 
-- Check the [GitHub Issues](https://github.com/masumrpg/react-native-components/issues)
-- Review the [troubleshooting guide](/troubleshooting)
-- Join our [community discussions](https://github.com/masumrpg/react-native-components/discussions)
+    [Open an Issue →](https://github.com/masumrpg/react-native-components/issues)
+  </Card>
 
-## Next Steps
+  <Card title="Community Discussions" icon="comment">
+    Get help from the community
 
-Once installation is complete, proceed to:
+    [Join Discussion →](https://github.com/masumrpg/react-native-components/discussions)
+  </Card>
 
-- [Quick Start Guide](/getting-started/quick-start) - Get up and running in minutes
-- [Setup Guide](/getting-started/setup-guide) - Detailed configuration options
-- [Components Overview](/components/overview) - Explore available components
+  <Card title="Documentation" icon="document">
+    Browse comprehensive guides
+
+    [View Docs →](/components/overview)
+  </Card>
+
+  <Card title="Examples" icon="external">
+    See working implementations
+
+    [View Examples →](https://github.com/masumrpg/react-native-components/tree/main/apps/example)
+  </Card>
+</CardGrid>
+
+<Aside type="tip" title="Pro Tip">
+  Check out our [Example Projects](https://github.com/masumrpg/react-native-components/tree/main/apps/example) to see RNC Theme in action with different project setups and use cases.
+</Aside>
