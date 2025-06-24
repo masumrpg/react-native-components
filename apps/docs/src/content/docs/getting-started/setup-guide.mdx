@@ -3,49 +3,50 @@ title: Setup Guide
 description: Comprehensive guide for configuring RNC Theme with advanced options and customizations.
 ---
 
+import { Aside } from '@astrojs/starlight/components';
+
 This guide covers advanced configuration options for RNC Theme, including custom themes, internationalization, and performance optimizations.
 
 ## RNCProvider Configuration
 
 The `RNCProvider` is the core component that provides theme context to your entire application. Here are all available configuration options:
 
-```tsx
+```tsx title="_layout.tsx"
 import { RNCProvider } from 'rnc-theme';
 
-const App = () => {
+export default function RootLayout() {
   return (
     <RNCProvider
       // Theme Configuration
-      defaultTheme="system"              // 'light' | 'dark' | 'system'
-      storageKey="rnc-theme"             // Custom storage key
-      enableSystemTheme={true}           // Enable system theme detection
+      defaultTheme="system" // 'light' | 'dark' | 'system'
 
       // Toast Configuration
       toast={{
-        maxToasts: 4,                    // Maximum number of toasts
-        position: 'bottom',              // 'top' | 'bottom' | 'center'
-        duration: 3000,                  // Default duration in ms
-        offset: 50,                      // Offset from screen edge
+        maxToasts: 4, // Maximum number of toasts
+        position: "bottom", // 'top' | 'bottom'
       }}
 
       // Internationalization
       i18nConfig={{
-        locale: 'en',                    // Default locale
-        fallbackLocale: 'en',           // Fallback locale
+        defaultLocale: "en", // Default locale
         translations: {
-          en: { /* English translations */ },
-          id: { /* Indonesian translations */ },
+          en: {
+            /* English translations */
+          },
+          id: {
+            /* Indonesian translations */
+          },
         },
       }}
 
-      // Performance Options
-      enableAnimations={true}            // Enable/disable animations
-      animationDuration={200}            // Default animation duration
+      // Bottom Sheet Configuration
+      bottomSheetProps={{}}
 
-      // Development Options
-      debug={__DEV__}                    // Enable debug mode
+      // Theme Colors
+      customLightTheme={}
+      customDarkTheme={}
     >
-      {/* Your app content */}
+      {/* App */}
     </RNCProvider>
   );
 };
@@ -59,17 +60,17 @@ const App = () => {
 import { useTheme, themeRegistry } from 'rnc-theme';
 
 const ThemeSetup = () => {
-  const { theme, setTheme, toggleTheme, themeMode, setThemeMode } = useTheme();
+  const { theme, themeMode } = useTheme();
 
   // Basic theme operations
   const handleThemeChange = () => {
-    setTheme('dark');           // Set specific theme
     setThemeMode('dark');       // Set theme mode
-    toggleTheme();              // Toggle between light/dark
   };
 
   return (
-    // Your component JSX
+    <View style={{
+      backgroundColor: theme.colors.background,
+    }} />
   );
 };
 ```
@@ -82,101 +83,62 @@ Register custom themes using the theme registry:
 import { themeRegistry, CustomThemeConfigFactory } from 'rnc-theme';
 
 // Static theme configuration
-const materialTheme = {
-  colors: {
-    primary: '#6200EE',
-    secondary: '#03DAC6',
-    background: '#FFFFFF',
-    surface: '#F5F5F5',
-    text: '#000000',
-    textSecondary: '#666666',
-    border: '#E0E0E0',
-    error: '#B00020',
-    warning: '#FF6F00',
-    success: '#00C853',
-    info: '#2196F3',
-  },
-  spacing: {
-    xs: 4,
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
-    xxl: 48,
-  },
-  borderRadius: {
-    xs: 4,
-    sm: 6,
-    md: 8,
-    lg: 12,
-    xl: 16,
-    full: 9999,
-  },
-  components: {
-    height: {
-      xs: 32,
-      sm: 36,
-      md: 40,
-      lg: 44,
-      xl: 48,
-    },
-    padding: {
-      xs: 8,
-      sm: 12,
-      md: 16,
-      lg: 20,
-      xl: 24,
-    },
-  },
-};
-
-// Register static theme
-themeRegistry.registerPreset('material', materialTheme);
-
-// Dynamic theme configuration (responds to light/dark mode)
-const dynamicThemeConfig: CustomThemeConfigFactory = (isDark: boolean) => ({
-  colors: {
-    primary: isDark ? '#BB86FC' : '#6200EE',
-    background: isDark ? '#121212' : '#FFFFFF',
-    surface: isDark ? '#1E1E1E' : '#F5F5F5',
-    text: isDark ? '#FFFFFF' : '#000000',
-    textSecondary: isDark ? '#B0B0B0' : '#666666',
-    border: isDark ? '#404040' : '#E0E0E0',
-    // ... other colors
-  },
-  // ... other theme properties
-});
+const customThemeConfig: CustomThemeConfigFactory = useMemo(
+    () => (isDark: boolean) => ({
+      colors: {
+        primary: isDark ? '#FF6B6B' : '#4ECDC4',
+        secondary: isDark ? '#FFE66D' : '#45B7D1',
+        background: isDark ? '#1a1a1a' : '#f8f9fa',
+        surface: isDark ? '#2d2d2d' : '#ffffff',
+        text: isDark ? '#ffffff' : '#333333',
+        textSecondary: isDark ? '#b0b0b0' : '#666666',
+        border: isDark ? '#404040' : '#e0e0e0',
+        error: '#FF5252',
+        warning: '#FF9800',
+        success: '#4CAF50',
+        info: '#2196F3',
+        muted: isDark ? '#666666' : '#999999',
+        accent: isDark ? '#FF6B6B' : '#4ECDC4',
+        destructive: '#FF5252',
+      },
+      components: {
+        height: {
+          xs: 32,
+          sm: 36,
+          md: 40,
+          lg: 44,
+          xl: 48,
+        },
+        padding: {
+          xs: 8,
+          sm: 12,
+          md: 16,
+          lg: 20,
+          xl: 24,
+        },
+        borderRadius: {
+          xs: 4,
+          sm: 4,
+          md: 8,
+          lg: 16,
+          xl: 24,
+          full: 9999,
+        },
+      },
+      spacing: {
+        xs: 4,
+        sm: 8,
+        md: 16,
+        lg: 24,
+        xl: 32,
+        xxl: 48,
+      },
+    }),
+    []
+  );
 
 // Register dynamic theme
-themeRegistry.registerPreset('dynamic-material', dynamicThemeConfig);
-```
-
-### Built-in Theme Presets
-
-RNC Theme comes with several built-in presets:
-
-```tsx
-const setupThemePresets = () => {
-  // Register all available presets
-  const presets = [
-    'material',     // Material Design inspired
-    'neon',         // Neon/cyberpunk style
-    'ocean',        // Ocean blue theme
-    'sunset',       // Warm sunset colors
-    'forest',       // Nature green theme
-    'galaxy',       // Space/galaxy theme
-    'vintage',      // Retro/vintage style
-    'cyberpunk',    // Futuristic cyberpunk
-    'pastel',       // Soft pastel colors
-    'monochrome',   // Black and white
-    'autumn',       // Autumn colors
-    'arctic',       // Cool arctic theme
-  ];
-
-  presets.forEach(preset => {
-    themeRegistry.registerPreset(preset, getPresetConfig(preset));
-  });
-};
+themeRegistry.registerPreset('custom', customThemeConfig);
 ```
 
 ## Internationalization (i18n)
@@ -187,59 +149,75 @@ const setupThemePresets = () => {
 import { RNCProvider } from 'rnc-theme';
 import * as Localization from 'expo-localization';
 
-const i18nConfig = {
-  locale: Localization.locale,
-  fallbackLocale: 'en',
+const i18nConfig: I18nConfig = {
   translations: {
     en: {
-      common: {
-        ok: 'OK',
-        cancel: 'Cancel',
-        save: 'Save',
-        delete: 'Delete',
-        edit: 'Edit',
-        loading: 'Loading...',
-        error: 'Error',
-        success: 'Success',
+      title: 'Internationalization Demo',
+      subtitle: 'Language switching example',
+      currentLanguage: 'Current Language',
+      switchLanguage: 'Switch Language',
+      greeting: 'Hello, World!',
+      description:
+        'This is a demonstration of the i18n functionality in the rnc-theme library.',
+      features: {
+        title: 'Features',
+        dynamicSwitching: 'Dynamic language switching',
+        persistentStorage: 'Persistent language storage',
+        customConfig: 'Custom configuration support',
+        autoDetection: 'Auto locale detection',
       },
-      components: {
-        button: {
-          loading: 'Loading...',
-        },
-        input: {
-          required: 'This field is required',
-          invalid: 'Invalid input',
-        },
-        modal: {
-          close: 'Close',
-        },
+      buttons: {
+        english: 'English',
+        indonesian: 'Indonesian',
+        french: 'French',
       },
     },
     id: {
-      common: {
-        ok: 'OK',
-        cancel: 'Batal',
-        save: 'Simpan',
-        delete: 'Hapus',
-        edit: 'Edit',
-        loading: 'Memuat...',
-        error: 'Error',
-        success: 'Berhasil',
+      title: 'Demo Internasionalisasi',
+      subtitle: 'Contoh pergantian bahasa',
+      currentLanguage: 'Bahasa Saat Ini',
+      switchLanguage: 'Ganti Bahasa',
+      greeting: 'Halo, Dunia!',
+      description:
+        'Ini adalah demonstrasi fungsionalitas i18n dalam library rnc-theme.',
+      features: {
+        title: 'Fitur',
+        dynamicSwitching: 'Pergantian bahasa dinamis',
+        persistentStorage: 'Penyimpanan bahasa persisten',
+        customConfig: 'Dukungan konfigurasi kustom',
+        autoDetection: 'Deteksi lokal otomatis',
       },
-      components: {
-        button: {
-          loading: 'Memuat...',
-        },
-        input: {
-          required: 'Field ini wajib diisi',
-          invalid: 'Input tidak valid',
-        },
-        modal: {
-          close: 'Tutup',
-        },
+      buttons: {
+        english: 'Inggris',
+        indonesian: 'Indonesia',
+        french: 'Prancis',
+      },
+    },
+    fr: {
+      title: "Démo d'Internationalisation",
+      subtitle: 'Exemple de changement de langue',
+      currentLanguage: 'Langue Actuelle',
+      switchLanguage: 'Changer de Langue',
+      greeting: 'Bonjour le Monde!',
+      description:
+        'Ceci est une démonstration de la fonctionnalité i18n dans la bibliothèque rnc-theme.',
+      features: {
+        title: 'Fonctionnalités',
+        dynamicSwitching: 'Changement de langue dynamique',
+        persistentStorage: 'Stockage de langue persistant',
+        customConfig: 'Support de configuration personnalisée',
+        autoDetection: 'Détection automatique des paramètres régionaux',
+      },
+      buttons: {
+        english: 'Anglais',
+        indonesian: 'Indonésien',
+        french: 'Français',
       },
     },
   },
+  supportedLocales: ['en', 'id', 'fr'],
+  defaultLocale: 'en',
+  autoDetectLocale: true,
 };
 
 const App = () => (
@@ -249,20 +227,17 @@ const App = () => (
 );
 ```
 
-### Using Translations in Components
+### Using Language
 
 ```tsx
-import { useTranslation } from 'rnc-theme';
+import { useLanguage } from 'rnc-theme';
 
 const MyComponent = () => {
-  const { t, locale, setLocale } = useTranslation();
+  const {i18n: {t}} = useLanguage();
 
   return (
     <View>
-      <Text>{t('common.loading')}</Text>
-      <Button onPress={() => setLocale('id')}>
-        {t('common.save')}
-      </Button>
+      <Text>{t('title')}</Text>
     </View>
   );
 };
@@ -273,17 +248,10 @@ const MyComponent = () => {
 ### Global Toast Setup
 
 ```tsx
-const toastConfig = {
-  maxToasts: 4,
-  position: 'bottom' as const,
-  duration: 3000,
-  offset: 50,
-  enableSwipeToClose: true,
-  enablePanGesture: true,
-  animationType: 'slide' as const,
-};
-
-<RNCProvider toast={toastConfig}>
+<RNCProvider toast={{
+        maxToasts: 4, // Maximum number of toasts
+        position: "bottom", // 'top' | 'bottom'
+      }}>
   {/* Your app */}
 </RNCProvider>
 ```
@@ -294,27 +262,20 @@ const toastConfig = {
 import { useToast } from 'rnc-theme';
 
 const MyComponent = () => {
-  const { showToast, hideToast, hideAllToasts } = useToast();
+  const { toast } = useToast();
 
   const handleSuccess = () => {
-    showToast({
-      type: 'success',
-      title: 'Success!',
-      message: 'Operation completed successfully',
-      duration: 3000,
-      action: {
-        label: 'Undo',
-        onPress: () => console.log('Undo pressed'),
-      },
+    toast({
+      title: 'Default Toast',
+      description: 'This is a default toast message.',
     });
   };
 
   const handleError = () => {
-    showToast({
-      type: 'error',
-      title: 'Error',
-      message: 'Something went wrong',
-      persistent: true, // Won't auto-dismiss
+    toast({
+      variant: 'error',
+      title: 'Error occurred',
+      description: 'Something went wrong. Please try again.',
     });
   };
 
@@ -322,7 +283,6 @@ const MyComponent = () => {
     <View>
       <Button onPress={handleSuccess}>Show Success</Button>
       <Button onPress={handleError}>Show Error</Button>
-      <Button onPress={hideAllToasts}>Clear All</Button>
     </View>
   );
 };
@@ -350,9 +310,10 @@ const App = () => (
 
 ```tsx
 import { memo, useMemo, useCallback } from 'react';
-import { useThemedStyles } from 'rnc-theme';
+import { useThemedStyles, Theme } from 'rnc-theme';
 
 const OptimizedComponent = memo(({ data }) => {
+  // useThemedStyles memoize include
   const styles = useThemedStyles(createStyles);
 
   // Memoize expensive calculations
@@ -379,7 +340,7 @@ const OptimizedComponent = memo(({ data }) => {
   );
 });
 
-const createStyles = (theme) => ({
+const createStyles = (theme: Theme) => ({
   container: {
     backgroundColor: theme.colors.background,
     padding: theme.spacing.md,
@@ -387,44 +348,19 @@ const createStyles = (theme) => ({
 });
 ```
 
-### Theme Persistence Configuration
+<Aside title='Caution' type='caution'>
+  If typescript complaint in `useThemedStyles` hook, please use
+  ```tsx
+  import {StyleSheet} from "react-native"
 
-```tsx
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
-// Custom storage implementation
-const customStorage = {
-  getItem: async (key: string) => {
-    try {
-      return await AsyncStorage.getItem(key);
-    } catch (error) {
-      console.error('Storage get error:', error);
-      return null;
-    }
+  const createStyles = (theme: Theme) => StyleSheet.create({
+  container: {
+    backgroundColor: theme.colors.background,
+    padding: theme.spacing.md,
   },
-  setItem: async (key: string, value: string) => {
-    try {
-      await AsyncStorage.setItem(key, value);
-    } catch (error) {
-      console.error('Storage set error:', error);
-    }
-  },
-  removeItem: async (key: string) => {
-    try {
-      await AsyncStorage.removeItem(key);
-    } catch (error) {
-      console.error('Storage remove error:', error);
-    }
-  },
-};
-
-<RNCProvider
-  storageKey="my-app-theme"
-  storage={customStorage}
->
-  {/* Your app */}
-</RNCProvider>
-```
+});
+  ```
+</Aside>
 
 ## Platform-Specific Configuration
 
@@ -476,115 +412,6 @@ const androidSpecificConfig = {
 };
 ```
 
-## Development and Debugging
-
-### Debug Mode
-
-```tsx
-<RNCProvider debug={__DEV__}>
-  {/* Your app */}
-</RNCProvider>
-```
-
-When debug mode is enabled, you get:
-
-- Theme change logs in console
-- Performance warnings for heavy re-renders
-- Component prop validation
-- Theme structure validation
-
-### Theme Inspector
-
-```tsx
-import { ThemeInspector } from 'rnc-theme/debug';
-
-const App = () => (
-  <RNCProvider>
-    {__DEV__ && <ThemeInspector />}
-    {/* Your app */}
-  </RNCProvider>
-);
-```
-
-## Testing Configuration
-
-### Jest Setup
-
-```javascript
-// jest.setup.js
-import 'react-native-gesture-handler/jestSetup';
-
-// Mock RNC Theme for testing
-jest.mock('rnc-theme', () => ({
-  RNCProvider: ({ children }) => children,
-  useTheme: () => ({
-    theme: {
-      colors: {
-        primary: '#007AFF',
-        background: '#FFFFFF',
-        text: '#000000',
-      },
-      spacing: { md: 16 },
-      borderRadius: { md: 8 },
-    },
-    toggleTheme: jest.fn(),
-    setTheme: jest.fn(),
-  }),
-  useThemedStyles: (createStyles) => createStyles({
-    colors: { primary: '#007AFF' },
-    spacing: { md: 16 },
-  }),
-}));
-```
-
-### Component Testing
-
-```tsx
-import { render } from '@testing-library/react-native';
-import { RNCProvider } from 'rnc-theme';
-import MyComponent from './MyComponent';
-
-const renderWithTheme = (component) => {
-  return render(
-    <RNCProvider defaultTheme="light">
-      {component}
-    </RNCProvider>
-  );
-};
-
-test('renders with theme', () => {
-  const { getByText } = renderWithTheme(<MyComponent />);
-  expect(getByText('Hello World')).toBeTruthy();
-});
-```
-
-## Migration Guide
-
-### From v1.x to v2.x
-
-```tsx
-// Old way (v1.x)
-import { ThemeProvider, useTheme } from 'rnc-theme';
-
-<ThemeProvider theme="dark">
-  <App />
-</ThemeProvider>
-
-// New way (v2.x)
-import { RNCProvider, useTheme } from 'rnc-theme';
-
-<RNCProvider defaultTheme="dark">
-  <App />
-</RNCProvider>
-```
-
-### Breaking Changes
-
-1. **Provider renamed**: `ThemeProvider` → `RNCProvider`
-2. **Prop changes**: `theme` → `defaultTheme`
-3. **Hook changes**: `useTheme().currentTheme` → `useTheme().theme`
-4. **Storage key**: Default changed from `theme` → `rnc-theme`
-
 ## Best Practices
 
 ### 1. Theme Organization
@@ -620,15 +447,13 @@ const createStyles = (theme) => ({
 ### 3. Performance
 
 ```tsx
-// Memoize style creators
-const createStyles = useMemo(() => (theme) => ({
-  // styles
-}), []);
+// style
+const createStyles = (theme: Theme) => StyleSheet.create({
+  backgroundColor: theme.colors.background
+})
 
-// Use memo for expensive components
-const ExpensiveComponent = memo(({ data }) => {
-  // component logic
-});
+  // Memoize style creators
+const memoizedCreateStyles = useThemedStyles(createStyles);
 ```
 
 ## Troubleshooting
@@ -643,15 +468,4 @@ const ExpensiveComponent = memo(({ data }) => {
 ### Getting Help
 
 - [GitHub Issues](https://github.com/masumrpg/react-native-components/issues)
-- [Documentation](/)
-- [Community Discussions](https://github.com/masumrpg/react-native-components/discussions)
 - [Examples](https://github.com/masumrpg/react-native-components/tree/main/apps/example)
-
-## Next Steps
-
-After completing the setup:
-
-- [Explore Components](/components/overview)
-- [Learn about Theming](/theming/overview)
-- [Check out Examples](https://github.com/masumrpg/react-native-components/tree/main/apps/example)
-- [Join the Community](https://github.com/masumrpg/react-native-components/discussions)

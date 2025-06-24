@@ -57,7 +57,7 @@ interface BottomSheetContextType<T = any> {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 interface BottomSheetProviderProps<T = any> {
-  children: ReactNode;
+  children?: ReactNode;
   defaultSnapTo?: string;
   maxSnapTo?: string;
   backgroundColor?: ViewStyle['backgroundColor'];

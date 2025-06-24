@@ -40,6 +40,7 @@ import {
   Calendar,
   CalendarDays,
   Languages,
+  SquareChartGantt,
 } from 'lucide-react-native';
 import { ReactElement } from 'react';
 
@@ -248,7 +249,7 @@ export default function HomeScreen() {
       id: 33,
       title: 'Theme Manager',
       path: '/theme-manager',
-      icon: <Palette size={30} color={'blue'} />,
+      icon: <SquareChartGantt size={30} />,
     },
   ];
 
