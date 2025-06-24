@@ -263,9 +263,31 @@ Create a test component to verify your installation:
 
 <Card title="Metro Bundler Errors" icon="warning">
   **Solution:** Clear Metro cache
-  ```bash
-  npx react-native start --reset-cache
-  ```
+  <Tabs syncKey="package">
+  <TabItem label="npm" icon='npm'>
+    ```bash
+      npx expo start -c
+    ```
+  </TabItem>
+
+  <TabItem label="yarn" icon="seti:yarn">
+    ```bash
+      yarn expo start -c
+    ```
+  </TabItem>
+
+  <TabItem label="pnpm" icon='pnpm'>
+    ```bash
+      pnpm expo start -c
+    ```
+  </TabItem>
+
+  <TabItem label="bun" icon='bun'>
+    ```bash
+      bunx expo start -c
+    ```
+  </TabItem>
+</Tabs>
 </Card>
 <Card title="Reanimated Errors" icon="error">
   **Solution:** Check Babel configuration
