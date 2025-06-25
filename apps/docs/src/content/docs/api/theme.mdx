@@ -1,0 +1,134 @@
+---
+title: Theme API Reference
+description: Access and manage the theme in your React Native components.
+---
+
+Theme is core to the component system. It is used to style the components and provide a consistent look and feel to your app.
+
+### ThemeMode
+
+| Preset | Colors | Typography | Components |
+|--------|--------|------------|------------|
+| `system` | System default | Default | Default |
+| `light` | Light theme colors | Default | Default |
+| `dark` | Dark theme colors | Default | Default |
+
+### Theme
+Main theme object containing all styling configurations.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `colors` | <a href='/api/theme#themecolors'>`ThemeColors`</a> | Color palette configuration |
+| `fontSizes` | <a href='/api/theme#themefontsizes'>`ThemeFontSizes`</a> | Font size scale |
+| `spacing` | <a href='/api/theme#themespacing'>`ThemeSpacing`</a> | Spacing scale |
+| `components` | <a href='/api/theme#themecomponentsizes'>`ThemeComponentSizes`</a> | Component-specific sizing |
+| `typography` | <a href='/api/theme#themetypography'>`ThemeTypography`</a> | Text style presets |
+
+### ThemeColors
+Color palette for the theme system.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `primary` | `string` | Primary brand color |
+| `secondary` | `string` | Secondary brand color |
+| `background` | `string` | Main background color |
+| `surface` | `string` | Surface/card background color |
+| `text` | `string` | Primary text color |
+| `textSecondary` | `string` | Secondary text color |
+| `border` | `string` | Border color |
+| `error` | `string` | Error state color |
+| `warning` | `string` | Warning state color |
+| `success` | `string` | Success state color |
+| `info` | `string` | Info state color |
+| `muted` | `string` | Muted/disabled color |
+| `accent` | `string` | Accent color |
+| `destructive` | `string` | Destructive action color |
+
+### ThemeFontSizes
+Font size scale for consistent typography.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `xs` | `number` | Extra small font size |
+| `sm` | `number` | Small font size |
+| `md` | `number` | Medium font size (base) |
+| `lg` | `number` | Large font size |
+| `xl` | `number` | Extra large font size |
+| `xxl` | `number` | Extra extra large font size |
+
+### ThemeSpacing
+Spacing scale for consistent layout.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `xs` | `number` | Extra small space |
+| `sm` | `number` | Small space |
+| `md` | `number` | Medium space |
+| `lg` | `number` | Large space |
+| `xl` | `number` | Extra large space |
+| `xxl` | `number` | Extra extra large space |
+
+### ThemeComponentSizes
+Component-specific sizing configurations.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `height` | <a href='/api/theme#componentheight'>`ComponentHeight`</a> | Height sizes for components |
+| `padding` | <a href='/api/theme#componentpadding'>`ComponentPadding`</a> | Padding sizes for components |
+| `borderRadius` | <a href='/api/theme#componentborderradius'>`ComponentBorderRadius`</a> | Border radius sizes |
+
+#### ComponentHeight
+| Property | Type | Description |
+|----------|------|-------------|
+| `xs` | `number` | Extra small height |
+| `sm` | `number` | Small height |
+| `md` | `number` | Medium height |
+| `lg` | `number` | Large height |
+| `xl` | `number` | Extra large height |
+
+#### ComponentPadding
+| Property | Type | Description |
+|----------|------|-------------|
+| `xs` | `number` | Extra small padding |
+| `sm` | `number` | Small padding |
+| `md` | `number` | Medium padding |
+| `lg` | `number` | Large padding |
+| `xl` | `number` | Extra large padding |
+
+#### ComponentBorderRadius
+| Property | Type | Description |
+|----------|------|-------------|
+| `xs` | `number` | Extra small border radius |
+| `sm` | `number` | Small border radius |
+| `md` | `number` | Medium border radius |
+| `lg` | `number` | Large border radius |
+| `xl` | `number` | Extra large border radius |
+| `full` | `number` | Full border radius (circular) |
+
+### ThemeTypography
+Predefined text styles for consistent typography.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `caption` | <a href='https://reactnative.dev/docs/text-style-props'>`TextStyle`</a> | Caption text style |
+| `small` | <a href='https://reactnative.dev/docs/text-style-props'>`TextStyle`</a> | Small text style |
+| `body` | <a href='https://reactnative.dev/docs/text-style-props'>`TextStyle`</a> | Body text style |
+| `subtitle` | <a href='https://reactnative.dev/docs/text-style-props'>`TextStyle`</a> | Subtitle text style |
+| `title` | <a href='https://reactnative.dev/docs/text-style-props'>`TextStyle`</a> | Title text style |
+| `heading` | <a href='https://reactnative.dev/docs/text-style-props'>`TextStyle`</a> | Heading text style |
+
+Each typography style contains:
+- `fontSize`: Font size value
+- `lineHeight`: Line height value
+- `fontWeight`: Font weight value
+
+### CustomThemeConfigFactory
+Custom theme configuration factory function.
+
+| Type | Return | Description |
+|------|--------|-----------|
+| `(isDark: boolean) => CustomThemeConfig` | <a href='/api/theme#customthemeconfig'>`CustomThemeConfig`</a> | Custom font size scale |
+
+### CustomThemeConfig
+
+CustomThemeConfig is a type alias that extends the base <a href='/api/theme#theme'>`Theme`</a> interface, allowing you to customize and override the default theme configuration while maintaining type safety and consistency across your application.

@@ -55,8 +55,8 @@ export default function HomeScreen() {
   const listLibrary: LibraryItem[] = [
     {
       id: 1,
-      title: 'Theme',
-      path: '/theme',
+      title: 'Manual Theme',
+      path: '/manual-theme',
       icon: <Palette size={30} color={'black'} />,
     },
     {
@@ -249,7 +249,7 @@ export default function HomeScreen() {
       id: 33,
       title: 'Theme Manager',
       path: '/theme-manager',
-      icon: <SquareChartGantt size={30} />,
+      icon: <SquareChartGantt size={30} color={'black'} />,
     },
   ];
 

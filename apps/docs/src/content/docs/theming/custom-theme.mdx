@@ -9,7 +9,6 @@ import { Code } from '@astrojs/starlight/components';
 import { Badge } from '@astrojs/starlight/components';
 import { Aside } from '@astrojs/starlight/components';
 
-# Custom Theme
 
 Create unique, branded themes that perfectly match your application's design requirements. RNC Theme provides powerful customization capabilities while maintaining type safety and performance.
 
@@ -38,67 +37,6 @@ Every custom theme follows a consistent structure with five main categories:
 ## Creating a Custom Theme
 
 ### Basic Custom Theme
-
-```tsx
-import { CustomThemeConfigFactory } from 'rnc-theme';
-
-const customThemeConfig: CustomThemeConfigFactory = useMemo(
-    () => (isDark: boolean) => ({
-      colors: {
-        primary: isDark ? '#FF6B6B' : '#4ECDC4',
-        secondary: isDark ? '#FFE66D' : '#45B7D1',
-        background: isDark ? '#1a1a1a' : '#f8f9fa',
-        surface: isDark ? '#2d2d2d' : '#ffffff',
-        text: isDark ? '#ffffff' : '#333333',
-        textSecondary: isDark ? '#b0b0b0' : '#666666',
-        border: isDark ? '#404040' : '#e0e0e0',
-        error: '#FF5252',
-        warning: '#FF9800',
-        success: '#4CAF50',
-        info: '#2196F3',
-        muted: isDark ? '#666666' : '#999999',
-        accent: isDark ? '#FF6B6B' : '#4ECDC4',
-        destructive: '#FF5252',
-      },
-      components: {
-        height: {
-          xs: 32,
-          sm: 36,
-          md: 40,
-          lg: 44,
-          xl: 48,
-        },
-        padding: {
-          xs: 8,
-          sm: 12,
-          md: 16,
-          lg: 20,
-          xl: 24,
-        },
-        borderRadius: {
-          xs: 4,
-          sm: 4,
-          md: 8,
-          lg: 16,
-          xl: 24,
-          full: 9999,
-        },
-      },
-      spacing: {
-        xs: 4,
-        sm: 8,
-        md: 16,
-        lg: 24,
-        xl: 32,
-        xxl: 48,
-      },
-    }),
-    []
-  );
-```
-<Aside type='caution'>If you using useMemo place inside the component</Aside>
-
-### Complete Custom Theme
 
 <Tabs>
   <TabItem label="Colors">
@@ -217,6 +155,80 @@ const customThemeConfig: CustomThemeConfigFactory = useMemo(
   </TabItem>
 </Tabs>
 
+### Complete Custom Theme
+
+```tsx
+import { CustomThemeConfigFactory } from 'rnc-theme';
+
+const customThemeConfig: CustomThemeConfigFactory = (isDark: boolean) => ({
+    colors: {
+      primary: isDark ? '#FF6B6B' : '#4ECDC4',
+      secondary: isDark ? '#FFE66D' : '#45B7D1',
+      background: isDark ? '#1a1a1a' : '#f8f9fa',
+      surface: isDark ? '#2d2d2d' : '#ffffff',
+      text: isDark ? '#ffffff' : '#333333',
+      textSecondary: isDark ? '#b0b0b0' : '#666666',
+      border: isDark ? '#404040' : '#e0e0e0',
+      error: '#FF5252',
+      warning: '#FF9800',
+      success: '#4CAF50',
+      info: '#2196F3',
+      muted: isDark ? '#666666' : '#999999',
+      accent: isDark ? '#FF6B6B' : '#4ECDC4',
+      destructive: '#FF5252',
+    },
+    components: {
+      height: {
+        xs: 32,
+        sm: 36,
+        md: 40,
+        lg: 44,
+        xl: 48,
+      },
+      padding: {
+        xs: 8,
+        sm: 12,
+        md: 16,
+        lg: 20,
+        xl: 24,
+      },
+      borderRadius: {
+        xs: 4,
+        sm: 4,
+        md: 8,
+        lg: 16,
+        xl: 24,
+        full: 9999,
+      },
+    },
+    spacing: {
+      xs: 4,
+      sm: 8,
+      md: 16,
+      lg: 24,
+      xl: 32,
+      xxl: 48,
+    },
+    typography: {
+      caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+      small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+      body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+      subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+      title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+      heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+    },
+    fontSizes: {
+      xs: 12,
+      sm: 14,
+      md: 16,
+      lg: 18,
+      xl: 20,
+      xxl: 24,
+    },
+  })
+```
+<Aside type='caution'>If you using useMemo place inside the component</Aside>
+
 ## Theme Configuration Patterns
 
 ### Light and Dark Theme Variants
@@ -241,143 +253,9 @@ const createBrandTheme: CustomThemeConfigFactory = (isDark: boolean) => ({
     accent: '#EC4899',
     destructive: '#DC2626',
   },
-  components: {
-    borderRadius: {
-      xs: 4,
-      sm: 6,
-      md: 8,
-      lg: 12,
-      xl: 16,
-      full: 9999,
-    },
-    padding: {
-      xs: 8,
-      sm: 12,
-      md: 16,
-      lg: 20,
-      xl: 24,
-    },
-    height: {
-      xs: 32,
-      sm: 36,
-      md: 40,
-      lg: 44,
-      xl: 48,
-    },
-  },
-  spacing: {
-    xs: 4,
-    sm: 8,
-    md: 16,
-    lg: 24,
-    xl: 32,
-    xxl: 48,
-  },
+  // ...rest of the theme configuration
 });
 ```
-
-### Brand-Specific Themes
-
-<Tabs>
-  <TabItem label="Corporate">
-    ```tsx
-    const corporateTheme = {
-      colors: {
-        primary: '#1E40AF',    // Professional blue
-        secondary: '#374151',  // Neutral gray
-        accent: '#059669',     // Success green
-        background: '#F9FAFB',
-        surface: '#FFFFFF',
-        text: '#111827',
-        textSecondary: '#6B7280',
-        border: '#D1D5DB',
-        error: '#DC2626',
-        warning: '#D97706',
-        success: '#059669',
-        info: '#2563EB',
-        muted: '#9CA3AF',
-        destructive: '#B91C1C',
-      },
-      components: {
-        borderRadius: {
-          xs: 2,
-          sm: 4,
-          md: 6,
-          lg: 8,
-          xl: 10,
-          full: 9999,
-        },
-      },
-    };
-    ```
-  </TabItem>
-
-  <TabItem label="Creative">
-    ```tsx
-    const creativeTheme = {
-      colors: {
-        primary: '#8B5CF6',    // Vibrant purple
-        secondary: '#EC4899',  // Hot pink
-        accent: '#06B6D4',     // Cyan
-        background: '#FAFAFA',
-        surface: '#FFFFFF',
-        text: '#18181B',
-        textSecondary: '#71717A',
-        border: '#E4E4E7',
-        error: '#EF4444',
-        warning: '#F59E0B',
-        success: '#22C55E',
-        info: '#3B82F6',
-        muted: '#A1A1AA',
-        destructive: '#DC2626',
-      },
-      components: {
-        borderRadius: {
-          xs: 8,
-          sm: 12,
-          md: 16,
-          lg: 20,
-          xl: 24,
-          full: 9999,
-        },
-      },
-    };
-    ```
-  </TabItem>
-
-  <TabItem label="Minimalist">
-    ```tsx
-    const minimalistTheme = {
-      colors: {
-        primary: '#000000',    // Pure black
-        secondary: '#404040',  // Dark gray
-        accent: '#000000',     // Black accent
-        background: '#FFFFFF',
-        surface: '#FAFAFA',
-        text: '#000000',
-        textSecondary: '#666666',
-        border: '#E0E0E0',
-        error: '#D32F2F',
-        warning: '#F57C00',
-        success: '#388E3C',
-        info: '#1976D2',
-        muted: '#9E9E9E',
-        destructive: '#C62828',
-      },
-      components: {
-        borderRadius: {
-          xs: 0,
-          sm: 0,
-          md: 2,
-          lg: 4,
-          xl: 6,
-          full: 9999,
-        },
-      },
-    };
-    ```
-  </TabItem>
-</Tabs>
 
 ## Implementation Methods
 
@@ -419,13 +297,9 @@ function ThemeCustomizer() {
   const { updateCustomTheme } = useTheme();
 
   const applyBrandTheme = () => {
-    updateCustomTheme({
-      colors: {
-        primary: '#6366F1',
-        secondary: '#8B5CF6',
-        // ... other colors
-      },
-    });
+    updateCustomTheme(
+      // ...props
+    );
   };
 
   return (
@@ -441,15 +315,16 @@ function ThemeCustomizer() {
 ```tsx
 import { themeRegistry } from 'rnc-theme';
 
-// Register custom theme
-themeRegistry.register('brand', createBrandTheme);
 
 // Use in component
 function ThemeSwitcher() {
-  const { setActivePreset } = useTheme();
+  useEffect(()=>{
+    // Register custom theme
+    themeRegistry.register('brand', createBrandTheme);
+  },[])
 
   return (
-    <Button onPress={() => setActivePreset('brand')}>
+    <Button>
       Switch to Brand Theme
     </Button>
   );
@@ -461,28 +336,531 @@ function ThemeSwitcher() {
 ### Dynamic Theme Generation
 
 ```tsx
-import { generateThemeFromColor } from 'rnc-theme';
+import React, { useState, useCallback, useMemo, useEffect } from 'react';
+import { ScrollView, Alert, StatusBar, View, StyleSheet } from 'react-native';
+import {
+  useTheme,
+  useThemedStyles,
+  Theme,
+  CardHeader,
+  CardContent,
+  Card,
+  Typography,
+  Switcher,
+  ButtonText,
+  Button,
+  themeRegistry,
+  CustomThemeConfigFactory,
+} from 'rnc-theme';
 
-function ColorBasedTheme() {
-  const [primaryColor, setPrimaryColor] = useState('#6366F1');
-  const { updateCustomTheme } = useTheme();
+type ThemePreset =
+  | 'default'
+  | 'material'
+  | 'neon'
 
-  const generateTheme = useCallback((color: string) => {
-    const generatedTheme = generateThemeFromColor(color);
-    updateCustomTheme(generatedTheme);
-  }, [updateCustomTheme]);
+const ThemeScreen: React.FC = () => {
+  const {
+    theme,
+    themeMode,
+    setThemeMode,
+    isDark,
+    updateCustomTheme,
+    resetTheme,
+  } = useTheme();
+  const styles = useThemedStyles(createStyles);
+  const [selectedPreset, setSelectedPreset] = useState<ThemePreset>('default');
+  const [appliedTheme, setAppliedTheme] = useState<ThemePreset>('default');
+  // Tambahkan state baru untuk preview
+  const [previewTheme, setPreviewTheme] = useState<ThemePreset | null>(null);
+  const [isDarkModeDisabled, setIsDarkModeDisabled] = useState(false);
 
   useEffect(() => {
-    generateTheme(primaryColor);
-  }, [primaryColor, generateTheme]);
+    // Register semua theme presets ke registry
+    themeRegistry.registerPreset('material', materialThemeConfig);
+    themeRegistry.registerPreset('neon', neonThemeConfig);
+  }, []);
+
+  // Dynamic theme creators that respond to theme mode changes
+  const createDynamicTheme = useCallback(
+    (themeConfig: (isDark: boolean) => Partial<Theme>) => {
+      // Generate both light and dark variants
+      const lightTheme = themeConfig(false);
+      const darkTheme = themeConfig(true);
+
+      // Update with both variants
+      updateCustomTheme(
+        isDark ? darkTheme : lightTheme,
+        undefined,
+        themeConfig
+      );
+    },
+    [updateCustomTheme, isDark]
+  );
+
+  // Improved toggle theme yang memperbarui tema aktif
+  const toggleTheme = useCallback(() => {
+    const newMode = isDark ? 'light' : 'dark';
+    setThemeMode(newMode);
+
+    // Tidak perlu setTimeout lagi karena ThemeContext akan otomatis
+    // menggunakan tema yang sesuai dari storage berdasarkan mode baru
+  }, [isDark, setThemeMode]);
+
+  // Define custom theme configurations
+
+  const materialThemeConfig: CustomThemeConfigFactory = useMemo(
+    () => (isDark: boolean) => ({
+      colors: {
+        primary: '#6200EE',
+        secondary: '#03DAC6',
+        background: isDark ? '#121212' : '#FFFFFF',
+        surface: isDark ? '#1E1E1E' : '#FFFFFF',
+        text: isDark ? '#FFFFFF' : '#000000',
+        textSecondary: isDark ? '#B3B3B3' : '#757575',
+        border: isDark ? '#2C2C2C' : '#E0E0E0',
+        error: '#B00020',
+        warning: '#FF6F00',
+        success: '#00C853',
+        info: '#2962FF',
+        muted: isDark ? '#666666' : '#999999',
+        accent: '#6200EE',
+        destructive: '#B00020',
+      },
+      components: {
+        height: {
+          xs: 32,
+          sm: 36,
+          md: 40,
+          lg: 44,
+          xl: 48,
+        },
+        padding: {
+          xs: 8,
+          sm: 12,
+          md: 16,
+          lg: 20,
+          xl: 24,
+        },
+        borderRadius: {
+          xs: 4,
+          sm: 4,
+          md: 4,
+          lg: 8,
+          xl: 12,
+          full: 9999,
+        },
+      },
+      spacing: {
+        xs: 4,
+        sm: 8,
+        md: 16,
+        lg: 24,
+        xl: 32,
+        xxl: 48,
+      },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
+    }),
+    []
+  );
+
+  const neonThemeConfig: CustomThemeConfigFactory = useMemo(
+    () => (isDark: boolean) => ({
+      colors: {
+        primary: '#00FFFF',
+        secondary: '#FF00FF',
+        background: isDark ? '#0a0a0a' : '#f0f0f0',
+        surface: isDark ? '#1a1a1a' : '#ffffff',
+        text: isDark ? '#00FFFF' : '#333333',
+        textSecondary: isDark ? '#FF00FF' : '#666666',
+        border: isDark ? '#00FFFF' : '#e0e0e0',
+        error: '#FF0040',
+        warning: '#FFFF00',
+        success: '#00FF40',
+        info: '#4080FF',
+        muted: isDark ? '#666666' : '#999999',
+        accent: '#FF00FF',
+        destructive: '#FF0040',
+      },
+      components: {
+        height: {
+          xs: 32,
+          sm: 36,
+          md: 40,
+          lg: 44,
+          xl: 48,
+        },
+        padding: {
+          xs: 8,
+          sm: 12,
+          md: 16,
+          lg: 20,
+          xl: 24,
+        },
+        borderRadius: {
+          xs: 2,
+          sm: 2,
+          md: 4,
+          lg: 8,
+          xl: 16,
+          full: 9999,
+        },
+      },
+      spacing: {
+        xs: 4,
+        sm: 8,
+        md: 16,
+        lg: 24,
+        xl: 32,
+        xxl: 48,
+      },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
+    }),
+    []
+  );
+
+  // Helper function untuk mendapatkan theme config berdasarkan preset
+  const getThemeConfig = useCallback(
+    (preset: ThemePreset) => {
+      switch (preset) {
+        case 'material':
+          return materialThemeConfig;
+        case 'neon':
+          return neonThemeConfig;
+        default:
+          return null;
+      }
+    },
+    [
+      materialThemeConfig,
+      neonThemeConfig,
+    ]
+  );
+
+  // Fungsi preview tema (tidak mengubah appliedTheme)
+  const previewThemePreset = useCallback(
+    (preset: ThemePreset) => {
+      setSelectedPreset(preset);
+      setPreviewTheme(preset);
+      setIsDarkModeDisabled(preset !== 'default'); // Disable dark mode toggle saat preview
+
+      if (preset === 'default') {
+        resetTheme();
+        setPreviewTheme(null);
+        setIsDarkModeDisabled(false);
+      } else {
+        const themeConfig = getThemeConfig(preset);
+        if (themeConfig) {
+          createDynamicTheme(themeConfig);
+        }
+      }
+    },
+    [createDynamicTheme, resetTheme, getThemeConfig]
+  );
+
+  // Fungsi apply tema (mengubah appliedTheme)
+  const applyThemePreset = useCallback(
+    (preset: ThemePreset) => {
+      setAppliedTheme(preset);
+      setPreviewTheme(null);
+      setIsDarkModeDisabled(false);
+
+      if (preset === 'default') {
+        resetTheme();
+      } else {
+        const themeConfig = getThemeConfig(preset);
+        if (themeConfig) {
+          // Generate both light and dark variants when applying
+          const lightTheme = themeConfig(false);
+          const darkTheme = themeConfig(true);
+
+          // Apply current theme variant and save the config for future mode switches
+          updateCustomTheme(
+            isDark ? darkTheme : lightTheme,
+            preset,
+            themeConfig
+          );
+        }
+      }
+    },
+    [isDark, resetTheme, getThemeConfig, updateCustomTheme]
+  );
+
+  // Fungsi cancel preview
+  const cancelPreview = useCallback(() => {
+    if (previewTheme && previewTheme !== appliedTheme) {
+      // Kembali ke tema yang sedang diterapkan
+      previewThemePreset(appliedTheme);
+      setSelectedPreset(appliedTheme);
+    }
+  }, [previewTheme, appliedTheme, previewThemePreset]);
+
+  const showAlert = useCallback(
+    (type: 'success' | 'error' | 'warning' | 'info') => {
+      const messages = {
+        success: 'Operasi berhasil!',
+        error: 'Terjadi kesalahan!',
+        warning: 'Peringatan: Periksa input Anda!',
+        info: 'Informasi: Tema telah diperbarui!',
+      };
+      Alert.alert('Notifikasi', messages[type]);
+    },
+    []
+  );
+
+  const applySelectedTheme = useCallback(() => {
+    applyThemePreset(selectedPreset);
+    showAlert('success');
+  }, [selectedPreset, applyThemePreset, showAlert]);
 
   return (
-    <ColorPicker
-      color={primaryColor}
-      onColorChange={setPrimaryColor}
-    />
+    <ScrollView style={styles.container}>
+      <StatusBar
+        barStyle={isDark ? 'light-content' : 'dark-content'}
+        backgroundColor={theme.colors.background}
+      />
+
+      <Typography variant="heading" align="center" style={styles.title}>
+        🎨 Theme System Demo
+      </Typography>
+      <Typography variant="subtitle" align="center" style={styles.subtitle}>
+        Mode saat ini: {themeMode} | Tema aktif: {appliedTheme}
+        {previewTheme && previewTheme !== appliedTheme && (
+          <Typography variant="small" style={{ color: theme.colors.warning }}>
+            {' '}
+            | Preview: {previewTheme}
+          </Typography>
+        )}
+      </Typography>
+
+      {/* Theme Controls */}
+      <Card style={styles.card}>
+        <CardHeader title="🎛️ Kontrol Tema" />
+        <CardContent>
+          <View style={styles.row}>
+            <Typography
+              variant="body"
+              style={{
+                opacity: isDarkModeDisabled ? 0.5 : 1,
+              }}
+            >
+              Mode Gelap {isDarkModeDisabled && '(Dinonaktifkan saat preview)'}
+            </Typography>
+            <Switcher
+              value={isDark}
+              onValueChange={toggleTheme}
+              disabled={isDarkModeDisabled}
+            />
+          </View>
+
+          {previewTheme && previewTheme !== appliedTheme ? (
+            <View>
+              <Button
+                variant="primary"
+                onPress={applySelectedTheme}
+                style={styles.button}
+              >
+                <ButtonText>
+                  ✅ Terapkan Tema{' '}
+                  {selectedPreset.charAt(0).toUpperCase() +
+                    selectedPreset.slice(1)}
+                </ButtonText>
+              </Button>
+
+              <Button
+                variant="outline"
+                onPress={cancelPreview}
+                style={styles.button}
+              >
+                <ButtonText>❌ Batal Preview</ButtonText>
+              </Button>
+            </View>
+          ) : (
+            <Button
+              variant="primary"
+              onPress={applySelectedTheme}
+              style={styles.button}
+            >
+              <ButtonText>
+                {selectedPreset === 'default'
+                  ? 'Reset ke Tema Default'
+                  : `Terapkan Tema ${
+                      selectedPreset.charAt(0).toUpperCase() +
+                      selectedPreset.slice(1)
+                    }`}
+              </ButtonText>
+            </Button>
+          )}
+
+          <Button
+            variant="outline"
+            onPress={() => applyThemePreset('default')}
+            style={styles.button}
+          >
+            <ButtonText>Reset Tema</ButtonText>
+          </Button>
+        </CardContent>
+      </Card>
+
+      {/* Theme Presets */}
+      <Card style={styles.card}>
+        <CardHeader title="🎭 Preset Tema" />
+        <CardContent>
+          <View style={styles.presetGrid}>
+            {[
+              { key: 'default', label: 'Default' },
+              { key: 'material', label: 'Material' },
+              { key: 'neon', label: 'Neon' },
+            ].map(({ key, label }) => (
+              <Button
+                key={key}
+                variant={
+                  selectedPreset === key
+                    ? 'primary'
+                    : appliedTheme === key
+                    ? 'success'
+                    : 'outline'
+                }
+                size="sm"
+                onPress={() => previewThemePreset(key as ThemePreset)}
+                style={styles.presetButton}
+              >
+                <ButtonText>
+                  {label}
+                  {appliedTheme === key && selectedPreset !== key && ' ✓'}
+                  {selectedPreset === key &&
+                    previewTheme !== appliedTheme &&
+                    ' 👁️'}
+                </ButtonText>
+              </Button>
+            ))}
+          </View>
+        </CardContent>
+      </Card>
+
+      {/* ... rest of existing code ... */}
+    </ScrollView>
   );
-}
+};
+
+const createStyles = (theme: Theme) => StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+    padding: theme.spacing.md,
+  },
+  title: {
+    marginBottom: theme.spacing.sm,
+  },
+  subtitle: {
+    marginBottom: theme.spacing.lg,
+    color: theme.colors.textSecondary,
+  },
+  card: {
+    marginBottom: theme.spacing.lg,
+  },
+  row: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: theme.spacing.md,
+  },
+  button: {
+    marginBottom: theme.spacing.sm,
+  },
+  presetGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  presetButton: {
+    width: '32%',
+    marginBottom: theme.spacing.sm,
+  },
+  colorsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  colorItem: {
+    alignItems: 'center',
+    marginBottom: theme.spacing.md,
+    width: '30%',
+  },
+  colorBox: {
+    width: 50,
+    height: 50,
+    borderRadius: theme.components.borderRadius.md,
+    marginBottom: theme.spacing.xs,
+    borderWidth: 1,
+    borderColor: theme.colors.border,
+  },
+  marginBottom: {
+    marginBottom: theme.spacing.sm,
+  },
+  buttonGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  actionButton: {
+    width: '48%',
+    marginBottom: theme.spacing.sm,
+  },
+  radiusGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+  },
+  radiusItem: {
+    alignItems: 'center',
+    marginBottom: theme.spacing.md,
+    width: '48%',
+  },
+  radiusBox: {
+    width: 60,
+    height: 60,
+    backgroundColor: theme.colors.primary,
+    marginBottom: theme.spacing.xs,
+  },
+  spacingContainer: {
+    alignItems: 'center',
+  },
+  spacingBox: {
+    marginBottom: theme.spacing.sm,
+  },
+});
+
+export default ThemeScreen;
 ```
 
 ### Conditional Theme Properties
@@ -515,168 +893,19 @@ const platformAwareTheme = {
 };
 ```
 
-### Theme Inheritance
-
-```tsx
-import { lightTheme } from 'rnc-theme';
-
-// Extend existing theme
-const extendedTheme = {
-  ...lightTheme,
-  colors: {
-    ...lightTheme.colors,
-    primary: '#6366F1',     // Override primary
-    secondary: '#8B5CF6',   // Override secondary
-    // Keep all other colors from lightTheme
-  },
-  components: {
-    ...lightTheme.components,
-    borderRadius: {
-      ...lightTheme.components.borderRadius,
-      md: 12, // Override medium border radius
-    },
-  },
-};
-```
-
-## Theme Validation
-
-### Built-in Validation
-
-```tsx
-import { validateTheme, ThemeValidationError } from 'rnc-theme';
-
-const customTheme = {
-  colors: {
-    primary: '#invalid-color', // This will fail validation
-  },
-};
-
-try {
-  const isValid = validateTheme(customTheme);
-  if (isValid) {
-    console.log('Theme is valid!');
-  }
-} catch (error) {
-  if (error instanceof ThemeValidationError) {
-    console.error('Theme validation failed:', error.message);
-    console.error('Invalid properties:', error.invalidProperties);
-  }
-}
-```
-
-### Custom Validation Rules
-
-```tsx
-const validateBrandTheme = (theme: Partial<Theme>) => {
-  const errors: string[] = [];
-
-  // Check brand color requirements
-  if (!theme.colors?.primary?.startsWith('#')) {
-    errors.push('Primary color must be a hex value');
-  }
-
-  // Check accessibility contrast
-  if (theme.colors && !hasGoodContrast(theme.colors.text, theme.colors.background)) {
-    errors.push('Text and background colors must have sufficient contrast');
-  }
-
-  return errors;
-};
-```
-
-## Color Utilities
-
-### Color Manipulation
-
-```tsx
-import {
-  lighten,
-  darken,
-  alpha,
-  getContrastRatio,
-  generateColorPalette
-} from 'rnc-theme/utils';
-
-const baseColor = '#6366F1';
-
-const colorVariants = {
-  primary: baseColor,
-  primaryLight: lighten(baseColor, 0.2),
-  primaryDark: darken(baseColor, 0.2),
-  primaryAlpha: alpha(baseColor, 0.1),
-};
-
-// Generate full palette
-const palette = generateColorPalette(baseColor);
-// Returns: { 50: '#...', 100: '#...', ..., 900: '#...' }
-```
-
-### Accessibility Helpers
-
-```tsx
-import { ensureAccessibility } from 'rnc-theme/utils';
-
-const accessibleTheme = ensureAccessibility({
-  colors: {
-    primary: '#6366F1',
-    background: '#FFFFFF',
-    text: '#000000',
-    // ... other colors
-  },
-});
-
-// Automatically adjusts colors to meet WCAG guidelines
-```
-
-## Testing Custom Themes
-
-### Theme Testing Utilities
-
-```tsx
-import { renderWithTheme, mockTheme } from 'rnc-theme/testing';
-import { render } from '@testing-library/react-native';
-
-const customTheme = mockTheme({
-  colors: {
-    primary: '#6366F1',
-  },
-});
-
-test('component renders with custom theme', () => {
-  const { getByText } = renderWithTheme(
-    <MyComponent />,
-    { theme: customTheme }
-  );
-
-  expect(getByText('Hello')).toBeTruthy();
-});
-```
-
-### Visual Regression Testing
-
-```tsx
-import { captureThemeSnapshot } from 'rnc-theme/testing';
-
-test('theme visual consistency', async () => {
-  const snapshot = await captureThemeSnapshot(customTheme);
-  expect(snapshot).toMatchSnapshot();
-});
-```
-
 ## Best Practices
 
 <CardGrid>
-  <Card title="🎨 Color Consistency" icon="star">
+  <Card title="Color Consistency" icon="star">
     Use a consistent color palette with proper contrast ratios for accessibility.
   </Card>
-  <Card title="📏 Spacing Scale" icon="setting">
+  <Card title="Spacing Scale" icon="setting">
     Maintain a consistent spacing scale (4px, 8px, 16px, 24px, 32px, 48px).
   </Card>
-  <Card title="🔤 Typography Hierarchy" icon="document">
+  <Card title="Typography Hierarchy" icon="document">
     Establish clear typography hierarchy with appropriate font sizes and weights.
   </Card>
-  <Card title="🧩 Component Consistency" icon="puzzle">
+  <Card title="Component Consistency" icon="puzzle">
     Keep component sizing consistent across your theme (heights, padding, border radius).
   </Card>
 </CardGrid>
@@ -746,23 +975,3 @@ test('theme visual consistency', async () => {
   Use `useMemo` when creating complex theme objects to prevent unnecessary recalculations.
 </Aside>
 
-## Next Steps
-
-<CardGrid>
-  <Card title="Theme Registry" icon="list">
-    Learn how to manage multiple custom themes with the registry system.
-    [Registry Guide →](/theming/theme-registry)
-  </Card>
-  <Card title="Theme Switching" icon="setting">
-    Implement smooth transitions between your custom themes.
-    [Switching Guide →](/theming/theme-switching)
-  </Card>
-  <Card title="Component Theming" icon="puzzle">
-    Apply your custom theme to RNC components.
-    [Component Guide →](/components/overview)
-  </Card>
-  <Card title="Hooks Reference" icon="code">
-    Master the theme hooks for advanced customization.
-    [Hooks Documentation →](/hooks/overview)
-  </Card>
-</CardGrid>
