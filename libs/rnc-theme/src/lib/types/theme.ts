@@ -116,56 +116,7 @@ type ThemeConfig = {
 type ThemeConfigFunction = (isDark: boolean) => Partial<Theme>;
 
 // Interface untuk kontrak tema kustom yang menghasilkan struktur seperti customThemeConfig
-interface CustomThemeConfig {
-  colors: {
-    primary: string;
-    secondary: string;
-    background: string;
-    surface: string;
-    text: string;
-    textSecondary: string;
-    border: string;
-    error: string;
-    warning: string;
-    success: string;
-    info: string;
-    muted: string;
-    accent: string;
-    destructive: string;
-  };
-  components: {
-    height: {
-      xs: number;
-      sm: number;
-      md: number;
-      lg: number;
-      xl: number;
-    };
-    padding: {
-      xs: number;
-      sm: number;
-      md: number;
-      lg: number;
-      xl: number;
-    };
-    borderRadius: {
-      xs: number;
-      sm: number;
-      md: number;
-      lg: number;
-      xl: number;
-      full: number;
-    };
-  };
-  spacing: {
-    xs: number;
-    sm: number;
-    md: number;
-    lg: number;
-    xl: number;
-    xxl: number;
-  };
-}
+type CustomThemeConfig = Theme;
 
 // Type untuk factory function yang menghasilkan CustomThemeConfig
 type CustomThemeConfigFactory = (isDark: boolean) => CustomThemeConfig;

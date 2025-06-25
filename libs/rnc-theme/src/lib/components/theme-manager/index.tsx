@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Alert, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 import { CustomThemeConfigFactory, Theme } from '../../types/theme';
 import { useTheme } from '../../context/RNCProvider';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
@@ -391,39 +391,40 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
   );
 };
 
-const createStyles = (theme: Theme) => ({
-  container: {
-    backgroundColor: theme.colors.background,
-    padding: theme.spacing.md,
-  },
-  title: {
-    marginBottom: theme.spacing.sm,
-  },
-  subtitle: {
-    marginBottom: theme.spacing.lg,
-    color: theme.colors.textSecondary,
-  },
-  card: {
-    marginBottom: theme.spacing.lg,
-  },
-  row: {
-    flexDirection: 'row' as const,
-    justifyContent: 'space-between' as const,
-    alignItems: 'center' as const,
-    marginBottom: theme.spacing.md,
-  },
-  button: {
-    marginBottom: theme.spacing.sm,
-  },
-  presetGrid: {
-    flexDirection: 'row' as const,
-    flexWrap: 'wrap' as const,
-    justifyContent: 'space-between' as const,
-  },
-  presetButton: {
-    width: '32%' as const,
-    marginBottom: theme.spacing.sm,
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      backgroundColor: theme.colors.background,
+      padding: theme.spacing.md,
+    },
+    title: {
+      marginBottom: theme.spacing.sm,
+    },
+    subtitle: {
+      marginBottom: theme.spacing.lg,
+      color: theme.colors.textSecondary,
+    },
+    card: {
+      marginBottom: theme.spacing.lg,
+    },
+    row: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: theme.spacing.md,
+    },
+    button: {
+      marginBottom: theme.spacing.sm,
+    },
+    presetGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+    },
+    presetButton: {
+      width: '32%',
+      marginBottom: theme.spacing.sm,
+    },
+  });
 
 export default ThemeManager;

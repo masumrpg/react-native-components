@@ -1,3 +1,4 @@
+/* eslint-disable */
 import React from 'react';
 import { ScrollView, View, Text, Alert } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';

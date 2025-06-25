@@ -92,6 +92,7 @@ const ThemeScreen: React.FC = () => {
     // menggunakan tema yang sesuai dari storage berdasarkan mode baru
   }, [isDark, setThemeMode]);
 
+  // Define custom theme configurations
   const customThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
@@ -142,11 +143,27 @@ const ThemeScreen: React.FC = () => {
         xl: 32,
         xxl: 48,
       },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
     }),
     []
   );
 
-  const materialThemeConfig = useMemo(
+  const materialThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: '#6200EE',
@@ -196,11 +213,27 @@ const ThemeScreen: React.FC = () => {
         xl: 32,
         xxl: 48,
       },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
     }),
     []
   );
 
-  const neonThemeConfig = useMemo(
+  const neonThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: '#00FFFF',
@@ -250,11 +283,27 @@ const ThemeScreen: React.FC = () => {
         xl: 32,
         xxl: 48,
       },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
     }),
     []
   );
 
-  const oceanThemeConfig = useMemo(
+  const oceanThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: isDark ? '#0077BE' : '#006BA6',
@@ -304,11 +353,27 @@ const ThemeScreen: React.FC = () => {
         xl: 32,
         xxl: 48,
       },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
     }),
     []
   );
 
-  const sunsetThemeConfig = useMemo(
+  const sunsetThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: isDark ? '#FF6B35' : '#FF4500',
@@ -358,11 +423,27 @@ const ThemeScreen: React.FC = () => {
         xl: 36,
         xxl: 52,
       },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
     }),
     []
   );
 
-  const forestThemeConfig = useMemo(
+  const forestThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: isDark ? '#228B22' : '#006400',
@@ -412,11 +493,27 @@ const ThemeScreen: React.FC = () => {
         xl: 32,
         xxl: 48,
       },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
     }),
     []
   );
 
-  const galaxyThemeConfig = useMemo(
+  const galaxyThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: isDark ? '#9932CC' : '#8A2BE2',
@@ -466,11 +563,27 @@ const ThemeScreen: React.FC = () => {
         xl: 40,
         xxl: 60,
       },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
     }),
     []
   );
 
-  const vintageThemeConfig = useMemo(
+  const vintageThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: isDark ? '#CD853F' : '#A0522D',
@@ -520,11 +633,27 @@ const ThemeScreen: React.FC = () => {
         xl: 32,
         xxl: 48,
       },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
     }),
     []
   );
 
-  const cyberpunkThemeConfig = useMemo(
+  const cyberpunkThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: isDark ? '#00FF41' : '#00CC33',
@@ -574,11 +703,27 @@ const ThemeScreen: React.FC = () => {
         xl: 28,
         xxl: 40,
       },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
     }),
     []
   );
 
-  const pastelThemeConfig = useMemo(
+  const pastelThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: isDark ? '#FFB3BA' : '#FF9AA2',
@@ -628,11 +773,27 @@ const ThemeScreen: React.FC = () => {
         xl: 36,
         xxl: 52,
       },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
     }),
     []
   );
 
-  const monochromeThemeConfig = useMemo(
+  const monochromeThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: isDark ? '#FFFFFF' : '#000000',
@@ -682,11 +843,27 @@ const ThemeScreen: React.FC = () => {
         xl: 32,
         xxl: 48,
       },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
     }),
     []
   );
 
-  const autumnThemeConfig = useMemo(
+  const autumnThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: isDark ? '#D2691E' : '#B8860B',
@@ -736,11 +913,27 @@ const ThemeScreen: React.FC = () => {
         xl: 34,
         xxl: 50,
       },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
+      },
     }),
     []
   );
 
-  const arcticThemeConfig = useMemo(
+  const arcticThemeConfig: CustomThemeConfigFactory = useMemo(
     () => (isDark: boolean) => ({
       colors: {
         primary: isDark ? '#87CEEB' : '#4682B4',
@@ -789,6 +982,22 @@ const ThemeScreen: React.FC = () => {
         lg: 24,
         xl: 32,
         xxl: 48,
+      },
+      typography: {
+        caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
+        small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
+        body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
+        subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
+        title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
+        heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+      },
+      fontSizes: {
+        xs: 12,
+        sm: 14,
+        md: 16,
+        lg: 18,
+        xl: 20,
+        xxl: 24,
       },
     }),
     []

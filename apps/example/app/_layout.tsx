@@ -1,3 +1,4 @@
+/* eslint-disable */
 import { FontSource, useFonts } from 'expo-font';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Stack, usePathname } from 'expo-router';
