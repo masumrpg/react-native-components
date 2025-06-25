@@ -104,7 +104,7 @@ const Checkbox = forwardRef<
     // Determine if checkbox is checked
     const isChecked = groupContext
       ? groupContext.value.includes(value)
-      : controlledChecked ?? false;
+      : (controlledChecked ?? false) || false;
 
     // Determine if checkbox is disabled
     const isDisabled = groupContext ? groupContext.disabled : checkboxDisabled;
@@ -272,7 +272,7 @@ const Checkbox = forwardRef<
           </Animated.View>
         </Animated.View>
 
-        {children ?? (
+        {children && (
           <CheckboxLabel disabled={isDisabled} size={size}>
             {children}
           </CheckboxLabel>
@@ -297,7 +297,7 @@ const CheckboxGroup = forwardRef<
     const contextValue: CheckboxGroupContextType = {
       value,
       onValueChange:
-        onValueChange ||
+        onValueChange ??
         (() => {
           /* no-op */
         }),
@@ -354,7 +354,7 @@ const CheckboxIcon: React.FC<
       style={[{ alignItems: 'center', justifyContent: 'center' }, style]}
       {...props}
     >
-      {icon || <Check size={iconSize} color={iconColor} strokeWidth={2.5} />}
+      {icon ?? <Check size={iconSize} color={iconColor} strokeWidth={2.5} />}
     </View>
   );
 };

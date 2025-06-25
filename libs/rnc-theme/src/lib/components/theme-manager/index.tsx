@@ -163,7 +163,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
   // Helper function to get theme config by preset
   const getThemeConfig = useCallback(
     (preset: string) => {
-      return themeConfigsMap.get(preset) || null;
+      return themeConfigsMap.get(preset) ?? null;
     },
     [themeConfigsMap]
   );
@@ -233,11 +233,11 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
   const showAlert = useCallback(
     (type: 'success' | 'error' | 'warning' | 'info') => {
       const messages = {
-        success: customization?.successMessage || 'Theme applied successfully!',
-        error: customization?.errorMessage || 'An error occurred!',
+        success: customization?.successMessage ?? 'Theme applied successfully!',
+        error: customization?.errorMessage ?? 'An error occurred!',
         warning:
-          customization?.warningMessage || 'Warning: Please check your input!',
-        info: customization?.infoMessage || 'Info: Theme has been updated!',
+          customization?.warningMessage ?? 'Warning: Please check your input!',
+        info: customization?.infoMessage ?? 'Info: Theme has been updated!',
       };
       Alert.alert('Notification', messages[type]);
     },
@@ -255,7 +255,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
       {showControls && (
         <Card style={styles.card}>
           <CardHeader
-            title={customization?.controlsTitle || 'Theme Controls'}
+            title={customization?.controlsTitle ?? 'Theme Controls'}
           />
           <CardContent>
             <View style={styles.row}>
@@ -265,9 +265,9 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                   opacity: isDarkModeDisabled ? 0.5 : 1,
                 }}
               >
-                {customization?.darkModeLabel || 'Dark Mode'}{' '}
+                {customization?.darkModeLabel ?? 'Dark Mode'}{' '}
                 {isDarkModeDisabled &&
-                  (customization?.darkModeDisabledLabel || '(Disabled)')}
+                  (customization?.darkModeDisabledLabel ?? '(Disabled)')}
               </Typography>
               <Switcher
                 value={isDark}
@@ -284,7 +284,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                   style={styles.button}
                 >
                   <ButtonText>
-                    {customization?.applyButtonText ||
+                    {customization?.applyButtonText ??
                       `Apply ${
                         selectedPreset.charAt(0).toUpperCase() +
                         selectedPreset.slice(1)
@@ -298,7 +298,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                   style={styles.button}
                 >
                   <ButtonText>
-                    {customization?.cancelPreviewText || 'Cancel Preview'}
+                    {customization?.cancelPreviewText ?? 'Cancel Preview'}
                   </ButtonText>
                 </Button>
               </View>
@@ -310,8 +310,8 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
               >
                 <ButtonText>
                   {selectedPreset === 'default'
-                    ? customization?.resetButtonText || 'Reset to Default Theme'
-                    : customization?.applyButtonText ||
+                    ? customization?.resetButtonText ?? 'Reset to Default Theme'
+                    : customization?.applyButtonText ??
                       `Apply ${
                         selectedPreset.charAt(0).toUpperCase() +
                         selectedPreset.slice(1)
@@ -326,7 +326,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
               style={styles.button}
             >
               <ButtonText>
-                {customization?.resetButtonText || 'Reset Theme'}
+                {customization?.resetButtonText ?? 'Reset Theme'}
               </ButtonText>
             </Button>
           </CardContent>
@@ -336,7 +336,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
       {/* Theme Presets */}
       {showPresets && (
         <Card style={styles.card}>
-          <CardHeader title={customization?.presetsTitle || 'Theme Presets'} />
+          <CardHeader title={customization?.presetsTitle ?? 'Theme Presets'} />
           <CardContent>
             <View style={styles.presetGrid}>
               <Button
@@ -353,7 +353,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                 style={styles.presetButton}
               >
                 <ButtonText>
-                  {customization?.defaultThemeText || 'Default'}
+                  {customization?.defaultThemeText ?? 'Default'}
                   {appliedTheme === 'default' && selectedPreset !== 'default'}
                   {selectedPreset === 'default' &&
                     previewTheme !== appliedTheme}
