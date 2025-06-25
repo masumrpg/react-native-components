@@ -49,12 +49,14 @@ const mergeThemes = (baseTheme: Theme, customTheme?: Partial<Theme>): Theme => {
   };
 };
 
+type BottomSheetProps = Omit<BottomSheetProviderProps, 'children'>;
+
 interface ThemeProviderProps {
   children: ReactNode;
   defaultTheme?: ThemeMode;
   customLightTheme?: Partial<Theme>;
   customDarkTheme?: Partial<Theme>;
-  bottomSheetProps?: BottomSheetProviderProps;
+  bottomSheetProps?: BottomSheetProps;
   toast?: {
     position?: ToastPosition;
     maxToasts?: number | undefined;

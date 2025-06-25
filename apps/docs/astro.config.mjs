@@ -82,6 +82,10 @@ export default defineConfig({
             },
           ],
         },
+        {
+          label: 'API Reference',
+          items: [{ label: 'Provider', slug: 'api/provider' }],
+        },
         // {
         //   label: 'Data Display',
         //   items: [

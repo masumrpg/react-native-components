@@ -1,0 +1,179 @@
+---
+title: Provider API Reference
+description: Access and manage the theme context in your React Native components.
+---
+
+Provider component is used to wrap your app content and provide the theme context.
+
+### RNCProvider Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | <a href='https://reactnative.dev/docs/react-node'>`ReactNode`</a> | - | App content wrapped by the provider |
+| `defaultTheme?` | <a href='/api/provider#thememode'>`ThemeMode`</a> | `'system'` | Sets the initial theme mode. `'system'` follows device preference |
+| `customDarkTheme` | <a href='/api/provider#theme'>`Partial<Theme>`</a> | `undefined` | Custom theme configuration for dark mode |
+| `customLightTheme` | <a href='/api/provider#theme'>`Partial<Theme>`</a> | `undefined` | Custom theme configuration for light mode |
+| `bottomSheetProps` | <a href='/api/provider#bottomsheetprops'>`BottomSheetProps`</a> | `{}` | Global props for bottom sheet components |
+| `toast` | <a href='/api/provider#toastconfig'>`ToastConfig`</a> | `{}` | Configuration for toast notifications |
+| `i18nConfig` | <a href='/api/provider#i18nconfig'>`I18nConfig`</a> | `undefined` | Internationalization configuration |
+
+### ThemeMode
+
+| Preset | Colors | Typography | Components |
+|--------|--------|------------|------------|
+| `system` | System default | Default | Default |
+| `light` | Light theme colors | Default | Default |
+| `dark` | Dark theme colors | Default | Default |
+
+### Theme
+Main theme object containing all styling configurations.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `colors` | <a href='/api/provider#themecolors'>`ThemeColors`</a> | Color palette configuration |
+| `fontSizes` | <a href='/api/provider#themefontsizes'>`ThemeFontSizes`</a> | Font size scale |
+| `spacing` | <a href='/api/provider#themespacing'>`ThemeSpacing`</a> | Spacing scale |
+| `components` | <a href='/api/provider#themecomponentsizes'>`ThemeComponentSizes`</a> | Component-specific sizing |
+| `typography` | <a href='/api/provider#themetypography'>`ThemeTypography`</a> | Text style presets |
+
+### ThemeColors
+Color palette for the theme system.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `primary` | `string` | Primary brand color |
+| `secondary` | `string` | Secondary brand color |
+| `background` | `string` | Main background color |
+| `surface` | `string` | Surface/card background color |
+| `text` | `string` | Primary text color |
+| `textSecondary` | `string` | Secondary text color |
+| `border` | `string` | Border color |
+| `error` | `string` | Error state color |
+| `warning` | `string` | Warning state color |
+| `success` | `string` | Success state color |
+| `info` | `string` | Info state color |
+| `muted` | `string` | Muted/disabled color |
+| `accent` | `string` | Accent color |
+| `destructive` | `string` | Destructive action color |
+
+### ThemeFontSizes
+Font size scale for consistent typography.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `xs` | `number` | Extra small font size |
+| `sm` | `number` | Small font size |
+| `md` | `number` | Medium font size (base) |
+| `lg` | `number` | Large font size |
+| `xl` | `number` | Extra large font size |
+| `xxl` | `number` | Extra extra large font size |
+
+### ThemeSpacing
+Spacing scale for consistent layout.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `xs` | `number` | Extra small space |
+| `sm` | `number` | Small space |
+| `md` | `number` | Medium space |
+| `lg` | `number` | Large space |
+| `xl` | `number` | Extra large space |
+| `xxl` | `number` | Extra extra large space |
+
+### ThemeComponentSizes
+Component-specific sizing configurations.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `height` | <a href='/api/provider#componentheight'>`ComponentHeight`</a> | Height sizes for components |
+| `padding` | <a href='/api/provider#componentpadding'>`ComponentPadding`</a> | Padding sizes for components |
+| `borderRadius` | <a href='/api/provider#componentborderradius'>`ComponentBorderRadius`</a> | Border radius sizes |
+
+#### ComponentHeight
+| Property | Type | Description |
+|----------|------|-------------|
+| `xs` | `number` | Extra small height |
+| `sm` | `number` | Small height |
+| `md` | `number` | Medium height |
+| `lg` | `number` | Large height |
+| `xl` | `number` | Extra large height |
+
+#### ComponentPadding
+| Property | Type | Description |
+|----------|------|-------------|
+| `xs` | `number` | Extra small padding |
+| `sm` | `number` | Small padding |
+| `md` | `number` | Medium padding |
+| `lg` | `number` | Large padding |
+| `xl` | `number` | Extra large padding |
+
+#### ComponentBorderRadius
+| Property | Type | Description |
+|----------|------|-------------|
+| `xs` | `number` | Extra small border radius |
+| `sm` | `number` | Small border radius |
+| `md` | `number` | Medium border radius |
+| `lg` | `number` | Large border radius |
+| `xl` | `number` | Extra large border radius |
+| `full` | `number` | Full border radius (circular) |
+
+### ThemeTypography
+Predefined text styles for consistent typography.
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `caption` | <a href='https://reactnative.dev/docs/text-style-props'>`TextStyle`</a> | Caption text style |
+| `small` | <a href='https://reactnative.dev/docs/text-style-props'>`TextStyle`</a> | Small text style |
+| `body` | <a href='https://reactnative.dev/docs/text-style-props'>`TextStyle`</a> | Body text style |
+| `subtitle` | <a href='https://reactnative.dev/docs/text-style-props'>`TextStyle`</a> | Subtitle text style |
+| `title` | <a href='https://reactnative.dev/docs/text-style-props'>`TextStyle`</a> | Title text style |
+| `heading` | <a href='https://reactnative.dev/docs/text-style-props'>`TextStyle`</a> | Heading text style |
+
+Each typography style contains:
+- `fontSize`: Font size value
+- `lineHeight`: Line height value
+- `fontWeight`: Font weight value
+
+### BottomSheetProps
+
+| Property | Type | Required | Default | Description |
+|----------|------|----------|---------|-------------|
+| `defaultSnapTo` | `string` | No | `undefined` | Default snap position for the bottom sheet |
+| `maxSnapTo` | `string` | No | `undefined` | Maximum snap position for the bottom sheet |
+| `backgroundColor` | <a href='https://reactnative.dev/docs/view-style-props#backgroundcolor'>`ViewStyle['backgroundColor']`</a> | No | `undefined` | Background color of the bottom sheet |
+| `backDropColor` | `string` | No | `undefined` | Color of the backdrop overlay |
+| `lineBackgroundColor` | <a href='https://reactnative.dev/docs/view-style-props#backgroundcolor'>`ViewStyle['backgroundColor']`</a> | No | `undefined` | Color of the drag indicator line |
+| `borderTopLeftRadius` | <a href='https://reactnative.dev/docs/view-style-props#borderradius'>`ViewStyle['borderTopLeftRadius']`</a> | No | `undefined` | Top left border radius |
+| `borderTopRightRadius` | <a href='https://reactnative.dev/docs/view-style-props#borderradius'>`ViewStyle['borderTopRightRadius']`</a> | No | `undefined` | Top right border radius |
+| `isBorderBottomTitleVisible` | `boolean` | `false` | Whether to show border below title |
+| `onStateChange` | `(state: boolean) => void` | `undefined` | Callback when bottom sheet state changes |
+| `variant` | `'scroll' \| 'flatlist'` | `'scroll'` | Type of scrollable content in bottom sheet |
+| `flatListProps` | `Omit<FlatListProps<T>, 'ref'>` | `undefined` | Props for FlatList when variant is 'flatlist' |
+
+### ToastConfig
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `position` | `'top' or 'bottom'` | `'bottom'` | Position of the toast notifications |
+| `maxToasts` | `number` | `5` | Maximum number of toast notifications to show at once |
+
+### I18nConfig
+
+| Property | Type | Required | Default | Description |
+|----------|------|----------|---------|-------------|
+| `translations` | `Record<string, any>` | No | `undefined` | An object containing translation key-value pairs for different languages. The keys represent translation identifiers, and values can be strings, objects, or any other type containing the translated content. |
+| `supportedLocales` | `string[]` | No | `undefined` | An array of locale codes (e.g., `['en', 'id', 'fr']`) that the application supports. These should follow standard locale format (ISO 639-1 language codes). |
+| `defaultLocale` | `string` | No | `undefined` | The default locale code to use when no specific locale is selected or when the requested locale is not supported. Should be one of the locales listed in `supportedLocales`. |
+| `autoDetectLocale` | `boolean` | No | `undefined` | Whether to automatically detect the user's preferred locale from browser settings or other sources. When `true`, the application will attempt to match the user's preference with supported locales. |
+
+### `useTheme`
+
+| Property/Method | Type | Description |
+|-----------------|------|-------------|
+| `theme` | <a href='/api/provider#theme'>`Theme`</a> | Current active theme object containing all theme properties |
+| `themeMode` | <a href='/api/provider#thememode'>`ThemeMode`</a> | Current theme mode (light/dark/system) |
+| `isDark` | `boolean` | Boolean indicating if the current theme is in dark mode |
+| `activePreset` | `string?` | Optional string identifying the currently active preset |
+| `setThemeMode` | `(mode: ThemeMode) => void` | Function to change the theme mode |
+| `updateCustomTheme` | `(customTheme: Partial<Theme>, preset?: string, presetConfig?: (isDark: boolean) => Partial<Theme>) => void` | Function to update the custom theme with optional preset and configuration |
+| `resetTheme` | `() => void` | Function to reset the theme to its default state |

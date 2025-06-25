@@ -60,43 +60,45 @@ type ThemeComponentSizes = {
   };
 };
 
+type ThemeTypography = {
+  caption: {
+    fontSize: TextStyle['fontSize'];
+    lineHeight: TextStyle['lineHeight'];
+    fontWeight: TextStyle['fontWeight'];
+  };
+  small: {
+    fontSize: TextStyle['fontSize'];
+    lineHeight: TextStyle['lineHeight'];
+    fontWeight: TextStyle['fontWeight'];
+  };
+  body: {
+    fontSize: TextStyle['fontSize'];
+    lineHeight: TextStyle['lineHeight'];
+    fontWeight: TextStyle['fontWeight'];
+  };
+  subtitle: {
+    fontSize: TextStyle['fontSize'];
+    lineHeight: TextStyle['lineHeight'];
+    fontWeight: TextStyle['fontWeight'];
+  };
+  title: {
+    fontSize: TextStyle['fontSize'];
+    lineHeight: TextStyle['lineHeight'];
+    fontWeight: TextStyle['fontWeight'];
+  };
+  heading: {
+    fontSize: TextStyle['fontSize'];
+    lineHeight: TextStyle['lineHeight'];
+    fontWeight: TextStyle['fontWeight'];
+  };
+};
+
 type Theme = {
   colors: ThemeColors;
   fontSizes: ThemeFontSizes;
   spacing: ThemeSpacing;
   components: ThemeComponentSizes;
-  typography: {
-    caption: {
-      fontSize: TextStyle['fontSize'];
-      lineHeight: TextStyle['lineHeight'];
-      fontWeight: TextStyle['fontWeight'];
-    };
-    small: {
-      fontSize: TextStyle['fontSize'];
-      lineHeight: TextStyle['lineHeight'];
-      fontWeight: TextStyle['fontWeight'];
-    };
-    body: {
-      fontSize: TextStyle['fontSize'];
-      lineHeight: TextStyle['lineHeight'];
-      fontWeight: TextStyle['fontWeight'];
-    };
-    subtitle: {
-      fontSize: TextStyle['fontSize'];
-      lineHeight: TextStyle['lineHeight'];
-      fontWeight: TextStyle['fontWeight'];
-    };
-    title: {
-      fontSize: TextStyle['fontSize'];
-      lineHeight: TextStyle['lineHeight'];
-      fontWeight: TextStyle['fontWeight'];
-    };
-    heading: {
-      fontSize: TextStyle['fontSize'];
-      lineHeight: TextStyle['lineHeight'];
-      fontWeight: TextStyle['fontWeight'];
-    };
-  };
+  typography: ThemeTypography;
 };
 
 type ThemeMode = 'light' | 'dark' | 'system';
@@ -176,7 +178,9 @@ type PartialCustomThemeConfig = {
 };
 
 // Type untuk factory function yang menghasilkan PartialCustomThemeConfig
-type PartialCustomThemeConfigFactory = (isDark: boolean) => PartialCustomThemeConfig;
+type PartialCustomThemeConfigFactory = (
+  isDark: boolean
+) => PartialCustomThemeConfig;
 
 export type {
   ThemeColors,
@@ -187,6 +191,7 @@ export type {
   ThemeMode,
   ThemeConfig,
   ThemeConfigFunction,
+  ThemeTypography,
   CustomThemeConfig,
   CustomThemeConfigFactory,
   PartialCustomThemeConfig,

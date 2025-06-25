@@ -11,8 +11,6 @@ import { Code } from '@astrojs/starlight/components';
 import { Badge } from '@astrojs/starlight/components';
 import { Aside } from '@astrojs/starlight/components';
 
-# Theme Provider
-
 The `RNCProvider` is the foundation of the RNC Theme system. It provides theme context to your entire application and manages theme state, persistence, and switching.
 
 ## Basic Setup
@@ -152,7 +150,6 @@ export default function RootLayout() {
   return (
     <RNCProvider
       defaultTheme="system"
-      persistTheme={true}
     >
       <StatusBar style="auto" />
       <Stack screenOptions={{ headerShown: false }} />
@@ -201,25 +198,24 @@ export default function RootLayout() {
 </Tabs>
 
 
-{/* TODO Lanjutkan dari sini */}
-
 ## Theme Context Access
 
 Once `RNCProvider` is set up, you can access theme context anywhere in your component tree:
 
-### Using useTheme Hook
+### Using `useTheme` Hook
 
 ```tsx
 import { useTheme } from 'rnc-theme';
 
 function MyComponent() {
   const {
-    theme,           // Current theme object
-    mode,            // Current theme mode
-    setMode,         // Function to change mode
-    isDark,          // Boolean for dark mode
-    updateCustomTheme, // Function to update custom theme
-    resetTheme,      // Function to reset to default
+    theme, // Current theme object
+    themeMode, // Current theme mode ('light', 'dark', 'system')
+    setThemeMode, // Function to set the theme mode ('light', 'dark', 'system')
+    isDark, // Boolean indicating if the current theme is dark
+    resetTheme, // Function to reset the theme to default
+    updateCustomTheme, // Function to update the custom theme for changes other themes
+    activePreset, // Current active preset theme
   } = useTheme();
 
   return (
@@ -232,219 +228,48 @@ function MyComponent() {
 }
 ```
 
-### Using useThemedStyles Hook
-
-```tsx
-import { useThemedStyles } from 'rnc-theme';
-
-function StyledComponent() {
-  const styles = useThemedStyles(createStyles);
-
-  return <View style={styles.container} />;
-}
-
-const createStyles = (theme: Theme) => ({
-  container: {
-    backgroundColor: theme.colors.surface,
-    padding: theme.spacing.md,
-    borderRadius: theme.components.borderRadius.md,
-    shadowColor: theme.colors.text,
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-});
-```
-
-## Error Handling
-
-### Theme Validation
-
-```tsx
-import { validateTheme } from 'rnc-theme';
-
-const customTheme = {
-  colors: {
-    primary: '#invalid-color', // This will be caught
-  },
-};
-
-// Validate before using
-if (validateTheme(customTheme)) {
-  // Theme is valid
-} else {
-  console.warn('Invalid theme configuration');
-}
-```
-
-### Error Boundaries
-
-```tsx
-import React from 'react';
-import { RNCProvider } from 'rnc-theme';
-import { ErrorBoundary } from './ErrorBoundary';
-
-export default function App() {
-  return (
-    <ErrorBoundary>
-      <RNCProvider
-        defaultTheme="system"
-        onError={(error) => {
-          console.error('Theme error:', error);
-          // Report to crash analytics
-        }}
-      >
-        {/* App content */}
-      </RNCProvider>
-    </ErrorBoundary>
-  );
-}
-```
-
 ## Performance Considerations
 
 <CardGrid>
   <Card title="Memoization" icon="rocket">
     All theme calculations are automatically memoized to prevent unnecessary re-renders.
   </Card>
-  <Card title="Lazy Loading" icon="document">
-    Theme presets are loaded on-demand to reduce initial bundle size.
-  </Card>
   <Card title="Efficient Updates" icon="setting">
     Only components using changed theme properties re-render during theme switches.
   </Card>
-  <Card title="Memory Management" icon="star">
-    Automatic cleanup of unused theme resources and event listeners.
-  </Card>
 </CardGrid>
-
-### Performance Monitoring
-
-```tsx
-<RNCProvider
-  debugMode={__DEV__}
-  onPerformanceMetrics={(metrics) => {
-    console.log('Theme performance:', metrics);
-    // {
-    //   renderTime: 12,
-    //   memoryUsage: 1024,
-    //   cacheHitRate: 0.95
-    // }
-  }}
->
-  {/* App content */}
-</RNCProvider>
-```
-
-## Best Practices
-
-<Aside type="tip" title="Provider Placement">
-  Place `RNCProvider` as high as possible in your component tree, typically wrapping your entire app or navigation container.
-</Aside>
-
-<Aside type="note" title="Theme Persistence">
-  Always enable `persistTheme` for production apps to maintain user preferences across sessions.
-</Aside>
-
-<Aside type="caution" title="Debug Mode">
-  Only enable `debugMode` in development. It adds performance overhead and should not be used in production.
-</Aside>
 
 ### Common Patterns
 
-```tsx
-// ✅ Good: Provider at app root
-export default function App() {
-  return (
-    <RNCProvider defaultTheme="system">
-      <NavigationContainer>
-        <AppNavigator />
-      </NavigationContainer>
-    </RNCProvider>
-  );
-}
-
-// ❌ Bad: Multiple providers
-function Screen() {
-  return (
-    <RNCProvider> {/* Don't nest providers */}
-      <Content />
-    </RNCProvider>
-  );
-}
-```
-
-## Troubleshooting
-
-### Common Issues
-
 <Tabs>
-  <TabItem label="Theme Not Applied">
-    **Problem:** Components don't reflect theme changes
-
-    **Solutions:**
-    - Ensure `RNCProvider` wraps your entire app
-    - Check that components use `useTheme` or `useThemedStyles`
-    - Verify theme object structure
-
-    ```tsx
-    // Check if theme is available
-    const { theme } = useTheme();
-    console.log('Current theme:', theme);
+  <TabItem label='❌ Bad'>
+    ```tsx title='screen.tsx'
+    // ❌ Bad: Nested providers
+    function Screen() {
+      return (
+        <RNCProvider> {/* Don't nest providers */}
+          <Content />
+        </RNCProvider>
+      );
+    }
     ```
   </TabItem>
-
-  <TabItem label="Persistence Issues">
-    **Problem:** Theme preference not saved
-
-    **Solutions:**
-    - Enable `persistTheme={true}`
-    - Check AsyncStorage permissions
-    - Verify storage key conflicts
-
-    ```tsx
-    import AsyncStorage from '@react-native-async-storage/async-storage';
-
-    // Check stored theme
-    AsyncStorage.getItem('rnc-theme-mode').then(console.log);
-    ```
-  </TabItem>
-
-  <TabItem label="Performance Issues">
-    **Problem:** Slow theme switching or high memory usage
-
-    **Solutions:**
-    - Enable performance optimizations
-    - Use `useThemedStyles` instead of inline styles
-    - Avoid creating styles in render functions
-
-    ```tsx
-    // ✅ Good: Memoized styles
-    const styles = useThemedStyles(createStyles);
-
-    // ❌ Bad: Inline styles in render
-    <View style={{ backgroundColor: theme.colors.background }} />
+  <TabItem label='✅ Good'>
+    ```tsx title='_layout.tsx'
+    // ✅ Good: Provider at app root
+    export default function App() {
+      return (
+        <RNCProvider defaultTheme="system">
+          <NavigationContainer>
+            <AppNavigator />
+          </NavigationContainer>
+        </RNCProvider>
+      );
+    }
     ```
   </TabItem>
 </Tabs>
 
-## Next Steps
+## API Reference
 
-<CardGrid>
-  <Card title="Custom Themes" icon="palette">
-    Learn how to create and configure custom themes for your brand.
-    [Custom Theme Guide →](/theming/custom-theme)
-  </Card>
-  <Card title="Theme Registry" icon="list">
-    Manage multiple theme presets with the registry system.
-    [Registry Guide →](/theming/theme-registry)
-  </Card>
-  <Card title="Theme Switching" icon="setting">
-    Implement smooth theme switching with animations.
-    [Switching Guide →](/theming/theme-switching)
-  </Card>
-  <Card title="Hooks Reference" icon="code">
-    Detailed reference for all theme-related hooks.
-    [Hooks Documentation →](/hooks/overview)
-  </Card>
-</CardGrid>
+- For complete details about the RNCProvider API and all available configuration options, check out our comprehensive <a href="/api/provider">API reference documentation</a>. The reference includes detailed explanations of all props, methods, and usage examples to help you get the most out of the theme provider.
