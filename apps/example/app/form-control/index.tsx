@@ -1,9 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback } from 'react';
 import { ScrollView, View, Text, Alert } from 'react-native';
 import {
   FormControl,
-  FormContent,
-  FormField,
   FormControlLabel,
   FormControlLabelText,
   FormControlHelper,
@@ -11,6 +9,12 @@ import {
   FormControlError,
   FormControlErrorIcon,
   FormControlErrorText,
+  FormControlSuccess,
+  FormControlSuccessIcon,
+  FormControlSuccessText,
+  FormControlWarning,
+  FormControlWarningIcon,
+  FormControlWarningText,
   Input,
   Button,
   ButtonText,
@@ -31,7 +35,7 @@ import {
   useTheme,
 } from 'rnc-theme';
 
-// Simulasi react-hook-form untuk demo
+// Form data interface
 interface FormData {
   email: string;
   password: string;
@@ -45,22 +49,109 @@ interface FormData {
   skills: string;
   birthDate: string;
   appointmentDate: string;
+  phone: string;
+  website: string;
 }
 
-interface FormErrors {
-  email?: string;
-  password?: string;
-  confirmPassword?: string;
-  newsletter?: string;
-  gender?: string;
-  age?: string;
-  notifications?: string;
-  country?: string;
-  hobbies?: string;
-  skills?: string;
-  birthDate?: string;
-  appointmentDate?: string;
+// Individual field error states
+interface FieldErrors {
+  [key: string]: {
+    hasError: boolean;
+    hasSuccess: boolean;
+    hasWarning: boolean;
+    message: string;
+  };
 }
+
+// Base validation rule interface
+interface BaseValidationRule {
+  required: boolean;
+  errorMessage: string;
+  successMessage: string;
+}
+
+// Extended validation rule interfaces
+interface PatternValidationRule extends BaseValidationRule {
+  pattern: RegExp;
+  warningMessage?: string;
+}
+
+interface PasswordValidationRule extends BaseValidationRule {
+  minLength: number;
+  pattern: RegExp;
+  warningMessage: string;
+}
+
+interface PhoneValidationRule extends BaseValidationRule {
+  pattern: RegExp;
+  warningMessage: string;
+}
+
+interface WebsiteValidationRule extends BaseValidationRule {
+  pattern: RegExp;
+}
+
+type SimpleValidationRule = BaseValidationRule
+
+// Union type for all validation rules
+type ValidationRule =
+  | PatternValidationRule
+  | PasswordValidationRule
+  | PhoneValidationRule
+  | WebsiteValidationRule
+  | SimpleValidationRule;
+
+// Validation rules with proper typing
+const validationRules: Record<string, ValidationRule> = {
+  email: {
+    required: true,
+    pattern: /^[^\s@]+@[^\s@]+\.[^\s@]+$/,
+    errorMessage: 'Please enter a valid email address',
+    successMessage: 'Email looks good!',
+  } as PatternValidationRule,
+  password: {
+    required: true,
+    minLength: 8,
+    pattern: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/,
+    errorMessage:
+      'Password must be at least 8 characters with uppercase, lowercase, and number',
+    warningMessage: 'Consider adding special characters for stronger security',
+    successMessage: 'Strong password!',
+  } as PasswordValidationRule,
+  confirmPassword: {
+    required: true,
+    errorMessage: 'Passwords do not match',
+    successMessage: 'Passwords match!',
+  } as SimpleValidationRule,
+  gender: {
+    required: true,
+    errorMessage: 'Please select your gender',
+    successMessage: 'Selection confirmed',
+  } as SimpleValidationRule,
+  country: {
+    required: true,
+    errorMessage: 'Please select your country',
+    successMessage: 'Country selected',
+  } as SimpleValidationRule,
+  birthDate: {
+    required: true,
+    errorMessage: 'Birth date is required and cannot be in the future',
+    successMessage: 'Valid birth date',
+  } as SimpleValidationRule,
+  phone: {
+    required: false,
+    pattern: /^[+]?[1-9][\d]{0,15}$/,
+    errorMessage: 'Please enter a valid phone number',
+    warningMessage: 'Phone number format may not be international',
+    successMessage: 'Valid phone number',
+  } as PhoneValidationRule,
+  website: {
+    required: false,
+    pattern: /^https?:\/\/.+\..+/,
+    errorMessage: 'Please enter a valid website URL (http:// or https://)',
+    successMessage: 'Valid website URL',
+  } as WebsiteValidationRule,
+};
 
 // Data untuk combobox
 const countryOptions = [
@@ -89,18 +180,26 @@ const hobbyOptions = [
   { label: 'Dancing', value: 'dancing' },
 ];
 
-const skillOptions = [
-  { label: 'JavaScript', value: 'javascript' },
-  { label: 'TypeScript', value: 'typescript' },
-  { label: 'React', value: 'react' },
-  { label: 'React Native', value: 'react-native' },
-  { label: 'Node.js', value: 'nodejs' },
-  { label: 'Python', value: 'python' },
-  { label: 'Java', value: 'java' },
-  { label: 'Swift', value: 'swift' },
-  { label: 'Kotlin', value: 'kotlin' },
-  { label: 'Flutter', value: 'flutter' },
-];
+// Type guard functions
+const hasPattern = (
+  rule: ValidationRule
+): rule is
+  | PatternValidationRule
+  | PasswordValidationRule
+  | PhoneValidationRule
+  | WebsiteValidationRule => {
+  return 'pattern' in rule;
+};
+
+const hasMinLength = (rule: ValidationRule): rule is PasswordValidationRule => {
+  return 'minLength' in rule;
+};
+
+const hasWarningMessage = (
+  rule: ValidationRule
+): rule is PasswordValidationRule | PhoneValidationRule => {
+  return 'warningMessage' in rule;
+};
 
 export default function FormControlExample() {
   const { theme } = useTheme();
@@ -117,85 +216,305 @@ export default function FormControlExample() {
     skills: '',
     birthDate: '',
     appointmentDate: '',
+    phone: '',
+    website: '',
   });
 
-  const [errors, setErrors] = useState<FormErrors>({});
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Validation functions
-  const validateEmail = (email: string): string | undefined => {
-    if (!email) return 'Email is required';
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      return 'Please enter a valid email address';
-    }
-    return undefined;
-  };
+  const validateField = useCallback(
+    (
+      fieldName: string,
+      value: string | number | boolean | string[],
+      currentFormData?: FormData
+    ): {
+      hasError: boolean;
+      hasSuccess: boolean;
+      hasWarning: boolean;
+      message: string;
+    } => {
+      const rule = validationRules[fieldName];
+      if (!rule)
+        return {
+          hasError: false,
+          hasSuccess: false,
+          hasWarning: false,
+          message: '',
+        };
 
-  const validatePassword = (password: string): string | undefined => {
-    if (!password) return 'Password is required';
-    if (password.length < 8) {
-      return 'Password must be at least 8 characters long';
-    }
-    return undefined;
-  };
+      // Handle special cases
+      if (fieldName === 'confirmPassword') {
+        if (!value && rule.required) {
+          return {
+            hasError: true,
+            hasSuccess: false,
+            hasWarning: false,
+            message: 'Please confirm your password',
+          };
+        }
+        if (value && currentFormData && value !== currentFormData.password) {
+          return {
+            hasError: true,
+            hasSuccess: false,
+            hasWarning: false,
+            message: rule.errorMessage,
+          };
+        }
+        if (
+          value &&
+          currentFormData &&
+          value === currentFormData.password &&
+          currentFormData.password
+        ) {
+          return {
+            hasError: false,
+            hasSuccess: true,
+            hasWarning: false,
+            message: rule.successMessage,
+          };
+        }
+        return {
+          hasError: false,
+          hasSuccess: false,
+          hasWarning: false,
+          message: '',
+        };
+      }
 
-  const validateConfirmPassword = (
-    confirmPassword: string,
-    password: string
-  ): string | undefined => {
-    if (!confirmPassword) return 'Please confirm your password';
-    if (confirmPassword !== password) {
-      return 'Passwords do not match';
-    }
-    return undefined;
-  };
+      if (fieldName === 'birthDate') {
+        if (!value && rule.required) {
+          return {
+            hasError: true,
+            hasSuccess: false,
+            hasWarning: false,
+            message: 'Birth date is required',
+          };
+        }
+        if (value) {
+          const birthDate = new Date(value as string);
+          const today = new Date();
+          if (birthDate > today) {
+            return {
+              hasError: true,
+              hasSuccess: false,
+              hasWarning: false,
+              message: 'Birth date cannot be in the future',
+            };
+          }
+          return {
+            hasError: false,
+            hasSuccess: true,
+            hasWarning: false,
+            message: rule.successMessage,
+          };
+        }
+        return {
+          hasError: false,
+          hasSuccess: false,
+          hasWarning: false,
+          message: '',
+        };
+      }
 
-  const validateGender = (gender: string): string | undefined => {
-    if (!gender) return 'Please select your gender';
-    return undefined;
-  };
+      if (fieldName === 'password') {
+        if (!value && rule.required) {
+          return {
+            hasError: true,
+            hasSuccess: false,
+            hasWarning: false,
+            message: 'Password is required',
+          };
+        }
+        if (value) {
+          const stringValue = value as string;
+          if (hasMinLength(rule) && stringValue.length < rule.minLength) {
+            return {
+              hasError: true,
+              hasSuccess: false,
+              hasWarning: false,
+              message: `Password must be at least ${rule.minLength} characters`,
+            };
+          }
+          if (hasPattern(rule) && !rule.pattern.test(stringValue)) {
+            return {
+              hasError: true,
+              hasSuccess: false,
+              hasWarning: false,
+              message: rule.errorMessage,
+            };
+          }
+          // Check for warning condition (no special characters)
+          if (!/[!@#$%^&*(),.?":{}|<>]/.test(stringValue)) {
+            return {
+              hasError: false,
+              hasSuccess: false,
+              hasWarning: true,
+              message: hasWarningMessage(rule) ? rule.warningMessage : '',
+            };
+          }
+          return {
+            hasError: false,
+            hasSuccess: true,
+            hasWarning: false,
+            message: rule.successMessage,
+          };
+        }
+        return {
+          hasError: false,
+          hasSuccess: false,
+          hasWarning: false,
+          message: '',
+        };
+      }
 
-  const validateCountry = (country: string): string | undefined => {
-    if (!country) return 'Please select your country';
-    return undefined;
-  };
+      if (fieldName === 'phone') {
+        if (!value) {
+          return {
+            hasError: false,
+            hasSuccess: false,
+            hasWarning: false,
+            message: '',
+          }; // Optional field
+        }
+        const stringValue = value as string;
+        if (hasPattern(rule) && !rule.pattern.test(stringValue)) {
+          return {
+            hasError: true,
+            hasSuccess: false,
+            hasWarning: false,
+            message: rule.errorMessage,
+          };
+        }
+        // Warning for potentially non-international format
+        if (stringValue && !stringValue.startsWith('+')) {
+          return {
+            hasError: false,
+            hasSuccess: false,
+            hasWarning: true,
+            message: hasWarningMessage(rule) ? rule.warningMessage : '',
+          };
+        }
+        return {
+          hasError: false,
+          hasSuccess: true,
+          hasWarning: false,
+          message: rule.successMessage,
+        };
+      }
 
-  const validateBirthDate = (birthDate: string): string | undefined => {
-    if (!birthDate) return 'Birth date is required';
-    const today = new Date();
-    const birth = new Date(birthDate);
-    if (birth > today) return 'Birth date cannot be in the future';
-    return undefined;
+      // General validation
+      if (
+        rule.required &&
+        (!value || (Array.isArray(value) && value.length === 0))
+      ) {
+        return {
+          hasError: true,
+          hasSuccess: false,
+          hasWarning: false,
+          message: `${
+            fieldName.charAt(0).toUpperCase() + fieldName.slice(1)
+          } is required`,
+        };
+      }
+
+      if (value && hasPattern(rule) && !rule.pattern.test(value as string)) {
+        return {
+          hasError: true,
+          hasSuccess: false,
+          hasWarning: false,
+          message: rule.errorMessage,
+        };
+      }
+
+      if (value) {
+        return {
+          hasError: false,
+          hasSuccess: true,
+          hasWarning: false,
+          message: rule.successMessage,
+        };
+      }
+
+      return {
+        hasError: false,
+        hasSuccess: false,
+        hasWarning: false,
+        message: '',
+      };
+    },
+    []
+  );
+
+  // Handle field change with validation
+  const handleFieldChange = useCallback(
+    (fieldName: string, value: string | number | boolean | string[]) => {
+      const newFormData = { ...formData, [fieldName]: value };
+      setFormData(newFormData);
+
+      // Validate field
+      const validation = validateField(fieldName, value, newFormData);
+      setFieldErrors((prev) => ({
+        ...prev,
+        [fieldName]: validation,
+      }));
+
+      // Re-validate confirm password if password changes
+      if (fieldName === 'password' && newFormData.confirmPassword) {
+        const confirmValidation = validateField(
+          'confirmPassword',
+          newFormData.confirmPassword,
+          newFormData
+        );
+        setFieldErrors((prev) => ({
+          ...prev,
+          confirmPassword: confirmValidation,
+        }));
+      }
+    },
+    [formData, validateField]
+  );
+
+  // Get form control state for a field
+  const getFieldState = (fieldName: string) => {
+    const fieldError = fieldErrors[fieldName];
+    if (!fieldError) return 'default';
+    if (fieldError.hasError) return 'error';
+    if (fieldError.hasWarning) return 'warning';
+    if (fieldError.hasSuccess) return 'success';
+    return 'default';
   };
 
   // Handle form submission
   const handleSubmit = async () => {
     setIsSubmitting(true);
 
-    // Validate all fields
-    const newErrors: FormErrors = {
-      email: validateEmail(formData.email),
-      password: validatePassword(formData.password),
-      confirmPassword: validateConfirmPassword(
-        formData.confirmPassword,
-        formData.password
-      ),
-      gender: validateGender(formData.gender),
-      country: validateCountry(formData.country),
-      birthDate: validateBirthDate(formData.birthDate),
-    };
-
-    // Remove undefined errors
-    Object.keys(newErrors).forEach((key) => {
-      if (newErrors[key as keyof FormErrors] === undefined) {
-        delete newErrors[key as keyof FormErrors];
+    // Validate all required fields
+    const newFieldErrors: FieldErrors = {};
+    Object.keys(validationRules).forEach((fieldName) => {
+      const validation = validateField(
+        fieldName,
+        formData[fieldName as keyof FormData],
+        formData
+      );
+      if (
+        validation.hasError ||
+        validation.hasWarning ||
+        validation.hasSuccess
+      ) {
+        newFieldErrors[fieldName] = validation;
       }
     });
 
-    setErrors(newErrors);
+    setFieldErrors(newFieldErrors);
 
-    // If no errors, submit form
-    if (Object.keys(newErrors).length === 0) {
+    // Check if there are any errors
+    const hasErrors = Object.values(newFieldErrors).some(
+      (error) => error.hasError
+    );
+
+    if (!hasErrors) {
       // Simulate API call
       setTimeout(() => {
         Alert.alert('Success', 'Form submitted successfully!');
@@ -203,6 +522,10 @@ export default function FormControlExample() {
       }, 2000);
     } else {
       setIsSubmitting(false);
+      Alert.alert(
+        'Error',
+        'Please fix the errors in the form before submitting.'
+      );
     }
   };
 
@@ -224,10 +547,10 @@ export default function FormControlExample() {
           marginBottom: theme.spacing.lg,
         }}
       >
-        FormControl Examples
+        Enhanced FormControl Example
       </Text>
 
-      {/* Basic Form */}
+      {/* Main Registration Form */}
       <Card>
         <CardHeader>
           <Text
@@ -239,671 +562,473 @@ export default function FormControlExample() {
             User Registration Form
           </Text>
         </CardHeader>
-        <CardContent>
-          <FormControl state={errors.email ? 'error' : 'default'}>
-            <FormContent spacing="md">
-              {/* Email Field */}
-              <FormField required>
-                <FormControlLabel>
-                  <FormControlLabelText>Email Address</FormControlLabelText>
-                </FormControlLabel>
-                <Input
-                  placeholder="Enter your email"
-                  value={formData.email}
-                  onChangeText={(text) => {
-                    setFormData((prev) => ({ ...prev, email: text }));
-                    if (errors.email) {
-                      setErrors((prev) => ({ ...prev, email: undefined }));
-                    }
-                  }}
-                  state={errors.email ? 'error' : 'default'}
-                  keyboardType="email-address"
-                  autoCapitalize="none"
-                />
-                {!errors.email && (
-                  <FormControlHelper>
-                    <FormControlHelperText>
-                      We'll never share your email with anyone else.
-                    </FormControlHelperText>
-                  </FormControlHelper>
-                )}
-                <FormControlError>
-                  <FormControlErrorIcon />
-                  <FormControlErrorText>{errors.email}</FormControlErrorText>
-                </FormControlError>
-              </FormField>
-
-              {/* Password Field */}
-              <FormField required>
-                <FormControlLabel>
-                  <FormControlLabelText>Password</FormControlLabelText>
-                </FormControlLabel>
-                <Input
-                  placeholder="Enter your password"
-                  value={formData.password}
-                  onChangeText={(text) => {
-                    setFormData((prev) => ({ ...prev, password: text }));
-                    if (errors.password) {
-                      setErrors((prev) => ({ ...prev, password: undefined }));
-                    }
-                  }}
-                  state={errors.password ? 'error' : 'default'}
-                  secureTextEntry
-                />
-                {!errors.password && (
-                  <FormControlHelper>
-                    <FormControlHelperText>
-                      Password must be at least 8 characters long.
-                    </FormControlHelperText>
-                  </FormControlHelper>
-                )}
-                <FormControlError>
-                  <FormControlErrorIcon />
-                  <FormControlErrorText>{errors.password}</FormControlErrorText>
-                </FormControlError>
-              </FormField>
-
-              {/* Confirm Password Field */}
-              <FormField required>
-                <FormControlLabel>
-                  <FormControlLabelText>Confirm Password</FormControlLabelText>
-                </FormControlLabel>
-                <Input
-                  placeholder="Confirm your password"
-                  value={formData.confirmPassword}
-                  onChangeText={(text) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      confirmPassword: text,
-                    }));
-                    if (errors.confirmPassword) {
-                      setErrors((prev) => ({
-                        ...prev,
-                        confirmPassword: undefined,
-                      }));
-                    }
-                  }}
-                  state={errors.confirmPassword ? 'error' : 'default'}
-                  secureTextEntry
-                />
-                <FormControlError>
-                  <FormControlErrorIcon />
-                  <FormControlErrorText>
-                    {errors.confirmPassword}
-                  </FormControlErrorText>
-                </FormControlError>
-              </FormField>
-
-              {/* Country Combobox */}
-              <FormField required>
-                <FormControlLabel>
-                  <FormControlLabelText>Country</FormControlLabelText>
-                </FormControlLabel>
-                <Combobox
-                  state={errors.country ? 'error' : 'default'}
-                  placeholder="Select your country"
-                  options={countryOptions}
-                  value={formData.country}
-                  onValueChange={(value) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      country: value as string,
-                    }));
-                    if (errors.country) {
-                      setErrors((prev) => ({ ...prev, country: undefined }));
-                    }
-                  }}
-                  searchable
-                  clearable
-                />
-                <FormControlHelper>
-                  <FormControlHelperText>
-                    Select the country where you currently reside.
-                  </FormControlHelperText>
-                </FormControlHelper>
-                <FormControlError>
-                  <FormControlErrorIcon />
-                  <FormControlErrorText>{errors.country}</FormControlErrorText>
-                </FormControlError>
-              </FormField>
-
-              {/* Hobbies Multiple Combobox */}
-              <FormField>
-                <FormControlLabel>
-                  <FormControlLabelText>
-                    Hobbies (Multiple Selection)
-                  </FormControlLabelText>
-                </FormControlLabel>
-                <Combobox
-                  placeholder="Select your hobbies"
-                  options={hobbyOptions}
-                  value={formData.hobbies}
-                  onValueChange={(value) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      hobbies: value as string[],
-                    }));
-                  }}
-                  multiple
-                  searchable
-                  clearable
-                />
-                <FormControlHelper>
-                  <FormControlHelperText>
-                    You can select multiple hobbies that interest you.
-                  </FormControlHelperText>
-                </FormControlHelper>
-              </FormField>
-
-              {/* Skills Combobox with Search */}
-              <FormField>
-                <FormControlLabel>
-                  <FormControlLabelText>Primary Skill</FormControlLabelText>
-                </FormControlLabel>
-                <Combobox
-                  placeholder="Search and select your primary skill"
-                  options={skillOptions}
-                  value={formData.skills}
-                  onValueChange={(value) => {
-                    setFormData((prev) => ({
-                      ...prev,
-                      skills: value as string,
-                    }));
-                  }}
-                  searchable
-                  clearable
-                />
-                <FormControlHelper>
-                  <FormControlHelperText>
-                    Choose your strongest technical skill.
-                  </FormControlHelperText>
-                </FormControlHelper>
-              </FormField>
-
-              {/* Birth Date DatePicker */}
-              <FormField required>
-                <FormControlLabel>
-                  <FormControlLabelText>Birth Date</FormControlLabelText>
-                </FormControlLabel>
-                <DatePicker
-                  state={errors.birthDate ? 'error' : 'default'}
-                  placeholder="Select your birth date"
-                  value={formData.birthDate}
-                  onDateSelect={(date) => {
-                    setFormData((prev) => ({ ...prev, birthDate: date }));
-                    if (errors.birthDate) {
-                      setErrors((prev) => ({
-                        ...prev,
-                        birthDate: undefined,
-                      }));
-                    }
-                  }}
-                  dateFormat="DD/MM/YYYY"
-                  maxDate={new Date().toISOString().split('T')[0]} // Cannot select future dates
-                />
-                <FormControlHelper>
-                  <FormControlHelperText>
-                    Select your date of birth for age verification.
-                  </FormControlHelperText>
-                </FormControlHelper>
-                <FormControlError>
-                  <FormControlErrorIcon />
-                  <FormControlErrorText>
-                    {errors.birthDate}
-                  </FormControlErrorText>
-                </FormControlError>
-              </FormField>
-              {/* Appointment Date DatePicker */}
-              <FormField>
-                <FormControlLabel>
-                  <FormControlLabelText>
-                    Preferred Appointment Date
-                  </FormControlLabelText>
-                </FormControlLabel>
-                <DatePicker
-                  placeholder="Select appointment date"
-                  value={formData.appointmentDate}
-                  onDateSelect={(date) => {
-                    setFormData((prev) => ({ ...prev, appointmentDate: date }));
-                  }}
-                  dateFormat="DD MMM YYYY"
-                  minDate={new Date().toISOString().split('T')[0]} // Cannot select past dates
-                  variant="filled"
-                  size="lg"
-                />
-                <FormControlHelper>
-                  <FormControlHelperText>
-                    Choose your preferred appointment date (optional).
-                  </FormControlHelperText>
-                </FormControlHelper>
-              </FormField>
-
-              {/* Newsletter Checkbox */}
-              <FormField>
-                <Checkbox
-                  value="newsletter"
-                  checked={formData.newsletter}
-                  onCheckedChange={(checked) => {
-                    setFormData((prev) => ({ ...prev, newsletter: checked }));
-                  }}
-                >
-                  <CheckboxIndicator>
-                    <CheckboxIcon />
-                  </CheckboxIndicator>
-                  <CheckboxLabel>
-                    <FormControlLabelText>
-                      Subscribe to our newsletter
-                    </FormControlLabelText>
-                  </CheckboxLabel>
-                </Checkbox>
-                <FormControlHelper>
-                  <FormControlHelperText>
-                    Get updates about new features and promotions.
-                  </FormControlHelperText>
-                </FormControlHelper>
-              </FormField>
-
-              {/* Gender Radio Group */}
-              <FormField required>
-                <FormControlLabel>
-                  <FormControlLabelText>Gender</FormControlLabelText>
-                </FormControlLabel>
-                <RadioGroup
-                  value={formData.gender}
-                  onValueChange={(value) => {
-                    setFormData((prev) => ({ ...prev, gender: value }));
-                    if (errors.gender) {
-                      setErrors((prev) => ({ ...prev, gender: undefined }));
-                    }
-                  }}
-                >
-                  <View style={{ gap: theme.spacing.sm }}>
-                    <Radio value="male">
-                      <RadioLabel>
-                        <Text
-                          style={{
-                            ...theme.typography.body,
-                            color: theme.colors.text,
-                          }}
-                        >
-                          Male
-                        </Text>
-                      </RadioLabel>
-                    </Radio>
-                    <Radio value="female">
-                      <RadioLabel>
-                        <Text
-                          style={{
-                            ...theme.typography.body,
-                            color: theme.colors.text,
-                          }}
-                        >
-                          Female
-                        </Text>
-                      </RadioLabel>
-                    </Radio>
-                    <Radio value="other">
-                      <RadioLabel>
-                        <Text
-                          style={{
-                            ...theme.typography.body,
-                            color: theme.colors.text,
-                          }}
-                        >
-                          Other
-                        </Text>
-                      </RadioLabel>
-                    </Radio>
-                  </View>
-                </RadioGroup>
-                <FormControlError>
-                  <FormControlErrorIcon />
-                  <FormControlErrorText>{errors.gender}</FormControlErrorText>
-                </FormControlError>
-              </FormField>
-
-              {/* Age Slider */}
-              <FormField>
-                <FormControlLabel>
-                  <FormControlLabelText>
-                    Age: {formData.age}
-                  </FormControlLabelText>
-                </FormControlLabel>
-                <Slider
-                  initialValue={formData.age}
-                  onValueChange={(value) => {
-                    setFormData((prev) => ({ ...prev, age: value }));
-                  }}
-                  min={18}
-                  max={100}
-                  step={1}
-                />
-                <FormControlHelper>
-                  <FormControlHelperText>
-                    Select your age (18-100 years).
-                  </FormControlHelperText>
-                </FormControlHelper>
-              </FormField>
-
-              {/* Notifications Switcher */}
-              <FormField>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                    alignItems: 'center',
-                  }}
-                >
-                  <View style={{ flex: 1 }}>
-                    <FormControlLabel>
-                      <FormControlLabelText>
-                        Push Notifications
-                      </FormControlLabelText>
-                    </FormControlLabel>
-                    <FormControlHelper>
-                      <FormControlHelperText>
-                        Receive notifications about important updates.
-                      </FormControlHelperText>
-                    </FormControlHelper>
-                  </View>
-                  <Switcher
-                    value={formData.notifications}
-                    onValueChange={(value) => {
-                      setFormData((prev) => ({
-                        ...prev,
-                        notifications: value,
-                      }));
-                    }}
-                  />
-                </View>
-              </FormField>
-
-              {/* Submit Button */}
-              <Button
-                onPress={handleSubmit}
-                disabled={isSubmitting}
-                style={{ marginTop: theme.spacing.md }}
-              >
-                <ButtonText>
-                  {isSubmitting ? 'Submitting...' : 'Create Account'}
-                </ButtonText>
-              </Button>
-            </FormContent>
-          </FormControl>
-        </CardContent>
-      </Card>
-
-      {/* Combobox Examples */}
-      <Card>
-        <CardHeader>
-          <Text
-            style={{
-              ...theme.typography.title,
-              color: theme.colors.text,
-            }}
-          >
-            Combobox Examples
-          </Text>
-        </CardHeader>
         <CardContent style={{ gap: theme.spacing.lg }}>
-          {/* Basic Combobox */}
-          <FormControl>
+          {/* Email Field */}
+          <FormControl state={getFieldState('email')} required>
             <FormControlLabel>
-              <FormControlLabelText>Basic Combobox</FormControlLabelText>
+              <FormControlLabelText>Email Address</FormControlLabelText>
             </FormControlLabel>
-            <Combobox
-              placeholder="Select an option"
-              options={[
-                { label: 'Option 1', value: 'option1' },
-                { label: 'Option 2', value: 'option2' },
-                { label: 'Option 3', value: 'option3' },
-              ]}
+            <Input
+              placeholder="Enter your email"
+              value={formData.email}
+              onChangeText={(text) => handleFieldChange('email', text)}
+              keyboardType="email-address"
+              autoCapitalize="none"
             />
-            <FormControlHelper>
-              <FormControlHelperText>
-                Basic single selection combobox.
-              </FormControlHelperText>
-            </FormControlHelper>
+            {!fieldErrors.email && (
+              <FormControlHelper>
+                <FormControlHelperText>
+                  We'll never share your email with anyone else.
+                </FormControlHelperText>
+              </FormControlHelper>
+            )}
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>
+                {fieldErrors.email?.message}
+              </FormControlErrorText>
+            </FormControlError>
+            <FormControlSuccess>
+              <FormControlSuccessIcon />
+              <FormControlSuccessText>
+                {fieldErrors.email?.message}
+              </FormControlSuccessText>
+            </FormControlSuccess>
           </FormControl>
 
-          {/* Searchable Combobox */}
-          <FormControl>
+          {/* Password Field */}
+          <FormControl state={getFieldState('password')} required>
             <FormControlLabel>
-              <FormControlLabelText>Searchable Combobox</FormControlLabelText>
+              <FormControlLabelText>Password</FormControlLabelText>
+            </FormControlLabel>
+            <Input
+              placeholder="Enter your password"
+              value={formData.password}
+              onChangeText={(text) => handleFieldChange('password', text)}
+              secureTextEntry
+            />
+            {!fieldErrors.password && (
+              <FormControlHelper>
+                <FormControlHelperText>
+                  Password must be at least 8 characters with uppercase,
+                  lowercase, and number.
+                </FormControlHelperText>
+              </FormControlHelper>
+            )}
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>
+                {fieldErrors.password?.message}
+              </FormControlErrorText>
+            </FormControlError>
+            <FormControlWarning>
+              <FormControlWarningIcon />
+              <FormControlWarningText>
+                {fieldErrors.password?.message}
+              </FormControlWarningText>
+            </FormControlWarning>
+            <FormControlSuccess>
+              <FormControlSuccessIcon />
+              <FormControlSuccessText>
+                {fieldErrors.password?.message}
+              </FormControlSuccessText>
+            </FormControlSuccess>
+          </FormControl>
+
+          {/* Confirm Password Field */}
+          <FormControl state={getFieldState('confirmPassword')} required>
+            <FormControlLabel>
+              <FormControlLabelText>Confirm Password</FormControlLabelText>
+            </FormControlLabel>
+            <Input
+              placeholder="Confirm your password"
+              value={formData.confirmPassword}
+              onChangeText={(text) =>
+                handleFieldChange('confirmPassword', text)
+              }
+              secureTextEntry
+            />
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>
+                {fieldErrors.confirmPassword?.message}
+              </FormControlErrorText>
+            </FormControlError>
+            <FormControlSuccess>
+              <FormControlSuccessIcon />
+              <FormControlSuccessText>
+                {fieldErrors.confirmPassword?.message}
+              </FormControlSuccessText>
+            </FormControlSuccess>
+          </FormControl>
+
+          {/* Phone Field (Optional with Warning) */}
+          <FormControl state={getFieldState('phone')}>
+            <FormControlLabel>
+              <FormControlLabelText>
+                Phone Number (Optional)
+              </FormControlLabelText>
+            </FormControlLabel>
+            <Input
+              placeholder="+62 812 3456 7890"
+              value={formData.phone}
+              onChangeText={(text) => handleFieldChange('phone', text)}
+              keyboardType="phone-pad"
+            />
+            {!fieldErrors.phone && (
+              <FormControlHelper>
+                <FormControlHelperText>
+                  Include country code for international numbers (e.g., +62 for
+                  Indonesia).
+                </FormControlHelperText>
+              </FormControlHelper>
+            )}
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>
+                {fieldErrors.phone?.message}
+              </FormControlErrorText>
+            </FormControlError>
+            <FormControlWarning>
+              <FormControlWarningIcon />
+              <FormControlWarningText>
+                {fieldErrors.phone?.message}
+              </FormControlWarningText>
+            </FormControlWarning>
+            <FormControlSuccess>
+              <FormControlSuccessIcon />
+              <FormControlSuccessText>
+                {fieldErrors.phone?.message}
+              </FormControlSuccessText>
+            </FormControlSuccess>
+          </FormControl>
+
+          {/* Website Field (Optional) */}
+          <FormControl state={getFieldState('website')}>
+            <FormControlLabel>
+              <FormControlLabelText>Website (Optional)</FormControlLabelText>
+            </FormControlLabel>
+            <Input
+              placeholder="https://example.com"
+              value={formData.website}
+              onChangeText={(text) => handleFieldChange('website', text)}
+              keyboardType="url"
+              autoCapitalize="none"
+            />
+            {!fieldErrors.website && (
+              <FormControlHelper>
+                <FormControlHelperText>
+                  Enter your personal or professional website URL.
+                </FormControlHelperText>
+              </FormControlHelper>
+            )}
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>
+                {fieldErrors.website?.message}
+              </FormControlErrorText>
+            </FormControlError>
+            <FormControlSuccess>
+              <FormControlSuccessIcon />
+              <FormControlSuccessText>
+                {fieldErrors.website?.message}
+              </FormControlSuccessText>
+            </FormControlSuccess>
+          </FormControl>
+
+          {/* Country Combobox */}
+          <FormControl state={getFieldState('country')} required>
+            <FormControlLabel>
+              <FormControlLabelText>Country</FormControlLabelText>
             </FormControlLabel>
             <Combobox
-              placeholder="Search countries..."
+              placeholder="Select your country"
               options={countryOptions}
+              value={formData.country}
+              onValueChange={(value) => handleFieldChange('country', value)}
               searchable
               clearable
             />
-            <FormControlHelper>
-              <FormControlHelperText>
-                Type to search through options.
-              </FormControlHelperText>
-            </FormControlHelper>
+            {!fieldErrors.country && (
+              <FormControlHelper>
+                <FormControlHelperText>
+                  Select the country where you currently reside.
+                </FormControlHelperText>
+              </FormControlHelper>
+            )}
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>
+                {fieldErrors.country?.message}
+              </FormControlErrorText>
+            </FormControlError>
+            <FormControlSuccess>
+              <FormControlSuccessIcon />
+              <FormControlSuccessText>
+                {fieldErrors.country?.message}
+              </FormControlSuccessText>
+            </FormControlSuccess>
           </FormControl>
 
-          {/* Multiple Selection */}
+          {/* Birth Date DatePicker */}
+          <FormControl state={getFieldState('birthDate')} required>
+            <FormControlLabel>
+              <FormControlLabelText>Birth Date</FormControlLabelText>
+            </FormControlLabel>
+            <DatePicker
+              placeholder="Select your birth date"
+              value={formData.birthDate}
+              onDateSelect={(date) => handleFieldChange('birthDate', date)}
+              dateFormat="DD/MM/YYYY"
+              maxDate={new Date().toISOString().split('T')[0]}
+            />
+            {!fieldErrors.birthDate && (
+              <FormControlHelper>
+                <FormControlHelperText>
+                  Select your date of birth for age verification.
+                </FormControlHelperText>
+              </FormControlHelper>
+            )}
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>
+                {fieldErrors.birthDate?.message}
+              </FormControlErrorText>
+            </FormControlError>
+            <FormControlSuccess>
+              <FormControlSuccessIcon />
+              <FormControlSuccessText>
+                {fieldErrors.birthDate?.message}
+              </FormControlSuccessText>
+            </FormControlSuccess>
+          </FormControl>
+
+          {/* Gender Radio Group */}
+          <FormControl state={getFieldState('gender')} required>
+            <FormControlLabel>
+              <FormControlLabelText>Gender</FormControlLabelText>
+            </FormControlLabel>
+            <RadioGroup
+              value={formData.gender}
+              onValueChange={(value) => handleFieldChange('gender', value)}
+            >
+              <View style={{ gap: theme.spacing.sm }}>
+                <Radio value="male">
+                  <RadioLabel>
+                    <Text
+                      style={{
+                        ...theme.typography.body,
+                        color: theme.colors.text,
+                      }}
+                    >
+                      Male
+                    </Text>
+                  </RadioLabel>
+                </Radio>
+                <Radio value="female">
+                  <RadioLabel>
+                    <Text
+                      style={{
+                        ...theme.typography.body,
+                        color: theme.colors.text,
+                      }}
+                    >
+                      Female
+                    </Text>
+                  </RadioLabel>
+                </Radio>
+                <Radio value="other">
+                  <RadioLabel>
+                    <Text
+                      style={{
+                        ...theme.typography.body,
+                        color: theme.colors.text,
+                      }}
+                    >
+                      Other
+                    </Text>
+                  </RadioLabel>
+                </Radio>
+              </View>
+            </RadioGroup>
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>
+                {fieldErrors.gender?.message}
+              </FormControlErrorText>
+            </FormControlError>
+            <FormControlSuccess>
+              <FormControlSuccessIcon />
+              <FormControlSuccessText>
+                {fieldErrors.gender?.message}
+              </FormControlSuccessText>
+            </FormControlSuccess>
+          </FormControl>
+
+          {/* Hobbies Multiple Selection */}
           <FormControl>
             <FormControlLabel>
-              <FormControlLabelText>Multiple Selection</FormControlLabelText>
+              <FormControlLabelText>Hobbies (Optional)</FormControlLabelText>
             </FormControlLabel>
             <Combobox
-              placeholder="Select multiple skills"
-              options={skillOptions}
+              placeholder="Select your hobbies"
+              options={hobbyOptions}
+              value={formData.hobbies}
+              onValueChange={(value) => handleFieldChange('hobbies', value)}
               multiple
               searchable
               clearable
             />
             <FormControlHelper>
               <FormControlHelperText>
-                Select multiple options at once.
+                You can select multiple hobbies that interest you.
               </FormControlHelperText>
             </FormControlHelper>
           </FormControl>
 
-          {/* Different Variants */}
+          {/* Age Slider */}
           <FormControl>
             <FormControlLabel>
-              <FormControlLabelText>Filled Variant</FormControlLabelText>
+              <FormControlLabelText>Age: {formData.age}</FormControlLabelText>
             </FormControlLabel>
-            <Combobox
-              placeholder="Filled combobox"
-              options={hobbyOptions}
-              searchable
-            />
-          </FormControl>
-
-          <FormControl>
-            <FormControlLabel>
-              <FormControlLabelText>Default Variant</FormControlLabelText>
-            </FormControlLabel>
-            <Combobox
-              placeholder="Default combobox"
-              options={hobbyOptions}
-              searchable
-            />
-          </FormControl>
-
-          {/* Different Sizes */}
-          <FormControl size="sm">
-            <FormControlLabel>
-              <FormControlLabelText>Small Size</FormControlLabelText>
-            </FormControlLabel>
-            <Combobox
-              placeholder="Small combobox"
-              options={countryOptions.slice(0, 5)}
-              size="sm"
-            />
-          </FormControl>
-
-          <FormControl size="lg">
-            <FormControlLabel>
-              <FormControlLabelText>Large Size</FormControlLabelText>
-            </FormControlLabel>
-            <Combobox
-              placeholder="Large combobox"
-              options={countryOptions.slice(0, 5)}
-              size="lg"
-            />
-          </FormControl>
-
-          {/* Error State */}
-          <FormControl state="error">
-            <FormControlLabel>
-              <FormControlLabelText>Error State</FormControlLabelText>
-            </FormControlLabel>
-            <Combobox
-              placeholder="Select an option"
-              options={[
-                { label: 'Option 1', value: 'option1' },
-                { label: 'Option 2', value: 'option2' },
-              ]}
-              state="error"
-            />
-            <FormControlError>
-              <FormControlErrorIcon />
-              <FormControlErrorText>
-                This field is required.
-              </FormControlErrorText>
-            </FormControlError>
-          </FormControl>
-
-          {/* Disabled State */}
-          <FormControl state="disabled">
-            <FormControlLabel>
-              <FormControlLabelText>Disabled State</FormControlLabelText>
-            </FormControlLabel>
-            <Combobox
-              placeholder="Disabled combobox"
-              options={[
-                { label: 'Option 1', value: 'option1' },
-                { label: 'Option 2', value: 'option2' },
-              ]}
-              disabled
+            <Slider
+              initialValue={formData.age}
+              onValueChange={(value) => handleFieldChange('age', value)}
+              min={18}
+              max={100}
+              step={1}
             />
             <FormControlHelper>
               <FormControlHelperText>
-                This combobox is disabled.
+                Select your age (18-100 years).
               </FormControlHelperText>
             </FormControlHelper>
           </FormControl>
+
+          {/* Newsletter Checkbox */}
+          <FormControl>
+            <Checkbox
+              value="newsletter"
+              checked={formData.newsletter}
+              onCheckedChange={(checked) =>
+                handleFieldChange('newsletter', checked)
+              }
+            >
+              <CheckboxIndicator>
+                <CheckboxIcon />
+              </CheckboxIndicator>
+              <CheckboxLabel>
+                <FormControlLabelText>
+                  Subscribe to our newsletter
+                </FormControlLabelText>
+              </CheckboxLabel>
+            </Checkbox>
+            <FormControlHelper>
+              <FormControlHelperText>
+                Get updates about new features and promotions.
+              </FormControlHelperText>
+            </FormControlHelper>
+          </FormControl>
+
+          {/* Notifications Switcher */}
+          <FormControl>
+            <View
+              style={{
+                flexDirection: 'row',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+              }}
+            >
+              <View style={{ flex: 1 }}>
+                <FormControlLabel>
+                  <FormControlLabelText>
+                    Push Notifications
+                  </FormControlLabelText>
+                </FormControlLabel>
+                <FormControlHelper>
+                  <FormControlHelperText>
+                    Receive notifications about important updates.
+                  </FormControlHelperText>
+                </FormControlHelper>
+              </View>
+              <Switcher
+                value={formData.notifications}
+                onValueChange={(value) =>
+                  handleFieldChange('notifications', value)
+                }
+              />
+            </View>
+          </FormControl>
+
+          {/* Submit Button */}
+          <Button
+            onPress={handleSubmit}
+            disabled={isSubmitting}
+            style={{ marginTop: theme.spacing.md }}
+          >
+            <ButtonText>
+              {isSubmitting ? 'Submitting...' : 'Create Account'}
+            </ButtonText>
+          </Button>
         </CardContent>
       </Card>
 
-      {/* Different Sizes Example */}
+      {/* Form State Summary */}
       <Card>
         <CardHeader>
-          <Text
-            style={{
-              ...theme.typography.title,
-              color: theme.colors.text,
-            }}
-          >
-            Different Sizes
+          <Text style={{ ...theme.typography.title, color: theme.colors.text }}>
+            Form Validation Summary
           </Text>
         </CardHeader>
-        <CardContent style={{ gap: theme.spacing.lg }}>
-          <FormControl size="sm">
-            <FormControlLabel>
-              <FormControlLabelText>Small Size</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Small input" />
-            <FormControlHelper>
-              <FormControlHelperText>
-                This is a small form control.
-              </FormControlHelperText>
-            </FormControlHelper>
-          </FormControl>
-
-          <FormControl size="md">
-            <FormControlLabel>
-              <FormControlLabelText>Medium Size (Default)</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Medium input" />
-            <FormControlHelper>
-              <FormControlHelperText>
-                This is a medium form control.
-              </FormControlHelperText>
-            </FormControlHelper>
-          </FormControl>
-
-          <FormControl size="lg">
-            <FormControlLabel>
-              <FormControlLabelText>Large Size</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Large input" />
-            <FormControlHelper>
-              <FormControlHelperText>
-                This is a large form control.
-              </FormControlHelperText>
-            </FormControlHelper>
-          </FormControl>
-        </CardContent>
-      </Card>
-
-      {/* Different States Example */}
-      <Card>
-        <CardHeader>
-          <Text
-            style={{
-              ...theme.typography.title,
-              color: theme.colors.text,
-            }}
-          >
-            Different States
-          </Text>
-        </CardHeader>
-        <CardContent style={{ gap: theme.spacing.lg }}>
-          <FormControl state="default">
-            <FormControlLabel>
-              <FormControlLabelText>Default State</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Default input" />
-            <FormControlHelper>
-              <FormControlHelperText>
-                This is the default state.
-              </FormControlHelperText>
-            </FormControlHelper>
-          </FormControl>
-
-          <FormControl state="error">
-            <FormControlLabel>
-              <FormControlLabelText>Error State</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Error input" />
-            <FormControlError>
-              <FormControlErrorIcon />
-              <FormControlErrorText>
-                This field has an error.
-              </FormControlErrorText>
-            </FormControlError>
-          </FormControl>
-
-          <FormControl state="success">
-            <FormControlLabel>
-              <FormControlLabelText>Success State</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Success input" />
-            <FormControlHelper>
-              <FormControlHelperText>
-                This field is valid.
-              </FormControlHelperText>
-            </FormControlHelper>
-          </FormControl>
-
-          <FormControl state="disabled" disabled>
-            <FormControlLabel>
-              <FormControlLabelText>Disabled State</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Disabled input" disabled />
-            <FormControlHelper>
-              <FormControlHelperText>
-                This field is disabled.
-              </FormControlHelperText>
-            </FormControlHelper>
-          </FormControl>
+        <CardContent>
+          <View style={{ gap: theme.spacing.sm }}>
+            {Object.entries(fieldErrors).map(([fieldName, error]) => (
+              <View
+                key={fieldName}
+                style={{
+                  flexDirection: 'row',
+                  alignItems: 'center',
+                  gap: theme.spacing.xs,
+                }}
+              >
+                <View
+                  style={{
+                    width: 8,
+                    height: 8,
+                    borderRadius: 4,
+                    backgroundColor: error.hasError
+                      ? theme.colors.error
+                      : error.hasWarning
+                      ? theme.colors.warning || '#f59e0b'
+                      : error.hasSuccess
+                      ? theme.colors.success || '#22c55e'
+                      : theme.colors.textSecondary,
+                  }}
+                />
+                <Text
+                  style={{
+                    ...theme.typography.small,
+                    color: theme.colors.text,
+                    flex: 1,
+                  }}
+                >
+                  {fieldName.charAt(0).toUpperCase() + fieldName.slice(1)}:{' '}
+                  {error.message}
+                </Text>
+              </View>
+            ))}
+            {Object.keys(fieldErrors).length === 0 && (
+              <Text
+                style={{
+                  ...theme.typography.small,
+                  color: theme.colors.textSecondary,
+                  fontStyle: 'italic',
+                }}
+              >
+                No validation messages yet. Start filling the form!
+              </Text>
+            )}
+          </View>
         </CardContent>
       </Card>
     </ScrollView>

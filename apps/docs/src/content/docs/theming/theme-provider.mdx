@@ -35,23 +35,31 @@ export default function App() {
 
 ### Recommended Configuration
 
-```tsx
-import React from 'react';
+```tsx title="_layout.tsx"
+import { useFonts } from 'expo-font';
+import { Stack } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { RNCProvider } from 'rnc-theme';
-import { NavigationContainer } from '@react-navigation/native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import 'react-native-reanimated';
 
-export default function App() {
+export default function RootLayout() {
+  const [loaded] = useFonts({
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+  });
+
+  if (!loaded) {
+    return null;
+  }
+
   return (
-    <RNCProvider
-      defaultTheme="system"
-      persistTheme={true}
-      debugMode={__DEV__}
-    >
-      <GestureHandlerRootView style={{ flex: 1 }}>
-        <NavigationContainer>
-          {/* Your app navigation */}
-        </NavigationContainer>
+    <RNCProvider defaultTheme="system">
+      <GestureHandlerRootView>
+        <Stack>
+          <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+          <Stack.Screen name="+not-found" />
+        </Stack>
+        <StatusBar style="auto" />
       </GestureHandlerRootView>
     </RNCProvider>
   );
@@ -62,92 +70,27 @@ export default function App() {
 
 ### Core Properties
 
-<Tabs>
-  <TabItem label="defaultTheme">
-    ```tsx
-    type ThemeMode = 'light' | 'dark' | 'system';
 
-    <RNCProvider defaultTheme="system">
-      {/* App content */}
-    </RNCProvider>
-    ```
-
-    **Options:**
-    - `'light'` - Always use light theme
-    - `'dark'` - Always use dark theme
-    - `'system'` - Follow device system preference (recommended)
-  </TabItem>
-
-  <TabItem label="persistTheme">
-    ```tsx
-    <RNCProvider persistTheme={true}>
-      {/* App content */}
-    </RNCProvider>
-    ```
-
-    **When enabled:**
-    - Theme preference is saved to AsyncStorage
-    - Restored on app restart
-    - Overrides `defaultTheme` if saved preference exists
-  </TabItem>
-
-  <TabItem label="customTheme">
-    ```tsx
-    const customTheme = {
-      light: {
-        colors: {
-          primary: '#6366F1',
-          secondary: '#8B5CF6',
-          // ... other overrides
-        },
-      },
-      dark: {
-        colors: {
-          primary: '#818CF8',
-          secondary: '#A78BFA',
-          // ... other overrides
-        },
-      },
-    };
-
-    <RNCProvider customTheme={customTheme}>
-      {/* App content */}
-    </RNCProvider>
-    ```
-  </TabItem>
-
-  <TabItem label="debugMode">
-    ```tsx
-    <RNCProvider debugMode={__DEV__}>
-      {/* App content */}
-    </RNCProvider>
-    ```
-
-    **When enabled:**
-    - Logs theme changes to console
-    - Shows theme inspector overlay
-    - Validates theme structure
-    - Performance monitoring
-  </TabItem>
-</Tabs>
+  ```tsx
+  type ThemeMode = 'light' | 'dark' | 'system';
+  <RNCProvider defaultTheme="system">
+    {/* App content */}
+  </RNCProvider>
+  ```
+  **Options:**
+  - `'light'` - Always use light theme
+  - `'dark'` - Always use dark theme
+  - `'system'` - Follow device system preference (recommended)
 
 ### Advanced Configuration
 
 <Tabs>
   <TabItem label="Toast Configuration">
     ```tsx
-    const toastConfig = {
-      position: 'top' as const,
-      duration: 3000,
-      animationType: 'slide' as const,
-      maxToasts: 3,
-      offset: {
-        top: 50,
-        bottom: 50,
-      },
-    };
-
-    <RNCProvider toast={toastConfig}>
+    <RNCProvider toast={{
+        maxToasts: 4, // Maximum number of toasts
+        position: "bottom", // 'top' | 'bottom'
+      }}>
       {/* App content */}
     </RNCProvider>
     ```
@@ -155,29 +98,40 @@ export default function App() {
 
   <TabItem label="i18n Configuration">
     ```tsx
-    const i18nConfig = {
-      defaultLanguage: 'en',
-      fallbackLanguage: 'en',
-      supportedLanguages: ['en', 'es', 'fr', 'de'],
-      rtlLanguages: ['ar', 'he'],
-    };
-
-    <RNCProvider i18nConfig={i18nConfig}>
+    <RNCProvider
+      i18nConfig={{
+        defaultLocale: "en", // Default locale
+        translations: {
+          en: {
+            /* English translations */
+          },
+          id: {
+            /* Indonesian translations */
+          },
+        },
+      }}>
       {/* App content */}
     </RNCProvider>
     ```
   </TabItem>
 
-  <TabItem label="Performance Options">
+  <TabItem label="Bottom Sheet Props">
     ```tsx
-    const performanceConfig = {
-      enableMemoization: true,
-      lazyLoadPresets: true,
-      animationDuration: 200,
-      throttleUpdates: true,
-    };
+    <RNCProvider bottomSheetProps={{
+        backgroundColor: "rgba(0, 0, 0, 0.5)", // Background color for bottom sheets
+        // and more
+      }}>
+      {/* App content */}
+    </RNCProvider>
+    ```
+  </TabItem>
 
-    <RNCProvider performance={performanceConfig}>
+  <TabItem label="Global Theme">
+    ```tsx
+    <RNCProvider
+      customDarkTheme={{}} // for dark theme
+      customLightTheme={{}} // for light theme
+    >
       {/* App content */}
     </RNCProvider>
     ```
@@ -202,30 +156,6 @@ export default function RootLayout() {
     >
       <StatusBar style="auto" />
       <Stack screenOptions={{ headerShown: false }} />
-    </RNCProvider>
-  );
-}
-```
-
-### With React Navigation
-
-```tsx
-// App.tsx
-import React from 'react';
-import { RNCProvider } from 'rnc-theme';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-
-const Stack = createNativeStackNavigator();
-
-export default function App() {
-  return (
-    <RNCProvider defaultTheme="system">
-      <NavigationContainer>
-        <Stack.Navigator>
-          {/* Your screens */}
-        </Stack.Navigator>
-      </NavigationContainer>
     </RNCProvider>
   );
 }
@@ -270,43 +200,8 @@ export default function App() {
   </TabItem>
 </Tabs>
 
-## Platform-Specific Configuration
 
-### iOS Configuration
-
-```tsx
-import { Platform } from 'react-native';
-
-const iosConfig = {
-  statusBarStyle: 'auto',
-  safeAreaInsets: true,
-  hapticFeedback: true,
-};
-
-<RNCProvider
-  {...(Platform.OS === 'ios' && iosConfig)}
->
-  {/* App content */}
-</RNCProvider>
-```
-
-### Android Configuration
-
-```tsx
-import { Platform } from 'react-native';
-
-const androidConfig = {
-  navigationBarStyle: 'auto',
-  edgeToEdge: true,
-  materialYou: true,
-};
-
-<RNCProvider
-  {...(Platform.OS === 'android' && androidConfig)}
->
-  {/* App content */}
-</RNCProvider>
-```
+{/* TODO Lanjutkan dari sini */}
 
 ## Theme Context Access
 

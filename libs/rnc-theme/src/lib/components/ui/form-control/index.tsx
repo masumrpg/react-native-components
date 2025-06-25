@@ -1,29 +1,43 @@
-import React, { createContext, useContext, forwardRef, useMemo } from 'react';
+import React, {
+  createContext,
+  useContext,
+  forwardRef,
+  useMemo,
+  useState,
+  useCallback,
+} from 'react';
 import { View, Text, ViewStyle, TextStyle, StyleProp } from 'react-native';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
 import { Theme } from '../../../types/theme';
-import { AlertCircle } from 'lucide-react-native';
+import { AlertCircle, Check, AlertTriangle } from 'lucide-react-native';
 
 // Types
-type FormControlState = 'default' | 'error' | 'success' | 'warning' | 'disabled';
+type FormControlState =
+  | 'default'
+  | 'error'
+  | 'success'
+  | 'warning'
+  | 'disabled';
 type FormControlSize = 'sm' | 'md' | 'lg';
 
 interface FormControlContextType {
-  id?: string;
+  id: string;
   state: FormControlState;
   size: FormControlSize;
   disabled: boolean;
-  hasError: boolean;
-  hasHelper: boolean;
-  labelId?: string;
-  helperId?: string;
-  errorId?: string;
-}
-
-interface FormFieldContextType {
   required: boolean;
+  hasError: boolean;
+  hasSuccess: boolean;
+  hasWarning: boolean;
+  labelId: string;
+  helperId: string;
+  errorId: string;
+  successId: string;
+  warningId: string;
+  setFieldState: (state: FormControlState) => void;
+  clearFieldState: () => void;
 }
 
 interface FormControlProps {
@@ -32,14 +46,15 @@ interface FormControlProps {
   state?: FormControlState;
   size?: FormControlSize;
   disabled?: boolean;
+  required?: boolean;
   style?: StyleProp<ViewStyle>;
   spacing?: keyof Theme['spacing'];
+  onStateChange?: (state: FormControlState) => void;
 }
 
 interface FormControlLabelProps {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
-  htmlFor?: string;
 }
 
 interface FormControlLabelTextProps {
@@ -62,6 +77,7 @@ interface FormControlHelperTextProps {
 interface FormControlErrorProps {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
+  showWhen?: boolean;
 }
 
 interface FormControlErrorIconProps {
@@ -76,22 +92,44 @@ interface FormControlErrorTextProps {
   variant?: keyof Theme['typography'];
 }
 
-interface FormContentProps {
+interface FormControlSuccessProps {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
-  spacing?: keyof Theme['spacing'];
+  showWhen?: boolean;
 }
 
-interface FormFieldProps {
+interface FormControlSuccessIconProps {
+  icon?: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+  size?: number;
+}
+
+interface FormControlSuccessTextProps {
+  children: React.ReactNode;
+  style?: TextStyle;
+  variant?: keyof Theme['typography'];
+}
+
+interface FormControlWarningProps {
   children: React.ReactNode;
   style?: StyleProp<ViewStyle>;
-  required?: boolean;
-  spacing?: keyof Theme['spacing'];
+  showWhen?: boolean;
+}
+
+interface FormControlWarningIconProps {
+  icon?: React.ReactNode;
+  style?: StyleProp<ViewStyle>;
+  size?: number;
+}
+
+interface FormControlWarningTextProps {
+  children: React.ReactNode;
+  style?: TextStyle;
+  variant?: keyof Theme['typography'];
 }
 
 // Context
 const FormControlContext = createContext<FormControlContextType | null>(null);
-const FormFieldContext = createContext<FormFieldContextType | null>(null);
 
 const useFormControl = () => {
   const context = useContext(FormControlContext);
@@ -105,78 +143,103 @@ const useFormControlOptional = () => {
   return useContext(FormControlContext);
 };
 
-const useFormField = () => {
-  return useContext(FormFieldContext);
-};
-
 // Styles
 const createFormControlStyles = (theme: Theme) => ({
   container: {
     width: '100%',
   } as ViewStyle,
-  contentContainer: {
-    width: '100%',
-  } as ViewStyle,
-  fieldContainer: {
-    width: '100%',
-  } as ViewStyle,
+
   labelContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginBottom: theme.spacing.xs / 2, // Reduced from xs to xs/2
+    marginBottom: theme.spacing.xs,
   } as ViewStyle,
+
   labelText: {
     ...theme.typography.body,
     color: resolveColor(theme, 'text', theme.colors.text),
     fontWeight: '500',
   } as TextStyle,
+
   labelTextSm: {
     ...theme.typography.small,
+    fontWeight: '500',
   } as TextStyle,
+
   labelTextLg: {
-    ...theme.typography.heading,
+    ...theme.typography.title,
+    fontWeight: '600',
   } as TextStyle,
-  labelTextRequired: {
-    color: resolveColor(theme, 'error', theme.colors.error),
-  } as TextStyle,
+
   labelTextDisabled: {
     color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
     opacity: 0.6,
   } as TextStyle,
+
+  requiredIndicator: {
+    color: resolveColor(theme, 'error', theme.colors.error),
+    marginLeft: theme.spacing.xs / 2,
+    fontWeight: 'bold',
+  } as TextStyle,
+
   helperContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
+    marginTop: theme.spacing.xs,
   } as ViewStyle,
+
   helperText: {
     ...theme.typography.small,
     color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
     flex: 1,
     lineHeight: theme.typography.small?.fontSize
-      ? theme.typography.small.fontSize * 1.3
-      : 16,
+      ? theme.typography.small.fontSize * 1.4
+      : 18,
   } as TextStyle,
+
   helperTextDisabled: {
     opacity: 0.6,
   } as TextStyle,
-  errorContainer: {
+
+  messageContainer: {
     flexDirection: 'row',
     alignItems: 'flex-start',
-    columnGap: theme.spacing.xs,
+    marginTop: theme.spacing.xs,
   } as ViewStyle,
-  errorIcon: {
-    marginRight: theme.spacing.xs / 2, // Reduced spacing
+
+  messageIcon: {
+    marginRight: theme.spacing.xs,
+    marginTop: 1, // Slight adjustment for better alignment
   } as ViewStyle,
+
   errorText: {
     ...theme.typography.small,
     color: resolveColor(theme, 'error', theme.colors.error),
     flex: 1,
     lineHeight: theme.typography.small?.fontSize
-      ? theme.typography.small.fontSize * 1.3
-      : 16,
+      ? theme.typography.small.fontSize * 1.4
+      : 18,
+    fontWeight: '500',
   } as TextStyle,
-  requiredIndicator: {
-    color: resolveColor(theme, 'error', theme.colors.error),
-    marginLeft: theme.spacing.xs / 2, // Reduced spacing
+
+  successText: {
+    ...theme.typography.small,
+    color: resolveColor(theme, 'success', theme.colors.success || '#22c55e'),
+    flex: 1,
+    lineHeight: theme.typography.small?.fontSize
+      ? theme.typography.small.fontSize * 1.4
+      : 18,
+    fontWeight: '500',
+  } as TextStyle,
+
+  warningText: {
+    ...theme.typography.small,
+    color: resolveColor(theme, 'warning', theme.colors.warning || '#f59e0b'),
+    flex: 1,
+    lineHeight: theme.typography.small?.fontSize
+      ? theme.typography.small.fontSize * 1.4
+      : 18,
+    fontWeight: '500',
   } as TextStyle,
 });
 
@@ -185,7 +248,7 @@ const generateId = (prefix: string) => {
   return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
 };
 
-// Components
+// Main FormControl Component
 const FormControl = forwardRef<
   React.ComponentRef<typeof View>,
   FormControlProps
@@ -194,11 +257,13 @@ const FormControl = forwardRef<
     {
       children,
       id,
-      state = 'default',
+      state: initialState = 'default',
       size = 'md',
       disabled = false,
+      required = false,
       style,
-      spacing = 'sm', // Changed from 'md' to 'sm' for tighter spacing
+      spacing = 'sm',
+      onStateChange,
       ...props
     },
     ref
@@ -206,47 +271,69 @@ const FormControl = forwardRef<
     const { theme } = useTheme();
     const styles = useThemedStyles(createFormControlStyles);
 
+    // Internal state management for dynamic state changes
+    const [internalState, setInternalState] =
+      useState<FormControlState>(initialState);
+    const currentState =
+      initialState !== 'default' ? initialState : internalState;
+
     const formControlId = useMemo(() => id || generateId('form-control'), [id]);
     const labelId = useMemo(() => `${formControlId}-label`, [formControlId]);
     const helperId = useMemo(() => `${formControlId}-helper`, [formControlId]);
     const errorId = useMemo(() => `${formControlId}-error`, [formControlId]);
+    const successId = useMemo(
+      () => `${formControlId}-success`,
+      [formControlId]
+    );
+    const warningId = useMemo(
+      () => `${formControlId}-warning`,
+      [formControlId]
+    );
 
-    // Check if children contain helper or error components
-    const hasHelper = useMemo(() => {
-      return React.Children.toArray(children).some(
-        (child) =>
-          React.isValidElement(child) &&
-          (child.type === FormControlHelper ||
-            child.type === FormControlHelperText)
-      );
-    }, [children]);
+    const setFieldState = useCallback(
+      (newState: FormControlState) => {
+        setInternalState(newState);
+        onStateChange?.(newState);
+      },
+      [onStateChange]
+    );
 
-    const hasError = useMemo(() => {
-      return state === 'error';
-    }, [state]);
+    const clearFieldState = useCallback(() => {
+      setInternalState('default');
+      onStateChange?.('default');
+    }, [onStateChange]);
 
     const contextValue: FormControlContextType = useMemo(
       () => ({
         id: formControlId,
-        state: state,
+        state: currentState,
         size,
         disabled,
-        hasError,
-        hasHelper,
+        required,
+        hasError: currentState === 'error',
+        hasSuccess: currentState === 'success',
+        hasWarning: currentState === 'warning',
         labelId,
         helperId,
         errorId,
+        successId,
+        warningId,
+        setFieldState,
+        clearFieldState,
       }),
       [
         formControlId,
-        state,
+        currentState,
         size,
         disabled,
-        hasError,
-        hasHelper,
+        required,
         labelId,
         helperId,
         errorId,
+        successId,
+        warningId,
+        setFieldState,
+        clearFieldState,
       ]
     );
 
@@ -270,10 +357,11 @@ const FormControl = forwardRef<
   }
 );
 
+// Label Components
 const FormControlLabel = forwardRef<
   React.ComponentRef<typeof View>,
   FormControlLabelProps
->(({ children, style, htmlFor, ...props }, ref) => {
+>(({ children, style, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
   const { labelId } = useFormControl();
 
@@ -294,10 +382,8 @@ const FormControlLabelText = forwardRef<
   FormControlLabelTextProps
 >(({ children, style, variant, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
-  const { size, disabled } = useFormControl();
-  const formField = useFormField();
+  const { size, disabled, required } = useFormControl();
   const { theme } = useTheme();
-  const required = formField?.required || false;
 
   const textStyle = useMemo(() => {
     let baseStyle = styles.labelText;
@@ -338,17 +424,16 @@ const FormControlLabelText = forwardRef<
   );
 });
 
+// Helper Components
 const FormControlHelper = forwardRef<
   React.ComponentRef<typeof View>,
   FormControlHelperProps
 >(({ children, style, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
-  const { helperId, hasError } = useFormControl();
-  const formField = useFormField();
-  const required = formField?.required || false;
+  const { helperId, hasError, hasSuccess, hasWarning } = useFormControl();
 
-  // Don't render helper if there's an error AND the field is required
-  if (hasError && required) {
+  // Don't render helper if there's any status message
+  if (hasError || hasSuccess || hasWarning) {
     return null;
   }
 
@@ -370,9 +455,7 @@ const FormControlHelperText = forwardRef<
 >(({ children, style, variant, ...props }, ref) => {
   const { theme } = useTheme();
   const styles = useThemedStyles(createFormControlStyles);
-  const { disabled, hasError } = useFormControl();
-  const formField = useFormField();
-  const required = formField?.required || false;
+  const { disabled, hasError, hasSuccess, hasWarning } = useFormControl();
 
   const textStyle = useMemo(() => {
     let baseStyle = styles.helperText;
@@ -388,8 +471,8 @@ const FormControlHelperText = forwardRef<
     return baseStyle;
   }, [styles, variant, theme, disabled]);
 
-  // Don't render helper text if there's an error AND the field is required
-  if (hasError && required) {
+  // Don't render helper text if there's any status message
+  if (hasError || hasSuccess || hasWarning) {
     return null;
   }
 
@@ -400,22 +483,25 @@ const FormControlHelperText = forwardRef<
   );
 });
 
+// Error Components
 const FormControlError = forwardRef<
   React.ComponentRef<typeof View>,
   FormControlErrorProps
->(({ children, style, ...props }, ref) => {
+>(({ children, style, showWhen, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
-  const { errorId, state } = useFormControl();
+  const { errorId, hasError } = useFormControl();
 
-  // Only render if state is error
-  if (state !== 'error') {
+  // Control visibility based on showWhen prop or internal error state
+  const shouldShow = showWhen !== undefined ? showWhen : hasError;
+
+  if (!shouldShow) {
     return null;
   }
 
   return (
     <View
       ref={ref}
-      style={[styles.errorContainer, style]}
+      style={[styles.messageContainer, style]}
       nativeID={errorId}
       {...props}
     >
@@ -429,11 +515,10 @@ const FormControlErrorIcon = forwardRef<
   FormControlErrorIconProps
 >(({ icon, style, size = 16, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
-  const { state } = useFormControl();
+  const { hasError } = useFormControl();
   const { theme } = useTheme();
 
-  // Only render if state is error
-  if (state !== 'error') {
+  if (!hasError) {
     return null;
   }
 
@@ -445,7 +530,7 @@ const FormControlErrorIcon = forwardRef<
   );
 
   return (
-    <View ref={ref} style={[styles.errorIcon, style]} {...props}>
+    <View ref={ref} style={[styles.messageIcon, style]} {...props}>
       {icon || defaultIcon}
     </View>
   );
@@ -456,7 +541,7 @@ const FormControlErrorText = forwardRef<
   FormControlErrorTextProps
 >(({ children, style, variant, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
-  const { state } = useFormControl();
+  const { hasError } = useFormControl();
   const { theme } = useTheme();
 
   const textStyle = useMemo(() => {
@@ -469,8 +554,7 @@ const FormControlErrorText = forwardRef<
     return baseStyle;
   }, [styles, variant, theme]);
 
-  // Only render if state is error
-  if (state !== 'error') {
+  if (!hasError) {
     return null;
   }
 
@@ -481,23 +565,25 @@ const FormControlErrorText = forwardRef<
   );
 });
 
-const FormContent = forwardRef<
+// Success Components
+const FormControlSuccess = forwardRef<
   React.ComponentRef<typeof View>,
-  FormContentProps
->(({ children, style, spacing = 'md', ...props }, ref) => {
+  FormControlSuccessProps
+>(({ children, style, showWhen, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
-  const { theme } = useTheme();
+  const { successId, hasSuccess } = useFormControl();
+
+  const shouldShow = showWhen !== undefined ? showWhen : hasSuccess;
+
+  if (!shouldShow) {
+    return null;
+  }
 
   return (
     <View
       ref={ref}
-      style={[
-        styles.contentContainer,
-        {
-          gap: theme.spacing[spacing],
-        },
-        style,
-      ]}
+      style={[styles.messageContainer, style]}
+      nativeID={successId}
       {...props}
     >
       {children}
@@ -505,42 +591,144 @@ const FormContent = forwardRef<
   );
 });
 
-const FormField = forwardRef<React.ComponentRef<typeof View>, FormFieldProps>(
-  ({ children, style, required = false, spacing = 'sm', ...props }, ref) => {
-    const { theme } = useTheme();
-    const styles = useThemedStyles(createFormControlStyles);
+const FormControlSuccessIcon = forwardRef<
+  React.ComponentRef<typeof View>,
+  FormControlSuccessIconProps
+>(({ icon, style, size = 16, ...props }, ref) => {
+  const styles = useThemedStyles(createFormControlStyles);
+  const { hasSuccess } = useFormControl();
+  const { theme } = useTheme();
 
-    const fieldContextValue: FormFieldContextType = useMemo(
-      () => ({
-        required,
-      }),
-      [required]
-    );
-
-    return (
-      <FormFieldContext.Provider value={fieldContextValue}>
-        <View
-          ref={ref}
-          style={[
-            styles.fieldContainer,
-            {
-              gap: theme.spacing[spacing],
-            },
-            style,
-          ]}
-          {...props}
-        >
-          {children}
-        </View>
-      </FormFieldContext.Provider>
-    );
+  if (!hasSuccess) {
+    return null;
   }
-);
+
+  const defaultIcon = (
+    <Check
+      size={size}
+      color={resolveColor(theme, 'success', theme.colors.success || '#22c55e')}
+    />
+  );
+
+  return (
+    <View ref={ref} style={[styles.messageIcon, style]} {...props}>
+      {icon || defaultIcon}
+    </View>
+  );
+});
+
+const FormControlSuccessText = forwardRef<
+  React.ComponentRef<typeof Text>,
+  FormControlSuccessTextProps
+>(({ children, style, variant, ...props }, ref) => {
+  const styles = useThemedStyles(createFormControlStyles);
+  const { hasSuccess } = useFormControl();
+  const { theme } = useTheme();
+
+  const textStyle = useMemo(() => {
+    let baseStyle = styles.successText;
+
+    if (variant) {
+      baseStyle = { ...baseStyle, ...theme.typography[variant] };
+    }
+
+    return baseStyle;
+  }, [styles, variant, theme]);
+
+  if (!hasSuccess) {
+    return null;
+  }
+
+  return (
+    <Text ref={ref} style={[textStyle, style]} {...props}>
+      {children}
+    </Text>
+  );
+});
+
+// Warning Components
+const FormControlWarning = forwardRef<
+  React.ComponentRef<typeof View>,
+  FormControlWarningProps
+>(({ children, style, showWhen, ...props }, ref) => {
+  const styles = useThemedStyles(createFormControlStyles);
+  const { warningId, hasWarning } = useFormControl();
+
+  const shouldShow = showWhen !== undefined ? showWhen : hasWarning;
+
+  if (!shouldShow) {
+    return null;
+  }
+
+  return (
+    <View
+      ref={ref}
+      style={[styles.messageContainer, style]}
+      nativeID={warningId}
+      {...props}
+    >
+      {children}
+    </View>
+  );
+});
+
+const FormControlWarningIcon = forwardRef<
+  React.ComponentRef<typeof View>,
+  FormControlWarningIconProps
+>(({ icon, style, size = 16, ...props }, ref) => {
+  const styles = useThemedStyles(createFormControlStyles);
+  const { hasWarning } = useFormControl();
+  const { theme } = useTheme();
+
+  if (!hasWarning) {
+    return null;
+  }
+
+  const defaultIcon = (
+    <AlertTriangle
+      size={size}
+      color={resolveColor(theme, 'warning', theme.colors.warning || '#f59e0b')}
+    />
+  );
+
+  return (
+    <View ref={ref} style={[styles.messageIcon, style]} {...props}>
+      {icon || defaultIcon}
+    </View>
+  );
+});
+
+const FormControlWarningText = forwardRef<
+  React.ComponentRef<typeof Text>,
+  FormControlWarningTextProps
+>(({ children, style, variant, ...props }, ref) => {
+  const styles = useThemedStyles(createFormControlStyles);
+  const { hasWarning } = useFormControl();
+  const { theme } = useTheme();
+
+  const textStyle = useMemo(() => {
+    let baseStyle = styles.warningText;
+
+    if (variant) {
+      baseStyle = { ...baseStyle, ...theme.typography[variant] };
+    }
+
+    return baseStyle;
+  }, [styles, variant, theme]);
+
+  if (!hasWarning) {
+    return null;
+  }
+
+  return (
+    <Text ref={ref} style={[textStyle, style]} {...props}>
+      {children}
+    </Text>
+  );
+});
 
 // Set display names
 FormControl.displayName = 'FormControl';
-FormContent.displayName = 'FormContent';
-FormField.displayName = 'FormField';
 FormControlLabel.displayName = 'FormControlLabel';
 FormControlLabelText.displayName = 'FormControlLabelText';
 FormControlHelper.displayName = 'FormControlHelper';
@@ -548,11 +736,15 @@ FormControlHelperText.displayName = 'FormControlHelperText';
 FormControlError.displayName = 'FormControlError';
 FormControlErrorIcon.displayName = 'FormControlErrorIcon';
 FormControlErrorText.displayName = 'FormControlErrorText';
+FormControlSuccess.displayName = 'FormControlSuccess';
+FormControlSuccessIcon.displayName = 'FormControlSuccessIcon';
+FormControlSuccessText.displayName = 'FormControlSuccessText';
+FormControlWarning.displayName = 'FormControlWarning';
+FormControlWarningIcon.displayName = 'FormControlWarningIcon';
+FormControlWarningText.displayName = 'FormControlWarningText';
 
 export {
   FormControl,
-  FormContent,
-  FormField,
   FormControlLabel,
   FormControlLabelText,
   FormControlHelper,
@@ -560,15 +752,18 @@ export {
   FormControlError,
   FormControlErrorIcon,
   FormControlErrorText,
+  FormControlSuccess,
+  FormControlSuccessIcon,
+  FormControlSuccessText,
+  FormControlWarning,
+  FormControlWarningIcon,
+  FormControlWarningText,
   useFormControl,
   useFormControlOptional,
-  useFormField,
 };
 
 export type {
   FormControlProps,
-  FormContentProps,
-  FormFieldProps,
   FormControlLabelProps,
   FormControlLabelTextProps,
   FormControlHelperProps,
@@ -576,6 +771,11 @@ export type {
   FormControlErrorProps,
   FormControlErrorIconProps,
   FormControlErrorTextProps,
+  FormControlSuccessProps,
+  FormControlSuccessIconProps,
+  FormControlSuccessTextProps,
+  FormControlWarningProps,
+  FormControlWarningIconProps,
+  FormControlWarningTextProps,
   FormControlContextType,
-  FormFieldContextType,
 };
