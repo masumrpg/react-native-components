@@ -1,0 +1,24 @@
+---
+title: Registry API Reference
+description: A centralized registry system for managing and accessing component configurations and themes in React Native applications.
+---
+
+The Registry is a centralized system that manages component configurations and themes across your React Native application. It provides a single source of truth for storing and accessing component styles, variants, and other customization options.
+
+
+## ThemeRegistry API Reference
+
+| Method | Parameters | Return Type | Description |
+|--------|------------|-------------|-------------|
+| `registerPreset` | `name: string`, <a href='/api/registry#type-definitions'>`config: ThemeConfigFunction`</a> | `void` | Adds a new theme preset configuration |
+| `getPreset` | `name: string` | `ThemeConfigFunction \| undefined` | Retrieves a registered preset by name |
+| `getAllPresets` | - | `string[]` | Returns all registered preset names |
+| `hasPreset` | `name: string` | `boolean` | Checks if a preset exists in registry |
+| `deletePreset` | `name: string` | `void` | Removes a preset from the registry |
+| `clearPresets` | - | `void` | Clears all registered presets |
+
+### Type Definitions
+
+```ts
+type ThemeConfigFunction = (isDark: boolean) => Partial<Theme>;
+```

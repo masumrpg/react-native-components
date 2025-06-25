@@ -29,6 +29,14 @@ class ThemeRegistry {
   hasPreset(name: string): boolean {
     return this.presets.has(name);
   }
+
+  deletePreset(name: string): void {
+    this.presets.delete(name);
+  }
+
+  clearPresets(): void {
+    this.presets.clear();
+  }
 }
 
 export const themeRegistry = ThemeRegistry.getInstance();

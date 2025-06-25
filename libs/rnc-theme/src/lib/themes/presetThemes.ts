@@ -1,73 +1,6 @@
 import { ThemePresetConfig } from "../components/theme-manager";
 import { CustomThemeConfigFactory } from "../types/theme";
 
-const customThemeConfig: CustomThemeConfigFactory = (isDark: boolean) => ({
-    colors: {
-      primary: isDark ? '#FF6B6B' : '#4ECDC4',
-      secondary: isDark ? '#FFE66D' : '#45B7D1',
-      background: isDark ? '#1a1a1a' : '#f8f9fa',
-      surface: isDark ? '#2d2d2d' : '#ffffff',
-      text: isDark ? '#ffffff' : '#333333',
-      textSecondary: isDark ? '#b0b0b0' : '#666666',
-      border: isDark ? '#404040' : '#e0e0e0',
-      error: '#FF5252',
-      warning: '#FF9800',
-      success: '#4CAF50',
-      info: '#2196F3',
-      muted: isDark ? '#666666' : '#999999',
-      accent: isDark ? '#FF6B6B' : '#4ECDC4',
-      destructive: '#FF5252',
-    },
-    components: {
-      height: {
-        xs: 32,
-        sm: 36,
-        md: 40,
-        lg: 44,
-        xl: 48,
-      },
-      padding: {
-        xs: 8,
-        sm: 12,
-        md: 16,
-        lg: 20,
-        xl: 24,
-      },
-      borderRadius: {
-        xs: 4,
-        sm: 4,
-        md: 8,
-        lg: 16,
-        xl: 24,
-        full: 9999,
-      },
-    },
-    spacing: {
-      xs: 4,
-      sm: 8,
-      md: 16,
-      lg: 24,
-      xl: 32,
-      xxl: 48,
-    },
-    typography: {
-      caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
-      small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
-      body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
-      subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
-      title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
-      heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
-    },
-    fontSizes: {
-      xs: 12,
-      sm: 14,
-      md: 16,
-      lg: 18,
-      xl: 20,
-      xxl: 24,
-    },
-  })
-
 const materialThemeConfig: CustomThemeConfigFactory = (isDark: boolean) => ({
     colors: {
       primary: '#6200EE',
@@ -874,70 +807,65 @@ const arcticThemeConfig: CustomThemeConfigFactory = (isDark: boolean) => ({
 
 
 // ✅ Kalau ingin meng-export semua sekaligus sebagai koleksi:
-export const presetThemes: ThemePresetConfig[] =  [
-    {
-      key: 'custom',
-      label: 'Custom',
-      config: customThemeConfig,
-    },
-    {
-      key: 'material',
-      label: 'Material Design',
-      config: materialThemeConfig,
-    },
-    {
-      key: 'neon',
-      label: 'Neon Glow',
-      config: neonThemeConfig,
-    },
-    {
-      key: 'ocean',
-      label: 'Ocean Blue',
-      config: oceanThemeConfig,
-    },
-    {
-      key: 'sunset',
-      label: 'Sunset',
-      config: sunsetThemeConfig,
-    },
-    {
-      key: 'forest',
-      label: 'Forest',
-      config: forestThemeConfig,
-    },
-    {
-      key: 'galaxy',
-      label: 'Galaxy',
-      config: galaxyThemeConfig,
-    },
-    {
-      key: 'vintage',
-      label: 'Vintage',
-      config: vintageThemeConfig,
-    },
-    {
-      key: 'cyberpunk',
-      label: 'Cyberpunk',
-      config: cyberpunkThemeConfig,
-    },
-    {
-      key: 'arctic',
-      label: 'Arctic',
-      config: arcticThemeConfig,
-    },
-    {
-      key: 'pastel',
-      label: 'Pastel',
-      config: pastelThemeConfig,
-    },
-    {
-      key: 'monochrome',
-      label: 'Monochrome',
-      config: monochromeThemeConfig,
-    },
-    {
-      key: 'autumn',
-      label: 'Autumn',
-      config: autumnThemeConfig,
-    },
-  ]
+export const presetThemes: ThemePresetConfig[] = [
+  {
+    key: 'material',
+    label: 'Material Design',
+    config: materialThemeConfig,
+  },
+  {
+    key: 'neon',
+    label: 'Neon Glow',
+    config: neonThemeConfig,
+  },
+  {
+    key: 'ocean',
+    label: 'Ocean Blue',
+    config: oceanThemeConfig,
+  },
+  {
+    key: 'sunset',
+    label: 'Sunset',
+    config: sunsetThemeConfig,
+  },
+  {
+    key: 'forest',
+    label: 'Forest',
+    config: forestThemeConfig,
+  },
+  {
+    key: 'galaxy',
+    label: 'Galaxy',
+    config: galaxyThemeConfig,
+  },
+  {
+    key: 'vintage',
+    label: 'Vintage',
+    config: vintageThemeConfig,
+  },
+  {
+    key: 'cyberpunk',
+    label: 'Cyberpunk',
+    config: cyberpunkThemeConfig,
+  },
+  {
+    key: 'arctic',
+    label: 'Arctic',
+    config: arcticThemeConfig,
+  },
+  {
+    key: 'pastel',
+    label: 'Pastel',
+    config: pastelThemeConfig,
+  },
+  {
+    key: 'monochrome',
+    label: 'Monochrome',
+    config: monochromeThemeConfig,
+  },
+  {
+    key: 'autumn',
+    label: 'Autumn',
+    config: autumnThemeConfig,
+  },
+];

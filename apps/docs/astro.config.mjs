@@ -87,6 +87,7 @@ export default defineConfig({
           items: [
             { label: 'Provider', slug: 'api/provider' },
             { label: 'Theme', slug: 'api/theme' },
+            { label: 'Registry', slug: 'api/registry' },
           ],
         },
         // {
