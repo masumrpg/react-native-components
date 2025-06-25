@@ -314,7 +314,7 @@ const Accordion = forwardRef<React.ComponentRef<typeof View>, AccordionProps>(
       type === 'single' ? '' : []
     );
 
-    const currentValue = value !== undefined ? value : internalValue;
+    const currentValue = value ?? internalValue;
 
     const handleValueChange = (newValue: string | string[]) => {
       if (onValueChange) {
@@ -472,7 +472,7 @@ const AccordionTrigger = forwardRef<
       </Text>
       {showIcon && (
         <Animated.View style={[styles.triggerIcon, animatedIconStyle]}>
-          {icon || (
+          {icon ?? (
             <ChevronDown
               size={
                 size === 'xs'

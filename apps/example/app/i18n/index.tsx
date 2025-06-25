@@ -22,9 +22,9 @@ const I18nScreen: React.FC = () => {
   const { locale, setLocale, i18n } = useLanguage();
   const [isLoading, setIsLoading] = useState(false);
 
-  const handleLanguageChange = async (newLocale: string) => {
+  const handleLanguageChange = (newLocale: string) => {
     setIsLoading(true);
-    await setLocale(newLocale);
+    setLocale(newLocale);
     setTimeout(() => setIsLoading(false), 300); // Small delay for smooth transition
   };
 

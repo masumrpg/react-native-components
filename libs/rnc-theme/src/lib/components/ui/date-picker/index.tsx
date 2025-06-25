@@ -352,13 +352,13 @@ const DatePicker: React.FC<DatePickerProps> = ({
     const sizeMap = {
       xs: {
         padding: { horizontal: theme.spacing.xs, vertical: theme.spacing.xs },
-        fontSize: theme.typography.caption?.fontSize || 12,
+        fontSize: theme.typography.caption.fontSize ?? 12,
         minHeight: 32,
         iconSize: 16,
       },
       sm: {
         padding: { horizontal: theme.spacing.sm, vertical: theme.spacing.xs },
-        fontSize: theme.typography.body?.fontSize || 14,
+        fontSize: theme.typography.body.fontSize ?? 14,
         minHeight: 36,
         iconSize: 18,
       },
@@ -367,19 +367,19 @@ const DatePicker: React.FC<DatePickerProps> = ({
           horizontal: theme.spacing.md,
           vertical: theme.spacing.sm,
         },
-        fontSize: theme.typography.body?.fontSize || 16,
+        fontSize: theme.typography.body.fontSize ?? 16,
         minHeight: 42,
         iconSize: 20,
       },
       lg: {
         padding: { horizontal: theme.spacing.lg, vertical: theme.spacing.md },
-        fontSize: theme.typography.subtitle?.fontSize || 18,
+        fontSize: theme.typography.subtitle.fontSize ?? 18,
         minHeight: 48,
         iconSize: 24,
       },
       xl: {
         padding: { horizontal: theme.spacing.xl, vertical: theme.spacing.lg },
-        fontSize: theme.typography.title?.fontSize || 20,
+        fontSize: theme.typography.title.fontSize ?? 20,
         minHeight: 56,
         iconSize: 28,
       },
@@ -473,9 +473,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
         </Animated.View>
       </Animated.View>
 
-      {(helperText || error) && (
+      {(helperText ?? error) && (
         <Text style={[styles.helperText, error && styles.errorText]}>
-          {error || helperText}
+          {error ?? helperText}
         </Text>
       )}
 
@@ -589,8 +589,8 @@ const createStyles = (
   return StyleSheet.create({
     container: {},
     label: {
-      fontSize: theme.fontSizes?.sm || 14,
-      fontWeight: theme.typography.subtitle?.fontWeight || '600',
+      fontSize: theme.fontSizes.sm || 14,
+      fontWeight: theme.typography.subtitle.fontWeight ?? '600',
       color: theme.colors.text,
       marginBottom: theme.spacing.xs,
     },
@@ -644,24 +644,24 @@ const createStyles = (
     inputText: {
       flex: 1,
       color: theme.colors.text,
-      fontWeight: theme.typography.body?.fontWeight || '400',
+      fontWeight: theme.typography.body.fontWeight ?? '400',
       letterSpacing: 0.1,
     },
     // Text size styles
     textXs: {
-      fontSize: theme.typography.caption?.fontSize || 12,
+      fontSize: theme.typography.caption.fontSize ?? 12,
     },
     textSm: {
-      fontSize: theme.typography.body?.fontSize || 14,
+      fontSize: theme.typography.body.fontSize ?? 14,
     },
     textMd: {
-      fontSize: theme.typography.body?.fontSize || 16,
+      fontSize: theme.typography.body.fontSize ?? 16,
     },
     textLg: {
-      fontSize: theme.typography.subtitle?.fontSize || 18,
+      fontSize: theme.typography.subtitle.fontSize ?? 18,
     },
     textXl: {
-      fontSize: theme.typography.title?.fontSize || 20,
+      fontSize: theme.typography.title.fontSize ?? 20,
     },
     placeholder: {
       color: theme.colors.textSecondary,
@@ -702,7 +702,7 @@ const createStyles = (
       color: theme.colors.error,
     },
     helperText: {
-      fontSize: theme.fontSizes?.xs || 12,
+      fontSize: theme.fontSizes.xs || 12,
       color: theme.colors.textSecondary,
       marginTop: theme.spacing.xs,
     },

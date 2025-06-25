@@ -418,7 +418,7 @@ const FabClustered = ({
         >
           <TouchableOpacity
             onPress={() => {
-              item?.onPress?.();
+              item?.onPress();
               handlePress();
             }}
             style={[styles.iconContainer, style]}
@@ -427,7 +427,7 @@ const FabClustered = ({
           </TouchableOpacity>
           <TouchableOpacity
             onPress={() => {
-              item?.onPress?.();
+              item?.onPress();
               handlePress();
             }}
           >
@@ -447,7 +447,7 @@ const FabClustered = ({
         onPress={handlePress}
       >
         <Animated.View style={[styles.iconContainer, plusIconStyle, style]}>
-          {plusIcon || <Plus size={35} color={'white'} strokeWidth={2} />}
+          {plusIcon ?? <Plus size={35} color={'white'} strokeWidth={2} />}
         </Animated.View>
       </Pressable>
     </Animated.View>
@@ -577,7 +577,7 @@ const FabDoted = ({
         >
           <TouchableOpacity
             onPress={() => {
-              item?.onPress?.();
+              item?.onPress();
               handlePress();
             }}
             style={[styles.iconContainer, animatedStyles.plus, style]}
@@ -594,7 +594,7 @@ const FabDoted = ({
         <Animated.View
           style={[styles.iconContainer, animatedStyles.plus, style]}
         >
-          {plusIcon || <Plus size={35} color={'white'} strokeWidth={2} />}
+          {plusIcon ?? <Plus size={35} color={'white'} strokeWidth={2} />}
         </Animated.View>
       </Pressable>
     </Animated.View>
@@ -683,7 +683,7 @@ const FabExtended = ({
           <Animated.View
             style={[styles.iconContainer, animatedStyles.plus, style]}
           >
-            {plusIcon || <Plus size={35} color={'white'} strokeWidth={2} />}
+            {plusIcon ?? <Plus size={35} color={'white'} strokeWidth={2} />}
           </Animated.View>
         </Pressable>
 
@@ -692,7 +692,7 @@ const FabExtended = ({
             key={index}
             style={styles.extendedContentContainer}
             onPress={() => {
-              item?.onPress?.();
+              item?.onPress();
               handlePress();
             }}
           >
@@ -713,7 +713,7 @@ const FabSingle = ({ icon: component, onPress, style }: FabSingleProps) => {
   return (
     <Animated.View style={[styles.singleContainer, styles.background, style]}>
       <TouchableOpacity style={styles.singleTouchable} onPress={onPress}>
-        {component || <Plus />}
+        {component ?? <Plus />}
       </TouchableOpacity>
     </Animated.View>
   );
@@ -838,7 +838,7 @@ const FabStacked = ({
         >
           <TouchableOpacity
             onPress={() => {
-              item?.onPress?.();
+              item?.onPress();
               handlePress();
             }}
             style={[styles.iconContainer, animatedStyles.plus, style]}
@@ -855,7 +855,7 @@ const FabStacked = ({
         <Animated.View
           style={[styles.iconContainer, animatedStyles.plus, style]}
         >
-          {plusIcon || <Plus size={35} color={'white'} strokeWidth={2} />}
+          {plusIcon ?? <Plus size={35} color={'white'} strokeWidth={2} />}
         </Animated.View>
       </Pressable>
     </Animated.View>

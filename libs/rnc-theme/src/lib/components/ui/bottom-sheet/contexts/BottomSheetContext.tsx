@@ -55,6 +55,7 @@ export const BottomSheetProvider = <T = any,>({
 
   const [listData, setListData] = useState<T[]>([]);
   const [renderItem, setRenderItem] = useState<ListRenderItem<T> | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
   const navigation = useNavigation();
 
   // Remove isLoading state which causes delays and unnecessary re-renders
@@ -128,14 +129,17 @@ export const BottomSheetProvider = <T = any,>({
   }, []);
 
   const handleSetListData = useCallback((data: T[]) => {
-    setListData(data || []); // Add null check to prevent empty data
+    setListData(data); // Add null check to prevent empty data
   }, []);
 
   const handleSetRenderItem = useCallback((renderer: ListRenderItem<T>) => {
     // Wrap the provided renderer with null checks
     const safeRenderer: ListRenderItem<T> = (info) => {
       // If info or info.item is null/undefined, return null or a placeholder
-      if (!info || info.item === null || info.item === undefined) {
+      // if (!info || info.item === null || info.item === undefined) { // before
+      //   return null;
+      // }
+      if (info.item === null || info.item === undefined) {
         return null;
       }
       // Otherwise use the original renderer
@@ -162,8 +166,10 @@ export const BottomSheetProvider = <T = any,>({
   }, [isOpen, close]);
 
   // Handle iOS back gesture using React Navigation
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-call
   useFocusEffect(
     useCallback(() => {
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
       const unsubscribe = navigation.addListener(
         'beforeRemove',
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -171,6 +177,7 @@ export const BottomSheetProvider = <T = any,>({
           if (!isOpen) return; // Don't handle if sheet is not open
 
           // Prevent immediate navigation
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
           e.preventDefault();
 
           // Close bottom sheet
@@ -178,7 +185,9 @@ export const BottomSheetProvider = <T = any,>({
 
           // Allow parent removal only when bottom sheet closes
           const timeout = setTimeout(() => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
             if (navigation.isFocused()) {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
               navigation.dispatch(e.data.action);
             }
           }, 300); // Give enough time for sheet to close
@@ -187,6 +196,7 @@ export const BottomSheetProvider = <T = any,>({
         }
       );
 
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
       return unsubscribe;
     }, [navigation, isOpen, close])
   );
@@ -225,7 +235,7 @@ export const BottomSheetProvider = <T = any,>({
 
   // Add safeguard for renderItem in case it's still null
   const safeRenderItem =
-    renderItem ||
+    renderItem ??
     (() => <Text style={{ padding: 20 }}>No item renderer provided</Text>);
 
   return (

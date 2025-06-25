@@ -207,7 +207,7 @@ const Rating = forwardRef<View, RatingProps>(
     };
 
     const renderStars = () => {
-      const IconComponent = customIcon || Star;
+      const IconComponent = customIcon ?? Star;
 
       return Array.from({ length: count }, (_, index) => {
         const starIndex = index + 1;
@@ -378,7 +378,7 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
             style={[
               styles.ratingText,
               {
-                color: ratingTextColor || theme.colors.text,
+                color: ratingTextColor ?? theme.colors.text,
               },
             ]}
           >

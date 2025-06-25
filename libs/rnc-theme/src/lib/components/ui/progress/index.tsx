@@ -19,13 +19,13 @@ interface ProgressProps {
   size?: ComponentSize;
   variant?: ComponentVariant;
   style?: StyleProp<ViewStyle>;
-  trackColor?: string | keyof Theme['colors'];
+  trackColor?: keyof Theme['colors'];
   animated?: boolean;
 }
 
 interface ProgressFilledTrackProps {
   style?: StyleProp<ViewStyle>;
-  color?: string | keyof Theme['colors'];
+  color?: keyof Theme['colors'];
 }
 
 const Progress = forwardRef<React.ComponentRef<typeof View>, ProgressProps>(
@@ -120,12 +120,11 @@ const ProgressFilledTrack = forwardRef<
 
     const getVariantColor = (
       variant: ComponentVariant,
-      color: string | keyof Theme['colors'] | undefined
+      color: keyof Theme['colors'] | undefined
     ): string => {
       if (color) {
         if (typeof color === 'string' && color.startsWith('#')) return color;
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        return (theme.colors as any)[color] || color;
+        return theme.colors[color] || color;
       }
 
       switch (variant) {
@@ -134,15 +133,15 @@ const ProgressFilledTrack = forwardRef<
         case 'secondary':
           return theme.colors.secondary;
         case 'success':
-          return '#10B981';
+          return theme.colors.success;
         case 'error':
-          return '#EF4444';
+          return theme.colors.error;
         case 'warning':
-          return '#F59E0B';
+          return theme.colors.warning;
         case 'info':
-          return '#3B82F6';
+          return theme.colors.info;
         case 'destructive':
-          return '#DC2626';
+          return theme.colors.destructive;
         case 'outline':
           return theme.colors.primary;
         case 'filled':

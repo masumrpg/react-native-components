@@ -6,7 +6,7 @@ let portalCounter = 0;
 
 export const Portal: React.FC<PortalProps> = ({ children, name, hostName }) => {
   const { mount, unmount, update } = usePortal();
-  const portalName = useRef(name || `portal-${++portalCounter}`).current;
+  const portalName = useRef(name ?? `portal-${++portalCounter}`).current;
   const mounted = useRef(false);
 
   useEffect(() => {

@@ -63,10 +63,10 @@ const Divider = forwardRef<React.ComponentRef<typeof View>, DividerProps>(
 
     if (orientation === 'horizontal') {
       dividerStyle.height = thickness;
-      dividerStyle.width = length || '100%';
+      dividerStyle.width = length ?? '100%';
     } else {
       dividerStyle.width = thickness;
-      dividerStyle.height = length || '100%';
+      dividerStyle.height = length ?? '100%';
     }
 
     return (
@@ -89,7 +89,7 @@ const HDivider = forwardRef<
   <Divider
     ref={ref}
     orientation="horizontal"
-    marginVertical={props.marginVertical || 'sm'}
+    marginVertical={props.marginVertical ?? 'sm'}
     {...props}
   />
 ));
@@ -103,7 +103,7 @@ const VDivider = forwardRef<
   <Divider
     ref={ref}
     orientation="vertical"
-    marginHorizontal={props.marginHorizontal || 'sm'}
+    marginHorizontal={props.marginHorizontal ?? 'sm'}
     {...props}
   />
 ));

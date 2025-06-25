@@ -21,7 +21,7 @@ interface ScrollProps extends ScrollViewProps {
   children?: React.ReactNode;
   padding?: keyof Theme['spacing'];
   margin?: keyof Theme['spacing'];
-  backgroundColor?: string | keyof Theme['colors'];
+  backgroundColor?: keyof Theme['colors'];
   borderRadius?: keyof Theme['components']['borderRadius'];
   themed?: boolean;
   hideOnScroll?: {
@@ -55,8 +55,8 @@ const VScroll = forwardRef<ScrollView, ScrollProps>(
     const hideOnScrollProps = hideOnScroll
       ? onScrolling({
           height: hideOnScroll.height,
-          duration: hideOnScroll.duration || 300,
-          threshold: hideOnScroll.threshold || 10,
+          duration: hideOnScroll.duration ?? 300,
+          threshold: hideOnScroll.threshold ?? 10,
           scrollDirection: hideOnScroll.scrollDirection,
           hideDirection: hideOnScroll.hideDirection,
         })
@@ -118,8 +118,8 @@ const HScroll = forwardRef<ScrollView, ScrollProps>(
     const hideOnScrollProps = hideOnScroll
       ? onScrolling({
           height: hideOnScroll.height,
-          duration: hideOnScroll.duration || 300,
-          threshold: hideOnScroll.threshold || 10,
+          duration: hideOnScroll.duration ?? 300,
+          threshold: hideOnScroll.threshold ?? 10,
           scrollDirection: hideOnScroll.scrollDirection,
           hideDirection: hideOnScroll.hideDirection,
         })

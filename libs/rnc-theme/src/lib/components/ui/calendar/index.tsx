@@ -99,15 +99,19 @@ const CustomHeader = ({
   const years = Array.from({ length: 101 }, (_, i) => currentYear - 50 + i);
 
   const handleMonthYearSelect = () => {
-    const newDate = new Date(selectedYear, selectedMonth, 1);
     if (onMonthChange) {
-      // Format data sesuai dengan yang diharapkan oleh Calendar component
-      const dateString = newDate.toISOString().split('T')[0];
+      // Format dateString secara manual untuk menghindari timezone issues
+      const monthStr = (selectedMonth + 1).toString().padStart(2, '0');
+      const dateString = `${selectedYear}-${monthStr}-01`;
+
+      // Create date object untuk timestamp
+      const newDate = new Date(selectedYear, selectedMonth, 1);
+
       onMonthChange({
         dateString,
-        day: newDate.getDate(),
-        month: newDate.getMonth() + 1,
-        year: newDate.getFullYear(),
+        day: 1,
+        month: selectedMonth + 1, // 1-based month
+        year: selectedYear,
         timestamp: newDate.getTime(),
       });
     }
@@ -322,7 +326,7 @@ const Calendar = ({
 }: CalendarProps) => {
   const { theme: globalTheme } = useTheme();
   const [currentDate, setCurrentDate] = useState(
-    current || new Date().toISOString().split('T')[0]
+    current ?? new Date().toISOString().split('T')[0]
   );
 
   // Convert array to object using reduce
@@ -430,7 +434,8 @@ const Calendar = ({
         theme={calendarTheme}
         renderHeader={(date) => (
           <CustomHeader
-            month={date || new Date(currentDate)}
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            month={date ?? new Date(currentDate)}
             theme={globalTheme}
             selectedDate={selectedDate}
             onMonthChange={(dateObj) => {

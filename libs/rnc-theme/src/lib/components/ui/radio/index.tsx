@@ -94,7 +94,7 @@ const Radio = forwardRef<
     // Determine if radio is checked
     const isChecked = groupContext
       ? groupContext.value === value
-      : controlledChecked || false;
+      : controlledChecked ?? false;
 
     // Determine if radio is disabled
     const isDisabled = groupContext ? groupContext.disabled : radioDisabled;
@@ -134,17 +134,17 @@ const Radio = forwardRef<
       );
 
       const variantBorderColors = {
-        default: styles.default.borderColor as string,
-        primary: styles.primary.borderColor as string,
-        secondary: styles.secondary.borderColor as string,
-        outline: styles.outline.borderColor as string,
-        filled: styles.filled.borderColor as string,
-        ghost: styles.ghost.borderColor as string,
-        success: styles.success.borderColor as string,
-        error: styles.error.borderColor as string,
-        warning: styles.warning.borderColor as string,
-        info: styles.info.borderColor as string,
-        destructive: styles.destructive.borderColor as string,
+        default: styles.default.borderColor,
+        primary: styles.primary.borderColor,
+        secondary: styles.secondary.borderColor,
+        outline: styles.outline.borderColor,
+        filled: styles.filled.borderColor,
+        ghost: styles.ghost.borderColor,
+        success: styles.success.borderColor,
+        error: styles.error.borderColor,
+        warning: styles.warning.borderColor,
+        info: styles.info.borderColor,
+        destructive: styles.destructive.borderColor,
       };
 
       return {
@@ -162,17 +162,17 @@ const Radio = forwardRef<
       );
 
       const variantColors = {
-        default: styles.defaultBackground.backgroundColor as string,
-        primary: styles.primaryBackground.backgroundColor as string,
-        secondary: styles.secondaryBackground.backgroundColor as string,
-        outline: styles.outlineBackground.backgroundColor as string,
-        filled: styles.filledBackground.backgroundColor as string,
-        ghost: styles.ghostBackground.backgroundColor as string,
-        success: styles.successBackground.backgroundColor as string,
-        error: styles.errorBackground.backgroundColor as string,
-        warning: styles.warningBackground.backgroundColor as string,
-        info: styles.infoBackground.backgroundColor as string,
-        destructive: styles.destructiveBackground.backgroundColor as string,
+        default: styles.defaultBackground.backgroundColor,
+        primary: styles.primaryBackground.backgroundColor,
+        secondary: styles.secondaryBackground.backgroundColor,
+        outline: styles.outlineBackground.backgroundColor,
+        filled: styles.filledBackground.backgroundColor,
+        ghost: styles.ghostBackground.backgroundColor,
+        success: styles.successBackground.backgroundColor,
+        error: styles.errorBackground.backgroundColor,
+        warning: styles.warningBackground.backgroundColor,
+        info: styles.infoBackground.backgroundColor,
+        destructive: styles.destructiveBackground.backgroundColor,
       };
 
       return {
@@ -266,10 +266,15 @@ const RadioIcon: React.FC<
   }
 > = ({ icon, style, size = 'md', variant = 'default', ...props }) => {
   const dotSize =
-    size === 'xs' ? 4 :
-    size === 'sm' ? 6 :
-    size === 'md' ? 8 :
-    size === 'lg' ? 10 : 12;
+    size === 'xs'
+      ? 4
+      : size === 'sm'
+      ? 6
+      : size === 'md'
+      ? 8
+      : size === 'lg'
+      ? 10
+      : 12;
   const iconColor = 'white';
 
   return (
@@ -277,7 +282,7 @@ const RadioIcon: React.FC<
       style={[{ alignItems: 'center', justifyContent: 'center' }, style]}
       {...props}
     >
-      {icon || (
+      {icon ?? (
         <View
           style={{
             width: dotSize,

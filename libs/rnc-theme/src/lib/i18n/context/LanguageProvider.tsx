@@ -41,10 +41,10 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   };
 
   useEffect(() => {
-    (async () => {
+    void (async () => {
       const saved = await AsyncStorage.getItem(KEY_LANGUAGE);
       if (saved) {
-        const supportedLocales = i18nConfig?.supportedLocales || ["en", "id"];
+        const supportedLocales = i18nConfig?.supportedLocales ?? ['en', 'id'];
         if (supportedLocales.includes(saved)) {
           i18nInstance.locale = saved;
           setLocaleState(saved);

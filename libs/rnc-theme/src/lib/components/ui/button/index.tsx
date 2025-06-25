@@ -517,13 +517,13 @@ const Button = forwardRef<ButtonRef, ButtonProps>(
           const focusableRef = buttonRef.current as unknown as {
             focus?: () => void;
           };
-          focusableRef?.focus?.();
+          focusableRef.focus?.();
         },
         blur: () => {
           const blurableRef = buttonRef.current as unknown as {
             blur?: () => void;
           };
-          blurableRef?.blur?.();
+          blurableRef.blur?.();
         },
         animate: (type: AnimationType) => {
           runOnJS(animate)(type);

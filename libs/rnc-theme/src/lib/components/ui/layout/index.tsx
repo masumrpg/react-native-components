@@ -10,7 +10,7 @@ interface BaseLayoutProps {
   style?: StyleProp<ViewStyle>;
   padding?: keyof Theme['spacing'];
   margin?: keyof Theme['spacing'];
-  backgroundColor?: string | keyof Theme['colors'];
+  backgroundColor?: keyof Theme['colors'];
   borderRadius?: keyof Theme['components']['borderRadius'];
   flex?: number;
   width?: DimensionValue | undefined;
@@ -48,7 +48,7 @@ type CenterProps = BaseLayoutProps;
 
 interface BoxProps extends BaseLayoutProps {
   borderWidth?: number;
-  borderColor?: string | keyof Theme['colors'];
+  borderColor?: keyof Theme['colors'];
   shadowOpacity?: number;
   elevation?: number;
   variant?: 'default' | 'card' | 'surface';
@@ -312,10 +312,10 @@ const Box = forwardRef<React.ComponentRef<typeof View>, BoxProps>(
       borderRadius: borderRadius
         ? theme.components.borderRadius[borderRadius]
         : undefined,
-      borderWidth: borderWidth || undefined,
+      borderWidth: borderWidth ?? undefined,
       borderColor: resolveColor(theme, borderColor, theme.colors.border),
-      shadowOpacity: shadowOpacity || undefined,
-      elevation: elevation || undefined,
+      shadowOpacity: shadowOpacity ?? undefined,
+      elevation: elevation ?? undefined,
       flex,
       width,
       height,

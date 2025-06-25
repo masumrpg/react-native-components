@@ -21,7 +21,7 @@ interface ListProps<T> extends Omit<FlatListProps<T>, 'renderItem'> {
   renderItem: (item: { item: T; index: number }) => React.ReactElement;
   padding?: keyof Theme['spacing'];
   margin?: keyof Theme['spacing'];
-  backgroundColor?: string | keyof Theme['colors'];
+  backgroundColor?: keyof Theme['colors'];
   borderRadius?: keyof Theme['components']['borderRadius'];
   themed?: boolean;
   hideOnScroll?: {
@@ -34,7 +34,6 @@ interface ListProps<T> extends Omit<FlatListProps<T>, 'renderItem'> {
   };
   infiniteScroll?: InfiniteScrollProps;
 }
-
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const VFlatList = <T = any,>(
@@ -60,8 +59,8 @@ const VFlatList = <T = any,>(
   const hideOnScrollProps = hideOnScroll
     ? onScrolling({
         height: hideOnScroll.height,
-        duration: hideOnScroll.duration || 300,
-        threshold: hideOnScroll.threshold || 10,
+        duration: hideOnScroll.duration ?? 300,
+        threshold: hideOnScroll.threshold ?? 10,
         scrollDirection: hideOnScroll.scrollDirection,
         hideDirection: hideOnScroll.hideDirection,
       })
@@ -71,7 +70,7 @@ const VFlatList = <T = any,>(
     ...styles.base,
     padding: padding ? theme.spacing[padding] : undefined,
     margin: margin ? theme.spacing[margin] : undefined,
-    backgroundColor: backgroundColor ? backgroundColor : theme.colors.background,
+    backgroundColor: backgroundColor ?? theme.colors.background,
     borderRadius: borderRadius
       ? theme.components.borderRadius[borderRadius]
       : undefined,
@@ -97,7 +96,7 @@ const VFlatList = <T = any,>(
       style={[flatListStyle, style]}
       onScroll={handleScroll}
       onEndReached={infiniteScroll ? handleEndReached : undefined}
-      onEndReachedThreshold={infiniteScroll?.threshold || 0.1}
+      onEndReachedThreshold={infiniteScroll?.threshold ?? 0.1}
       {...props}
     />
   );
@@ -132,8 +131,8 @@ const HFlatList = <T = any,>(
   const hideOnScrollProps = hideOnScroll
     ? onScrolling({
         height: hideOnScroll.height,
-        duration: hideOnScroll.duration || 300,
-        threshold: hideOnScroll.threshold || 10,
+        duration: hideOnScroll.duration ?? 300,
+        threshold: hideOnScroll.threshold ?? 10,
         scrollDirection: hideOnScroll.scrollDirection,
         hideDirection: hideOnScroll.hideDirection,
       })
@@ -143,7 +142,7 @@ const HFlatList = <T = any,>(
     ...styles.base,
     padding: padding ? theme.spacing[padding] : undefined,
     margin: margin ? theme.spacing[margin] : undefined,
-    backgroundColor: backgroundColor ? backgroundColor : theme.colors.background,
+    backgroundColor: backgroundColor ?? theme.colors.background,
     borderRadius: borderRadius
       ? theme.components.borderRadius[borderRadius]
       : undefined,
@@ -170,7 +169,7 @@ const HFlatList = <T = any,>(
       style={[flatListStyle, style]}
       onScroll={handleScroll}
       onEndReached={infiniteScroll ? handleEndReached : undefined}
-      onEndReachedThreshold={infiniteScroll?.threshold || 0.1}
+      onEndReachedThreshold={infiniteScroll?.threshold ?? 0.1}
       {...props}
     />
   );

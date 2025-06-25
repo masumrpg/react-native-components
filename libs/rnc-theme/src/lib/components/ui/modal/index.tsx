@@ -20,6 +20,7 @@ import {
   StatusBar,
   InteractionManager,
   StyleProp,
+  ScrollView,
 } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -97,7 +98,7 @@ interface ModalFooterProps {
     | 'space-evenly';
 }
 
-// Styles
+// FIXED: Styles dengan safe area handling yang lebih baik
 const createModalStyles = (theme: Theme) => ({
   overlay: {
     position: 'absolute',
@@ -108,9 +109,15 @@ const createModalStyles = (theme: Theme) => ({
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: theme.spacing.lg,
+    // FIXED: Padding yang lebih konsisten
+    paddingHorizontal: theme.spacing.lg,
+    paddingVertical: theme.spacing.xl,
+    // FIXED: Better Android status bar handling
     ...(Platform.OS === 'android' && {
-      paddingTop: (StatusBar.currentHeight || 0) + theme.spacing.lg,
+      paddingTop: Math.max(
+        (StatusBar.currentHeight ?? 24) + theme.spacing.lg,
+        theme.spacing.xl
+      ),
     }),
   } as ViewStyle,
   container: {
@@ -118,41 +125,45 @@ const createModalStyles = (theme: Theme) => ({
     borderColor: resolveColor(theme, 'border', theme.colors.border),
     backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
     shadowColor: resolveColor(theme, 'text', theme.colors.text),
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 4,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
     overflow: 'hidden',
+    // FIXED: Better sizing constraints
     maxWidth: '100%',
+    maxHeight: '90%',
+    minWidth: 280,
+    minHeight: 120,
     alignSelf: 'center',
     ...(Platform.OS === 'android' && {
-      elevation: 8,
+      elevation: 12,
     }),
   } as ViewStyle,
   closeButton: {
     position: 'absolute',
-    top: theme.spacing.lg,
-    right: theme.spacing.lg,
-    width: 36,
-    height: 36,
-    borderRadius: 18,
+    top: theme.spacing.md,
+    right: theme.spacing.md,
+    width: 32,
+    height: 32,
+    borderRadius: 16,
     backgroundColor: resolveColor(theme, 'background', theme.colors.background),
     justifyContent: 'center',
     alignItems: 'center',
     shadowColor: resolveColor(theme, 'text', theme.colors.text),
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.15,
     shadowRadius: 4,
-    elevation: 3,
-    zIndex: 10,
+    elevation: 4,
+    zIndex: 1000,
   } as ViewStyle,
   closeButtonText: {
-    fontSize: 18,
+    fontSize: 16,
     color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
     fontWeight: '600',
-    lineHeight: 18,
+    lineHeight: 16,
   } as TextStyle,
 });
 
-// Variant styles
+// Variant styles - no changes needed
 const getVariantStyles = (
   variant: ComponentVariant,
   theme: Theme
@@ -231,73 +242,83 @@ const getVariantStyles = (
   }
 };
 
-// Modal size calculation
+// FIXED: Modal size calculation dengan bounds yang lebih aman
 const getModalSize = (
   size: ComponentSize,
   screenWidth: number,
   screenHeight: number
 ) => {
-  const safeAreaMultiplier = Platform.OS === 'android' ? 0.85 : 0.9;
-  const baseWidth = screenWidth * safeAreaMultiplier;
-  const baseHeight = screenHeight * 0.8;
+  // FIXED: Better safe area calculation
+  const horizontalPadding = 32; // Total padding horizontal (16 * 2)
+  const verticalPadding =
+    Platform.OS === 'android'
+      ? Math.max((StatusBar.currentHeight ?? 24) + 32, 64)
+      : 64;
 
-  const minWidth = Platform.OS === 'android' ? 280 : 300;
-  const minHeight = Platform.OS === 'android' ? 200 : 250;
+  const availableWidth = Math.max(screenWidth - horizontalPadding, 280);
+  const availableHeight = Math.max(screenHeight - verticalPadding, 400);
+
+  const minWidth = 300;
+  const minHeight = 150;
 
   switch (size) {
     case 'xs':
       return {
-        width: Math.max(Math.min(baseWidth, 320), minWidth),
-        maxHeight: Math.max(baseHeight * 0.5, minHeight),
-        minWidth,
+        width: Math.min(availableWidth * 0.7, 350),
+        maxHeight: Math.min(availableHeight * 0.4, 300),
+        minWidth: Math.min(minWidth, availableWidth),
+        minHeight,
       };
     case 'sm':
       return {
-        width: Math.max(Math.min(baseWidth, 400), minWidth),
-        maxHeight: Math.max(baseHeight * 0.6, minHeight),
-        minWidth,
+        width: Math.min(availableWidth * 0.8, 450),
+        maxHeight: Math.min(availableHeight * 0.5, 400),
+        minWidth: Math.min(minWidth, availableWidth),
+        minHeight,
       };
     case 'md':
       return {
-        width: Math.max(Math.min(baseWidth, 500), minWidth),
-        maxHeight: Math.max(baseHeight * 0.7, minHeight),
-        minWidth,
+        width: Math.min(availableWidth * 0.85, 550),
+        maxHeight: Math.min(availableHeight * 0.6, 500),
+        minWidth: Math.min(minWidth, availableWidth),
+        minHeight,
       };
     case 'lg':
       return {
-        width: Math.max(Math.min(baseWidth, 600), minWidth),
-        maxHeight: Math.max(baseHeight * 0.8, minHeight),
-        minWidth,
+        width: Math.min(availableWidth * 0.9, 650),
+        maxHeight: Math.min(availableHeight * 0.7, 600),
+        minWidth: Math.min(minWidth, availableWidth),
+        minHeight,
       };
     case 'xl':
       return {
-        width: Math.max(Math.min(baseWidth, 800), minWidth),
-        maxHeight: Math.max(baseHeight * 0.9, minHeight),
-        minWidth,
+        width: Math.min(availableWidth * 0.95, 800),
+        maxHeight: Math.min(availableHeight * 0.8, 700),
+        minWidth: Math.min(minWidth, availableWidth),
+        minHeight,
       };
     default:
       return {
-        width: Math.max(Math.min(baseWidth, 500), minWidth),
-        maxHeight: Math.max(baseHeight * 0.7, minHeight),
-        minWidth,
+        width: Math.min(availableWidth * 0.85, 550),
+        maxHeight: Math.min(availableHeight * 0.6, 500),
+        minWidth: Math.min(minWidth, availableWidth),
+        minHeight,
       };
   }
 };
 
-// Position calculation
+// FIXED: Position calculation dengan safe padding
 const getModalPosition = (position: ModalPosition): ViewStyle => {
-  const androidPadding = Platform.OS === 'android' ? 20 : 50;
-
   switch (position) {
     case 'top':
       return {
         justifyContent: 'flex-start' as const,
-        paddingTop: androidPadding,
+        alignItems: 'center' as const,
       };
     case 'bottom':
       return {
         justifyContent: 'flex-end' as const,
-        paddingBottom: androidPadding,
+        alignItems: 'center' as const,
       };
     case 'center':
     default:
@@ -308,7 +329,7 @@ const getModalPosition = (position: ModalPosition): ViewStyle => {
   }
 };
 
-// FIXED MODAL COMPONENT - Race Condition Fixes Applied
+// MAIN MODAL COMPONENT - FIXED
 const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
   (
     {
@@ -318,80 +339,73 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       size = 'md',
       variant = 'default',
       position = 'center',
-      animation = 'slide',
+      animation = 'fade',
       closeOnBackdrop = true,
       showCloseButton = true,
       backdropOpacity = 0.5,
       style,
       contentStyle,
-      animationDuration = 300,
-      padding = 'md',
+      animationDuration = 250,
+      padding = 'lg',
       margin,
       borderRadius = 'lg',
-      elevation = 3,
-      shadowOpacity = 0.1,
+      elevation = 8,
+      shadowOpacity = 0.15,
       backgroundColor,
       ...props
     },
     ref
   ) => {
-    // FIXED: Better state management dengan atomic updates
+    // State management
     const [modalState, setModalState] = useState({
       shouldRender: false,
       isReady: false,
       isAnimating: false,
     });
 
-    // Refs untuk tracking lifecycle
     const mountedRef = useRef(true);
     const visibleRef = useRef(visible);
-    const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const readyTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-    // Screen dimensions dengan better error handling
+    // FIXED: Better screen dimensions handling
     const windowDimensions = useWindowDimensions();
     const screenDimensions = Dimensions.get('screen');
 
     const { width: screenWidth, height: screenHeight } = useMemo(() => {
-      const fallbackWidth = 375;
-      const fallbackHeight = 667;
+      // Use the larger of window/screen dimensions for better compatibility
+      const width = Math.max(
+        windowDimensions.width || 375,
+        screenDimensions.width || 375
+      );
+      const height = Math.max(
+        windowDimensions.height || 667,
+        screenDimensions.height || 667
+      );
 
-      // Gunakan screen dimensions untuk Android, window untuk iOS
-      if (Platform.OS === 'android') {
-        return {
-          width: Math.max(screenDimensions.width || fallbackWidth, 280),
-          height: Math.max(screenDimensions.height || fallbackHeight, 500),
-        };
-      }
-
-      return {
-        width: Math.max(windowDimensions.width || fallbackWidth, 280),
-        height: Math.max(windowDimensions.height || fallbackHeight, 500),
-      };
+      return { width, height };
     }, [windowDimensions, screenDimensions]);
 
     const { theme } = useTheme();
     const styles = useThemedStyles(createModalStyles);
 
-    // FIXED: Animation values dengan safe initialization
-    const scale = useSharedValue(animation === 'scale' ? 0.3 : 1);
+    // Animation values
+    const scale = useSharedValue(animation === 'scale' ? 0.5 : 1);
     const opacity = useSharedValue(0);
     const translateY = useSharedValue(0);
 
-    // FIXED: Memoized calculations dengan dependency yang tepat
+    // Calculations
     const modalSize = useMemo(
       () => getModalSize(size, screenWidth, screenHeight),
       [size, screenWidth, screenHeight]
     );
 
     const modalPosition = useMemo(() => getModalPosition(position), [position]);
-
     const variantStyles = useMemo(
       () => getVariantStyles(variant, theme),
       [variant, theme]
     );
 
-    // FIXED: Safe state updater dengan atomic operations
+    // Safe state updater
     const updateModalState = useCallback(
       (updates: Partial<typeof modalState>) => {
         if (mountedRef.current) {
@@ -401,15 +415,14 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       []
     );
 
-    // FIXED: Initialize animation values dengan proper sequencing
+    // FIXED: Initialize animation values
     const initializeAnimationValues = useCallback(() => {
       'worklet';
 
-      // Reset ke initial state yang aman
       opacity.value = 0;
 
       if (animation === 'scale') {
-        scale.value = 0.3; // Tidak terlalu kecil untuk menghindari visual glitch
+        scale.value = 0.5;
       } else {
         scale.value = 1;
       }
@@ -417,10 +430,10 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       if (animation === 'slide') {
         switch (position) {
           case 'bottom':
-            translateY.value = screenHeight * 0.3; // Lebih kecil untuk smooth animation
+            translateY.value = screenHeight * 0.25;
             break;
           case 'top':
-            translateY.value = -screenHeight * 0.3;
+            translateY.value = -screenHeight * 0.25;
             break;
           default:
             translateY.value = 0;
@@ -430,7 +443,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       }
     }, [animation, position, screenHeight, opacity, scale, translateY]);
 
-    // FIXED: Animation completion handler
+    // Animation completion handler
     const onAnimationComplete = useCallback(
       (isOpening: boolean) => {
         if (!mountedRef.current) return;
@@ -439,88 +452,66 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
           updateModalState({ isAnimating: false, isReady: true });
         } else {
           updateModalState({ isAnimating: false });
-
-          // Delay untuk memastikan animation selesai sebelum unmount
-          animationTimeoutRef.current = setTimeout(() => {
+          timeoutRef.current = setTimeout(() => {
             if (mountedRef.current) {
               updateModalState({ shouldRender: false, isReady: false });
             }
-          }, 100);
+          }, 50);
         }
       },
       [updateModalState]
     );
 
-    // FIXED: Show modal dengan proper timing dan sequencing
+    // FIXED: Show modal
     const showModal = useCallback(() => {
       if (!mountedRef.current || modalState.isAnimating) return;
 
-      // Clear any pending timeouts
-      if (animationTimeoutRef.current) {
-        clearTimeout(animationTimeoutRef.current);
-        animationTimeoutRef.current = null;
-      }
-      if (readyTimeoutRef.current) {
-        clearTimeout(readyTimeoutRef.current);
-        readyTimeoutRef.current = null;
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+        timeoutRef.current = null;
       }
 
-      // Step 1: Update state dan initialize animations
       updateModalState({
         shouldRender: true,
         isAnimating: true,
         isReady: false,
       });
 
-      // Step 2: Initialize animation values IMMEDIATELY
       initializeAnimationValues();
 
-      // Step 3: Wait for render cycle
       InteractionManager.runAfterInteractions(() => {
         if (!mountedRef.current) return;
 
-        // Step 4: Start animations dengan delay yang cukup
-        readyTimeoutRef.current = setTimeout(
-          () => {
-            if (!mountedRef.current) return;
+        timeoutRef.current = setTimeout(() => {
+          if (!mountedRef.current) return;
 
-            const springConfig = {
-              damping: Platform.OS === 'android' ? 25 : 20,
-              stiffness: Platform.OS === 'android' ? 300 : 250,
-              mass: 1,
-            };
+          const springConfig = {
+            damping: 20,
+            stiffness: 200,
+            mass: 1,
+          };
 
-            const timingConfig = {
-              duration: animationDuration,
-            };
+          const timingConfig = {
+            duration: animationDuration,
+          };
 
-            // Backdrop fade in
-            opacity.value = withTiming(1, timingConfig);
+          // Backdrop
+          opacity.value = withTiming(1, timingConfig);
 
-            // Content animation
-            if (animation === 'scale') {
-              scale.value = withSpring(1, springConfig, (finished) => {
-                if (finished) {
-                  runOnJS(onAnimationComplete)(true);
-                }
-              });
-            } else if (animation === 'slide') {
-              translateY.value = withSpring(0, springConfig, (finished) => {
-                if (finished) {
-                  runOnJS(onAnimationComplete)(true);
-                }
-              });
-            } else {
-              // fade animation
-              scale.value = withTiming(1, timingConfig, (finished) => {
-                if (finished) {
-                  runOnJS(onAnimationComplete)(true);
-                }
-              });
-            }
-          },
-          Platform.OS === 'android' ? 150 : 100
-        );
+          // Content
+          if (animation === 'scale') {
+            scale.value = withSpring(1, springConfig, (finished) => {
+              if (finished) runOnJS(onAnimationComplete)(true);
+            });
+          } else if (animation === 'slide') {
+            translateY.value = withSpring(0, springConfig, (finished) => {
+              if (finished) runOnJS(onAnimationComplete)(true);
+            });
+          } else {
+            // fade
+            runOnJS(onAnimationComplete)(true);
+          }
+        }, 100);
       });
     }, [
       modalState.isAnimating,
@@ -534,39 +525,29 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       translateY,
     ]);
 
-    // FIXED: Hide modal dengan proper cleanup
+    // FIXED: Hide modal
     const hideModal = useCallback(() => {
       if (!mountedRef.current || modalState.isAnimating) return;
 
       updateModalState({ isAnimating: true, isReady: false });
 
-      const exitDuration =
-        Platform.OS === 'android'
-          ? animationDuration * 0.7
-          : animationDuration * 0.8;
-
+      const exitDuration = animationDuration * 0.8;
       const timingConfig = { duration: exitDuration };
 
-      // Content animation out
       if (animation === 'scale') {
-        scale.value = withTiming(0.3, timingConfig);
+        scale.value = withTiming(0.5, timingConfig);
       } else if (animation === 'slide') {
         const exitTranslateY =
           position === 'bottom'
-            ? screenHeight * 0.3
+            ? screenHeight * 0.25
             : position === 'top'
-            ? -screenHeight * 0.3
+            ? -screenHeight * 0.25
             : 0;
         translateY.value = withTiming(exitTranslateY, timingConfig);
-      } else {
-        scale.value = withTiming(0.3, timingConfig);
       }
 
-      // Backdrop fade out
       opacity.value = withTiming(0, timingConfig, (finished) => {
-        if (finished) {
-          runOnJS(onAnimationComplete)(false);
-        }
+        if (finished) runOnJS(onAnimationComplete)(false);
       });
     }, [
       modalState.isAnimating,
@@ -581,9 +562,8 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       onAnimationComplete,
     ]);
 
-    // FIXED: Handle visibility changes dengan debouncing
+    // Handle visibility changes
     useEffect(() => {
-      // Prevent rapid toggle
       if (visibleRef.current === visible) return;
       visibleRef.current = visible;
 
@@ -594,27 +574,20 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       }
     }, [visible, showModal, hideModal]);
 
-    // FIXED: Cleanup dengan proper cancellation
+    // Cleanup
     useEffect(() => {
       return () => {
         mountedRef.current = false;
-
-        // Clear timeouts
-        if (animationTimeoutRef.current) {
-          clearTimeout(animationTimeoutRef.current);
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
         }
-        if (readyTimeoutRef.current) {
-          clearTimeout(readyTimeoutRef.current);
-        }
-
-        // Cancel animations
         cancelAnimation(scale);
         cancelAnimation(opacity);
         cancelAnimation(translateY);
       };
     }, [scale, opacity, translateY]);
 
-    // FIXED: Animated styles dengan safe values
+    // Animated styles
     const animatedOverlayStyle = useAnimatedStyle(
       () => ({
         opacity: Math.max(0, Math.min(1, opacity.value)),
@@ -630,11 +603,9 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       };
 
       if (animation === 'scale') {
-        // Ensure safe scale values
         const scaleValue = Math.max(0.1, Math.min(2, scale.value));
         baseStyle.transform.push({ scale: scaleValue });
       } else if (animation === 'slide') {
-        // Clamp translate values
         const translateValue = Math.max(
           -screenHeight,
           Math.min(screenHeight, translateY.value)
@@ -658,7 +629,6 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
       }
     }, [modalState.isReady, modalState.isAnimating, onClose]);
 
-    // FIXED: Don't render until state is properly set
     if (!modalState.shouldRender) {
       return null;
     }
@@ -674,7 +644,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
         onRequestClose={handleClosePress}
         {...props}
       >
-        <Pressable onPress={handleBackdropPress}>
+        <Pressable style={{ flex: 1 }} onPress={handleBackdropPress}>
           <Animated.View
             style={[
               styles.overlay,
@@ -725,6 +695,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
   }
 );
 
+// Header, Content, Footer components - no changes needed
 const ModalHeader = forwardRef<
   React.ComponentRef<typeof View>,
   ModalHeaderProps
@@ -739,7 +710,7 @@ const ModalHeader = forwardRef<
       subtitleStyle,
       showCloseButton = false,
       onClose,
-      padding = 'sm',
+      padding = 'md',
       titleVariant = 'subtitle',
       subtitleVariant = 'body',
       borderBottom = false,
@@ -748,7 +719,6 @@ const ModalHeader = forwardRef<
     ref
   ) => {
     const { theme } = useTheme();
-    const styles = useThemedStyles(createModalStyles);
 
     return (
       <View
@@ -797,11 +767,23 @@ const ModalHeader = forwardRef<
         {children}
         {showCloseButton && onClose && (
           <TouchableOpacity
-            style={styles.closeButton}
+            style={{
+              position: 'absolute',
+              top: theme.spacing.md,
+              right: theme.spacing.md,
+              width: 32,
+              height: 32,
+              borderRadius: 16,
+              backgroundColor: theme.colors.background,
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}
             onPress={onClose}
             activeOpacity={0.7}
           >
-            <Text style={styles.closeButtonText}>✕</Text>
+            <Text style={{ fontSize: 16, color: theme.colors.textSecondary }}>
+              ✕
+            </Text>
           </TouchableOpacity>
         )}
       </View>
@@ -810,16 +792,15 @@ const ModalHeader = forwardRef<
 );
 
 const ModalContent = forwardRef<
-  React.ComponentRef<typeof View>,
+  React.ComponentRef<typeof View> | React.ComponentRef<typeof ScrollView>,
   ModalContentProps
->(({ children, style, scrollable = false, padding = 'sm', ...props }, ref) => {
+>(({ children, style, scrollable = false, padding = 'md', ...props }, ref) => {
   const { theme } = useTheme();
 
   if (scrollable) {
-    const { ScrollView } = require('react-native');
     return (
       <ScrollView
-        ref={ref}
+        ref={ref as React.Ref<ScrollView>}
         style={[
           {
             padding: theme.spacing[padding],
@@ -836,7 +817,7 @@ const ModalContent = forwardRef<
 
   return (
     <View
-      ref={ref}
+      ref={ref as React.Ref<View>}
       style={[
         {
           padding: theme.spacing[padding],
@@ -858,7 +839,7 @@ const ModalFooter = forwardRef<
     {
       children,
       style,
-      padding = 'sm',
+      padding = 'md',
       showBorder = false,
       justifyContent = 'flex-end',
       ...props

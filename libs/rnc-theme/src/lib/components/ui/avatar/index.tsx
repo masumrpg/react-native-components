@@ -35,9 +35,9 @@ type AvatarProps = BaseComponentProps & {
   textStyle?: TextStyle;
   onPress?: () => void;
   borderWidth?: number;
-  borderColor?: string | keyof Theme['colors'];
+  borderColor?: keyof Theme['colors'];
   showBadge?: boolean;
-  badgeColor?: string | keyof Theme['colors'];
+  badgeColor?: keyof Theme['colors'];
   badgeSize?: number;
   animated?: boolean;
 };
@@ -54,7 +54,7 @@ interface AvatarGroupProps {
 }
 
 interface AvatarBadgeProps {
-  color?: string | keyof Theme['colors'];
+  color?: keyof Theme['colors'];
   size?: number;
   style?: StyleProp<ViewStyle>;
   position?: 'top-right' | 'top-left' | 'bottom-right' | 'bottom-left';
@@ -265,7 +265,7 @@ const Avatar = forwardRef<React.ComponentRef<typeof View>, AvatarProps>(
         {showBadge && (
           <AvatarBadge
             color={badgeColor}
-            size={badgeSize || sizeConfig.badgeSize}
+            size={badgeSize ?? sizeConfig.badgeSize}
           />
         )}
       </Animated.View>
@@ -388,7 +388,7 @@ const AvatarGroup = forwardRef<
         {remainingCount > 0 && showMore && (
           <Avatar
             size={size}
-            fallbackText={moreText || `+${remainingCount}`}
+            fallbackText={moreText ?? `+${remainingCount}`}
             variant="default"
             onPress={onMorePress}
             style={{

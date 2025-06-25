@@ -192,7 +192,7 @@ const createFormControlStyles = (theme: Theme) => ({
     ...theme.typography.small,
     color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
     flex: 1,
-    lineHeight: theme.typography.small?.fontSize
+    lineHeight: theme.typography.small.fontSize
       ? theme.typography.small.fontSize * 1.4
       : 18,
   } as TextStyle,
@@ -216,7 +216,7 @@ const createFormControlStyles = (theme: Theme) => ({
     ...theme.typography.small,
     color: resolveColor(theme, 'error', theme.colors.error),
     flex: 1,
-    lineHeight: theme.typography.small?.fontSize
+    lineHeight: theme.typography.small.fontSize
       ? theme.typography.small.fontSize * 1.4
       : 18,
     fontWeight: '500',
@@ -226,7 +226,7 @@ const createFormControlStyles = (theme: Theme) => ({
     ...theme.typography.small,
     color: resolveColor(theme, 'success', theme.colors.success || '#22c55e'),
     flex: 1,
-    lineHeight: theme.typography.small?.fontSize
+    lineHeight: theme.typography.small.fontSize
       ? theme.typography.small.fontSize * 1.4
       : 18,
     fontWeight: '500',
@@ -236,7 +236,7 @@ const createFormControlStyles = (theme: Theme) => ({
     ...theme.typography.small,
     color: resolveColor(theme, 'warning', theme.colors.warning || '#f59e0b'),
     flex: 1,
-    lineHeight: theme.typography.small?.fontSize
+    lineHeight: theme.typography.small.fontSize
       ? theme.typography.small.fontSize * 1.4
       : 18,
     fontWeight: '500',
@@ -277,7 +277,7 @@ const FormControl = forwardRef<
     const currentState =
       initialState !== 'default' ? initialState : internalState;
 
-    const formControlId = useMemo(() => id || generateId('form-control'), [id]);
+    const formControlId = useMemo(() => id ?? generateId('form-control'), [id]);
     const labelId = useMemo(() => `${formControlId}-label`, [formControlId]);
     const helperId = useMemo(() => `${formControlId}-helper`, [formControlId]);
     const errorId = useMemo(() => `${formControlId}-error`, [formControlId]);
@@ -492,7 +492,7 @@ const FormControlError = forwardRef<
   const { errorId, hasError } = useFormControl();
 
   // Control visibility based on showWhen prop or internal error state
-  const shouldShow = showWhen !== undefined ? showWhen : hasError;
+  const shouldShow = showWhen ?? hasError;
 
   if (!shouldShow) {
     return null;
@@ -531,7 +531,7 @@ const FormControlErrorIcon = forwardRef<
 
   return (
     <View ref={ref} style={[styles.messageIcon, style]} {...props}>
-      {icon || defaultIcon}
+      {icon ?? defaultIcon}
     </View>
   );
 });
@@ -573,7 +573,7 @@ const FormControlSuccess = forwardRef<
   const styles = useThemedStyles(createFormControlStyles);
   const { successId, hasSuccess } = useFormControl();
 
-  const shouldShow = showWhen !== undefined ? showWhen : hasSuccess;
+  const shouldShow = showWhen ?? hasSuccess;
 
   if (!shouldShow) {
     return null;
@@ -612,7 +612,7 @@ const FormControlSuccessIcon = forwardRef<
 
   return (
     <View ref={ref} style={[styles.messageIcon, style]} {...props}>
-      {icon || defaultIcon}
+      {icon ?? defaultIcon}
     </View>
   );
 });
@@ -654,7 +654,7 @@ const FormControlWarning = forwardRef<
   const styles = useThemedStyles(createFormControlStyles);
   const { warningId, hasWarning } = useFormControl();
 
-  const shouldShow = showWhen !== undefined ? showWhen : hasWarning;
+  const shouldShow = showWhen ?? hasWarning;
 
   if (!shouldShow) {
     return null;
@@ -693,7 +693,7 @@ const FormControlWarningIcon = forwardRef<
 
   return (
     <View ref={ref} style={[styles.messageIcon, style]} {...props}>
-      {icon || defaultIcon}
+      {icon ?? defaultIcon}
     </View>
   );
 });

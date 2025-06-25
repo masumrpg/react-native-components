@@ -113,18 +113,18 @@ const ToggleMode = forwardRef<
     const sizeConfig = {
       sm: {
         containerSize: 32,
-        iconSize: iconSize || 16,
-        padding: padding || 6,
+        iconSize: iconSize ?? 16,
+        padding: padding ?? 6,
       },
       md: {
         containerSize: 40,
-        iconSize: iconSize || 20,
-        padding: padding || 8,
+        iconSize: iconSize ?? 20,
+        padding: padding ?? 8,
       },
       lg: {
         containerSize: 48,
-        iconSize: iconSize || 24,
-        padding: padding || 10,
+        iconSize: iconSize ?? 24,
+        padding: padding ?? 10,
       },
     }[size];
 

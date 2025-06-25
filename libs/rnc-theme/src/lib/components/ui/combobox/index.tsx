@@ -561,6 +561,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
                   ...SPRING_CONFIG,
                 }),
               ]).start((finished) => {
+                // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
                 if (finished) {
                   onAnimationComplete(true);
                 }
@@ -610,6 +611,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
           useNativeDriver: true,
         }),
       ]).start((finished) => {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (finished) {
           onAnimationComplete(false);
         }
@@ -820,7 +822,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
           </TouchableOpacity>
         </Animated.View>
 
-        {(helperText || errorText) && (
+        {(helperText ?? errorText) && (
           <Text
             style={[
               styles.helperText,

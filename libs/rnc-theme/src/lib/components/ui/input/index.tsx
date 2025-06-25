@@ -481,7 +481,7 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
     ]);
 
     const renderHelperText = useCallback(() => {
-      const text = error || helperText;
+      const text = error ?? helperText;
       if (!text && !showCharacterCount) return null;
 
       const HelperContainer = animated ? Animated.View : View;
@@ -537,12 +537,14 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       }
 
       // Update state styles handling with type safety
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
       if (state) {
         const stateKey = `state${state.charAt(0).toUpperCase()}${state.slice(
           1
         )}` as keyof StateStylesType;
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (styles[stateKey]) {
-          baseStyles.push(styles[stateKey] as ViewStyle);
+          baseStyles.push(styles[stateKey]);
         }
       }
 
@@ -594,8 +596,8 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       if (isSearchInput) {
         return {
           leftIcon: <Search size={iconSize} color={iconColor} />,
-          variant: variant || 'filled',
-          placeholder: placeholder || 'Search...',
+          variant: variant,
+          placeholder: placeholder ?? 'Search...',
         };
       }
 
@@ -643,9 +645,9 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
           {isFloatingVariant && (
             <View style={styles.floatingLabelContainer}>{renderLabel()}</View>
           )}
-          {(leftIcon || specializedProps.leftIcon) && (
+          {(leftIcon ?? specializedProps.leftIcon) && (
             <View style={styles.leftIcon}>
-              {specializedProps.leftIcon || leftIcon}
+              {specializedProps.leftIcon ?? leftIcon}
             </View>
           )}
           <TextInput
@@ -662,14 +664,14 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
             {...specializedProps}
             {...props}
           />
-          {(rightIcon || specializedProps.rightIcon) && (
+          {(rightIcon ?? specializedProps.rightIcon) && (
             <TouchableOpacity
               style={styles.rightIcon}
-              onPress={specializedProps.onRightIconPress || onRightIconPress}
+              onPress={specializedProps.onRightIconPress ?? onRightIconPress}
               disabled={!specializedProps.onRightIconPress && !onRightIconPress}
               activeOpacity={0.7}
             >
-              {specializedProps.rightIcon || rightIcon}
+              {specializedProps.rightIcon ?? rightIcon}
             </TouchableOpacity>
           )}
         </ContainerComponent>
@@ -823,16 +825,16 @@ const createStyles = (theme: Theme) =>
       fontWeight: '400' as const,
     } as TextStyle,
     textInputSm: {
-      fontSize: theme.typography.small?.fontSize ?? 14,
-      lineHeight: (theme.typography.small?.fontSize ?? 14) * 1.3,
+      fontSize: theme.typography.small.fontSize ?? 14,
+      lineHeight: (theme.typography.small.fontSize ?? 14) * 1.3,
     } as TextStyle,
     textInputMd: {
-      fontSize: theme.typography.body?.fontSize ?? 16,
-      lineHeight: (theme.typography.body?.fontSize ?? 16) * 1.3,
+      fontSize: theme.typography.body.fontSize ?? 16,
+      lineHeight: (theme.typography.body.fontSize ?? 16) * 1.3,
     } as TextStyle,
     textInputLg: {
-      fontSize: theme.typography.subtitle?.fontSize ?? 18,
-      lineHeight: (theme.typography.subtitle?.fontSize ?? 18) * 1.3,
+      fontSize: theme.typography.subtitle.fontSize ?? 18,
+      lineHeight: (theme.typography.subtitle.fontSize ?? 18) * 1.3,
     } as TextStyle,
     // Icons
     leftIcon: {

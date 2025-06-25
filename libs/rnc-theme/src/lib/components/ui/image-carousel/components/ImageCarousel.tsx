@@ -92,7 +92,7 @@ const ImageCarousel = ({
   });
 
   useEffect(() => {
-    if (isAutoPlay === true) {
+    if (isAutoPlay) {
       interval.current = setInterval(() => {
         if (scrollViewRef.current) {
           scrollViewRef.current.scrollTo({ x: targetX.value, y: 0 });
@@ -204,7 +204,7 @@ const ImageCarousel = ({
             style={[
               styles.arrowButton,
               {
-                top: controlsStyle.top || '45%',
+                top: controlsStyle.top ?? '45%',
               },
               styles.leftArrow,
               {
@@ -228,7 +228,7 @@ const ImageCarousel = ({
             style={[
               styles.arrowButton,
               {
-                top: controlsStyle.top || '45%',
+                top: controlsStyle.top ?? '45%',
               },
               styles.rightArrow,
               {
