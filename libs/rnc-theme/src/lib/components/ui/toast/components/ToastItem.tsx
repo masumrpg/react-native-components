@@ -180,8 +180,8 @@ export const ToastItem: React.FC<ToastItemProps> = ({
   });
 
   const icon =
-    toast.icon ||
-    getToastIcon(toast.variant || 'default', theme, toast.isLoading);
+    toast.icon ??
+    getToastIcon(toast.variant ?? 'default', theme, toast.isLoading);
 
   return (
     <Animated.View
@@ -195,7 +195,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
               ? theme.colors[toast.variant as keyof typeof theme.colors]
               : theme.colors.primary,
         },
-        styles[toast.variant || 'default'],
+        styles[toast.variant ?? 'default'],
         animatedStyle,
         stackedStyle,
       ]}

@@ -27,6 +27,7 @@ import {
   H5,
   H6,
   Theme,
+  useThemedStyles,
 } from 'rnc-theme';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -791,12 +792,6 @@ export default function TypographyScreen() {
     </ScrollView>
   );
 }
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const useThemedStyles = (createStyles: (theme: Theme) => any) => {
-  const { theme } = useTheme();
-  return React.useMemo(() => createStyles(theme), [theme, createStyles]);
-};
 
 const createStyles = (theme: Theme) =>
   StyleSheet.create({

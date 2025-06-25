@@ -125,7 +125,7 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
       setSystemColorScheme(colorScheme);
     });
 
-    return () => subscription?.remove();
+    return () => subscription.remove();
   }, []);
 
   // Reload theme when system color scheme changes (for system mode)
@@ -140,6 +140,7 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
     try {
       const storedConfig = await AsyncStorage.getItem(THEME_STORAGE_KEY);
       if (storedConfig) {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const config: ThemeConfig = JSON.parse(storedConfig);
         setThemeModeState(config.mode);
 
@@ -168,8 +169,7 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
 
             // Check if we already have the theme variant stored
             const hasStoredVariant =
-              config.customTheme &&
-              config.customTheme[loadedIsDark ? 'dark' : 'light'];
+              config.customTheme?.[loadedIsDark ? 'dark' : 'light'];
 
             if (!hasStoredVariant) {
               // Generate missing theme variant

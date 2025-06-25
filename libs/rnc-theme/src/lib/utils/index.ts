@@ -4,7 +4,7 @@ import { ViewStyle } from 'react-native';
 
 const resolveColor = (
   theme: Theme,
-  color: string | keyof Theme['colors'] | undefined,
+  color: keyof Theme['colors'] | undefined,
   fallback: string
 ): string => {
   if (!color) return fallback;
@@ -13,7 +13,7 @@ const resolveColor = (
     if (color.startsWith('#')) return color;
 
     if (color in theme.colors) {
-      return theme.colors[color as keyof Theme['colors']];
+      return theme.colors[color];
     }
 
     return color;

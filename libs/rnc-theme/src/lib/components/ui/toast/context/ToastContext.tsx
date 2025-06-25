@@ -80,7 +80,7 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
         variant: 'loading',
         isLoading: true,
         duration: 0, // Tidak auto dismiss
-        loadingText: data.loadingText || 'Loading...',
+        loadingText: data.loadingText ?? 'Loading...',
       });
 
       try {
@@ -90,8 +90,8 @@ export const ToastProvider: React.FC<ToastProviderProps> = ({
         updateToast(id, {
           variant: 'success',
           isLoading: false,
-          title: data.title || 'Success',
-          description: data.description || 'Operation completed successfully',
+          title: data.title ?? 'Success',
+          description: data.description ?? 'Operation completed successfully',
           duration: 3000,
         });
 

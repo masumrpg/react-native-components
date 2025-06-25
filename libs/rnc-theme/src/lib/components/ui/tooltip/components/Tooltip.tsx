@@ -24,8 +24,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const targetRef = useRef<View>(null);
 
-  const visible =
-    controlledVisible !== undefined ? controlledVisible : internalVisible;
+  const visible = controlledVisible ?? internalVisible;
 
   const showTooltip = useCallback(() => {
     if (disabled) return;

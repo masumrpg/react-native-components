@@ -1,4 +1,4 @@
-import { useFonts } from 'expo-font';
+import { FontSource, useFonts } from 'expo-font';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { Stack, usePathname } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
@@ -26,7 +26,7 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf') as FontSource,
     ...FontAwesome.font,
   });
 

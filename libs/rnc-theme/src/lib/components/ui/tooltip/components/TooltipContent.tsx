@@ -80,8 +80,8 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
     const targetCenterX = x + width / 2;
     const targetCenterY = y + height / 2 - (isIos ? 100 : 55); // Sesuaikan dengan offset tooltip Y
     const tooltipStyle = getTooltipStyle();
-    const tooltipLeft = tooltipStyle.left as number;
-    const tooltipTop = tooltipStyle.top as number;
+    const tooltipLeft = tooltipStyle.left;
+    const tooltipTop = tooltipStyle.top;
 
     switch (position) {
       case 'top':

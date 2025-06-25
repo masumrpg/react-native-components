@@ -16,7 +16,7 @@ import { ComponentSize, ComponentVariant } from '../../../types/ui';
 interface SpinnerProps {
   size?: ComponentSize | number;
   variant?: ComponentVariant;
-  color?: string | keyof Theme['colors'];
+  color?: keyof Theme['colors'];
   style?: StyleProp<ViewStyle>;
   thickness?: number;
   duration?: number;

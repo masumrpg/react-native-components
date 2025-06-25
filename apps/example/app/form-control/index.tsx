@@ -378,7 +378,7 @@ export default function FormControlExample() {
                 </FormControlLabel>
                 <Input
                   placeholder="+62 812 3456 7890"
-                  value={value || ''}
+                  value={value ?? ''}
                   onChangeText={onChange}
                   onBlur={onBlur}
                   keyboardType="phone-pad"
@@ -426,7 +426,7 @@ export default function FormControlExample() {
                 </FormControlLabel>
                 <Input
                   placeholder="https://example.com"
-                  value={value || ''}
+                  value={value ?? ''}
                   onChangeText={onChange}
                   onBlur={onBlur}
                   keyboardType="url"

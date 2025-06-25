@@ -34,7 +34,7 @@ interface TypographyProps {
   children: React.ReactNode;
   variant?: TypographyVariant;
   weight?: TypographyWeight;
-  color?: string;
+  color?: string | undefined;
   align?: TypographyAlign;
   style?: StyleProp<TextStyle>;
   numberOfLines?: number;
@@ -70,8 +70,8 @@ const Typography = forwardRef<React.ComponentRef<typeof Text>, TypographyProps>(
           styles.base,
           styles[variant],
           {
-            fontWeight: weight || styles[variant].fontWeight || '400',
-            color: resolveColor(theme, color, theme.colors.text),
+            fontWeight: weight ?? styles[variant].fontWeight ?? '400',
+            color: color ?? theme.colors.text,
             textAlign: align,
           },
           style,
@@ -95,31 +95,31 @@ const createTypographyStyles = (theme: Theme) => ({
   small: {
     fontSize: theme.typography.small.fontSize,
     lineHeight: theme.typography.small.lineHeight,
-    fontWeight: (theme.typography.small.fontWeight ||
+    fontWeight: (theme.typography.small.fontWeight ??
       '400') as TextStyle['fontWeight'],
   } as TextStyle,
   body: {
     fontSize: theme.typography.body.fontSize,
     lineHeight: theme.typography.body.lineHeight,
-    fontWeight: (theme.typography.body.fontWeight ||
+    fontWeight: (theme.typography.body.fontWeight ??
       '400') as TextStyle['fontWeight'],
   } as TextStyle,
   subtitle: {
     fontSize: theme.typography.subtitle.fontSize,
     lineHeight: theme.typography.subtitle.lineHeight,
-    fontWeight: (theme.typography.subtitle.fontWeight ||
+    fontWeight: (theme.typography.subtitle.fontWeight ??
       '500') as TextStyle['fontWeight'],
   } as TextStyle,
   title: {
     fontSize: theme.typography.title.fontSize,
     lineHeight: theme.typography.title.lineHeight,
-    fontWeight: (theme.typography.title.fontWeight ||
+    fontWeight: (theme.typography.title.fontWeight ??
       '600') as TextStyle['fontWeight'],
   } as TextStyle,
   heading: {
     fontSize: theme.typography.heading.fontSize,
     lineHeight: theme.typography.heading.lineHeight,
-    fontWeight: (theme.typography.heading.fontWeight ||
+    fontWeight: (theme.typography.heading.fontWeight ??
       '700') as TextStyle['fontWeight'],
   } as TextStyle,
   // Heading variants H1-H6
@@ -307,13 +307,7 @@ const TextPrimary = forwardRef<
   Omit<TypographyProps, 'color'>
 >((props, ref) => {
   const { theme } = useTheme();
-  return (
-    <Typography
-      ref={ref}
-      color={resolveColor(theme, 'primary', theme.colors.primary)}
-      {...props}
-    />
-  );
+  return <Typography ref={ref} color={theme.colors.primary} {...props} />;
 });
 
 TextPrimary.displayName = 'TextPrimary';

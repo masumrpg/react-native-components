@@ -74,7 +74,7 @@ const Switcher = forwardRef<
 
     // Get colors based on variant and state
     const getVariantColors = () => {
-      const offColor = trackColor?.false || theme.colors.border;
+      const offColor = trackColor?.false ?? theme.colors.border;
       let onColor = trackColor?.true;
 
       if (!onColor) {
@@ -118,7 +118,7 @@ const Switcher = forwardRef<
     };
 
     const { offColor, onColor } = getVariantColors();
-    const thumbColorValue = thumbColor || '#FFFFFF';
+    const thumbColorValue = thumbColor ?? '#FFFFFF';
 
     // Get size-specific dimensions
     const getSizeDimensions = () => {

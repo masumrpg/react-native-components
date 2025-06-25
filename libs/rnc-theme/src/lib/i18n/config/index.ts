@@ -28,14 +28,15 @@ export const createI18nInstance = (config?: I18nConfig) => {
     translations = defaultTransaltions.translations,
     supportedLocales = defaultTransaltions.supportedLocales,
     defaultLocale = defaultTransaltions.defaultLocale,
-    autoDetectLocale = defaultTransaltions.defaultLocale
-  } = config || {};
+    autoDetectLocale = defaultTransaltions.defaultLocale,
+  } = config ?? {};
 
   const i18n = new I18n(translations);
 
   if (autoDetectLocale) {
-    const fullTag = getLocales()[0]?.languageTag ?? "en-US";
-    const languageCode = fullTag.split("-")[0];
+    const fullTag = getLocales()[0]?.languageTag ?? 'en-US';
+    const languageCode = fullTag.split('-')[0];
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     const locale = languageCode ?? defaultLocale;
     i18n.locale = supportedLocales.includes(locale) ? locale : defaultLocale;
   } else {

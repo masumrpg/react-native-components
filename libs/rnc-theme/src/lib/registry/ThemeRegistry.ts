@@ -7,6 +7,7 @@ class ThemeRegistry {
   private presets: Map<string, ThemeConfigFunction> = new Map();
 
   static getInstance(): ThemeRegistry {
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
     if (!ThemeRegistry.instance) {
       ThemeRegistry.instance = new ThemeRegistry();
     }

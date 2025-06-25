@@ -64,7 +64,7 @@ const PRODUCTS = [
   },
 ];
 
-const NOTIFICATIONS = [
+const NOTIFICATIONS: Notification[] = [
   {
     id: '1',
     title: 'New Message',
@@ -110,6 +110,8 @@ interface Product {
   inStock: boolean;
 }
 
+type MaterialIconName = React.ComponentProps<typeof MaterialIcons>['name'];
+
 interface Notification {
   id: string;
   title: string;
@@ -117,7 +119,7 @@ interface Notification {
   message: string;
   time: string;
   type: string;
-  icon: string;
+  icon: MaterialIconName;
   read: boolean;
 }
 
@@ -407,8 +409,7 @@ const BottomSheetScreen: React.FC = () => {
                   }}
                 >
                   <MaterialIcons
-                    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                    name={notification.icon as any}
+                    name={notification.icon}
                     size={16}
                     color="white"
                   />

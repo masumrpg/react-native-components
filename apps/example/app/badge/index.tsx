@@ -240,8 +240,7 @@ const BadgeScreen: React.FC = () => {
           >
             <View style={styles.notificationContent}>
               <Ionicons
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                name={getIcon(item.type) as any}
+                name={getIcon(item.type)}
                 size={24}
                 color={styles.iconColor.color}
               />
