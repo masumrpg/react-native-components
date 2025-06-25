@@ -1,8 +1,6 @@
 ---
 title: Custom Theme
 description: Learn how to create, customize, and implement your own themes in RNC Theme system with complete control over colors, typography, and component styling.
-sidebar:
-  order: 3
 ---
 
 import { Card, CardGrid } from '@astrojs/starlight/components';
@@ -20,19 +18,19 @@ Create unique, branded themes that perfectly match your application's design req
 Every custom theme follows a consistent structure with five main categories:
 
 <CardGrid>
-  <Card title="🎨 Colors" icon="star">
+  <Card title="Colors" icon="star">
     Primary, secondary, background, surface, text, and semantic colors for your brand.
   </Card>
-  <Card title="📝 Typography" icon="document">
+  <Card title="Typography" icon="document">
     Font sizes, line heights, and weights for consistent text styling.
   </Card>
-  <Card title="📏 Spacing" icon="setting">
+  <Card title="Spacing" icon="setting">
     Consistent spacing values for margins, padding, and layout.
   </Card>
-  <Card title="🧩 Components" icon="puzzle">
+  <Card title="Components" icon="puzzle">
     Component-specific styling like heights, padding, and border radius.
   </Card>
-  <Card title="🔤 Font Sizes" icon="mobile">
+  <Card title="Font Sizes" icon="seti:font">
     Scalable font size system for responsive typography.
   </Card>
 </CardGrid>
@@ -42,68 +40,114 @@ Every custom theme follows a consistent structure with five main categories:
 ### Basic Custom Theme
 
 ```tsx
-import { Theme } from 'rnc-theme';
+import { CustomThemeConfigFactory } from 'rnc-theme';
 
-const myCustomTheme: Partial<Theme> = {
-  colors: {
-    primary: '#6366F1',      // Indigo
-    secondary: '#8B5CF6',    // Purple
-    background: '#F8FAFC',   // Slate 50
-    surface: '#FFFFFF',      // White
-    text: '#0F172A',         // Slate 900
-    textSecondary: '#64748B', // Slate 500
-    border: '#E2E8F0',       // Slate 200
-    error: '#EF4444',        // Red 500
-    warning: '#F59E0B',      // Amber 500
-    success: '#10B981',      // Emerald 500
-    info: '#3B82F6',         // Blue 500
-    muted: '#94A3B8',        // Slate 400
-    accent: '#EC4899',       // Pink 500
-    destructive: '#DC2626',  // Red 600
-  },
-  components: {
-    borderRadius: {
-      xs: 4,
-      sm: 6,
-      md: 8,
-      lg: 12,
-      xl: 16,
-      full: 9999,
-    },
-  },
-};
+const customThemeConfig: CustomThemeConfigFactory = useMemo(
+    () => (isDark: boolean) => ({
+      colors: {
+        primary: isDark ? '#FF6B6B' : '#4ECDC4',
+        secondary: isDark ? '#FFE66D' : '#45B7D1',
+        background: isDark ? '#1a1a1a' : '#f8f9fa',
+        surface: isDark ? '#2d2d2d' : '#ffffff',
+        text: isDark ? '#ffffff' : '#333333',
+        textSecondary: isDark ? '#b0b0b0' : '#666666',
+        border: isDark ? '#404040' : '#e0e0e0',
+        error: '#FF5252',
+        warning: '#FF9800',
+        success: '#4CAF50',
+        info: '#2196F3',
+        muted: isDark ? '#666666' : '#999999',
+        accent: isDark ? '#FF6B6B' : '#4ECDC4',
+        destructive: '#FF5252',
+      },
+      components: {
+        height: {
+          xs: 32,
+          sm: 36,
+          md: 40,
+          lg: 44,
+          xl: 48,
+        },
+        padding: {
+          xs: 8,
+          sm: 12,
+          md: 16,
+          lg: 20,
+          xl: 24,
+        },
+        borderRadius: {
+          xs: 4,
+          sm: 4,
+          md: 8,
+          lg: 16,
+          xl: 24,
+          full: 9999,
+        },
+      },
+      spacing: {
+        xs: 4,
+        sm: 8,
+        md: 16,
+        lg: 24,
+        xl: 32,
+        xxl: 48,
+      },
+    }),
+    []
+  );
 ```
+<Aside type='caution'>If you using useMemo place inside the component</Aside>
 
 ### Complete Custom Theme
 
 <Tabs>
   <TabItem label="Colors">
     ```tsx
-    const customColors = {
-      // Brand Colors
-      primary: '#6366F1',
-      secondary: '#8B5CF6',
-      accent: '#EC4899',
+    const colors = (isDark: boolean) => {
+        primary: isDark ? '#FF6B6B' : '#4ECDC4',
+        secondary: isDark ? '#FFE66D' : '#45B7D1',
+        background: isDark ? '#1a1a1a' : '#f8f9fa',
+        surface: isDark ? '#2d2d2d' : '#ffffff',
+        text: isDark ? '#ffffff' : '#333333',
+        textSecondary: isDark ? '#b0b0b0' : '#666666',
+        border: isDark ? '#404040' : '#e0e0e0',
+        error: '#FF5252',
+        warning: '#FF9800',
+        success: '#4CAF50',
+        info: '#2196F3',
+        muted: isDark ? '#666666' : '#999999',
+        accent: isDark ? '#FF6B6B' : '#4ECDC4',
+        destructive: '#FF5252',
+      }
+    ```
+  </TabItem>
 
-      // Background Colors
-      background: '#F8FAFC',
-      surface: '#FFFFFF',
-
-      // Text Colors
-      text: '#0F172A',
-      textSecondary: '#64748B',
-      muted: '#94A3B8',
-
-      // Border Colors
-      border: '#E2E8F0',
-
-      // Semantic Colors
-      error: '#EF4444',
-      warning: '#F59E0B',
-      success: '#10B981',
-      info: '#3B82F6',
-      destructive: '#DC2626',
-    };
+  <TabItem label="Components">
+    ```tsx
+    const customComponents = {
+        height: {
+          xs: 32,
+          sm: 36,
+          md: 40,
+          lg: 44,
+          xl: 48,
+        },
+        padding: {
+          xs: 8,
+          sm: 12,
+          md: 16,
+          lg: 20,
+          xl: 24,
+        },
+        borderRadius: {
+          xs: 4,
+          sm: 4,
+          md: 8,
+          lg: 16,
+          xl: 24,
+          full: 9999,
+        },
+      },
     ```
   </TabItem>
 
@@ -157,34 +201,7 @@ const myCustomTheme: Partial<Theme> = {
     ```
   </TabItem>
 
-  <TabItem label="Components">
-    ```tsx
-    const customComponents = {
-      height: {
-        xs: 32,  // Small buttons/inputs
-        sm: 36,  // Compact components
-        md: 40,  // Default size
-        lg: 44,  // Large components
-        xl: 48,  // Extra large
-      },
-      padding: {
-        xs: 8,   // Tight spacing
-        sm: 12,  // Small padding
-        md: 16,  // Default padding
-        lg: 20,  // Large padding
-        xl: 24,  // Extra large
-      },
-      borderRadius: {
-        xs: 4,    // Subtle rounding
-        sm: 6,    // Small radius
-        md: 8,    // Default radius
-        lg: 12,   // Large radius
-        xl: 16,   // Extra large
-        full: 9999, // Fully rounded
-      },
-    };
-    ```
-  </TabItem>
+
 
   <TabItem label="Font Sizes">
     ```tsx

@@ -28,10 +28,21 @@
       "dependsOn": ["build"]
     },
     "lint": {
+      "executor": "@nx/eslint:lint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "apps/docs/src/**/*.{ts,tsx,js,jsx}"
+        ]
+      }
+    },
+    "type-check": {
       "executor": "nx:run-commands",
       "options": {
-        "command": "astro check",
-        "cwd": "apps/docs"
+        "command": "tsc --noEmit",
+        "cwd": "apps/src/docs"
       }
     }
   },

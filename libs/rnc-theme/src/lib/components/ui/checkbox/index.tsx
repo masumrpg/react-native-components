@@ -104,7 +104,7 @@ const Checkbox = forwardRef<
     // Determine if checkbox is checked
     const isChecked = groupContext
       ? groupContext.value.includes(value)
-      : controlledChecked || false;
+      : controlledChecked ?? false;
 
     // Determine if checkbox is disabled
     const isDisabled = groupContext ? groupContext.disabled : checkboxDisabled;
@@ -177,31 +177,31 @@ const Checkbox = forwardRef<
 
       // Get the variant colors - Fixed to include all variants
       const variantBackgroundColors = {
-        default: styles.primaryBackground.backgroundColor as string,
-        primary: styles.primaryBackground.backgroundColor as string,
-        secondary: styles.secondaryBackground.backgroundColor as string,
-        outline: styles.outlineBackground.backgroundColor as string,
-        filled: styles.filledBackground.backgroundColor as string,
-        ghost: styles.ghostBackground.backgroundColor as string,
-        success: styles.successBackground.backgroundColor as string,
-        warning: styles.warningBackground.backgroundColor as string,
-        error: styles.errorBackground.backgroundColor as string,
-        info: styles.infoBackground.backgroundColor as string,
-        destructive: styles.destructiveBackground.backgroundColor as string,
+        default: styles.primaryBackground.backgroundColor,
+        primary: styles.primaryBackground.backgroundColor,
+        secondary: styles.secondaryBackground.backgroundColor,
+        outline: styles.outlineBackground.backgroundColor,
+        filled: styles.filledBackground.backgroundColor,
+        ghost: styles.ghostBackground.backgroundColor,
+        success: styles.successBackground.backgroundColor,
+        warning: styles.warningBackground.backgroundColor,
+        error: styles.errorBackground.backgroundColor,
+        info: styles.infoBackground.backgroundColor,
+        destructive: styles.destructiveBackground.backgroundColor,
       };
 
       const variantBorderColors = {
-        default: styles.default.borderColor as string,
-        primary: styles.primary.borderColor as string,
-        secondary: styles.secondary.borderColor as string,
-        outline: styles.outline.borderColor as string,
-        filled: styles.filled.borderColor as string,
-        ghost: styles.ghost.borderColor as string,
-        success: styles.success.borderColor as string,
-        warning: styles.warning.borderColor as string,
-        error: styles.error.borderColor as string,
-        info: styles.info.borderColor as string,
-        destructive: styles.destructive.borderColor as string,
+        default: styles.default.borderColor,
+        primary: styles.primary.borderColor,
+        secondary: styles.secondary.borderColor,
+        outline: styles.outline.borderColor,
+        filled: styles.filled.borderColor,
+        ghost: styles.ghost.borderColor,
+        success: styles.success.borderColor,
+        warning: styles.warning.borderColor,
+        error: styles.error.borderColor,
+        info: styles.info.borderColor,
+        destructive: styles.destructive.borderColor,
       };
 
       return {
@@ -272,7 +272,7 @@ const Checkbox = forwardRef<
           </Animated.View>
         </Animated.View>
 
-        {children && (
+        {children ?? (
           <CheckboxLabel disabled={isDisabled} size={size}>
             {children}
           </CheckboxLabel>
