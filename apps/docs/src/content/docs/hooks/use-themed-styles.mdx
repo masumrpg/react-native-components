@@ -1,0 +1,470 @@
+---
+title: useThemedStyles Hook
+description: Complete guide to useThemedStyles hook for creating performant theme-aware styles in React Native applications.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+
+
+The `useThemedStyles` hook provides a performant way to create theme-aware styles in React Native applications. It automatically memoizes style objects and recreates them only when the theme changes.
+
+
+### Basic Usage
+
+<Code code={`import { useThemedStyles } from 'your-theme-package';
+
+function MyComponent() {
+  const styles = useThemedStyles((theme) => ({
+    container: {
+      backgroundColor: theme.colors.background,
+      padding: theme.spacing.md,
+    },
+    title: {
+      color: theme.colors.text,
+      fontSize: theme.fontSizes.lg,
+      fontFamily: theme.typography.fontFamily.bold,
+    },
+    button: {
+      backgroundColor: theme.colors.primary,
+      borderRadius: theme.components.borderRadius.md,
+      padding: theme.spacing.sm,
+    },
+  }));
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Hello World</Text>
+      <TouchableOpacity style={styles.button}>
+        <Text>Press Me</Text>
+      </TouchableOpacity>
+    </View>
+  );
+}`} lang="tsx" title="Basic Usage Example" />
+
+## Key Features
+
+<CardGrid>
+  <Card title="Performance" icon="rocket">
+    Uses `useMemo` to prevent unnecessary style recalculations, improving component performance.
+  </Card>
+
+  <Card title="Type Safe" icon="approve-check">
+    Full TypeScript support with generic constraints ensuring type safety for style objects.
+  </Card>
+
+  <Card title="Theme Reactive" icon="seti:image">
+    Automatically updates styles when theme changes, ensuring consistent UI across theme switches.
+  </Card>
+
+  <Card title="RN Compatible" icon="puzzle">
+    Works seamlessly with React Native's StyleSheet API and component styling patterns.
+  </Card>
+</CardGrid>
+
+## Advanced Usage Patterns
+
+### Complex Component Styling
+
+<Code code={`function ComplexCard({ title, subtitle, onPress }) {
+  const styles = useThemedStyles((theme) => ({
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.components.borderRadius.lg,
+      padding: theme.spacing.lg,
+      marginVertical: theme.spacing.sm,
+      shadowColor: theme.colors.shadow,
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.1,
+      shadowRadius: 4,
+      elevation: 3,
+    },
+    header: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      marginBottom: theme.spacing.md,
+    },
+    title: {
+      fontSize: theme.fontSizes.xl,
+      fontFamily: theme.typography.fontFamily.bold,
+      color: theme.colors.text,
+    },
+    subtitle: {
+      fontSize: theme.fontSizes.sm,
+      fontFamily: theme.typography.fontFamily.regular,
+      color: theme.colors.textSecondary,
+      marginTop: theme.spacing.xs,
+    },
+    button: {
+      backgroundColor: theme.colors.primary,
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.sm,
+      borderRadius: theme.components.borderRadius.sm,
+    },
+    buttonText: {
+      color: theme.colors.onPrimary,
+      fontSize: theme.fontSizes.sm,
+      fontFamily: theme.typography.fontFamily.medium,
+    },
+  }));
+
+  return (
+    <View style={styles.card}>
+      <View style={styles.header}>
+        <View>
+          <Text style={styles.title}>{title}</Text>
+          <Text style={styles.subtitle}>{subtitle}</Text>
+        </View>
+        <TouchableOpacity style={styles.button} onPress={onPress}>
+          <Text style={styles.buttonText}>Action</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+}`} lang="tsx" title="ComplexCard.tsx" />
+
+### Conditional Styling
+
+<Code code={`function ConditionalButton({ variant = 'primary', disabled = false, children }) {
+  const styles = useThemedStyles((theme) => ({
+    button: {
+      paddingHorizontal: theme.spacing.lg,
+      paddingVertical: theme.spacing.md,
+      borderRadius: theme.components.borderRadius.md,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    primary: {
+      backgroundColor: disabled
+        ? theme.colors.disabled
+        : theme.colors.primary,
+    },
+    secondary: {
+      backgroundColor: disabled
+        ? theme.colors.disabled
+        : theme.colors.secondary,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+    },
+    outline: {
+      backgroundColor: 'transparent',
+      borderWidth: 1,
+      borderColor: disabled
+        ? theme.colors.disabled
+        : theme.colors.primary,
+    },
+    text: {
+      fontSize: theme.fontSizes.md,
+      fontFamily: theme.typography.fontFamily.medium,
+    },
+    primaryText: {
+      color: disabled
+        ? theme.colors.textDisabled
+        : theme.colors.onPrimary,
+    },
+    secondaryText: {
+      color: disabled
+        ? theme.colors.textDisabled
+        : theme.colors.onSecondary,
+    },
+    outlineText: {
+      color: disabled
+        ? theme.colors.textDisabled
+        : theme.colors.primary,
+    },
+  }));
+
+  return (
+    <TouchableOpacity
+      style={[styles.button, styles[variant]]}
+      disabled={disabled}
+    >
+      <Text style={[styles.text, styles[\`\${variant}Text\`]]}>
+        {children}
+      </Text>
+    </TouchableOpacity>
+  );
+}`} lang="tsx" title="ConditionalButton.tsx" />
+
+### Dynamic Styling with Props
+
+<Code code={`interface ProgressBarProps {
+  progress: number; // 0-100
+  height?: number;
+  showLabel?: boolean;
+}
+
+function ProgressBar({ progress, height = 8, showLabel = true }: ProgressBarProps) {
+  const styles = useThemedStyles((theme) => ({
+    container: {
+      width: '100%',
+      marginVertical: theme.spacing.sm,
+    },
+    track: {
+      height,
+      backgroundColor: theme.colors.surfaceVariant,
+      borderRadius: height / 2,
+      overflow: 'hidden',
+    },
+    fill: {
+      height: '100%',
+      backgroundColor: theme.colors.primary,
+      borderRadius: height / 2,
+      width: \`\${Math.min(Math.max(progress, 0), 100)}%\`,
+    },
+    label: {
+      fontSize: theme.fontSizes.sm,
+      color: theme.colors.textSecondary,
+      textAlign: 'center',
+      marginTop: theme.spacing.xs,
+    },
+  }));
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.track}>
+        <View style={styles.fill} />
+      </View>
+      {showLabel && (
+        <Text style={styles.label}>
+          {Math.round(progress)}%
+        </Text>
+      )}
+    </View>
+  );
+}`} lang="tsx" title="ProgressBar.tsx" />
+
+## Performance Optimization
+
+### Memoization Strategy
+
+<Aside type="note" title="Memoization Details">
+The hook uses `useMemo` with dependencies on `[theme, styleFactory]` to ensure styles are only recalculated when:
+- The theme object changes (theme switch, custom theme update)
+- The style factory function reference changes
+</Aside>
+
+<Tabs>
+  <TabItem label="✅ Optimized">
+    <Code code={`// ✅ Style factory defined outside component or memoized
+const createStyles = (theme) => ({
+  container: {
+    backgroundColor: theme.colors.background,
+    padding: theme.spacing.md,
+  },
+});
+
+function OptimizedComponent() {
+  const styles = useThemedStyles(createStyles);
+  return <View style={styles.container} />;
+}`} lang="tsx" />
+  </TabItem>
+
+  <TabItem label="⚠️ Less Optimal">
+    <Code code={`// ⚠️ Inline function recreated on every render
+function ComponentWithInlineStyles() {
+  const styles = useThemedStyles((theme) => ({
+    container: {
+      backgroundColor: theme.colors.background,
+      padding: theme.spacing.md,
+    },
+  }));
+  return <View style={styles.container} />;
+}`} lang="tsx" />
+  </TabItem>
+</Tabs>
+
+### Callback Optimization
+
+<Code code={`// ✅ Use useCallback for dynamic style factories
+function DynamicComponent({ isActive }) {
+  const createStyles = useCallback((theme) => ({
+    container: {
+      backgroundColor: isActive
+        ? theme.colors.primary
+        : theme.colors.surface,
+      opacity: isActive ? 1 : 0.6,
+    },
+  }), [isActive]);
+
+  const styles = useThemedStyles(createStyles);
+
+  return <View style={styles.container} />;
+}`} lang="tsx" title="Optimized Dynamic Styles" />
+
+## TypeScript Integration
+
+### Type Safety
+
+<Code code={`import { StyleSheet } from 'react-native';
+import { Theme } from '../types/theme';
+
+// Define your style types
+interface ButtonStyles {
+  container: object;
+  text: object;
+  disabled: object;
+}
+
+function TypedButton() {
+  // Fully typed style factory
+  const styles = useThemedStyles<ButtonStyles>((theme: Theme) => ({
+    container: {
+      backgroundColor: theme.colors.primary,
+      borderRadius: theme.components.borderRadius.md,
+      padding: theme.spacing.md,
+    },
+    text: {
+      color: theme.colors.onPrimary,
+      fontSize: theme.fontSizes.md,
+    },
+    disabled: {
+      backgroundColor: theme.colors.disabled,
+      color: theme.colors.textDisabled,
+    },
+  }));
+
+  return (
+    <TouchableOpacity style={styles.container}>
+      <Text style={styles.text}>Button</Text>
+    </TouchableOpacity>
+  );
+}`} lang="tsx" title="TypedButton.tsx" />
+
+### Custom Theme Extensions
+
+<Code code={`// Extend the theme type for custom properties
+interface ExtendedTheme extends Theme {
+  customColors: {
+    brand: string;
+    accent: string;
+  };
+}
+
+function ComponentWithCustomTheme() {
+  const styles = useThemedStyles((theme: ExtendedTheme) => ({
+    container: {
+      backgroundColor: theme.customColors.brand,
+      borderColor: theme.customColors.accent,
+    },
+  }));
+
+  return <View style={styles.container} />;
+}`} lang="tsx" title="Custom Theme Extension" />
+
+## Best Practices
+
+<Steps>
+1. **Define style factories outside components** when possible to prevent unnecessary re-renders
+
+2. **Use useCallback for dynamic style factories** that depend on props or state
+
+3. **Leverage TypeScript** for better development experience and catch styling errors early
+
+4. **Keep style objects flat** to maximize StyleSheet optimization benefits
+
+5. **Use semantic theme tokens** rather than hardcoded values for better maintainability
+
+6. **Test theme switching** to ensure styles update correctly across different themes
+</Steps>
+
+## Common Patterns
+
+### Responsive Styling
+
+<Code code={`import { Dimensions } from 'react-native';
+
+function ResponsiveCard() {
+  const { width } = Dimensions.get('window');
+
+  const styles = useThemedStyles((theme) => ({
+    card: {
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.components.borderRadius.lg,
+      padding: width > 768 ? theme.spacing.xl : theme.spacing.md,
+      marginHorizontal: width > 768 ? theme.spacing.lg : theme.spacing.sm,
+    },
+    title: {
+      fontSize: width > 768 ? theme.fontSizes.xxl : theme.fontSizes.xl,
+      color: theme.colors.text,
+    },
+  }));
+
+  return (
+    <View style={styles.card}>
+      <Text style={styles.title}>Responsive Card</Text>
+    </View>
+  );
+}`} lang="tsx" title="ResponsiveCard.tsx" />
+
+### Platform-Specific Styles
+
+<Code code={`import { Platform } from 'react-native';
+
+function PlatformAwareComponent() {
+  const styles = useThemedStyles((theme) => ({
+    container: {
+      backgroundColor: theme.colors.background,
+      padding: theme.spacing.md,
+      ...Platform.select({
+        ios: {
+          shadowColor: theme.colors.shadow,
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+        },
+        android: {
+          elevation: 4,
+        },
+      }),
+    },
+    text: {
+      fontSize: theme.fontSizes.md,
+      fontFamily: Platform.select({
+        ios: theme.typography.fontFamily.regular,
+        android: theme.typography.fontFamily.medium,
+      }),
+      color: theme.colors.text,
+    },
+  }));
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.text}>Platform Aware Text</Text>
+    </View>
+  );
+}`} lang="tsx" title="PlatformAwareComponent.tsx" />
+
+## Troubleshooting
+
+<CardGrid>
+  <Card title="Styles not updating on theme change" icon="error">
+    **Cause:** Style factory function reference changing on every render
+
+    **Solution:** Define style factory outside component or wrap with `useCallback`
+  </Card>
+
+  <Card title="Performance issues with complex styles" icon="warning">
+    **Cause:** Heavy computations in style factory
+
+    **Solution:** Optimize style calculations or consider breaking into smaller components
+  </Card>
+
+  <Card title="TypeScript errors with style properties" icon="information">
+    **Cause:** Incorrect theme type or style property types
+
+    **Solution:** Ensure theme type matches your theme structure and use proper React Native style types
+  </Card>
+</CardGrid>
+
+<Aside type="tip" title="Performance Tip">
+For components that render frequently (like in lists), consider extracting styles to a separate hook or using React.memo to prevent unnecessary re-renders.
+</Aside>

@@ -52,7 +52,8 @@ export default defineConfig({
           items: [
             // { label: 'Overview', slug: 'hooks/overview' },
             { label: 'useTheme', slug: 'hooks/use-theme' },
-            // { label: 'useThemeStyle', slug: 'hooks/use-themed-styles' },
+            { label: 'useThemeStyle', slug: 'hooks/use-themed-styles' },
+            { label: 'useHideOnScroll', slug: 'hooks/use-hide-on-scroll' },
           ],
         },
         {
