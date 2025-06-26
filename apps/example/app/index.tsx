@@ -40,7 +40,6 @@ import {
   Calendar,
   CalendarDays,
   Languages,
-  SquareChartGantt,
   Images,
 } from 'lucide-react-native';
 import { ReactElement } from 'react';
