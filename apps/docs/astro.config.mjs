@@ -60,7 +60,7 @@ export default defineConfig({
           label: 'Components',
           collapsed: false,
           items: [
-            { label: 'Overview', slug: 'components/overview' },
+            { label: 'Demo', slug: 'components/demo' },
             { label: 'Layout', slug: 'components/layout' },
             {
               label: 'Form',

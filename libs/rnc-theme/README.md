@@ -10,16 +10,29 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 ![Platforms](https://img.shields.io/badge/platforms-android%20%7C%20ios-lightgrey.svg)
 
+## 📦 Peer Dependencies
 
+| Package | Version | Description |
+|---------|---------|-------------|
+| ⚛️ [`react`](https://www.npmjs.com/package/react) | `>=19.0.0` | React library |
+| 📱 [`react-native`](https://www.npmjs.com/package/react-native) | `>=0.79.3` | React Native framework |
+| 🎭 [`react-native-reanimated`](https://www.npmjs.com/package/react-native-reanimated) | `>=3` | Advanced animations |
+| 👆 [`react-native-gesture-handler`](https://www.npmjs.com/package/react-native-gesture-handler) | `>=2` | Gesture interactions |
+| 💾 [`@react-native-async-storage/async-storage`](https://www.npmjs.com/package/@react-native-async-storage/async-storage) | `>=2` | Local storage |
+| 🎨 [`lucide-react-native`](https://www.npmjs.com/package/lucide-react-native) | `>=0.513.0` | Icon library |
+| 📅 [`react-native-calendars`](https://www.npmjs.com/package/react-native-calendars) | `>=1.1286.0` | Calendar components |
+| 🧭 [`@react-navigation/native`](https://www.npmjs.com/package/@react-navigation/native) | `>=6` | Navigation |
+| 🛡️ [`react-native-safe-area-context`](https://www.npmjs.com/package/react-native-safe-area-context) | `>=4` | Safe area handling |
+| 🌍 [`expo-localization`](https://www.npmjs.com/package/expo-localization) | `>=16.1.5` | Locale detection |
+| 🗣️ [`i18n-js`](https://www.npmjs.com/package/i18n-js) | `>=4.5.1` | Internationalization |
 
 ## ✨ Features
 
 - 🎯 **Type-Safe** - Full TypeScript support with comprehensive type definitions
 - 🎨 **Dynamic Theme Switching** - Seamless light/dark mode transitions
-- 🔧 **Highly Customizable** - Create custom themes with your own design system
 - 📱 **React Native Optimized** - Built specifically for React Native performance
 - 💾 **Persistent Storage** - Automatically saves theme preferences
-- 🎭 **13+ Built-in Presets** - Material, Neon, Ocean, Cyberpunk, and more
+- 🎭 **8+ Built-in Presets** - Material, Neon, Ocean, Cyberpunk, and more
 - 🔄 **Theme Registry** - Register and manage multiple theme configurations
 
 ## 🚀 Installation
@@ -28,6 +41,10 @@
 npm install rnc-theme
 # or
 yarn add rnc-theme
+# or
+pnpm add rnc-theme
+# or
+bun add rnc-theme
 ```
 
 ## ⚡ Quick Start
@@ -52,7 +69,7 @@ export default function Root() {
 
 ```tsx
 import React from 'react';
-import { View, Text } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
 import { useTheme, useThemedStyles } from 'rnc-theme';
 
 const MyComponent = () => {
@@ -66,7 +83,7 @@ const MyComponent = () => {
   );
 };
 
-const createStyles = (theme) => ({
+const createStyles = (theme) => StyleSheet.create({
   container: {
     backgroundColor: theme.colors.background,
     padding: theme.spacing.md,
@@ -77,126 +94,6 @@ const createStyles = (theme) => ({
   },
 });
 ```
-
-## 🎨 Built-in Theme Presets
-
-Choose from 13+ professionally designed theme presets:
-
-| Theme | Description |
-|-------|-------------|
-| **Default** | Clean and modern design |
-| **Material** | Google Material Design inspired |
-| **Neon** | Bright cyberpunk-style colors |
-| **Ocean** | Blue ocean-inspired palette |
-| **Sunset** | Warm orange and red tones |
-| **Forest** | Natural green colors |
-| **Galaxy** | Purple space-themed colors |
-| **Vintage** | Classic brown and beige tones |
-| **Cyberpunk** | High-contrast neon colors |
-| **Pastel** | Soft and gentle colors |
-| **Monochrome** | Black and white theme |
-| **Autumn** | Fall-inspired warm colors |
-| **Arctic** | Cool blue and white tones |
-
-## 🔧 Custom Theme Creation
-
-Create your own themes with full TypeScript support:
-
-```tsx
-import { CustomThemeConfigFactory } from 'rnc-theme';
-
-const customTheme: CustomThemeConfigFactory = (isDark) => ({
-  colors: {
-    primary: isDark ? '#FF6B6B' : '#4ECDC4',
-    secondary: isDark ? '#FFE66D' : '#45B7D1',
-    background: isDark ? '#1a1a1a' : '#f8f9fa',
-    surface: isDark ? '#2d2d2d' : '#ffffff',
-    text: isDark ? '#ffffff' : '#333333',
-    // ... more colors
-  },
-  components: {
-    borderRadius: {
-      xs: 4, sm: 8, md: 12, lg: 16, xl: 24, full: 9999
-    },
-    padding: {
-      xs: 8, sm: 12, md: 16, lg: 20, xl: 24
-    },
-  },
-  spacing: {
-    xs: 4, sm: 8, md: 16, lg: 24, xl: 32, xxl: 48
-  },
-});
-
-// Apply custom theme
-const { updateCustomTheme } = useTheme();
-updateCustomTheme(customTheme(isDark), undefined, customTheme);
-```
-
-## 📚 Core API
-
-### Hooks
-
-#### `useTheme()`
-Access theme context and controls:
-
-```tsx
-const {
-  theme,              // Current theme object
-  themeMode,          // 'light' | 'dark'
-  setThemeMode,       // Function to set theme mode
-  isDark,             // Boolean indicating dark mode
-  updateCustomTheme,  // Function to update custom theme
-  resetTheme,         // Function to reset to default
-} = useTheme();
-```
-
-#### `useThemedStyles(styleCreator)`
-Create responsive styles that auto-update:
-
-```tsx
-const styles = useThemedStyles((theme) => ({
-  container: {
-    backgroundColor: theme.colors.background,
-    borderRadius: theme.components.borderRadius.md,
-  },
-}));
-```
-
-### Theme Registry
-
-Manage multiple theme presets:
-
-```tsx
-import { themeRegistry } from 'rnc-theme';
-
-// Register theme presets
-themeRegistry.registerPreset('myTheme', customThemeConfig);
-
-// Apply registered theme
-const themeConfig = themeRegistry.getPreset('myTheme');
-updateCustomTheme(themeConfig(isDark), undefined, themeConfig);
-
-// Get all presets
-const allPresets = themeRegistry.getAllPresets();
-```
-
-## 💡 Best Practices
-
-1. **Use TypeScript** - Leverage full type safety for better development experience
-2. **Theme Factories** - Create functions that accept `isDark` parameter for dynamic themes
-3. **Register Presets** - Use theme registry for organized theme management
-4. **Performance** - Always use `useThemedStyles` for automatic style updates
-5. **Test Both Modes** - Verify themes work in both light and dark modes
-
-## 🔗 Documentation
-
-For comprehensive guides, examples, and advanced usage:
-
-**📖 [Complete Documentation](https://rnc.masum.cloud)**
-
-## 🤝 Contributing
-
-Contributions are welcome! Please read our contributing guidelines before submitting PRs.
 
 ## 📄 License
 

@@ -13,13 +13,9 @@ import {
   useTheme,
   useThemedStyles,
   Theme,
+  ThemeColors,
 } from 'rnc-theme';
-import {
-  User,
-  Camera,
-  Heart,
-  Star,
-} from 'lucide-react-native';
+import { User, Camera, Heart, Star } from 'lucide-react-native';
 
 export default function AvatarScreen() {
   const { theme, themeMode, setThemeMode } = useTheme();
@@ -35,31 +31,36 @@ export default function AvatarScreen() {
     {
       id: '1',
       name: 'John Doe',
-      image: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
+      image:
+        'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=150&h=150&fit=crop&crop=face',
       status: 'online',
     },
     {
       id: '2',
       name: 'Jane Smith',
-      image: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
+      image:
+        'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=150&h=150&fit=crop&crop=face',
       status: 'away',
     },
     {
       id: '3',
       name: 'Mike Johnson',
-      image: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
+      image:
+        'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&h=150&fit=crop&crop=face',
       status: 'offline',
     },
     {
       id: '4',
       name: 'Sarah Wilson',
-      image: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
+      image:
+        'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=150&h=150&fit=crop&crop=face',
       status: 'online',
     },
     {
       id: '5',
       name: 'David Brown',
-      image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
+      image:
+        'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=150&h=150&fit=crop&crop=face',
       status: 'busy',
     },
   ];
@@ -280,7 +281,9 @@ export default function AvatarScreen() {
                     source={{ uri: user.image }}
                     fallbackText={user.name}
                     showBadge={showBadges}
-                    badgeColor={getStatusColor(user.status)}
+                    badgeColor={
+                      getStatusColor(user.status) as keyof ThemeColors
+                    }
                     onPress={() => setSelectedAvatar(user.id)}
                     borderWidth={selectedAvatar === user.id ? 3 : 0}
                     borderColor="primary"
@@ -384,7 +387,9 @@ export default function AvatarScreen() {
                       borderWidth={3}
                       borderColor="background"
                       showBadge={showBadges}
-                      badgeColor={getStatusColor(user.status)}
+                      badgeColor={
+                        getStatusColor(user.status) as keyof ThemeColors
+                      }
                     />
                   ))}
                 </AvatarGroup>
@@ -420,7 +425,9 @@ export default function AvatarScreen() {
                         selectedAvatar === user.id ? 'primary' : 'border'
                       }
                       showBadge={showBadges}
-                      badgeColor={getStatusColor(user.status)}
+                      badgeColor={
+                        getStatusColor(user.status) as keyof ThemeColors
+                      }
                     />
                   ))}
                 </HStack>
