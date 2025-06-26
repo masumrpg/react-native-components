@@ -1,5 +1,5 @@
 import { router, Stack, usePathname } from "expo-router";
-import { ArrowLeft, MenuIcon } from "lucide-react-native";
+import { ArrowLeft } from 'lucide-react-native';
 import { Platform, TouchableOpacity } from "react-native";
 import { useTheme } from "rnc-theme";
 

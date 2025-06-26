@@ -1,5 +1,5 @@
 import { StyleSheet, FlatList, Pressable } from 'react-native';
-import { Href, Link, Stack } from 'expo-router';
+import { Href, Link } from 'expo-router';
 import {
   Badge,
   Bell,
@@ -253,16 +253,6 @@ export default function HomeScreen() {
   return (
     <>
       <StatusBar style={isDark ? 'light' : 'dark'} />
-      {/* <Stack.Screen
-        options={{
-          headerStyle: {
-            backgroundColor: theme.colors.surface,
-          },
-          headerTitleStyle: {
-            color: theme.colors.text,
-          },
-        }}
-      /> */}
       <FlatList
         data={listLibrary.sort((a, b) => a.title.localeCompare(b.title))}
         keyExtractor={(item) => item.id.toString()}

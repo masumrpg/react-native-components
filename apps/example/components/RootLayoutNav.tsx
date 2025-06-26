@@ -1,7 +1,8 @@
-import { i18nConfig } from "@/config";
-import { ReactNode } from "react";
-import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { RNCProvider } from "rnc-theme";
+/* eslint-disable */
+import { i18nConfig } from '@/config';
+import { ReactNode } from 'react';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { RNCProvider } from 'rnc-theme';
 
 export default function RootLayoutNav({ children }: { children: ReactNode }) {
   return (
