@@ -15,33 +15,19 @@ interface BaseLayoutProps {
   flex?: number;
   width?: DimensionValue | undefined;
   height?: DimensionValue | undefined;
-  themed?: boolean; // Apakah menggunakan background theme default
+  themed?: boolean;
+  align?: ViewStyle['alignItems'];
+  justify?: ViewStyle['justifyContent'];
 }
 
 interface StackProps extends BaseLayoutProps {
   spacing?: keyof Theme['spacing'];
-  align?: 'flex-start' | 'center' | 'flex-end' | 'stretch';
-  justify?:
-    | 'flex-start'
-    | 'center'
-    | 'flex-end'
-    | 'space-between'
-    | 'space-around'
-    | 'space-evenly';
   wrap?: boolean;
 }
 
 interface GridProps extends BaseLayoutProps {
   columns?: number;
   spacing?: keyof Theme['spacing'];
-  align?: 'flex-start' | 'center' | 'flex-end' | 'stretch';
-  justify?:
-    | 'flex-start'
-    | 'center'
-    | 'flex-end'
-    | 'space-between'
-    | 'space-around'
-    | 'space-evenly';
 }
 
 type CenterProps = BaseLayoutProps;
@@ -180,6 +166,8 @@ const ZStack = forwardRef<React.ComponentRef<typeof View>, BaseLayoutProps>(
       width,
       height,
       themed = false,
+      align = 'stretch',
+      justify = 'flex-start',
       ...props
     },
     ref
@@ -189,6 +177,8 @@ const ZStack = forwardRef<React.ComponentRef<typeof View>, BaseLayoutProps>(
 
     const stackStyle: ViewStyle = {
       ...styles.base,
+      alignItems: align,
+      justifyContent: justify,
       padding: padding ? theme.spacing[padding] : undefined,
       margin: margin ? theme.spacing[margin] : undefined,
       backgroundColor: resolveColor(
@@ -228,6 +218,8 @@ const Center = forwardRef<React.ComponentRef<typeof View>, CenterProps>(
       width,
       height,
       themed = false,
+      align = 'center',
+      justify = 'center',
       ...props
     },
     ref
@@ -237,6 +229,8 @@ const Center = forwardRef<React.ComponentRef<typeof View>, CenterProps>(
 
     const centerStyle: ViewStyle = {
       ...styles.base,
+      alignItems: align,
+      justifyContent: justify,
       padding: padding ? theme.spacing[padding] : undefined,
       margin: margin ? theme.spacing[margin] : undefined,
       backgroundColor: resolveColor(
@@ -281,6 +275,8 @@ const Box = forwardRef<React.ComponentRef<typeof View>, BoxProps>(
       height,
       themed = true,
       variant = 'default',
+      align = 'stretch',
+      justify = 'flex-start',
       ...props
     },
     ref
@@ -302,6 +298,8 @@ const Box = forwardRef<React.ComponentRef<typeof View>, BoxProps>(
     const boxStyle: ViewStyle = {
       ...styles.base,
       ...getVariantStyle(),
+      alignItems: align,
+      justifyContent: justify,
       padding: padding ? theme.spacing[padding] : undefined,
       margin: margin ? theme.spacing[margin] : undefined,
       backgroundColor: resolveColor(
@@ -429,8 +427,7 @@ const createZStackStyles = (theme: Theme) => ({
 
 const createCenterStyles = (theme: Theme) => ({
   base: {
-    justifyContent: 'center' as const,
-    alignItems: 'center' as const,
+    // Base styles, alignment handled via props
   },
 });
 
@@ -443,7 +440,9 @@ const createGridStyles = (theme: Theme) => ({
 });
 
 const createBoxStyles = (theme: Theme) => ({
-  base: {},
+  base: {
+    // Base styles, alignment handled via props
+  },
   default: {
     backgroundColor: theme.colors.surface,
   },
