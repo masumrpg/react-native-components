@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import {
   Accordion,
   AccordionItem,
@@ -12,6 +12,7 @@ import {
   Button,
   ButtonText,
   useTheme,
+  VScroll,
 } from 'rnc-theme';
 import {
   Settings,
@@ -33,7 +34,7 @@ import {
   Image as ImageIcon,
   Smartphone,
   Laptop,
-  Headphones
+  Headphones,
 } from 'lucide-react-native';
 
 const AccordionScreen = () => {
@@ -80,7 +81,11 @@ const AccordionScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <VScroll
+      style={[styles.container]}
+      contentContainerStyle={styles.content}
+      themed
+    >
       {/* Multiple Selection with Outline Variant */}
       <Card margin="md">
         <Typography variant="h3" style={styles.sectionTitle}>
@@ -92,10 +97,7 @@ const AccordionScreen = () => {
           onValueChange={handleMultipleValueChange}
         >
           <AccordionItem value="feature-1" variant="outline">
-            <AccordionTrigger
-            >
-              Premium Features
-            </AccordionTrigger>
+            <AccordionTrigger>Premium Features</AccordionTrigger>
             <AccordionContent>
               <VStack spacing="md">
                 <Typography>
@@ -116,10 +118,7 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="feature-2" variant="outline">
-            <AccordionTrigger
-            >
-              Security & Privacy
-            </AccordionTrigger>
+            <AccordionTrigger>Security & Privacy</AccordionTrigger>
             <AccordionContent>
               <VStack spacing="md">
                 <Typography>Your data security is our top priority:</Typography>
@@ -143,10 +142,7 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="feature-3" variant="outline">
-            <AccordionTrigger
-            >
-              Global Accessibility
-            </AccordionTrigger>
+            <AccordionTrigger>Global Accessibility</AccordionTrigger>
             <AccordionContent>
               <VStack spacing="md">
                 <Typography>
@@ -1505,14 +1501,13 @@ const AccordionScreen = () => {
           ))}
         </VStack>
       </Card>
-    </ScrollView>
+    </VScroll>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   content: {
     padding: 16,

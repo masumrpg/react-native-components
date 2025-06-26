@@ -9,6 +9,7 @@ import {
   Button,
   ButtonText,
   Typography,
+  Box,
 } from 'rnc-theme';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -589,12 +590,7 @@ const BottomSheetScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Bottom Sheet Examples</Text>
-      <Text style={styles.description}>
-        Tap any button below to see different bottom sheet examples:
-      </Text>
-
+    <Box themed style={styles.container}>
       <Card style={{ marginBottom: 16 }}>
         <CardHeader>
           <Typography variant="subtitle">Basic Examples</Typography>
@@ -629,7 +625,7 @@ const BottomSheetScreen: React.FC = () => {
           </View>
         </CardContent>
       </Card>
-    </View>
+    </Box>
   );
 };
 
@@ -637,7 +633,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#f5f5f5',
   },
   title: {
     fontSize: 24,

@@ -1,14 +1,14 @@
-import { router, Stack, usePathname } from "expo-router";
+import { Stack, usePathname, useRouter } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
-import { Platform, TouchableOpacity } from "react-native";
-import { useTheme } from "rnc-theme";
+import { Platform, TouchableOpacity } from 'react-native';
+import { useTheme } from 'rnc-theme';
 
 const nonHeaderPatshs = ['/scroll', '/qrcode-pack/qr-scanner'];
 
-
 export default function UILayout() {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const pathName = usePathname();
+  const router = useRouter();
 
   const isNonHeaderPath = nonHeaderPatshs.includes(pathName);
 
@@ -37,8 +37,20 @@ export default function UILayout() {
         headerTitleStyle: {
           color: theme.colors.text,
         },
+        headerBackButtonDisplayMode: 'minimal',
         headerLeft: () => (
-          <TouchableOpacity style={{...(Platform.OS==='web' && {marginLeft: 16})}} onPress={() => router.back()}>
+          <TouchableOpacity
+            style={{ ...(Platform.OS === 'web' && { marginLeft: 16 }) }}
+            onPress={() => {
+              // Check if we can go back in history
+              if (router.canGoBack()) {
+                router.back();
+              } else {
+                // If we can't go back, navigate to root
+                router.push('/');
+              }
+            }}
+          >
             <ArrowLeft size={24} color={theme.colors.text} />
           </TouchableOpacity>
         ),
