@@ -1,0 +1,323 @@
+---
+title: Theme Hooks
+description: Complete guide to useTheme hook for accessing and managing theme functionality in React Native applications.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+
+## `useTheme` Hook
+
+The `useTheme` hook is the primary interface for accessing and managing theme functionality in your React Native application.
+
+### Basic Usage
+
+<Code code={`import { useTheme } from 'your-theme-package';
+
+function MyComponent() {
+  const { theme, isDark, setThemeMode } = useTheme();
+
+  return (
+    <View style={{ backgroundColor: theme.colors.background }}>
+      <Text style={{ color: theme.colors.text }}>
+        Current mode: {isDark ? 'dark' : 'light'}
+      </Text>
+    </View>
+  );
+}`} lang="tsx" title="MyComponent.tsx" />
+
+### Return Values
+
+The `useTheme` hook returns an object with the following properties:
+
+<CardGrid>
+  <Card title="theme: Theme" icon="puzzle">
+    The current active theme object containing:
+    - `colors` - Color palette for the current theme
+    - `fontSizes` - Typography scale definitions
+    - `spacing` - Spacing scale for consistent layouts
+    - `components` - Component-specific styling tokens
+    - `typography` - Font family and weight definitions
+  </Card>
+
+  <Card title="themeMode: ThemeMode" icon="setting">
+    Current theme mode setting. Can be:
+    - `'light'` - Force light theme
+    - `'dark'` - Force dark theme
+    - `'system'` - Follow system preference
+  </Card>
+
+  <Card title="isDark: boolean" icon="moon">
+    Boolean indicating if dark theme is currently active. Automatically resolves based on:
+    - Explicit mode selection (`'light'` or `'dark'`)
+    - System preference when mode is `'system'`
+  </Card>
+
+  <Card title="activePreset?: string" icon="star">
+    Name of the currently active theme preset, if any.
+  </Card>
+</CardGrid>
+
+### Methods
+
+#### `setThemeMode(mode: ThemeMode): void` <Badge text="Method" variant="note" />
+
+Changes the theme mode and persists the selection to storage.
+
+<Code code={`const { setThemeMode } = useTheme();
+
+// Switch to dark mode
+setThemeMode('dark');
+
+// Follow system preference
+setThemeMode('light');`} lang="tsx" title="Theme Mode Switching" />
+
+#### `updateCustomTheme(customTheme, preset?, presetConfig?): void` <Badge text="Method" variant="note" />
+
+Updates the current theme with custom styling.
+
+<Aside type="note" title="Parameters">
+- `customTheme: Partial<Theme>` - Custom theme overrides
+- `preset?: string` - Optional preset name for identification
+- `presetConfig?: (isDark: boolean) => Partial<Theme>` - Function to generate theme variants
+</Aside>
+
+<Tabs>
+  <TabItem label="Custom Colors">
+    <Code code={`const { updateCustomTheme } = useTheme();
+
+// Apply custom colors
+updateCustomTheme({
+  colors: {
+    primary: '#007AFF',
+    secondary: '#FF9500'
+  }
+});`} lang="tsx" />
+  </TabItem>
+
+  <TabItem label="Preset with Dynamic Generation">
+    <Code code={`// Apply preset with dynamic generation
+updateCustomTheme(
+  { colors: { primary: '#007AFF' } },
+  'blue-preset',
+  (isDark) => ({
+    colors: {
+      primary: isDark ? '#0A84FF' : '#007AFF',
+      background: isDark ? '#000000' : '#FFFFFF'
+    }
+  })
+);`} lang="tsx" />
+  </TabItem>
+</Tabs>
+
+#### `resetTheme(): void` <Badge text="Method" variant="note" />
+
+Resets theme to default state, removing all customizations and presets.
+
+<Code code={`const { resetTheme } = useTheme();
+
+// Reset to default theme
+resetTheme();`} lang="tsx" title="Reset Theme" />
+
+## Advanced Usage Patterns
+
+### Theme-Aware Styling
+
+<Code code={`function ThemedButton({ children, onPress }) {
+  const { theme, isDark } = useTheme();
+
+  const buttonStyle = {
+    backgroundColor: theme.colors.primary,
+    padding: theme.spacing.md,
+    borderRadius: theme.components.borderRadius.md,
+    // Add dark mode specific styling
+    shadowColor: isDark ? theme.colors.text : theme.colors.shadow,
+  };
+
+  return (
+    <TouchableOpacity style={buttonStyle} onPress={onPress}>
+      <Text style={{ color: theme.colors.onPrimary }}>
+        {children}
+      </Text>
+    </TouchableOpacity>
+  );
+}`} lang="tsx" title="ThemedButton.tsx" />
+
+### Dynamic Theme Updates
+
+<Code code={`function ThemeCustomizer() {
+  const { theme, updateCustomTheme, activePreset } = useTheme();
+
+  const applyBrandTheme = () => {
+    updateCustomTheme(
+      {
+        colors: {
+          primary: '#FF6B6B',
+          secondary: '#4ECDC4',
+          accent: '#45B7D1',
+        }
+      },
+      'brand-theme'
+    );
+  };
+
+  return (
+    <View>
+      <Text>Active Preset: {activePreset || 'Default'}</Text>
+      <Button title="Apply Brand Theme" onPress={applyBrandTheme} />
+    </View>
+  );
+}`} lang="tsx" title="ThemeCustomizer.tsx" />
+
+### System Theme Integration
+
+<Code code={`function AdaptiveComponent() {
+  const { isDark, themeMode, setThemeMode } = useTheme();
+
+  useEffect(() => {
+    // Automatically adjust based on time of day
+    const hour = new Date().getHours();
+    if (themeMode === 'system') {
+      // System will handle this automatically
+      return;
+    }
+
+    // Custom logic for auto-switching
+    if (hour >= 18 || hour <= 6) {
+      setThemeMode('dark');
+    } else {
+      setThemeMode('light');
+    }
+  }, []);
+
+  return (
+    <View>
+      <Text>Theme adapts to: {themeMode}</Text>
+      <Text>Currently {isDark ? 'dark' : 'light'} mode</Text>
+    </View>
+  );
+}`} lang="tsx" title="AdaptiveComponent.tsx" />
+
+## Error Handling
+
+The `useTheme` hook includes built-in error handling:
+
+<Tabs>
+  <TabItem label="❌ Incorrect Usage">
+    <Code code={`// ❌ This will throw an error
+function ComponentOutsideProvider() {
+  const theme = useTheme(); // Error: useTheme must be used within a ThemeProvider
+  return <View />;
+}`} lang="tsx" />
+  </TabItem>
+
+  <TabItem label="✅ Correct Usage">
+    <Code code={`// ✅ Correct usage within provider
+function App() {
+  return (
+    <RNCProvider>
+      <ComponentWithTheme />
+    </RNCProvider>
+  );
+}`} lang="tsx" />
+  </TabItem>
+</Tabs>
+
+## TypeScript Support
+
+The hook is fully typed and provides excellent IntelliSense support:
+
+<Code code={`import { useTheme } from 'your-theme-package';
+import type { Theme, ThemeMode } from 'your-theme-package/types';
+
+function TypedComponent() {
+  const {
+    theme,        // Type: Theme
+    themeMode,    // Type: ThemeMode
+    isDark,       // Type: boolean
+    setThemeMode, // Type: (mode: ThemeMode) => void
+  } = useTheme();
+
+  // Full type safety and autocompletion
+  const primaryColor = theme.colors.primary; // ✅ Typed
+  // const invalid = theme.colors.invalid;    // ❌ TypeScript error
+}`} lang="tsx" title="TypedComponent.tsx" />
+
+## Performance Considerations
+
+### Selective Destructuring
+
+Only destructure the values you need to optimize re-renders:
+
+<Tabs>
+  <TabItem label="✅ Optimized">
+    <Code code={`// ✅ Good - only subscribes to theme changes
+function OptimizedComponent() {
+  const { theme } = useTheme();
+  return <View style={{ backgroundColor: theme.colors.background }} />;
+}`} lang="tsx" />
+  </TabItem>
+
+  <TabItem label="⚠️ Less Optimal">
+    <Code code={`// ⚠️ Less optimal - subscribes to all theme context changes
+function ComponentWithAllValues() {
+  const themeContext = useTheme();
+  return <View style={{ backgroundColor: themeContext.theme.colors.background }} />;
+}`} lang="tsx" />
+  </TabItem>
+</Tabs>
+
+### Memoization for Complex Calculations
+
+<Code code={`function ExpensiveThemedComponent() {
+  const { theme, isDark } = useTheme();
+
+  const complexStyles = useMemo(() => {
+    // Expensive style calculations
+    return generateComplexStyles(theme, isDark);
+  }, [theme, isDark]);
+
+  return <View style={complexStyles} />;
+}`} lang="tsx" title="ExpensiveThemedComponent.tsx" />
+
+## Best Practices
+
+<Steps>
+1. **Always use within RNCProvider**: Ensure `useTheme` is called within components wrapped by `RNCProvider`
+
+2. **Destructure selectively**: Only extract the values you need to minimize re-renders
+
+3. **Leverage TypeScript**: Use the provided types for better development experience
+
+4. **Test theme switching**: Always test your components in both light and dark modes
+
+5. **Handle edge cases**: Consider how your UI looks during theme transitions
+
+6. **Use semantic colors**: Prefer semantic color names (`primary`, `background`) over specific values (`blue`, `white`)
+</Steps>
+
+## Troubleshooting
+
+### Common Issues
+
+<Card title="Hook called outside provider" icon="error">
+  **Error:**
+  ```
+  Error: useTheme must be used within a ThemeProvider
+  ```
+  **Solution:** Wrap your app with `RNCProvider`
+</Card>
+<Card title="Theme not persisting" icon="warning">
+  Check that AsyncStorage permissions are properly configured in your React Native app.
+</Card>
+<Card title="Custom theme not applied" icon="information">
+  Ensure you're calling `updateCustomTheme` with valid theme properties that match the Theme interface.
+</Card>
+
+<Aside type="tip" title="Pro Tip">
+Always test your theme implementations across different devices and system settings to ensure consistent behavior.
+</Aside>

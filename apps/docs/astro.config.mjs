@@ -47,14 +47,14 @@ export default defineConfig({
             },
           ],
         },
-        // {
-        //   label: 'Hooks',
-        //   items: [
-        //     { label: 'Overview', slug: 'hooks/overview' },
-        //     { label: 'useTheme', slug: 'hooks/use-theme' },
-        //     { label: 'useThemeStyle', slug: 'hooks/use-themed-styles' },
-        //   ],
-        // },
+        {
+          label: 'Hooks',
+          items: [
+            // { label: 'Overview', slug: 'hooks/overview' },
+            { label: 'useTheme', slug: 'hooks/use-theme' },
+            // { label: 'useThemeStyle', slug: 'hooks/use-themed-styles' },
+          ],
+        },
         {
           label: 'Components',
           collapsed: false,
