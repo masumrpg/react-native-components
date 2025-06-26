@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Alert, StyleSheet, View } from 'react-native';
+import { Alert, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { CustomThemeConfigFactory, Theme } from '../../types/theme';
 import { useTheme } from '../../context/RNCProvider';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
@@ -69,6 +69,14 @@ export interface ThemeManagerCustomization {
 
 export interface ThemeManagerProps {
   /**
+   * Custom styles for theme manager
+   */
+  style?: StyleProp<ViewStyle>;
+  /**
+   * Custom content styles for theme manager
+   */
+  contentStyle?: StyleProp<ViewStyle>;
+  /**
    * Array of theme preset configurations
    */
   themePresets: ThemePresetConfig[];
@@ -100,9 +108,15 @@ export interface ThemeManagerProps {
    * Optional customization for labels and messages
    */
   customization?: ThemeManagerCustomization;
+  /**
+   * Whether to show the cards for theme presets
+   */
+  showCards?: boolean;
 }
 
 export const ThemeManager: React.FC<ThemeManagerProps> = ({
+  style,
+  contentStyle,
   themePresets,
   initialTheme = 'default',
   showControls = true,
@@ -111,6 +125,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
   onThemeApplied,
   onThemePreview,
   customization,
+  showCards = true,
 }) => {
   const { setThemeMode, isDark, updateCustomTheme, resetTheme } = useTheme();
   const styles = useThemedStyles(createStyles);
@@ -250,14 +265,94 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
   }, [selectedPreset, applyThemePreset, showAlert]);
 
   return (
-    <VStack style={styles.container}>
+    <VStack style={[styles.container, style]}>
       {/* Theme Controls */}
-      {showControls && (
-        <Card style={styles.card}>
-          <CardHeader
-            title={customization?.controlsTitle ?? 'Theme Controls'}
-          />
-          <CardContent>
+      {showControls &&
+        (showCards ? (
+          <Card style={[styles.card, contentStyle]}>
+            <CardHeader
+              title={customization?.controlsTitle ?? 'Theme Controls'}
+            />
+            <CardContent>
+              <View style={styles.row}>
+                <Typography
+                  variant="body"
+                  style={{
+                    opacity: isDarkModeDisabled ? 0.5 : 1,
+                  }}
+                >
+                  {customization?.darkModeLabel ?? 'Dark Mode'}{' '}
+                  {isDarkModeDisabled &&
+                    (customization?.darkModeDisabledLabel ?? '(Disabled)')}
+                </Typography>
+                <Switcher
+                  value={isDark}
+                  onValueChange={toggleTheme}
+                  disabled={isDarkModeDisabled}
+                />
+              </View>
+
+              {previewTheme && previewTheme !== appliedTheme ? (
+                <View>
+                  <Button
+                    variant="primary"
+                    onPress={applySelectedTheme}
+                    style={styles.button}
+                  >
+                    <ButtonText>
+                      {customization?.applyButtonText ??
+                        `Apply ${
+                          selectedPreset.charAt(0).toUpperCase() +
+                          selectedPreset.slice(1)
+                        } Theme`}
+                    </ButtonText>
+                  </Button>
+
+                  <Button
+                    variant="outline"
+                    onPress={cancelPreview}
+                    style={styles.button}
+                  >
+                    <ButtonText>
+                      {customization?.cancelPreviewText ?? 'Cancel Preview'}
+                    </ButtonText>
+                  </Button>
+                </View>
+              ) : (
+                <Button
+                  variant="primary"
+                  onPress={applySelectedTheme}
+                  style={styles.button}
+                >
+                  <ButtonText>
+                    {selectedPreset === 'default'
+                      ? customization?.resetButtonText ??
+                        'Reset to Default Theme'
+                      : customization?.applyButtonText ??
+                        `Apply ${
+                          selectedPreset.charAt(0).toUpperCase() +
+                          selectedPreset.slice(1)
+                        } Theme`}
+                  </ButtonText>
+                </Button>
+              )}
+
+              <Button
+                variant="outline"
+                onPress={() => applyThemePreset('default')}
+                style={styles.button}
+              >
+                <ButtonText>
+                  {customization?.resetButtonText ?? 'Reset Theme'}
+                </ButtonText>
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <View style={[styles.simpleContainer, contentStyle]}>
+            <Typography variant="h4" style={styles.simpleTitle}>
+              {customization?.controlsTitle ?? 'Theme Controls'}
+            </Typography>
             <View style={styles.row}>
               <Typography
                 variant="body"
@@ -329,15 +424,67 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                 {customization?.resetButtonText ?? 'Reset Theme'}
               </ButtonText>
             </Button>
-          </CardContent>
-        </Card>
-      )}
+          </View>
+        ))}
 
       {/* Theme Presets */}
-      {showPresets && (
-        <Card style={styles.card}>
-          <CardHeader title={customization?.presetsTitle ?? 'Theme Presets'} />
-          <CardContent>
+      {showPresets &&
+        (showCards ? (
+          <Card style={[styles.card, contentStyle]}>
+            <CardHeader
+              title={customization?.presetsTitle ?? 'Theme Presets'}
+            />
+            <CardContent>
+              <View style={styles.presetGrid}>
+                <Button
+                  key="default"
+                  variant={
+                    selectedPreset === 'default'
+                      ? 'primary'
+                      : appliedTheme === 'default'
+                      ? 'success'
+                      : 'outline'
+                  }
+                  size="sm"
+                  onPress={() => previewThemePreset('default')}
+                  style={styles.presetButton}
+                >
+                  <ButtonText>
+                    {customization?.defaultThemeText ?? 'Default'}
+                    {appliedTheme === 'default' && selectedPreset !== 'default'}
+                    {selectedPreset === 'default' &&
+                      previewTheme !== appliedTheme}
+                  </ButtonText>
+                </Button>
+                {themePresets.map(({ key, label }) => (
+                  <Button
+                    key={key}
+                    variant={
+                      selectedPreset === key
+                        ? 'primary'
+                        : appliedTheme === key
+                        ? 'success'
+                        : 'outline'
+                    }
+                    size="sm"
+                    onPress={() => previewThemePreset(key)}
+                    style={styles.presetButton}
+                  >
+                    <ButtonText>
+                      {label}
+                      {appliedTheme === key && selectedPreset !== key}
+                      {selectedPreset === key && previewTheme !== appliedTheme}
+                    </ButtonText>
+                  </Button>
+                ))}
+              </View>
+            </CardContent>
+          </Card>
+        ) : (
+          <View style={[styles.simpleContainer, contentStyle]}>
+            <Typography variant="h4" style={styles.simpleTitle}>
+              {customization?.presetsTitle ?? 'Theme Presets'}
+            </Typography>
             <View style={styles.presetGrid}>
               <Button
                 key="default"
@@ -381,9 +528,8 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                 </Button>
               ))}
             </View>
-          </CardContent>
-        </Card>
-      )}
+          </View>
+        ))}
 
       {/* Additional content */}
       {children}
@@ -424,6 +570,15 @@ const createStyles = (theme: Theme) =>
     presetButton: {
       width: '32%',
       marginBottom: theme.spacing.sm,
+    },
+    simpleContainer: {
+      marginBottom: theme.spacing.lg,
+      padding: theme.spacing.md,
+      borderRadius: theme.components.borderRadius.md,
+    },
+    simpleTitle: {
+      marginBottom: theme.spacing.md,
+      color: theme.colors.text,
     },
   });
 

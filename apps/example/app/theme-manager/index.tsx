@@ -1092,7 +1092,7 @@ const ThemeManagerExampleScreen: React.FC = () => {
 
         {/* Customized ThemeManager */}
         <Heading style={{ paddingHorizontal: 16 }}>
-          Customized Caption Theme Manager
+          Customized Theme Manager
         </Heading>
         <ThemeManager
           themePresets={themePresets}
@@ -1112,6 +1112,14 @@ const ThemeManagerExampleScreen: React.FC = () => {
             errorMessage: 'Terjadi kesalahan! ❌',
             warningMessage: 'Peringatan: Silakan periksa input Anda! ⚠️',
             infoMessage: 'Info: Tema telah diperbarui! ℹ️',
+          }}
+          showCards={false}
+          style={{
+            backgroundColor: 'pink',
+          }}
+          contentStyle={{
+            backgroundColor: 'transparent',
+            borderRadius: 0,
           }}
         >
           <Card style={styles.demoCard}>

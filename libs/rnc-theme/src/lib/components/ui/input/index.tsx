@@ -16,6 +16,7 @@ import {
   Platform,
   NativeSyntheticEvent,
   TextInputFocusEventData,
+  StyleSheet,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -292,6 +293,15 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       const shadowOpacity = interpolate(focusAnimation.value, [0, 1], [0, 0.1]);
       const shadowRadius = interpolate(focusAnimation.value, [0, 1], [0, 8]);
       const elevation = interpolate(focusAnimation.value, [0, 1], [0, 3]);
+      const semiTransparentVariant: (typeof variant)[] = [
+        'info',
+        'destructive',
+        'error',
+        'success',
+        'warning',
+        'secondary',
+        'primary',
+      ];
 
       return {
         borderColor,
@@ -304,7 +314,9 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
               shadowRadius,
             }
           : {
-              elevation,
+              elevation: semiTransparentVariant.includes(variant)
+                ? 0
+                : elevation,
             }),
       };
     }, [animated, theme.colors, disabled, hasError, state]);
@@ -686,192 +698,191 @@ type StateStylesType = {
 };
 
 const createStyles = (theme: Theme) =>
-  ({
+  StyleSheet.create({
     container: {
       marginBottom: 0,
-    } as ViewStyle,
+    },
     label: {
       marginBottom: theme.spacing.xs,
       color: theme.colors.text,
-      fontWeight: '600' as const,
+      fontWeight: '600',
       fontSize: theme.typography.body.fontSize,
       lineHeight: theme.typography.body.lineHeight,
-    } as TextStyle,
+    },
     labelSm: {
       fontSize: theme.typography.small.fontSize,
       lineHeight: theme.typography.small.lineHeight,
-    } as TextStyle,
+    },
     labelMd: {
       fontSize: theme.typography.body.fontSize,
       lineHeight: theme.typography.body.lineHeight,
-    } as TextStyle,
+    },
     labelLg: {
       fontSize: theme.typography.subtitle.fontSize,
       lineHeight: theme.typography.subtitle.lineHeight,
-    } as TextStyle,
+    },
     required: {
       color: theme.colors.error,
-    } as TextStyle,
+    },
     inputContainer: {
-      flexDirection: 'row' as const,
-      alignItems: 'center' as const,
+      flexDirection: 'row',
+      alignItems: 'center',
       borderWidth: 1,
-      position: 'relative' as const,
-    } as ViewStyle,
+      position: 'relative',
+    },
     // FIX: Add specific style for textarea container
     textAreaContainer: {
-      alignItems: 'flex-start' as const, // Change from center to flex-start for textarea
+      alignItems: 'flex-start', // Change from center to flex-start for textarea
       paddingTop: theme.spacing.sm, // Add consistent top padding
-    } as ViewStyle,
+    },
     floatingLabelContainer: {
-      position: 'absolute' as const,
+      position: 'absolute',
       left: theme.spacing.md,
       top: 0,
       zIndex: 1,
       backgroundColor: theme.colors.surface,
       paddingHorizontal: theme.spacing.xs,
-    } as ViewStyle,
+    },
     // Updated Variants
     default: {
       borderWidth: 1,
-    } as ViewStyle,
+    },
     primary: {
       borderWidth: 1.5,
-    } as ViewStyle,
+    },
     secondary: {
       borderWidth: 1.5,
-    } as ViewStyle,
+    },
     outline: {
       borderWidth: 1.5,
-    } as ViewStyle,
+    },
     filled: {
       borderWidth: 0,
-    } as ViewStyle,
+    },
     ghost: {
       borderWidth: 0,
-    } as ViewStyle,
+    },
     success: {
       borderWidth: 1.5,
-    } as ViewStyle,
+    },
     error: {
       borderWidth: 1.5,
-    } as ViewStyle,
+    },
     warning: {
       borderWidth: 1.5,
-    } as ViewStyle,
+    },
     info: {
       borderWidth: 1.5,
-    } as ViewStyle,
+    },
     destructive: {
       borderWidth: 1.5,
-    } as ViewStyle,
+    },
     // Updated Sizes
     sizeXs: {
       paddingHorizontal: theme.spacing.xs,
       paddingVertical: theme.spacing.xs,
       minHeight: 32,
-    } as ViewStyle,
+    },
     sizeSm: {
       paddingHorizontal: theme.spacing.sm,
       paddingVertical: theme.spacing.xs,
       minHeight: 36,
-    } as ViewStyle,
+    },
     sizeMd: {
       paddingHorizontal: theme.spacing.md,
       paddingVertical: theme.spacing.sm,
       minHeight: 42,
-    } as ViewStyle,
+    },
     sizeLg: {
       paddingHorizontal: theme.spacing.lg,
       paddingVertical: theme.spacing.md,
       minHeight: 48,
-    } as ViewStyle,
+    },
     sizeXl: {
       paddingHorizontal: theme.spacing.xl,
       paddingVertical: theme.spacing.lg,
       minHeight: 56,
-    } as ViewStyle,
+    },
     // Updated States
-    stateDefault: {} as ViewStyle,
+    stateDefault: {},
     stateFocus: {
       borderWidth: 2,
-    } as ViewStyle,
+    },
     stateActive: {
       borderWidth: 2,
       opacity: 0.9,
-    } as ViewStyle,
+    },
     stateDisabled: {
       opacity: 0.6,
-      pointerEvents: 'none' as const,
-    } as ViewStyle,
+      pointerEvents: 'none',
+    },
     stateLoading: {
       opacity: 0.8,
-    } as ViewStyle,
+    },
     stateError: {
       borderColor: theme.colors.error,
-    } as ViewStyle,
+    },
     stateSuccess: {
       borderColor: theme.colors.success,
-    } as ViewStyle,
+    },
     stateWarning: {
       borderColor: theme.colors.warning,
-    } as ViewStyle,
+    },
     // Text Input
     textInput: {
       flex: 1,
       padding: 0,
       margin: 0,
-      // Remove textAlignVertical from base style - it's handled conditionally now
-      fontWeight: '400' as const,
-    } as TextStyle,
+      fontWeight: '400',
+    },
     textInputSm: {
       fontSize: theme.typography.small.fontSize ?? 14,
       lineHeight: (theme.typography.small.fontSize ?? 14) * 1.3,
-    } as TextStyle,
+    },
     textInputMd: {
       fontSize: theme.typography.body.fontSize ?? 16,
       lineHeight: (theme.typography.body.fontSize ?? 16) * 1.3,
-    } as TextStyle,
+    },
     textInputLg: {
       fontSize: theme.typography.subtitle.fontSize ?? 18,
       lineHeight: (theme.typography.subtitle.fontSize ?? 18) * 1.3,
-    } as TextStyle,
+    },
     // Icons
     leftIcon: {
       marginRight: theme.spacing.sm,
-      justifyContent: 'center' as const,
-      alignItems: 'center' as const,
-    } as ViewStyle,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     rightIcon: {
       marginLeft: theme.spacing.sm,
-      justifyContent: 'center' as const,
-      alignItems: 'center' as const,
-    } as ViewStyle,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
     // Helper Text
     helperContainer: {
-      flexDirection: 'row' as const,
-      justifyContent: 'space-between' as const,
-      alignItems: 'flex-start' as const,
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'flex-start',
       marginTop: theme.spacing.xs,
       minHeight: 20,
-    } as ViewStyle,
+    },
     helperText: {
       fontSize: theme.typography.small.fontSize,
       color: theme.colors.textSecondary,
       flex: 1,
       lineHeight: theme.typography.small.lineHeight,
-    } as TextStyle,
+    },
     errorText: {
       color: theme.colors.error,
-      fontWeight: '500' as const,
-    } as TextStyle,
+      fontWeight: '500',
+    },
     characterCount: {
       fontSize: theme.typography.small.fontSize,
       color: theme.colors.textSecondary,
       marginLeft: theme.spacing.sm,
-      fontWeight: '500' as const,
-    } as TextStyle,
-  } as const satisfies Record<string, ViewStyle | TextStyle> & StateStylesType);
+      fontWeight: '500',
+    },
+  });
 
 // Display names
 Input.displayName = 'Input';
