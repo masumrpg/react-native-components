@@ -33,10 +33,6 @@ export default defineConfig({
             { label: 'Setup Guide', slug: 'getting-started/setup-guide' },
           ],
         },
-        // { // Example auto generate
-        //   label: 'Reference',
-        //   autogenerate: { directory: 'reference' },
-        // },
         {
           label: 'Theming',
           items: [
@@ -44,7 +40,11 @@ export default defineConfig({
             { label: 'Theme Provider', slug: 'theming/theme-provider' },
             { label: 'Custom Theme', slug: 'theming/custom-theme' },
             { label: 'Theme Registry', slug: 'theming/theme-registry' },
-            { label: 'Theme Switching', slug: 'theming/theme-switching' },
+            {
+              label: 'Theme Switching',
+              slug: 'theming/theme-switching',
+              badge: { text: 'Special', variant: 'note' },
+            },
           ],
         },
         // {
@@ -88,6 +88,7 @@ export default defineConfig({
             { label: 'Provider', slug: 'api/provider' },
             { label: 'Theme', slug: 'api/theme' },
             { label: 'Registry', slug: 'api/registry' },
+            { label: 'Theme Switcher', slug: 'api/theme-switcher' },
           ],
         },
         // {

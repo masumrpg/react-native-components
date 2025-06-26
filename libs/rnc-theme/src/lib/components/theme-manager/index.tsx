@@ -10,106 +10,228 @@ import { Switcher } from '../ui/switcher';
 import { Button, ButtonText } from '../ui/button';
 import { VStack } from '../ui/layout';
 
+/**
+ * Configuration object for a theme preset
+ *
+ * @example
+ * ```tsx
+ * const preset: ThemePresetConfig = {
+ *   key: 'ocean',
+ *   label: 'Ocean Blue',
+ *   config: () => ({ primary: '#0066cc', secondary: '#004080' })
+ * };
+ * ```
+ *
+ * @public
+ */
 export interface ThemePresetConfig {
+  /**
+   * Unique identifier for the theme preset
+   * Used internally to track and apply the theme
+   */
   key: string;
+
+  /**
+   * Human-readable display name for the theme preset
+   * Shown in the theme selector UI
+   */
   label: string;
+
+  /**
+   * Factory function that generates the theme configuration
+   * Should return a complete theme object when called
+   */
   config: CustomThemeConfigFactory;
 }
 
+/**
+ * Customization options for ThemeManager UI text and labels
+ * Allows localization and custom branding of the theme manager interface
+ *
+ * @example
+ * ```tsx
+ * const customization: ThemeManagerCustomization = {
+ *   controlsTitle: 'Pengaturan Tema',
+ *   presetsTitle: 'Preset Tema',
+ *   darkModeLabel: 'Mode Gelap',
+ *   applyButtonText: 'Terapkan',
+ *   successMessage: 'Tema berhasil diterapkan!'
+ * };
+ * ```
+ *
+ * @public
+ */
 export interface ThemeManagerCustomization {
   /**
    * Custom title for theme controls section
+   * @defaultValue 'Theme Controls'
    */
   controlsTitle?: string;
+
   /**
    * Custom title for theme presets section
+   * @defaultValue 'Theme Presets'
    */
   presetsTitle?: string;
+
   /**
    * Custom label for dark mode toggle
+   * @defaultValue 'Dark Mode'
    */
   darkModeLabel?: string;
+
   /**
    * Custom label for disabled dark mode
+   * @defaultValue 'Dark Mode (Disabled)'
    */
   darkModeDisabledLabel?: string;
+
   /**
    * Custom text for apply button
+   * @defaultValue 'Apply'
    */
   applyButtonText?: string;
+
   /**
    * Custom text for cancel preview button
+   * @defaultValue 'Cancel Preview'
    */
   cancelPreviewText?: string;
+
   /**
    * Custom text for reset button
+   * @defaultValue 'Reset'
    */
   resetButtonText?: string;
+
   /**
    * Custom text for default theme button
+   * @defaultValue 'Default Theme'
    */
   defaultThemeText?: string;
+
   /**
    * Custom success message when theme is applied
+   * @defaultValue 'Theme applied successfully!'
    */
   successMessage?: string;
+
   /**
    * Custom error message
+   * @defaultValue 'An error occurred'
    */
   errorMessage?: string;
+
   /**
    * Custom warning message
+   * @defaultValue 'Warning'
    */
   warningMessage?: string;
+
   /**
    * Custom info message
+   * @defaultValue 'Information'
    */
   infoMessage?: string;
 }
 
+/**
+ * Props interface for the ThemeManager component
+ * Provides a complete theme management interface with presets, controls, and customization options
+ *
+ * @example
+ * ```tsx
+ * <ThemeManager
+ *   themePresets={[
+ *     { key: 'light', label: 'Light Theme', config: lightThemeFactory },
+ *     { key: 'dark', label: 'Dark Theme', config: darkThemeFactory }
+ *   ]}
+ *   initialTheme="light"
+ *   showControls={true}
+ *   showPresets={true}
+ *   showCards={true}
+ *   onThemeApplied={(theme) => console.log('Applied:', theme)}
+ *   customization={{
+ *     controlsTitle: 'Theme Settings',
+ *     applyButtonText: 'Apply Theme'
+ *   }}
+ * />
+ * ```
+ *
+ * @public
+ */
 export interface ThemeManagerProps {
   /**
-   * Custom styles for theme manager
+   * Custom styles for the main theme manager container
+   * Uses React Native's StyleProp<ViewStyle> for styling flexibility
    */
   style?: StyleProp<ViewStyle>;
+
   /**
-   * Custom content styles for theme manager
+   * Custom content styles for the inner content area of theme manager
+   * Allows styling of the content wrapper independently from the container
    */
   contentStyle?: StyleProp<ViewStyle>;
+
   /**
-   * Array of theme preset configurations
+   * Array of theme preset configurations available for selection
+   * Each preset contains a key, label, and config factory function
    */
   themePresets: ThemePresetConfig[];
+
   /**
-   * Initial theme preset to apply
+   * Initial theme preset key to apply when component mounts
+   * Should match one of the keys in the themePresets array
    */
   initialTheme?: string;
+
   /**
    * Whether to show the theme controls section
+   * Controls include dark mode toggle and other theme settings
+   * @defaultValue true
    */
   showControls?: boolean;
+
   /**
    * Whether to show the theme presets section
+   * Displays the available theme presets for selection
+   * @defaultValue true
    */
   showPresets?: boolean;
+
   /**
    * Additional content to render below the theme manager
+   * Useful for adding custom controls or information
    */
   children?: React.ReactNode;
+
   /**
-   * Callback when theme is applied
+   * Callback function triggered when a theme is successfully applied
+   * Receives the theme key as parameter
+   *
+   * @param theme - The key of the applied theme
    */
   onThemeApplied?: (theme: string) => void;
+
   /**
-   * Callback when theme is previewed
+   * Callback function triggered when a theme is being previewed
+   * Receives the theme key as parameter
+   * Use this for temporary theme application without persistence
+   *
+   * @param theme - The key of the previewed theme
    */
   onThemePreview?: (theme: string) => void;
+
   /**
-   * Optional customization for labels and messages
+   * Optional customization object for labels, messages, and UI text
+   * Allows localization and custom branding of the interface
    */
   customization?: ThemeManagerCustomization;
+
   /**
-   * Whether to show the cards for theme presets
+   * Whether to show theme presets as cards with visual previews
+   * When false, shows presets as a simple list or buttons
+   * @defaultValue true
    */
   showCards?: boolean;
 }

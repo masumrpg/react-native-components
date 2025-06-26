@@ -17,20 +17,101 @@ import { useTheme } from '../../context/RNCProvider';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
 import { Theme } from '../../types/theme';
 
+/**
+ * Size variants for the ToggleMode component
+ * @public
+ */
 type ToggleModeSize = 'sm' | 'md' | 'lg';
+
+/**
+ * Shape variants for the ToggleMode component
+ * @public
+ */
 type ToggleModeVariant = 'rounded' | 'square';
+
+/**
+ * Style variants for the ToggleMode component appearance
+ * @public
+ */
 type ToggleModeStyle = 'filled' | 'outlined' | 'ghost';
 
+/**
+ * Props interface for the ToggleMode component
+ *
+ * @example
+ * ```tsx
+ * <ToggleMode
+ *   size="md"
+ *   variant="rounded"
+ *   styleType="filled"
+ *   animated={true}
+ *   enableSystemMode={true}
+ *   onPress={() => toggleTheme()}
+ * />
+ * ```
+ *
+ * @public
+ */
 interface ToggleModeProps {
+  /**
+   * The size of the toggle component
+   * @defaultValue 'md'
+   */
   size?: ToggleModeSize;
+
+  /**
+   * The shape variant of the toggle component
+   * @defaultValue 'rounded'
+   */
   variant?: ToggleModeVariant;
+
+  /**
+   * The visual style type of the toggle component
+   * @defaultValue 'filled'
+   */
   styleType?: ToggleModeStyle;
+
+  /**
+   * Whether the toggle component is disabled
+   * @defaultValue false
+   */
   disabled?: boolean;
+
+  /**
+   * Custom style object for the toggle component container
+   * Uses React Native's ViewStyle interface
+   */
   style?: ViewStyle;
+
+  /**
+   * Custom size for the icons within the toggle
+   * If not provided, will use default size based on the `size` prop
+   */
   iconSize?: number;
+
+  /**
+   * Custom padding for the toggle component
+   * If not provided, will use default padding based on the `size` prop
+   */
   padding?: number;
+
+  /**
+   * Whether to enable smooth animations for state transitions
+   * @defaultValue true
+   */
   animated?: boolean;
+
+  /**
+   * Callback function triggered when the toggle is pressed
+   * Should handle the logic for switching between light/dark modes
+   */
   onPress?: () => void;
+
+  /**
+   * Whether to include system/auto mode as a third option
+   * When enabled, toggle cycles through: light → dark → system
+   * @defaultValue false
+   */
   enableSystemMode?: boolean;
 }
 

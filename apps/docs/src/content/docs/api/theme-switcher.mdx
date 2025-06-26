@@ -1,0 +1,69 @@
+---
+title: Theme Switcher API Reference
+description: Programmatically control and switch between light and dark themes in React Native applications.
+---
+
+### `ToggleMode`
+
+The `ToggleMode` component is used to programmatically switch between light and dark themes. It provides a simple and convenient way to control the theme state in your application.
+
+#### Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | The size of the toggle component |
+| `variant` | `'rounded' \| 'square'` | `'rounded'` | The shape variant of the toggle component |
+| `styleType` | `'filled' \| 'outlined' \| 'ghost'` | `'filled'` | The visual style type of the toggle component |
+| `disabled` | `boolean` | `false` | Whether the toggle component is disabled |
+| `style` | [`ViewStyle`](https://reactnative.dev/docs/view-style-props) | `undefined` | Custom style object for the toggle component container |
+| `iconSize` | `number` | `undefined` | Custom size for the icons within the toggle. If not provided, uses default size based on the `size` prop |
+| `padding` | `number` | `undefined` | Custom padding for the toggle component. If not provided, uses default padding based on the `size` prop |
+| `animated` | `boolean` | `true` | Whether to enable smooth animations for state transitions |
+| `onPress` | `() => void` | `undefined` | Callback function triggered when the toggle is pressed. Should handle the logic for switching between light/dark modes |
+| `enableSystemMode` | `boolean` | `false` | Whether to include system/auto mode as a third option. When enabled, toggle cycles through: light → dark → system |
+
+
+### `ThemeManager`
+
+The `ThemeManager` component is used to manage the theme state in your application. It provides a simple and convenient way to switch between light and dark themes.
+
+#### ThemeManagerProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `style` | [`StyleProp<ViewStyle>`](https://reactnative.dev/docs/view-style-props) | `undefined` | Custom styles for the main theme manager container |
+| `contentStyle` | [`StyleProp<ViewStyle>`](https://reactnative.dev/docs/view-style-props) | `undefined` | Custom content styles for the inner content area of theme manager |
+| `themePresets` | `ThemePresetConfig[]` | **Required** | Array of theme preset configurations available for selection |
+| `initialTheme` | `string` | `undefined` | Initial theme preset key to apply when component mounts |
+| `showControls` | `boolean` | `true` | Whether to show the theme controls section (dark mode toggle, etc.) |
+| `showPresets` | `boolean` | `true` | Whether to show the theme presets section |
+| `children` | `React.ReactNode` | `undefined` | Additional content to render below the theme manager |
+| `onThemeApplied` | `(theme: string) => void` | `undefined` | Callback function triggered when a theme is successfully applied |
+| `onThemePreview` | `(theme: string) => void` | `undefined` | Callback function triggered when a theme is being previewed |
+| `customization` | [`ThemeManagerCustomization`](/api/theme-switcher#themepresetconfig) | `undefined` | Optional customization for labels, messages, and UI text |
+| `showCards` | `boolean` | `true` | Whether to show theme presets as cards with visual previews |
+
+#### ThemeManagerCustomization
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `controlsTitle` | `string` | `'Theme Controls'` | Custom title for theme controls section |
+| `presetsTitle` | `string` | `'Theme Presets'` | Custom title for theme presets section |
+| `darkModeLabel` | `string` | `'Dark Mode'` | Custom label for dark mode toggle |
+| `darkModeDisabledLabel` | `string` | `'Dark Mode (Disabled)'` | Custom label for disabled dark mode |
+| `applyButtonText` | `string` | `'Apply'` | Custom text for apply button |
+| `cancelPreviewText` | `string` | `'Cancel Preview'` | Custom text for cancel preview button |
+| `resetButtonText` | `string` | `'Reset'` | Custom text for reset button |
+| `defaultThemeText` | `string` | `'Default Theme'` | Custom text for default theme button |
+| `successMessage` | `string` | `'Theme applied successfully!'` | Custom success message when theme is applied |
+| `errorMessage` | `string` | `'An error occurred'` | Custom error message |
+| `warningMessage` | `string` | `'Warning'` | Custom warning message |
+| `infoMessage` | `string` | `'Information'` | Custom info message |
+
+#### ThemePresetConfig
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `key` | `string` | Unique identifier for the theme preset |
+| `label` | `string` | Human-readable display name for the theme preset |
+| `config` | [`CustomThemeConfigFactory`](/api/theme/#customthemeconfigfactory) | Factory function that generates the theme configuration |

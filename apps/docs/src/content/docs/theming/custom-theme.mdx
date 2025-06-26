@@ -320,7 +320,7 @@ import { themeRegistry } from 'rnc-theme';
 function ThemeSwitcher() {
   useEffect(()=>{
     // Register custom theme
-    themeRegistry.register('brand', createBrandTheme);
+    themeRegistry.registerPreset('brand', createBrandTheme);
   },[])
 
   return (
