@@ -1,9 +1,9 @@
 import { Stack, usePathname, useRouter } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import { Platform, TouchableOpacity } from 'react-native';
-import { useTheme } from 'rnc-theme';
+import { ToggleMode, useTheme } from 'rnc-theme';
 
-const nonHeaderPatshs = ['/scroll', '/qrcode-pack/qr-scanner'];
+const nonHeaderPatshs = ['/ui/scroll', '/ui/qrcode-pack/qr-scanner'];
 
 export default function UILayout() {
   const { theme } = useTheme();
@@ -54,6 +54,14 @@ export default function UILayout() {
             <ArrowLeft size={24} color={theme.colors.text} />
           </TouchableOpacity>
         ),
+        headerRight: () => {
+          return (
+            <ToggleMode
+              styleType="ghost"
+              style={{ ...(Platform.OS === 'web' && { marginRight: 16 }) }}
+            />
+          );
+        },
       }}
     >
       <Stack.Screen name="index" />

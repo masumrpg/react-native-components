@@ -268,9 +268,9 @@ const ToggleMode = forwardRef<
           return isDark ? theme.colors.background : theme.colors.background;
         case 'outlined':
         case 'ghost':
-          return isDark ? theme.colors.secondary : theme.colors.primary;
+          return theme.colors.text;
         default:
-          return theme.colors.primary;
+          return theme.colors.text;
       }
     };
 
