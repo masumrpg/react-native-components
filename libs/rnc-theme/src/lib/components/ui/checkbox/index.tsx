@@ -6,6 +6,7 @@ import {
   TextStyle,
   Text,
   StyleProp,
+  StyleSheet,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -390,267 +391,271 @@ const CheckboxLabel = forwardRef<
 
 CheckboxLabel.displayName = 'CheckboxLabel';
 
-const createCheckboxGroupStyles = (theme: Theme) => ({
-  group: {
-    gap: theme.spacing.sm,
-  },
-});
+const createCheckboxGroupStyles = (theme: Theme) =>
+  StyleSheet.create({
+    group: {
+      gap: theme.spacing.sm,
+    },
+  });
 
-const createCheckboxStyles = (theme: Theme) => ({
-  container: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    justifyContent: 'flex-start' as const,
-  },
-  checkbox: {
-    borderWidth: 2,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    backgroundColor: 'transparent',
-    position: 'relative' as const,
-    marginRight: theme.spacing.sm,
-  },
-  background: {
-    position: 'absolute' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-  },
-  iconContainer: {
-    position: 'absolute' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    zIndex: 1,
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-  // Shapes
-  square: {
-    borderRadius: theme.components.borderRadius.sm,
-  },
-  round: {
-    borderRadius: 50, // Large radius for circular shape
-  },
-  // Variants
-  default: {
-    borderColor: theme.colors.border,
-  },
-  primary: {
-    borderColor: theme.colors.primary,
-  },
-  secondary: {
-    borderColor: theme.colors.secondary,
-  },
-  outline: {
-    borderColor: theme.colors.primary,
-    backgroundColor: 'transparent',
-  },
-  filled: {
-    borderColor: theme.colors.primary,
-    backgroundColor: theme.colors.primary + '10',
-  },
-  ghost: {
-    borderColor: 'transparent',
-    backgroundColor: theme.colors.primary + '05',
-  },
-  success: {
-    borderColor: theme.colors.success,
-  },
-  warning: {
-    borderColor: '#F59E0B',
-  },
-  error: {
-    borderColor: theme.colors.error,
-  },
-  info: {
-    borderColor: '#3B82F6',
-  },
-  destructive: {
-    borderColor: '#EF4444',
-  },
-  // Background variants
-  defaultBackground: {
-    backgroundColor: theme.colors.primary,
-  },
-  primaryBackground: {
-    backgroundColor: theme.colors.primary,
-  },
-  secondaryBackground: {
-    backgroundColor: theme.colors.secondary,
-  },
-  outlineBackground: {
-    backgroundColor: theme.colors.primary,
-  },
-  filledBackground: {
-    backgroundColor: theme.colors.primary,
-  },
-  ghostBackground: {
-    backgroundColor: theme.colors.primary,
-  },
-  successBackground: {
-    backgroundColor: theme.colors.success,
-  },
-  warningBackground: {
-    backgroundColor: '#F59E0B',
-  },
-  errorBackground: {
-    backgroundColor: theme.colors.error,
-  },
-  infoBackground: {
-    backgroundColor: '#3B82F6',
-  },
-  destructiveBackground: {
-    backgroundColor: '#EF4444',
-  },
-  // Sizes - Perfect squares/circles
-  xs: {
-    width: 14,
-    height: 14,
-  },
-  sm: {
-    width: 18,
-    height: 18,
-  },
-  md: {
-    width: 22,
-    height: 22,
-  },
-  lg: {
-    width: 26,
-    height: 26,
-  },
-  xl: {
-    width: 30,
-    height: 30,
-  },
-  // Container sizes - Consistent with Input component
-  xsContainer: {
-    minHeight: 32,
-    paddingVertical: theme.spacing.xs,
-  },
-  smContainer: {
-    minHeight: 36,
-    paddingVertical: theme.spacing.xs,
-  },
-  mdContainer: {
-    minHeight: 42,
-    paddingVertical: theme.spacing.sm,
-  },
-  lgContainer: {
-    minHeight: 48,
-    paddingVertical: theme.spacing.md,
-  },
-  xlContainer: {
-    minHeight: 56,
-    paddingVertical: theme.spacing.lg,
-  },
-});
+const createCheckboxStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+    },
+    checkbox: {
+      borderWidth: 2,
+      alignItems: 'center',
+      justifyContent: 'center',
+      backgroundColor: 'transparent',
+      position: 'relative',
+      marginRight: theme.spacing.sm,
+    },
+    background: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+    },
+    iconContainer: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1,
+    },
+    disabled: {
+      opacity: 0.5,
+    },
+    // Shapes
+    square: {
+      borderRadius: theme.components.borderRadius.sm,
+    },
+    round: {
+      borderRadius: 50, // Large radius for circular shape
+    },
+    // Variants
+    default: {
+      borderColor: theme.colors.border,
+    },
+    primary: {
+      borderColor: theme.colors.primary,
+    },
+    secondary: {
+      borderColor: theme.colors.secondary,
+    },
+    outline: {
+      borderColor: theme.colors.primary,
+      backgroundColor: 'transparent',
+    },
+    filled: {
+      borderColor: theme.colors.primary,
+      backgroundColor: theme.colors.primary + '10',
+    },
+    ghost: {
+      borderColor: 'transparent',
+      backgroundColor: theme.colors.primary + '05',
+    },
+    success: {
+      borderColor: theme.colors.success,
+    },
+    warning: {
+      borderColor: '#F59E0B',
+    },
+    error: {
+      borderColor: theme.colors.error,
+    },
+    info: {
+      borderColor: '#3B82F6',
+    },
+    destructive: {
+      borderColor: '#EF4444',
+    },
+    // Background variants
+    defaultBackground: {
+      backgroundColor: theme.colors.primary,
+    },
+    primaryBackground: {
+      backgroundColor: theme.colors.primary,
+    },
+    secondaryBackground: {
+      backgroundColor: theme.colors.secondary,
+    },
+    outlineBackground: {
+      backgroundColor: theme.colors.primary,
+    },
+    filledBackground: {
+      backgroundColor: theme.colors.primary,
+    },
+    ghostBackground: {
+      backgroundColor: theme.colors.primary,
+    },
+    successBackground: {
+      backgroundColor: theme.colors.success,
+    },
+    warningBackground: {
+      backgroundColor: '#F59E0B',
+    },
+    errorBackground: {
+      backgroundColor: theme.colors.error,
+    },
+    infoBackground: {
+      backgroundColor: '#3B82F6',
+    },
+    destructiveBackground: {
+      backgroundColor: '#EF4444',
+    },
+    // Sizes - Perfect squares/circles
+    xs: {
+      width: 14,
+      height: 14,
+    },
+    sm: {
+      width: 18,
+      height: 18,
+    },
+    md: {
+      width: 22,
+      height: 22,
+    },
+    lg: {
+      width: 26,
+      height: 26,
+    },
+    xl: {
+      width: 30,
+      height: 30,
+    },
+    // Container sizes - Consistent with Input component
+    xsContainer: {
+      minHeight: 32,
+      paddingVertical: theme.spacing.xs,
+    },
+    smContainer: {
+      minHeight: 36,
+      paddingVertical: theme.spacing.xs,
+    },
+    mdContainer: {
+      minHeight: 42,
+      paddingVertical: theme.spacing.sm,
+    },
+    lgContainer: {
+      minHeight: 48,
+      paddingVertical: theme.spacing.md,
+    },
+    xlContainer: {
+      minHeight: 56,
+      paddingVertical: theme.spacing.lg,
+    },
+  });
 
-const createCheckboxIndicatorStyles = (theme: Theme) => ({
-  indicator: {
-    position: 'absolute' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    borderRadius: theme.components.borderRadius.sm,
-  },
-  // Variants
-  default: {
-    backgroundColor: theme.colors.primary,
-  },
-  primary: {
-    backgroundColor: theme.colors.primary,
-  },
-  secondary: {
-    backgroundColor: theme.colors.secondary,
-  },
-  outline: {
-    backgroundColor: theme.colors.primary,
-  },
-  filled: {
-    backgroundColor: theme.colors.primary,
-  },
-  ghost: {
-    backgroundColor: theme.colors.primary,
-  },
-  success: {
-    backgroundColor: theme.colors.success,
-  },
-  warning: {
-    backgroundColor: '#F59E0B',
-  },
-  error: {
-    backgroundColor: theme.colors.error,
-  },
-  info: {
-    backgroundColor: '#3B82F6',
-  },
-  destructive: {
-    backgroundColor: '#EF4444',
-  },
-  // Sizes
-  xs: {
-    width: 14,
-    height: 14,
-  },
-  sm: {
-    width: 18,
-    height: 18,
-  },
-  md: {
-    width: 22,
-    height: 22,
-  },
-  lg: {
-    width: 26,
-    height: 26,
-  },
-  xl: {
-    width: 30,
-    height: 30,
-  },
-});
+const createCheckboxIndicatorStyles = (theme: Theme) =>
+  StyleSheet.create({
+    indicator: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderRadius: theme.components.borderRadius.sm,
+    },
+    // Variants
+    default: {
+      backgroundColor: theme.colors.primary,
+    },
+    primary: {
+      backgroundColor: theme.colors.primary,
+    },
+    secondary: {
+      backgroundColor: theme.colors.secondary,
+    },
+    outline: {
+      backgroundColor: theme.colors.primary,
+    },
+    filled: {
+      backgroundColor: theme.colors.primary,
+    },
+    ghost: {
+      backgroundColor: theme.colors.primary,
+    },
+    success: {
+      backgroundColor: theme.colors.success,
+    },
+    warning: {
+      backgroundColor: '#F59E0B',
+    },
+    error: {
+      backgroundColor: theme.colors.error,
+    },
+    info: {
+      backgroundColor: '#3B82F6',
+    },
+    destructive: {
+      backgroundColor: '#EF4444',
+    },
+    // Sizes
+    xs: {
+      width: 14,
+      height: 14,
+    },
+    sm: {
+      width: 18,
+      height: 18,
+    },
+    md: {
+      width: 22,
+      height: 22,
+    },
+    lg: {
+      width: 26,
+      height: 26,
+    },
+    xl: {
+      width: 30,
+      height: 30,
+    },
+  });
 
-const createCheckboxLabelStyles = (theme: Theme) => ({
-  label: {
-    fontWeight: '400' as const,
-    flex: 1,
-    textAlignVertical: 'center' as const,
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-  // Sizes
-  xs: {
-    fontSize: theme.typography.caption.fontSize,
-    lineHeight: theme.typography.caption.lineHeight,
-  },
-  sm: {
-    fontSize: theme.typography.small.fontSize,
-    lineHeight: theme.typography.small.lineHeight,
-  },
-  md: {
-    fontSize: theme.typography.body.fontSize,
-    lineHeight: theme.typography.body.lineHeight,
-  },
-  lg: {
-    fontSize: theme.typography.subtitle.fontSize,
-    lineHeight: theme.typography.subtitle.lineHeight,
-  },
-  xl: {
-    fontSize: theme.typography.title.fontSize,
-    lineHeight: theme.typography.title.lineHeight,
-  },
-});
+const createCheckboxLabelStyles = (theme: Theme) =>
+  StyleSheet.create({
+    label: {
+      fontWeight: '400',
+      flex: 1,
+      textAlignVertical: 'center',
+    },
+    disabled: {
+      opacity: 0.5,
+    },
+    // Sizes
+    xs: {
+      fontSize: theme.typography.caption.fontSize,
+      lineHeight: theme.typography.caption.lineHeight,
+    },
+    sm: {
+      fontSize: theme.typography.small.fontSize,
+      lineHeight: theme.typography.small.lineHeight,
+    },
+    md: {
+      fontSize: theme.typography.body.fontSize,
+      lineHeight: theme.typography.body.lineHeight,
+    },
+    lg: {
+      fontSize: theme.typography.subtitle.fontSize,
+      lineHeight: theme.typography.subtitle.lineHeight,
+    },
+    xl: {
+      fontSize: theme.typography.title.fontSize,
+      lineHeight: theme.typography.title.lineHeight,
+    },
+  });
 
 export {
   CheckboxGroup,

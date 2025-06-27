@@ -6,7 +6,14 @@ import React, {
   useState,
   useCallback,
 } from 'react';
-import { View, Text, ViewStyle, TextStyle, StyleProp } from 'react-native';
+import {
+  View,
+  Text,
+  ViewStyle,
+  TextStyle,
+  StyleProp,
+  StyleSheet,
+} from 'react-native';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
@@ -144,104 +151,105 @@ const useFormControlOptional = () => {
 };
 
 // Styles
-const createFormControlStyles = (theme: Theme) => ({
-  container: {
-    width: '100%',
-  } as ViewStyle,
+const createFormControlStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      width: '100%',
+    },
 
-  labelContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: theme.spacing.xs,
-  } as ViewStyle,
+    labelContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: theme.spacing.xs,
+    },
 
-  labelText: {
-    ...theme.typography.body,
-    color: resolveColor(theme, 'text', theme.colors.text),
-    fontWeight: '500',
-  } as TextStyle,
+    labelText: {
+      ...theme.typography.body,
+      color: resolveColor(theme, 'text', theme.colors.text),
+      fontWeight: '500',
+    } as TextStyle,
 
-  labelTextSm: {
-    ...theme.typography.small,
-    fontWeight: '500',
-  } as TextStyle,
+    labelTextSm: {
+      ...theme.typography.small,
+      fontWeight: '500',
+    } as TextStyle,
 
-  labelTextLg: {
-    ...theme.typography.title,
-    fontWeight: '600',
-  } as TextStyle,
+    labelTextLg: {
+      ...theme.typography.title,
+      fontWeight: '600',
+    } as TextStyle,
 
-  labelTextDisabled: {
-    color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
-    opacity: 0.6,
-  } as TextStyle,
+    labelTextDisabled: {
+      color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
+      opacity: 0.6,
+    } as TextStyle,
 
-  requiredIndicator: {
-    color: resolveColor(theme, 'error', theme.colors.error),
-    marginLeft: theme.spacing.xs / 2,
-    fontWeight: 'bold',
-  } as TextStyle,
+    requiredIndicator: {
+      color: resolveColor(theme, 'error', theme.colors.error),
+      marginLeft: theme.spacing.xs / 2,
+      fontWeight: 'bold',
+    } as TextStyle,
 
-  helperContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginTop: theme.spacing.xs,
-  } as ViewStyle,
+    helperContainer: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      marginTop: theme.spacing.xs,
+    },
 
-  helperText: {
-    ...theme.typography.small,
-    color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
-    flex: 1,
-    lineHeight: theme.typography.small.fontSize
-      ? theme.typography.small.fontSize * 1.4
-      : 18,
-  } as TextStyle,
+    helperText: {
+      ...theme.typography.small,
+      color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
+      flex: 1,
+      lineHeight: theme.typography.small.fontSize
+        ? theme.typography.small.fontSize * 1.4
+        : 18,
+    } as TextStyle,
 
-  helperTextDisabled: {
-    opacity: 0.6,
-  } as TextStyle,
+    helperTextDisabled: {
+      opacity: 0.6,
+    } as TextStyle,
 
-  messageContainer: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginTop: theme.spacing.xs,
-  } as ViewStyle,
+    messageContainer: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      marginTop: theme.spacing.xs,
+    },
 
-  messageIcon: {
-    marginRight: theme.spacing.xs,
-    marginTop: 1, // Slight adjustment for better alignment
-  } as ViewStyle,
+    messageIcon: {
+      marginRight: theme.spacing.xs,
+      marginTop: 1, // Slight adjustment for better alignment
+    },
 
-  errorText: {
-    ...theme.typography.small,
-    color: resolveColor(theme, 'error', theme.colors.error),
-    flex: 1,
-    lineHeight: theme.typography.small.fontSize
-      ? theme.typography.small.fontSize * 1.4
-      : 18,
-    fontWeight: '500',
-  } as TextStyle,
+    errorText: {
+      ...theme.typography.small,
+      color: resolveColor(theme, 'error', theme.colors.error),
+      flex: 1,
+      lineHeight: theme.typography.small.fontSize
+        ? theme.typography.small.fontSize * 1.4
+        : 18,
+      fontWeight: '500',
+    } as TextStyle,
 
-  successText: {
-    ...theme.typography.small,
-    color: resolveColor(theme, 'success', theme.colors.success || '#22c55e'),
-    flex: 1,
-    lineHeight: theme.typography.small.fontSize
-      ? theme.typography.small.fontSize * 1.4
-      : 18,
-    fontWeight: '500',
-  } as TextStyle,
+    successText: {
+      ...theme.typography.small,
+      color: resolveColor(theme, 'success', theme.colors.success || '#22c55e'),
+      flex: 1,
+      lineHeight: theme.typography.small.fontSize
+        ? theme.typography.small.fontSize * 1.4
+        : 18,
+      fontWeight: '500',
+    } as TextStyle,
 
-  warningText: {
-    ...theme.typography.small,
-    color: resolveColor(theme, 'warning', theme.colors.warning || '#f59e0b'),
-    flex: 1,
-    lineHeight: theme.typography.small.fontSize
-      ? theme.typography.small.fontSize * 1.4
-      : 18,
-    fontWeight: '500',
-  } as TextStyle,
-});
+    warningText: {
+      ...theme.typography.small,
+      color: resolveColor(theme, 'warning', theme.colors.warning || '#f59e0b'),
+      flex: 1,
+      lineHeight: theme.typography.small.fontSize
+        ? theme.typography.small.fontSize * 1.4
+        : 18,
+      fontWeight: '500',
+    } as TextStyle,
+  });
 
 // Helper function to generate unique IDs
 const generateId = (prefix: string) => {

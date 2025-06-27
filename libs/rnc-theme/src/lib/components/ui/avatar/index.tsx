@@ -405,84 +405,87 @@ const AvatarGroup = forwardRef<
 AvatarGroup.displayName = 'AvatarGroup';
 
 // Styles
-const createAvatarStyles = (theme: Theme) => ({
-  container: {
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    overflow: 'hidden' as const,
-  } as ViewStyle,
-  image: {
-    resizeMode: 'cover' as const,
-  } as ImageStyle,
-  text: {
-    fontWeight: '600' as const,
-    textAlign: 'center' as const,
-  } as TextStyle,
-  disabled: {
-    opacity: 0.5,
-  } as ViewStyle,
-  // Variants
-  default: {
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.border,
-  } as ViewStyle,
-  primary: {
-    backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
-  } as ViewStyle,
-  secondary: {
-    backgroundColor: theme.colors.secondary,
-    borderColor: theme.colors.secondary,
-  } as ViewStyle,
-  outline: {
-    backgroundColor: 'transparent',
-    borderColor: theme.colors.border,
-    borderWidth: 1,
-  } as ViewStyle,
-  filled: {
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.border,
-  } as ViewStyle,
-  ghost: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
-  } as ViewStyle,
-  success: {
-    backgroundColor: theme.colors.success,
-    borderColor: theme.colors.success,
-  } as ViewStyle,
-  error: {
-    backgroundColor: theme.colors.error,
-    borderColor: theme.colors.error,
-  } as ViewStyle,
-  warning: {
-    backgroundColor: theme.colors.warning,
-    borderColor: theme.colors.warning,
-  } as ViewStyle,
-  info: {
-    backgroundColor: theme.colors.info,
-    borderColor: theme.colors.info,
-  } as ViewStyle,
-  destructive: {
-    backgroundColor: theme.colors.destructive,
-    borderColor: theme.colors.destructive,
-  } as ViewStyle,
-});
+const createAvatarStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+    },
+    image: {
+      resizeMode: 'cover',
+    } as ImageStyle,
+    text: {
+      fontWeight: '600',
+      textAlign: 'center',
+    } as TextStyle,
+    disabled: {
+      opacity: 0.5,
+    },
+    // Variants
+    default: {
+      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.border,
+    },
+    primary: {
+      backgroundColor: theme.colors.primary,
+      borderColor: theme.colors.primary,
+    },
+    secondary: {
+      backgroundColor: theme.colors.secondary,
+      borderColor: theme.colors.secondary,
+    },
+    outline: {
+      backgroundColor: 'transparent',
+      borderColor: theme.colors.border,
+      borderWidth: 1,
+    },
+    filled: {
+      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.border,
+    },
+    ghost: {
+      backgroundColor: 'transparent',
+      borderColor: 'transparent',
+    },
+    success: {
+      backgroundColor: theme.colors.success,
+      borderColor: theme.colors.success,
+    },
+    error: {
+      backgroundColor: theme.colors.error,
+      borderColor: theme.colors.error,
+    },
+    warning: {
+      backgroundColor: theme.colors.warning,
+      borderColor: theme.colors.warning,
+    },
+    info: {
+      backgroundColor: theme.colors.info,
+      borderColor: theme.colors.info,
+    },
+    destructive: {
+      backgroundColor: theme.colors.destructive,
+      borderColor: theme.colors.destructive,
+    },
+  });
 
-const createAvatarBadgeStyles = (theme: Theme) => ({
-  badge: {
-    position: 'absolute' as const,
-    borderWidth: 2,
-    borderColor: theme.colors.background,
-  } as ViewStyle,
-});
+const createAvatarBadgeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    badge: {
+      position: 'absolute',
+      borderWidth: 2,
+      borderColor: theme.colors.background,
+    },
+  });
 
-const createAvatarGroupStyles = (_: Theme) => ({
-  group: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-  } as ViewStyle,
-});
+const createAvatarGroupStyles = (_: Theme) =>
+  StyleSheet.create({
+    group: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+  });
 
 export {
   Avatar,

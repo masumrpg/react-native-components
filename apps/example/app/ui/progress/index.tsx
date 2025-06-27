@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { TouchableOpacity } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import {
   Progress,
   ProgressFilledTrack,
@@ -131,7 +131,7 @@ const ProgressScreen = () => {
       prevTasks.map((task) => ({
         ...task,
         progress: Math.random() * 100,
-        status: 'in-progress' as const,
+        status: 'in-progress',
       }))
     );
   };
@@ -348,7 +348,7 @@ const ProgressScreen = () => {
   );
 };
 
-const createStyles = (theme: Theme) => ({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
     padding: theme.spacing.lg,
@@ -356,10 +356,10 @@ const createStyles = (theme: Theme) => ({
   },
   title: {
     fontSize: theme.typography.title.fontSize,
-    fontWeight: '600' as const,
+    fontWeight: '600' ,
     color: theme.colors.text,
     marginBottom: theme.spacing.xl,
-    textAlign: 'center' as const,
+    textAlign: 'center' ,
   },
   section: {
     marginBottom: theme.spacing.xl,
@@ -371,13 +371,13 @@ const createStyles = (theme: Theme) => ({
   },
   sectionTitle: {
     fontSize: theme.typography.subtitle.fontSize,
-    fontWeight: '600' as const,
+    fontWeight: '600' ,
     color: theme.colors.text,
     marginBottom: theme.spacing.md,
   },
   label: {
     fontSize: theme.typography.caption.fontSize,
-    fontWeight: '500' as const,
+    fontWeight: '500' ,
     color: theme.colors.textSecondary,
   },
   overallCard: {
@@ -390,13 +390,13 @@ const createStyles = (theme: Theme) => ({
   },
   overallTitle: {
     fontSize: theme.typography.subtitle.fontSize,
-    fontWeight: '600' as const,
+    fontWeight: '600' ,
     color: theme.colors.text,
     marginBottom: theme.spacing.sm,
   },
   overallPercentage: {
     fontSize: 32,
-    fontWeight: '700' as const,
+    fontWeight: '700' ,
     color: theme.colors.primary,
     marginBottom: theme.spacing.md,
   },
@@ -406,11 +406,11 @@ const createStyles = (theme: Theme) => ({
     paddingHorizontal: theme.spacing.md,
     borderRadius: theme.components.borderRadius.md,
     marginTop: theme.spacing.md,
-    alignSelf: 'center' as const,
+    alignSelf: 'center' ,
   },
   resetButtonText: {
     color: '#FFFFFF',
-    fontWeight: '600' as const,
+    fontWeight: '600' ,
   },
   taskCard: {
     padding: theme.spacing.md,
@@ -427,16 +427,16 @@ const createStyles = (theme: Theme) => ({
   },
   taskName: {
     fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
+    fontWeight: '600' ,
     color: theme.colors.text,
   },
   taskCategory: {
     fontSize: 12,
-    fontWeight: '500' as const,
+    fontWeight: '500' ,
   },
   taskPercentage: {
     fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
+    fontWeight: '600' ,
     color: theme.colors.text,
   },
   taskProgress: {
@@ -452,7 +452,7 @@ const createStyles = (theme: Theme) => ({
   },
   summaryTitle: {
     fontSize: theme.typography.subtitle.fontSize,
-    fontWeight: '600' as const,
+    fontWeight: '600' ,
     color: theme.colors.text,
     marginBottom: theme.spacing.md,
   },
@@ -461,17 +461,17 @@ const createStyles = (theme: Theme) => ({
   },
   categoryName: {
     fontSize: theme.typography.body.fontSize,
-    fontWeight: '500' as const,
+    fontWeight: '500' ,
     color: theme.colors.text,
   },
   categoryPercentage: {
     fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
+    fontWeight: '600' ,
     color: theme.colors.textSecondary,
   },
   exampleTitle: {
     fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
+    fontWeight: '600' ,
     color: theme.colors.text,
   },
   exampleDescription: {
@@ -484,7 +484,7 @@ const createStyles = (theme: Theme) => ({
   },
   metricValue: {
     fontSize: theme.typography.caption.fontSize,
-    fontWeight: '600' as const,
+    fontWeight: '600' ,
     color: theme.colors.text,
   },
 });

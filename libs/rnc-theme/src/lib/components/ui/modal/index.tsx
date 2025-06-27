@@ -21,6 +21,7 @@ import {
   InteractionManager,
   StyleProp,
   ScrollView,
+  StyleSheet,
 } from 'react-native';
 import Animated, {
   useAnimatedStyle,
@@ -99,7 +100,7 @@ interface ModalFooterProps {
 }
 
 // FIXED: Styles dengan safe area handling yang lebih baik
-const createModalStyles = (theme: Theme) => ({
+const createModalStyles = (theme: Theme) => StyleSheet.create({
   overlay: {
     position: 'absolute',
     top: 0,
@@ -119,7 +120,7 @@ const createModalStyles = (theme: Theme) => ({
         theme.spacing.xl
       ),
     }),
-  } as ViewStyle,
+  } ,
   container: {
     borderWidth: 1,
     borderColor: resolveColor(theme, 'border', theme.colors.border),
@@ -137,7 +138,7 @@ const createModalStyles = (theme: Theme) => ({
     ...(Platform.OS === 'android' && {
       elevation: 12,
     }),
-  } as ViewStyle,
+  } ,
   closeButton: {
     position: 'absolute',
     top: theme.spacing.md,
@@ -154,13 +155,13 @@ const createModalStyles = (theme: Theme) => ({
     shadowRadius: 4,
     elevation: 4,
     zIndex: 1000,
-  } as ViewStyle,
+  } ,
   closeButtonText: {
     fontSize: 16,
     color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
     fontWeight: '600',
     lineHeight: 16,
-  } as TextStyle,
+  },
 });
 
 // Variant styles - no changes needed
@@ -312,19 +313,19 @@ const getModalPosition = (position: ModalPosition): ViewStyle => {
   switch (position) {
     case 'top':
       return {
-        justifyContent: 'flex-start' as const,
-        alignItems: 'center' as const,
+        justifyContent: 'flex-start',
+        alignItems: 'center',
       };
     case 'bottom':
       return {
-        justifyContent: 'flex-end' as const,
-        alignItems: 'center' as const,
+        justifyContent: 'flex-end',
+        alignItems: 'center',
       };
     case 'center':
     default:
       return {
-        justifyContent: 'center' as const,
-        alignItems: 'center' as const,
+        justifyContent: 'center',
+        alignItems: 'center',
       };
   }
 };
@@ -659,9 +660,8 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
                   styles.container,
                   variantStyles,
                   {
-                    backgroundColor: backgroundColor
-                      ? resolveColor(theme, backgroundColor, backgroundColor)
-                      : variantStyles.backgroundColor,
+                    backgroundColor:
+                      backgroundColor ?? variantStyles.backgroundColor,
                     borderRadius: theme.components.borderRadius[borderRadius],
                     padding: theme.spacing[padding],
                     marginBottom: margin ? theme.spacing[margin] : undefined,

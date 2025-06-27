@@ -1,5 +1,5 @@
 import React, { useEffect, forwardRef } from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -167,14 +167,15 @@ const Spinner = forwardRef<React.ComponentRef<typeof View>, SpinnerProps>(
 
 Spinner.displayName = 'Spinner';
 
-const createSpinnerStyles = (_: Theme) => ({
-  container: {
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-  },
-  spinner: {
-    borderStyle: 'solid' as const,
-  },
-});
+const createSpinnerStyles = (_: Theme) =>
+  StyleSheet.create({
+    container: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    spinner: {
+      borderStyle: 'solid',
+    },
+  });
 
 export { Spinner, type SpinnerProps };

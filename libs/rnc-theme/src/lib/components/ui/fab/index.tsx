@@ -1,4 +1,4 @@
-import { StyleProp, View, ViewStyle, Text } from 'react-native';
+import { StyleProp, View, ViewStyle, Text, StyleSheet } from 'react-native';
 import React, { useMemo } from 'react';
 import { Pressable, TouchableOpacity } from 'react-native';
 import Animated, {
@@ -130,105 +130,106 @@ type FabProps =
   | ({ variant: 'stacked' } & FabStackedProps);
 
 // Centralized StyleSheet for all FAB variants
-const createFabStyles = (theme: Theme) => ({
-  // Base styles
-  container: {
-    flex: 1,
-  },
+const createFabStyles = (theme: Theme) =>
+  StyleSheet.create({
+    // Base styles
+    container: {
+      flex: 1,
+    },
 
-  // Common positioning and shadow styles
-  baseContentContainer: {
-    position: 'absolute' as const,
-    bottom: 30,
-    right: 30,
-    borderRadius: 50,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
+    // Common positioning and shadow styles
+    baseContentContainer: {
+      position: 'absolute',
+      bottom: 30,
+      right: 30,
+      borderRadius: 50,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
 
-  // Clustered specific styles
-  clusteredContentContainer: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    overflow: 'hidden' as const,
-  },
+    // Clustered specific styles
+    clusteredContentContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      overflow: 'hidden',
+    },
 
-  // Extended specific styles
-  extendedFabContainer: {
-    overflow: 'hidden' as const,
-  },
+    // Extended specific styles
+    extendedFabContainer: {
+      overflow: 'hidden',
+    },
 
-  extendedContentContainer: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    overflow: 'hidden' as const,
-  },
+    extendedContentContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      overflow: 'hidden',
+    },
 
-  // Common icon container
-  iconContainer: {
-    width: 60,
-    height: 60,
-    justifyContent: 'center' as const,
-    alignItems: 'center' as const,
-  },
+    // Common icon container
+    iconContainer: {
+      width: 60,
+      height: 60,
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
 
-  // Single variant specific icon container
-  singleIconContainer: {
-    borderRadius: 50,
-  },
+    // Single variant specific icon container
+    singleIconContainer: {
+      borderRadius: 50,
+    },
 
-  // Common icon styles
-  icon: {
-    width: 26,
-    height: 26,
-  },
+    // Common icon styles
+    icon: {
+      width: 26,
+      height: 26,
+    },
 
-  // Text styles
-  text: {
-    color: 'white' as const,
-    fontSize: 18,
-    marginLeft: 10,
-  },
+    // Text styles
+    text: {
+      color: 'white',
+      fontSize: 18,
+      marginLeft: 10,
+    },
 
-  // Theme backgrounds
-  background: {
-    backgroundColor: theme.colors.primary as ViewStyle['backgroundColor'],
-  },
+    // Theme backgrounds
+    background: {
+      backgroundColor: theme.colors.primary as ViewStyle['backgroundColor'],
+    },
 
-  // Single variant container
-  singleContainer: {
-    position: 'absolute' as const,
-    bottom: 30,
-    right: 30,
-    borderRadius: 50,
-    width: 60,
-    height: 60,
-    shadowColor: '#000' as const,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
-  },
+    // Single variant container
+    singleContainer: {
+      position: 'absolute',
+      bottom: 30,
+      right: 30,
+      borderRadius: 50,
+      width: 60,
+      height: 60,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
 
-  // Single variant touchable
-  singleTouchable: {
-    width: '100%' as const,
-    height: '100%' as const,
-    justifyContent: 'center' as const,
-    alignItems: 'center' as const,
-  },
+    // Single variant touchable
+    singleTouchable: {
+      width: '100%',
+      height: '100%',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
 
-  // Wrapper container for main Fab component
-  wrapperContainer: {
-    position: 'absolute' as const,
-    bottom: 0,
-    right: 0,
-    left: 0,
-  },
-});
+    // Wrapper container for main Fab component
+    wrapperContainer: {
+      position: 'absolute',
+      bottom: 0,
+      right: 0,
+      left: 0,
+    },
+  });
 
 const FabClustered = ({
   items,
@@ -396,7 +397,7 @@ const FabClustered = ({
         styles.container,
         containerStyle,
         {
-          shadowColor: '#000' as const,
+          shadowColor: '#000',
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.25,
           shadowRadius: 3.84,
@@ -662,7 +663,7 @@ const FabExtended = ({
         styles.container,
         containerStyle,
         {
-          shadowColor: '#000' as const,
+          shadowColor: '#000' ,
           shadowOffset: { width: 0, height: 2 },
           shadowOpacity: 0.25,
           shadowRadius: 3.84,

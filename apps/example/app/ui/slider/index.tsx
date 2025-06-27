@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
 import {
   Slider,
   RangeSlider,
@@ -298,7 +299,7 @@ export default function SliderScreen() {
   );
 }
 
-const createStyles = (theme: Theme) => ({
+const createStyles = (theme: Theme) => StyleSheet.create({
   container: {
     flex: 1,
   },
@@ -310,23 +311,23 @@ const createStyles = (theme: Theme) => ({
     fontSize: theme.typography.heading.fontSize,
     fontWeight: theme.typography.heading.fontWeight,
     color: theme.colors.text,
-    textAlign: 'center' as const,
+    textAlign: 'center' ,
     marginBottom: theme.spacing.lg,
   },
   card: {
     padding: theme.spacing.md,
-    alignItems: 'center' as const,
+    alignItems: 'center' ,
   },
   sectionTitle: {
     fontSize: theme.typography.subtitle.fontSize,
     fontWeight: theme.typography.subtitle.fontWeight,
     color: theme.colors.text,
-    textAlign: 'center' as const,
+    textAlign: 'center' ,
   },
   valueText: {
     fontSize: theme.typography.body.fontSize,
     color: theme.colors.textSecondary,
     fontFamily: 'monospace',
-    textAlign: 'center' as const,
+    textAlign: 'center' ,
   },
 });

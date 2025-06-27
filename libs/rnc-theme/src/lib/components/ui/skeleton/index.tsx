@@ -1,5 +1,11 @@
 import React, { useEffect } from 'react';
-import { View, ViewStyle, DimensionValue, StyleProp } from 'react-native';
+import {
+  View,
+  ViewStyle,
+  DimensionValue,
+  StyleProp,
+  StyleSheet,
+} from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -37,42 +43,42 @@ type SkeletonCircleProps = BaseComponentProps & {
 
 // Styles
 const createStyles = (theme: Theme) =>
-  ({
+  StyleSheet.create({
     base: {
       backgroundColor: theme.colors.muted,
       overflow: 'hidden',
-    } as ViewStyle,
+    },
     animated: {
       backgroundColor: theme.colors.muted,
-    } as ViewStyle,
+    },
     // Sizes
     sizeXs: {
       height: 12,
-    } as ViewStyle,
+    },
     sizeSm: {
       height: 16,
-    } as ViewStyle,
+    },
     sizeMd: {
       height: 20,
-    } as ViewStyle,
+    },
     sizeLg: {
       height: 24,
-    } as ViewStyle,
+    },
     sizeXl: {
       height: 32,
-    } as ViewStyle,
+    },
     // States
-    stateDefault: {} as ViewStyle,
-    stateFocus: {} as ViewStyle,
-    stateActive: {} as ViewStyle,
+    stateDefault: {},
+    stateFocus: {},
+    stateActive: {},
     stateDisabled: {
       opacity: 0.5,
-    } as ViewStyle,
-    stateLoading: {} as ViewStyle,
-    stateError: {} as ViewStyle,
-    stateSuccess: {} as ViewStyle,
-    stateWarning: {} as ViewStyle,
-  } as const);
+    },
+    stateLoading: {},
+    stateError: {},
+    stateSuccess: {},
+    stateWarning: {},
+  });
 
 const Skeleton = React.forwardRef<
   React.ComponentRef<typeof View>,

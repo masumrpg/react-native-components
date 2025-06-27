@@ -7,7 +7,6 @@ import {
   Code,
   H3,
   Body,
-  H2,
   Card,
   CardHeader,
   CardContent,

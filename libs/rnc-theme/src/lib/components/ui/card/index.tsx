@@ -1,13 +1,16 @@
 import React, { forwardRef, createContext, useContext } from 'react';
-import { Platform, Text, TextStyle, View, ViewStyle } from 'react-native';
+import {
+  Platform,
+  StyleSheet,
+  Text,
+  TextStyle,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-import {
-  ComponentState,
-  BaseComponentProps,
-  ComponentVariant,
-} from '../../../types/ui';
+import { BaseComponentProps, ComponentVariant } from '../../../types/ui';
 import { getBackgroundColor, getSizeStyles } from '../../../utils';
 
 type BaseCardProps = BaseComponentProps & {
@@ -49,125 +52,118 @@ type CardHeaderProps = React.ComponentPropsWithoutRef<typeof View> & {
   borderBottom?: boolean;
 };
 
-// Styles
-type StateStylesType = {
-  [K in ComponentState as `state${Capitalize<K>}`]: ViewStyle;
-};
-
 const createStyles = (theme: Theme) =>
-  ({
+  StyleSheet.create({
     container: {
       marginBottom: 0,
-    } as ViewStyle,
+    },
     base: {
       borderWidth: 1,
       borderColor: theme.colors.border,
       backgroundColor: theme.colors.surface,
       position: 'relative',
-    } as ViewStyle,
+    },
     // Updated Variants
     default: {
       borderWidth: 1,
       borderColor: theme.colors.border,
       backgroundColor: theme.colors.surface,
-    } as ViewStyle,
+    },
     primary: {
       borderWidth: 1.5,
       borderColor: theme.colors.primary,
       backgroundColor: `${theme.colors.primary}10`,
-    } as ViewStyle,
+    },
     secondary: {
       borderWidth: 1.5,
       borderColor: theme.colors.secondary,
       backgroundColor: `${theme.colors.secondary}10`,
-    } as ViewStyle,
+    },
     outline: {
       borderWidth: 1.5,
       borderColor: theme.colors.border,
       backgroundColor: 'transparent',
-    } as ViewStyle,
+    },
     ghost: {
       borderWidth: 0,
       backgroundColor: 'transparent',
-    } as ViewStyle,
+    },
     filled: {
       borderWidth: 0,
       backgroundColor: theme.colors.background,
-    } as ViewStyle,
+    },
     success: {
       borderWidth: 1.5,
       borderColor: theme.colors.success,
       backgroundColor: `${theme.colors.success}10`,
-    } as ViewStyle,
+    },
     error: {
       borderWidth: 1.5,
       borderColor: theme.colors.error,
       backgroundColor: `${theme.colors.error}10`,
-    } as ViewStyle,
+    },
     warning: {
       borderWidth: 1.5,
       borderColor: theme.colors.warning,
       backgroundColor: `${theme.colors.warning}10`,
-    } as ViewStyle,
+    },
     info: {
       borderWidth: 1.5,
       borderColor: theme.colors.info,
       backgroundColor: `${theme.colors.info}10`,
-    } as ViewStyle,
+    },
     destructive: {
       borderWidth: 1.5,
       borderColor: theme.colors.destructive,
       backgroundColor: `${theme.colors.destructive}10`,
-    } as ViewStyle,
+    },
     // Sizes
     sizeXs: {
       padding: theme.spacing.xs,
       minHeight: 32,
-    } as ViewStyle,
+    },
     sizeSm: {
       padding: theme.spacing.sm,
       minHeight: 36,
-    } as ViewStyle,
+    },
     sizeMd: {
       padding: theme.spacing.md,
       minHeight: 42,
-    } as ViewStyle,
+    },
     sizeLg: {
       padding: theme.spacing.lg,
       minHeight: 48,
-    } as ViewStyle,
+    },
     sizeXl: {
       padding: theme.spacing.xl,
       minHeight: 56,
-    } as ViewStyle,
+    },
     // States
-    stateDefault: {} as ViewStyle,
+    stateDefault: {},
     stateFocus: {
       borderWidth: 2,
-    } as ViewStyle,
+    },
     stateActive: {
       borderWidth: 2,
       opacity: 0.9,
-    } as ViewStyle,
+    },
     stateDisabled: {
       opacity: 0.6,
       pointerEvents: 'none',
-    } as ViewStyle,
+    },
     stateLoading: {
       opacity: 0.8,
-    } as ViewStyle,
+    },
     stateError: {
       borderColor: theme.colors.error,
-    } as ViewStyle,
+    },
     stateSuccess: {
       borderColor: theme.colors.success,
-    } as ViewStyle,
+    },
     stateWarning: {
       borderColor: theme.colors.warning,
-    } as ViewStyle,
-  } as const satisfies Record<string, ViewStyle> &
-    StateStylesType &
-    Record<ComponentVariant, ViewStyle>);
+    },
+  });
 
 // Tambahkan Context untuk Card variant
 const CardContext = createContext<{ variant: ComponentVariant }>({

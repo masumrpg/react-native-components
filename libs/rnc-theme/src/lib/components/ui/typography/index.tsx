@@ -1,5 +1,5 @@
 import React, { forwardRef } from 'react';
-import { StyleProp, Text, TextStyle } from 'react-native';
+import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
@@ -70,7 +70,7 @@ const Typography = forwardRef<React.ComponentRef<typeof Text>, TypographyProps>(
           styles.base,
           styles[variant],
           {
-            fontWeight: weight ?? styles[variant].fontWeight ?? '400',
+            fontWeight: weight ?? styles[variant].fontWeight,
             color: color ?? theme.colors.text,
             textAlign: align,
           },
@@ -90,123 +90,119 @@ const Typography = forwardRef<React.ComponentRef<typeof Text>, TypographyProps>(
 
 Typography.displayName = 'Typography';
 
-const createTypographyStyles = (theme: Theme) => ({
-  base: {} as TextStyle,
-  small: {
-    fontSize: theme.typography.small.fontSize,
-    lineHeight: theme.typography.small.lineHeight,
-    fontWeight: (theme.typography.small.fontWeight ??
-      '400') as TextStyle['fontWeight'],
-  } as TextStyle,
-  body: {
-    fontSize: theme.typography.body.fontSize,
-    lineHeight: theme.typography.body.lineHeight,
-    fontWeight: (theme.typography.body.fontWeight ??
-      '400') as TextStyle['fontWeight'],
-  } as TextStyle,
-  subtitle: {
-    fontSize: theme.typography.subtitle.fontSize,
-    lineHeight: theme.typography.subtitle.lineHeight,
-    fontWeight: (theme.typography.subtitle.fontWeight ??
-      '500') as TextStyle['fontWeight'],
-  } as TextStyle,
-  title: {
-    fontSize: theme.typography.title.fontSize,
-    lineHeight: theme.typography.title.lineHeight,
-    fontWeight: (theme.typography.title.fontWeight ??
-      '600') as TextStyle['fontWeight'],
-  } as TextStyle,
-  heading: {
-    fontSize: theme.typography.heading.fontSize,
-    lineHeight: theme.typography.heading.lineHeight,
-    fontWeight: (theme.typography.heading.fontWeight ??
-      '700') as TextStyle['fontWeight'],
-  } as TextStyle,
-  // Heading variants H1-H6
-  h1: {
-    fontSize: 32,
-    lineHeight: 40,
-    fontWeight: '700' as TextStyle['fontWeight'],
-  } as TextStyle,
-  h2: {
-    fontSize: 28,
-    lineHeight: 36,
-    fontWeight: '700' as TextStyle['fontWeight'],
-  } as TextStyle,
-  h3: {
-    fontSize: 24,
-    lineHeight: 32,
-    fontWeight: '600' as TextStyle['fontWeight'],
-  } as TextStyle,
-  h4: {
-    fontSize: 20,
-    lineHeight: 28,
-    fontWeight: '600' as TextStyle['fontWeight'],
-  } as TextStyle,
-  h5: {
-    fontSize: 18,
-    lineHeight: 24,
-    fontWeight: '500' as TextStyle['fontWeight'],
-  } as TextStyle,
-  h6: {
-    fontSize: 16,
-    lineHeight: 22,
-    fontWeight: '500' as TextStyle['fontWeight'],
-  } as TextStyle,
-  // Variant baru yang ditambahkan
-  display: {
-    fontSize: 48,
-    lineHeight: 56,
-    fontWeight: '800' as TextStyle['fontWeight'],
-    letterSpacing: -1,
-  } as TextStyle,
-  lead: {
-    fontSize: 20,
-    lineHeight: 30,
-    fontWeight: '400' as TextStyle['fontWeight'],
-    letterSpacing: 0.5,
-  } as TextStyle,
-  caption: {
-    fontSize: 12,
-    lineHeight: 16,
-    fontWeight: '400' as TextStyle['fontWeight'],
-    letterSpacing: 0.4,
-  } as TextStyle,
-  overline: {
-    fontSize: 10,
-    lineHeight: 14,
-    fontWeight: '600' as TextStyle['fontWeight'],
-    letterSpacing: 1.5,
-    textTransform: 'uppercase',
-  } as TextStyle,
-  button: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: '600' as TextStyle['fontWeight'],
-    letterSpacing: 0.25,
-    textTransform: 'uppercase',
-  } as TextStyle,
-  label: {
-    fontSize: 12,
-    lineHeight: 16,
-    fontWeight: '500' as TextStyle['fontWeight'],
-    letterSpacing: 0.5,
-  } as TextStyle,
-  code: {
-    fontSize: 14,
-    lineHeight: 20,
-    fontWeight: '400' as TextStyle['fontWeight'],
-    fontFamily: 'monospace',
-    letterSpacing: 0,
-  } as TextStyle,
-  quote: {
-    fontSize: 18,
-    lineHeight: 28,
-    fontWeight: '400' as TextStyle['fontWeight'],
-    fontStyle: 'italic',
-    letterSpacing: 0.25,
-  } as TextStyle,
-});
+const createTypographyStyles = (theme: Theme) =>
+  StyleSheet.create({
+    base: {},
+    small: {
+      fontSize: theme.typography.small.fontSize,
+      lineHeight: theme.typography.small.lineHeight,
+      fontWeight: theme.typography.small.fontWeight ?? '400',
+    },
+    body: {
+      fontSize: theme.typography.body.fontSize,
+      lineHeight: theme.typography.body.lineHeight,
+      fontWeight: theme.typography.body.fontWeight ?? '400',
+    },
+    subtitle: {
+      fontSize: theme.typography.subtitle.fontSize,
+      lineHeight: theme.typography.subtitle.lineHeight,
+      fontWeight: theme.typography.subtitle.fontWeight ?? '500',
+    },
+    title: {
+      fontSize: theme.typography.title.fontSize,
+      lineHeight: theme.typography.title.lineHeight,
+      fontWeight: theme.typography.title.fontWeight ?? '600',
+    },
+    heading: {
+      fontSize: theme.typography.heading.fontSize,
+      lineHeight: theme.typography.heading.lineHeight,
+      fontWeight: theme.typography.heading.fontWeight ?? '700',
+    },
+    // Heading variants H1-H6
+    h1: {
+      fontSize: 32,
+      lineHeight: 40,
+      fontWeight: '700',
+    },
+    h2: {
+      fontSize: 28,
+      lineHeight: 36,
+      fontWeight: '700',
+    },
+    h3: {
+      fontSize: 24,
+      lineHeight: 32,
+      fontWeight: '600',
+    },
+    h4: {
+      fontSize: 20,
+      lineHeight: 28,
+      fontWeight: '600',
+    },
+    h5: {
+      fontSize: 18,
+      lineHeight: 24,
+      fontWeight: '500',
+    },
+    h6: {
+      fontSize: 16,
+      lineHeight: 22,
+      fontWeight: '500',
+    },
+    // Variant baru yang ditambahkan
+    display: {
+      fontSize: 48,
+      lineHeight: 56,
+      fontWeight: '800',
+      letterSpacing: -1,
+    },
+    lead: {
+      fontSize: 20,
+      lineHeight: 30,
+      fontWeight: '400',
+      letterSpacing: 0.5,
+    },
+    caption: {
+      fontSize: 12,
+      lineHeight: 16,
+      fontWeight: '400',
+      letterSpacing: 0.4,
+    },
+    overline: {
+      fontSize: 10,
+      lineHeight: 14,
+      fontWeight: '600',
+      letterSpacing: 1.5,
+      textTransform: 'uppercase',
+    },
+    button: {
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: '600',
+      letterSpacing: 0.25,
+      textTransform: 'uppercase',
+    },
+    label: {
+      fontSize: 12,
+      lineHeight: 16,
+      fontWeight: '500',
+      letterSpacing: 0.5,
+    },
+    code: {
+      fontSize: 14,
+      lineHeight: 20,
+      fontWeight: '400',
+      fontFamily: 'monospace',
+      letterSpacing: 0,
+    },
+    quote: {
+      fontSize: 18,
+      lineHeight: 28,
+      fontWeight: '400',
+      fontStyle: 'italic',
+      letterSpacing: 0.25,
+    },
+  });
 
 // Komponen khusus untuk setiap variant
 const Heading = forwardRef<

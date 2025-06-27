@@ -7,6 +7,7 @@ import {
   Text,
   LayoutChangeEvent,
   StyleProp,
+  StyleSheet,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -91,21 +92,21 @@ const useAccordionItem = () => {
 };
 
 // Styles
-const createAccordionStyles = (theme: Theme) => ({
+const createAccordionStyles = (theme: Theme) => StyleSheet.create({
   container: {
     width: '100%',
-  } as ViewStyle,
+  },
 
   // Item styles
   item: {
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
     overflow: 'hidden',
-  } as ViewStyle,
+  },
 
   itemLast: {
     borderBottomWidth: 0,
-  } as ViewStyle,
+  },
 
   // Trigger styles
   trigger: {
@@ -114,151 +115,151 @@ const createAccordionStyles = (theme: Theme) => ({
     justifyContent: 'space-between',
     backgroundColor: 'transparent',
     borderWidth: 0,
-  } as ViewStyle,
+  },
 
   triggerText: {
     flex: 1,
     color: theme.colors.text,
     fontWeight: '500',
-  } as TextStyle,
+  },
 
   triggerIcon: {
     marginLeft: theme.spacing.sm,
-  } as ViewStyle,
+  },
 
   // Content styles
   content: {
     overflow: 'hidden',
-  } as ViewStyle,
+  },
 
   contentInner: {
     backgroundColor: theme.colors.surface,
-  } as ViewStyle,
+  },
 
   // Variants
   default: {
     backgroundColor: theme.colors.surface,
     borderColor: theme.colors.border,
-  } as ViewStyle,
+  },
 
   primary: {
     backgroundColor: `${theme.colors.primary}05`,
     borderColor: theme.colors.primary,
-  } as ViewStyle,
+  },
 
   secondary: {
     backgroundColor: `${theme.colors.secondary}05`,
     borderColor: theme.colors.secondary,
-  } as ViewStyle,
+  },
 
   outline: {
     backgroundColor: 'transparent',
     borderColor: theme.colors.border,
     borderWidth: 1,
-  } as ViewStyle,
+  },
 
   filled: {
     backgroundColor: theme.colors.background,
     borderColor: 'transparent',
-  } as ViewStyle,
+  },
 
   ghost: {
     backgroundColor: 'transparent',
     borderColor: 'transparent',
-  } as ViewStyle,
+  },
 
   success: {
     backgroundColor: `${theme.colors.success}05`,
     borderColor: theme.colors.success,
-  } as ViewStyle,
+  },
 
   error: {
     backgroundColor: `${theme.colors.error}05`,
     borderColor: theme.colors.error,
-  } as ViewStyle,
+  },
 
   warning: {
     backgroundColor: `${theme.colors.warning}05`,
     borderColor: theme.colors.warning,
-  } as ViewStyle,
+  },
 
   info: {
     backgroundColor: `${theme.colors.info}05`,
     borderColor: theme.colors.info,
-  } as ViewStyle,
+  },
 
   destructive: {
     backgroundColor: `${theme.colors.error}05`,
     borderColor: theme.colors.error,
-  } as ViewStyle,
+  },
 
   // Sizes
   xs: {
     minHeight: 32,
-  } as ViewStyle,
+  },
 
   sm: {
     minHeight: 36,
-  } as ViewStyle,
+  },
 
   md: {
     minHeight: 44,
-  } as ViewStyle,
+  },
 
   lg: {
     minHeight: 52,
-  } as ViewStyle,
+  },
 
   xl: {
     minHeight: 60,
-  } as ViewStyle,
+  },
 
   // Size-specific trigger padding
   triggerXs: {
     paddingHorizontal: theme.spacing.sm,
     paddingVertical: theme.spacing.xs,
-  } as ViewStyle,
+  },
 
   triggerSm: {
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.sm,
-  } as ViewStyle,
+  },
 
   triggerMd: {
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.md,
-  } as ViewStyle,
+  },
 
   triggerLg: {
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.md,
-  } as ViewStyle,
+  },
 
   triggerXl: {
     paddingHorizontal: theme.spacing.lg,
     paddingVertical: theme.spacing.lg,
-  } as ViewStyle,
+  },
 
   // Size-specific content padding
   contentPaddingXs: {
     padding: theme.spacing.xs,
-  } as ViewStyle,
+  },
 
   contentPaddingSm: {
     padding: theme.spacing.sm,
-  } as ViewStyle,
+  },
 
   contentPaddingMd: {
     padding: theme.spacing.md,
-  } as ViewStyle,
+  },
 
   contentPaddingLg: {
     padding: theme.spacing.lg,
-  } as ViewStyle,
+  },
 
   contentPaddingXl: {
     padding: theme.spacing.xl,
-  } as ViewStyle,
+  },
 
   // Size-specific text
   textXs: {
@@ -290,7 +291,7 @@ const createAccordionStyles = (theme: Theme) => ({
   disabled: {
     opacity: 0.6,
     pointerEvents: 'none',
-  } as ViewStyle,
+  },
 });
 
 // Components

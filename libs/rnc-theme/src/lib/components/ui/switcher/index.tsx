@@ -1,5 +1,5 @@
 import React, { useEffect, forwardRef } from 'react';
-import { StyleProp, TouchableOpacity, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, TouchableOpacity, ViewStyle } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -248,11 +248,11 @@ const SwitcherLabel = forwardRef<
 
 SwitcherLabel.displayName = 'SwitcherLabel';
 
-const createSwitcherStyles = (theme: Theme) => ({
+const createSwitcherStyles = (theme: Theme) => StyleSheet.create({
   track: {
     borderRadius: theme.components.borderRadius.full,
-    justifyContent: 'center' as const,
-    position: 'relative' as const,
+    justifyContent: 'center' ,
+    position: 'relative' ,
     // iOS-like styling
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 1 },
@@ -262,7 +262,7 @@ const createSwitcherStyles = (theme: Theme) => ({
   },
   thumb: {
     borderRadius: theme.components.borderRadius.full,
-    position: 'absolute' as const,
+    position: 'absolute' ,
     // Enhanced iOS-like shadow
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
@@ -272,9 +272,9 @@ const createSwitcherStyles = (theme: Theme) => ({
   },
 });
 
-const createSwitcherLabelStyles = (theme: Theme) => ({
+const createSwitcherLabelStyles = (theme: Theme) => StyleSheet.create({
   label: {
-    justifyContent: 'center' as const,
+    justifyContent: 'center' ,
   },
   left: {
     marginRight: theme.spacing.sm,

@@ -1,4 +1,4 @@
-import { FlatList, FlatListProps, NativeScrollEvent, NativeSyntheticEvent, ViewStyle } from "react-native";
+import { FlatList, FlatListProps, NativeScrollEvent, NativeSyntheticEvent, StyleSheet, ViewStyle } from "react-native";
 import { Theme } from "../../../types/theme";
 import {
   HideDirectionType,
@@ -179,17 +179,17 @@ const HList = forwardRef(HFlatList) as <T>(
   props: ListProps<T> & { ref?: React.ForwardedRef<FlatList<T>> }
 ) => React.ReactElement;
 
-const createVStyles = (theme: Theme) => ({
+const createVStyles = (_: Theme) => StyleSheet.create({
   base: {
     flex: 1,
-    flexDirection: 'column' as const,
+    flexDirection: 'column',
   },
 });
 
-const createHStyles = (theme: Theme) => ({
+const createHStyles = (_: Theme) => StyleSheet.create({
   base: {
     flex: 1,
-    flexDirection: 'row' as const,
+    flexDirection: 'row',
   },
 });
 

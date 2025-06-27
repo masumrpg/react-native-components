@@ -13,6 +13,7 @@ import {
   TextStyle,
   LayoutChangeEvent,
   StyleProp,
+  StyleSheet,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -868,26 +869,26 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
 );
 
 // Styles
-const createSliderStyles = (theme: Theme) => ({
+const createSliderStyles = (theme: Theme) => StyleSheet.create({
   container: {
     justifyContent: 'center',
     alignItems: 'center',
-  } as ViewStyle,
+  } ,
   sliderContainer: {
     height: 40,
     justifyContent: 'center',
     position: 'relative',
-  } as ViewStyle,
+  } ,
   track: {
     position: 'absolute',
     left: 0,
     right: 0,
     borderRadius: 2,
-  } as ViewStyle,
+  } ,
   activeTrack: {
     position: 'absolute',
     borderRadius: 2,
-  } as ViewStyle,
+  } ,
   thumb: {
     position: 'absolute',
     // shadowColor: theme.colors.shadow,
@@ -898,7 +899,7 @@ const createSliderStyles = (theme: Theme) => ({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-  } as ViewStyle,
+  } ,
   labelContainer: {
     position: 'absolute',
     top: -30,
@@ -910,12 +911,12 @@ const createSliderStyles = (theme: Theme) => ({
     borderColor: theme.colors.border,
     width: 50,
     alignItems: 'center',
-  } as ViewStyle,
+  } ,
   label: {
     fontSize: 12,
     color: theme.colors.text,
     fontWeight: '500',
-  } as TextStyle,
+  },
 });
 
 // Set display names

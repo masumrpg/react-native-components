@@ -10,6 +10,7 @@ import {
   Theme,
   VScroll,
 } from 'rnc-theme';
+import { StyleSheet } from 'react-native';
 
 export default function RadioScreen() {
   const styles = useThemedStyles(createStyles);
@@ -309,40 +310,41 @@ export default function RadioScreen() {
   );
 }
 
-const createStyles = (theme: Theme) => ({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-    padding: theme.spacing.md,
-  },
-  headerCard: {
-    padding: theme.spacing.lg,
-  },
-  card: {
-    padding: theme.spacing.md,
-  },
-  title: {
-    fontSize: theme.typography.heading.fontSize,
-    fontWeight: theme.typography.heading.fontWeight,
-    color: theme.colors.text,
-    textAlign: 'center' as const,
-  },
-  sectionTitle: {
-    fontSize: theme.typography.subtitle.fontSize,
-    fontWeight: theme.typography.subtitle.fontWeight,
-    color: theme.colors.text,
-  },
-  subSectionTitle: {
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
-    color: theme.colors.text,
-  },
-  selectedText: {
-    color: theme.colors.primary,
-    fontWeight: '600' as const,
-    fontStyle: 'italic' as const,
-  },
-  paymentDescription: {
-    color: theme.colors.textSecondary,
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+      padding: theme.spacing.md,
+    },
+    headerCard: {
+      padding: theme.spacing.lg,
+    },
+    card: {
+      padding: theme.spacing.md,
+    },
+    title: {
+      fontSize: theme.typography.heading.fontSize,
+      fontWeight: theme.typography.heading.fontWeight,
+      color: theme.colors.text,
+      textAlign: 'center',
+    },
+    sectionTitle: {
+      fontSize: theme.typography.subtitle.fontSize,
+      fontWeight: theme.typography.subtitle.fontWeight,
+      color: theme.colors.text,
+    },
+    subSectionTitle: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: '600',
+      color: theme.colors.text,
+    },
+    selectedText: {
+      color: theme.colors.primary,
+      fontWeight: '600',
+      fontStyle: 'italic',
+    },
+    paymentDescription: {
+      color: theme.colors.textSecondary,
+    },
+  });

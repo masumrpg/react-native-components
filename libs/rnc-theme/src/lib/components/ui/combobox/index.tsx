@@ -22,6 +22,7 @@ import {
   InteractionManager,
   Animated,
   StyleProp,
+  StyleSheet,
 } from 'react-native';
 import { useTheme } from '../../../context/RNCProvider';
 import { Theme } from '../../../types/theme';
@@ -84,8 +85,8 @@ type BaseComboboxProps = {
 type ComboboxProps = BaseComboboxProps;
 
 // Styles factory following Modal pattern
-const createComboboxStyles = (theme: Theme) => ({
-  container: {} as ViewStyle,
+const createComboboxStyles = (theme: Theme) => StyleSheet.create({
+  container: {} ,
 
   label: {
     fontSize: theme.typography.body.fontSize,
@@ -93,11 +94,11 @@ const createComboboxStyles = (theme: Theme) => ({
     color: theme.colors.text,
     marginBottom: theme.spacing.sm,
     letterSpacing: 0.2,
-  } as TextStyle,
+  },
 
   labelError: {
     color: theme.colors.error,
-  } as TextStyle,
+  },
 
   trigger: {
     flexDirection: 'row',
@@ -114,7 +115,7 @@ const createComboboxStyles = (theme: Theme) => ({
     ...(Platform.OS === 'android' && {
       elevation: 1,
     }),
-  } as ViewStyle,
+  } ,
 
   triggerFocused: {
     borderColor: theme.colors.primary,
@@ -124,63 +125,63 @@ const createComboboxStyles = (theme: Theme) => ({
     ...(Platform.OS === 'android' && {
       elevation: 2,
     }),
-  } as ViewStyle,
+  } ,
 
   triggerError: {
     borderColor: theme.colors.error,
-  } as ViewStyle,
+  } ,
 
   triggerSuccess: {
     borderColor: theme.colors.success,
-  } as ViewStyle,
+  } ,
 
   triggerDisabled: {
     opacity: 0.6,
     backgroundColor: resolveColor(theme, 'background', theme.colors.background),
-  } as ViewStyle,
+  } ,
 
   triggerText: {
     flex: 1,
     color: theme.colors.text,
     fontWeight: '400',
     letterSpacing: 0.1,
-  } as TextStyle,
+  },
 
   triggerTextPlaceholder: {
     color: theme.colors.textSecondary,
-  } as TextStyle,
+  },
 
   triggerTextSelected: {
     fontWeight: '500',
-  } as TextStyle,
+  },
 
   chevron: {
     marginLeft: theme.spacing.sm,
     padding: 4,
-  } as ViewStyle,
+  } ,
 
   clearButton: {
     marginLeft: theme.spacing.xs,
     padding: 6,
     borderRadius: theme.components.borderRadius.sm,
     backgroundColor: resolveColor(theme, 'background', theme.colors.background),
-  } as ViewStyle,
+  } ,
 
   helperText: {
     fontSize: theme.typography.body.fontSize,
     color: theme.colors.textSecondary,
     marginTop: theme.spacing.sm,
     fontWeight: '400',
-  } as TextStyle,
+  },
 
   helperTextError: {
     color: theme.colors.error,
-  } as TextStyle,
+  },
 
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
-  } as ViewStyle,
+  } ,
 
   modalContent: {
     position: 'absolute',
@@ -196,14 +197,14 @@ const createComboboxStyles = (theme: Theme) => ({
     ...(Platform.OS === 'android' && {
       elevation: 8,
     }),
-  } as ViewStyle,
+  } ,
 
   searchContainer: {
     padding: theme.spacing.md,
     backgroundColor: resolveColor(theme, 'background', theme.colors.background),
     borderBottomWidth: 1,
     borderBottomColor: resolveColor(theme, 'border', theme.colors.border),
-  } as ViewStyle,
+  } ,
 
   searchInput: {
     fontSize: theme.typography.body.fontSize,
@@ -216,15 +217,15 @@ const createComboboxStyles = (theme: Theme) => ({
     minHeight: 44,
     borderWidth: 1,
     borderColor: resolveColor(theme, 'border', theme.colors.border),
-  } as ViewStyle,
+  } ,
 
   optionsList: {
     flexGrow: 1,
-  } as ViewStyle,
+  } ,
 
   optionsScrollContainer: {
     paddingBottom: Platform.OS === 'android' ? 8 : 0,
-  } as ViewStyle,
+  } ,
 
   option: {
     flexDirection: 'row',
@@ -234,19 +235,19 @@ const createComboboxStyles = (theme: Theme) => ({
     paddingVertical: theme.spacing.md,
     minHeight: 48,
     backgroundColor: 'transparent',
-  } as ViewStyle,
+  } ,
 
   optionHover: {
     backgroundColor: resolveColor(theme, 'background', theme.colors.background),
-  } as ViewStyle,
+  } ,
 
   optionSelected: {
     backgroundColor: theme.colors.primary + '08',
-  } as ViewStyle,
+  } ,
 
   optionDisabled: {
     opacity: 0.4,
-  } as ViewStyle,
+  } ,
 
   optionText: {
     flex: 1,
@@ -254,27 +255,27 @@ const createComboboxStyles = (theme: Theme) => ({
     color: theme.colors.text,
     fontWeight: '400',
     letterSpacing: 0.1,
-  } as TextStyle,
+  },
 
   checkIcon: {
     marginLeft: theme.spacing.sm,
     backgroundColor: theme.colors.primary,
     borderRadius: theme.components.borderRadius.full,
     padding: 2,
-  } as ViewStyle,
+  } ,
 
   emptyState: {
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.lg,
     alignItems: 'center',
-  } as ViewStyle,
+  } ,
 
   emptyText: {
     fontSize: theme.typography.body.fontSize,
     color: theme.colors.textSecondary,
     fontWeight: '400',
     textAlign: 'center',
-  } as TextStyle,
+  },
 });
 
 // Size configuration - Consistent with Input component
@@ -749,11 +750,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
         paddingVertical: sizeStyles.padding.vertical,
         minHeight: sizeStyles.minHeight,
         borderRadius: theme.components.borderRadius[borderRadius],
-        backgroundColor: resolveColor(
-          theme,
-          backgroundColor,
-          theme.colors.surface
-        ),
+        backgroundColor: backgroundColor ?? theme.colors.surface,
       },
       inputStyle,
     ];
@@ -862,11 +859,7 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
                       left: dropdownPosition.left,
                       width: dropdownPosition.width,
                       maxHeight: maxDropdownHeight,
-                      backgroundColor: resolveColor(
-                        theme,
-                        backgroundColor,
-                        theme.colors.surface
-                      ),
+                      backgroundColor: backgroundColor ?? theme.colors.surface,
                       ...(Platform.OS === 'android'
                         ? {
                             elevation,

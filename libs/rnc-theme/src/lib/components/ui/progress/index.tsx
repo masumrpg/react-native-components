@@ -1,5 +1,5 @@
 import React, { useEffect, forwardRef } from 'react';
-import { StyleProp, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -208,32 +208,33 @@ const ProgressFilledTrack = forwardRef<
 
 ProgressFilledTrack.displayName = 'ProgressFilledTrack';
 
-const createProgressStyles = (theme: Theme) => ({
-  container: {
-    width: '100%' as const,
-    borderRadius: theme.components.borderRadius.full,
-    overflow: 'hidden' as const,
-  },
-  xs: {
-    height: 2,
-  },
-  sm: {
-    height: 4,
-  },
-  md: {
-    height: 8,
-  },
-  lg: {
-    height: 12,
-  },
-  xl: {
-    height: 16,
-  },
-});
+const createProgressStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      width: '100%',
+      borderRadius: theme.components.borderRadius.full,
+      overflow: 'hidden',
+    },
+    xs: {
+      height: 2,
+    },
+    sm: {
+      height: 4,
+    },
+    md: {
+      height: 8,
+    },
+    lg: {
+      height: 12,
+    },
+    xl: {
+      height: 16,
+    },
+  });
 
-const createProgressFilledTrackStyles = (theme: Theme) => ({
+const createProgressFilledTrackStyles = (theme: Theme) => StyleSheet.create({
   filledTrack: {
-    height: '100%' as const,
+    height: '100%',
     borderRadius: theme.components.borderRadius.full,
   },
   animated: {

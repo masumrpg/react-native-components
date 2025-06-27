@@ -2,7 +2,6 @@ import React, { forwardRef } from 'react';
 import { View, ViewStyle, DimensionValue, StyleProp } from 'react-native';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import { resolveColor } from '../../../utils';
 import { Theme } from '../../../types/theme';
 
 interface DividerProps {
@@ -43,7 +42,7 @@ const Divider = forwardRef<React.ComponentRef<typeof View>, DividerProps>(
     const styles = useThemedStyles(createDividerStyles);
 
     const dividerStyle: ViewStyle = {
-      backgroundColor: resolveColor(theme, color, theme.colors.border),
+      backgroundColor: color ?? theme.colors.border,
       margin: margin ? theme.spacing[margin] : undefined,
       marginHorizontal: marginHorizontal
         ? theme.spacing[marginHorizontal]

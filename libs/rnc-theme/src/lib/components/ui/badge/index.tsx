@@ -1,5 +1,11 @@
 import React, { forwardRef, useMemo } from 'react';
-import { ViewStyle, TextStyle, View, StyleProp } from 'react-native';
+import {
+  ViewStyle,
+  TextStyle,
+  View,
+  StyleProp,
+  StyleSheet,
+} from 'react-native';
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -7,7 +13,6 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-import { resolveColor } from '../../../utils';
 
 type BadgeVariant =
   | 'default'
@@ -147,104 +152,107 @@ const BadgeIcon = forwardRef<React.ComponentRef<typeof View>, BadgeIconProps>(
   }
 );
 
-const createBadgeStyles = (theme: Theme) => ({
-  base: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    paddingHorizontal: theme.spacing.sm,
-    paddingVertical: theme.spacing.xs,
-    borderWidth: 1,
-  } as ViewStyle,
-  rounded: {
-    borderRadius: theme.components.borderRadius.xl,
-  } as ViewStyle,
-  // Variants
-  default: {
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.border,
-  } as ViewStyle,
-  primary: {
-    backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
-  } as ViewStyle,
-  secondary: {
-    backgroundColor: theme.colors.secondary,
-    borderColor: theme.colors.secondary,
-  } as ViewStyle,
-  success: {
-    backgroundColor: '#10B981',
-    borderColor: '#10B981',
-  } as ViewStyle,
-  warning: {
-    backgroundColor: '#F59E0B',
-    borderColor: '#F59E0B',
-  } as ViewStyle,
-  error: {
-    backgroundColor: '#EF4444',
-    borderColor: '#EF4444',
-  } as ViewStyle,
-  outline: {
-    backgroundColor: 'transparent',
-    borderColor: theme.colors.primary,
-    borderWidth: 1,
-  } as ViewStyle,
-  filled: {
-    backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
-  } as ViewStyle,
-  ghost: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
-  } as ViewStyle,
-  info: {
-    backgroundColor: theme.colors.info || '#3B82F6',
-    borderColor: theme.colors.info || '#3B82F6',
-  } as ViewStyle,
-  destructive: {
-    backgroundColor: theme.colors.destructive || '#DC2626',
-    borderColor: theme.colors.destructive || '#DC2626',
-  } as ViewStyle,
-  // Sizes
-  xs: {
-    paddingHorizontal: theme.spacing.xs / 2,
-    paddingVertical: 1,
-  } as ViewStyle,
-  sm: {
-    paddingHorizontal: theme.spacing.xs,
-    paddingVertical: 2,
-  } as ViewStyle,
-  md: {
-    paddingHorizontal: theme.spacing.sm,
-    paddingVertical: theme.spacing.xs,
-  } as ViewStyle,
-  lg: {
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-  } as ViewStyle,
-});
+const createBadgeStyles = (theme: Theme) =>
+  StyleSheet.create({
+    base: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      paddingHorizontal: theme.spacing.sm,
+      paddingVertical: theme.spacing.xs,
+      borderWidth: 1,
+    },
+    rounded: {
+      borderRadius: theme.components.borderRadius.xl,
+    },
+    // Variants
+    default: {
+      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.border,
+    },
+    primary: {
+      backgroundColor: theme.colors.primary,
+      borderColor: theme.colors.primary,
+    },
+    secondary: {
+      backgroundColor: theme.colors.secondary,
+      borderColor: theme.colors.secondary,
+    },
+    success: {
+      backgroundColor: '#10B981',
+      borderColor: '#10B981',
+    },
+    warning: {
+      backgroundColor: '#F59E0B',
+      borderColor: '#F59E0B',
+    },
+    error: {
+      backgroundColor: '#EF4444',
+      borderColor: '#EF4444',
+    },
+    outline: {
+      backgroundColor: 'transparent',
+      borderColor: theme.colors.primary,
+      borderWidth: 1,
+    },
+    filled: {
+      backgroundColor: theme.colors.primary,
+      borderColor: theme.colors.primary,
+    },
+    ghost: {
+      backgroundColor: 'transparent',
+      borderColor: 'transparent',
+    },
+    info: {
+      backgroundColor: theme.colors.info || '#3B82F6',
+      borderColor: theme.colors.info || '#3B82F6',
+    },
+    destructive: {
+      backgroundColor: theme.colors.destructive || '#DC2626',
+      borderColor: theme.colors.destructive || '#DC2626',
+    },
+    // Sizes
+    xs: {
+      paddingHorizontal: theme.spacing.xs / 2,
+      paddingVertical: 1,
+    },
+    sm: {
+      paddingHorizontal: theme.spacing.xs,
+      paddingVertical: 2,
+    },
+    md: {
+      paddingHorizontal: theme.spacing.sm,
+      paddingVertical: theme.spacing.xs,
+    },
+    lg: {
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.sm,
+    },
+  });
 
-const createBadgeTextStyles = (theme: Theme) => ({
-  text: {
-    fontSize: theme.typography.body.fontSize,
-    lineHeight: theme.typography.body.lineHeight,
-    fontWeight: '600' as const,
-    color: resolveColor(theme, theme.colors.text, theme.colors.primary),
-  } as TextStyle,
-});
+const createBadgeTextStyles = (theme: Theme) =>
+  StyleSheet.create({
+    text: {
+      fontSize: theme.typography.body.fontSize,
+      lineHeight: theme.typography.body.lineHeight,
+      fontWeight: '600',
+      color: theme.colors.text,
+    } as TextStyle,
+  });
 
-const createBadgeIconStyles = (theme: Theme) => ({
-  icon: {
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-  } as ViewStyle,
-  left: {
-    marginRight: theme.spacing.xs,
-  } as ViewStyle,
-  right: {
-    marginLeft: theme.spacing.xs,
-  } as ViewStyle,
-});
+const createBadgeIconStyles = (theme: Theme) =>
+  StyleSheet.create({
+    icon: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    left: {
+      marginRight: theme.spacing.xs,
+    },
+    right: {
+      marginLeft: theme.spacing.xs,
+    },
+  });
 
 // Display names
 Badge.displayName = 'Badge';

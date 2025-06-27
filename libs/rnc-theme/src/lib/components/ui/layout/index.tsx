@@ -1,5 +1,11 @@
 import React, { forwardRef } from 'react';
-import { DimensionValue, StyleProp, View, ViewStyle } from 'react-native';
+import {
+  DimensionValue,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+} from 'react-native';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
@@ -388,37 +394,42 @@ const Grid = forwardRef<React.ComponentRef<typeof View>, GridProps>(
 Grid.displayName = 'Grid';
 
 // Styled functions untuk useThemedStyles
-const createHStackStyles = (_: Theme) => ({
-  base: {
-    flexDirection: 'row' as const,
-  },
-});
+const createHStackStyles = (_: Theme) =>
+  StyleSheet.create({
+    base: {
+      flexDirection: 'row',
+    },
+  });
 
-const createVStackStyles = (_: Theme) => ({
-  base: {
-    flexDirection: 'column' as const,
-  },
-});
+const createVStackStyles = (_: Theme) =>
+  StyleSheet.create({
+    base: {
+      flexDirection: 'column',
+    },
+  });
 
-const createZStackStyles = (_: Theme) => ({
-  base: {
-    position: 'relative' as const,
-  },
-});
+const createZStackStyles = (_: Theme) =>
+  StyleSheet.create({
+    base: {
+      position: 'relative',
+    },
+  });
 
-const createCenterStyles = (_: Theme) => ({
-  base: {
-    // Base styles, alignment handled via props
-  },
-});
+const createCenterStyles = (_: Theme) =>
+  StyleSheet.create({
+    base: {
+      // Base styles, alignment handled via props
+    },
+  });
 
-const createGridStyles = (_: Theme) => ({
-  base: {
-    flexDirection: 'row' as const,
-    flexWrap: 'wrap' as const,
-    marginHorizontal: 0,
-  },
-});
+const createGridStyles = (_: Theme) =>
+  StyleSheet.create({
+    base: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      marginHorizontal: 0,
+    },
+  });
 
 const createBoxStyles = (theme: Theme) => ({
   base: {

@@ -333,7 +333,7 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     fontWeight: theme.typography.heading.fontWeight,
     color: theme.colors.text,
     marginBottom: theme.spacing.lg,
-    textAlign: 'center' as const,
+    textAlign: 'center' ,
   },
   section: {
     marginBottom: theme.spacing.xl,
@@ -345,9 +345,9 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     marginBottom: theme.spacing.md,
   },
   themeControl: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    justifyContent: 'space-between' as const,
+    flexDirection: 'row' ,
+    alignItems: 'center' ,
+    justifyContent: 'space-between' ,
     padding: theme.spacing.md,
     backgroundColor: theme.colors.surface,
     borderRadius: theme.components.borderRadius.md,
@@ -358,13 +358,13 @@ const createStyles = (theme: Theme) => StyleSheet.create({
     color: theme.colors.text,
   },
   buttonGrid: {
-    flexDirection: 'row' as const,
-    flexWrap: 'wrap' as const,
+    flexDirection: 'row' ,
+    flexWrap: 'wrap' ,
     gap: theme.spacing.sm,
     marginBottom: theme.spacing.md,
   },
   buttonRow: {
-    flexDirection: 'row' as const,
+    flexDirection: 'row' ,
     gap: theme.spacing.sm,
     marginBottom: theme.spacing.sm,
   },

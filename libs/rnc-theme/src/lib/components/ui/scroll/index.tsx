@@ -5,6 +5,7 @@ import {
   ViewStyle,
   NativeScrollEvent,
   NativeSyntheticEvent,
+  StyleSheet,
 } from 'react-native';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
@@ -160,19 +161,21 @@ const HScroll = forwardRef<ScrollView, ScrollProps>(
 
 HScroll.displayName = 'HScroll';
 
-const createVStyles = (theme: Theme) => ({
-  base: {
-    flex: 1,
-    flexDirection: 'column' as const,
-  },
-});
+const createVStyles = (_: Theme) =>
+  StyleSheet.create({
+    base: {
+      flex: 1,
+      flexDirection: 'column',
+    },
+  });
 
-const createHStyles = (theme: Theme) => ({
-  base: {
-    flex: 1,
-    flexDirection: 'row' as const,
-  },
-});
+const createHStyles = (_: Theme) =>
+  StyleSheet.create({
+    base: {
+      flex: 1,
+      flexDirection: 'row',
+    },
+  });
 
 export { VScroll, HScroll };
 export type { ScrollProps };

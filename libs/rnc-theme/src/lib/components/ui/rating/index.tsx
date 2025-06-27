@@ -7,6 +7,7 @@ import {
   ViewStyle,
   TextStyle,
   DimensionValue,
+  StyleSheet,
 } from 'react-native';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
@@ -395,66 +396,68 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
   }
 );
 
-const createRatingStyles = (theme: Theme) => ({
-  container: {
-    alignItems: 'center' as const,
-  },
-  ratingSummaryContainer: {
-    alignItems: 'center' as const,
-    marginBottom: theme.spacing.sm,
-  },
-  ratingValue: {
-    fontSize: theme.typography.title.fontSize,
-    fontWeight: '600' as const,
-    color: theme.colors.text,
-    textAlign: 'center' as const,
-  },
-  reviewersCount: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.textSecondary,
-    fontWeight: '400' as const,
-    textAlign: 'center' as const,
-  },
-  reviewText: {
-    marginBottom: theme.spacing.sm,
-    fontWeight: '600' as const,
-    textAlign: 'center' as const,
-  },
-  starsContainer: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-  },
-  starContainer: {
-    padding: theme.spacing.xs / 2,
-  },
-});
+const createRatingStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      alignItems: 'center',
+    },
+    ratingSummaryContainer: {
+      alignItems: 'center',
+      marginBottom: theme.spacing.sm,
+    },
+    ratingValue: {
+      fontSize: theme.typography.title.fontSize,
+      fontWeight: '600',
+      color: theme.colors.text,
+      textAlign: 'center',
+    },
+    reviewersCount: {
+      fontSize: theme.typography.body.fontSize,
+      color: theme.colors.textSecondary,
+      fontWeight: '400',
+      textAlign: 'center',
+    },
+    reviewText: {
+      marginBottom: theme.spacing.sm,
+      fontWeight: '600',
+      textAlign: 'center',
+    },
+    starsContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    starContainer: {
+      padding: theme.spacing.xs / 2,
+    },
+  });
 
-const createSwipeRatingStyles = (theme: Theme) => ({
-  container: {
-    alignItems: 'center' as const,
-    paddingVertical: theme.spacing.md,
-  },
-  ratingText: {
-    marginBottom: theme.spacing.sm,
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
-    textAlign: 'center' as const,
-  },
-  ratingContainer: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-  },
-  iconContainer: {
-    marginHorizontal: theme.spacing.xs / 2,
-    position: 'relative' as const,
-  },
-  activeIconOverlay: {
-    position: 'absolute' as const,
-    top: 0,
-    left: 0,
-    overflow: 'hidden' as const,
-  },
-});
+const createSwipeRatingStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      alignItems: 'center',
+      paddingVertical: theme.spacing.md,
+    },
+    ratingText: {
+      marginBottom: theme.spacing.sm,
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: '600',
+      textAlign: 'center',
+    },
+    ratingContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    iconContainer: {
+      marginHorizontal: theme.spacing.xs / 2,
+      position: 'relative',
+    },
+    activeIconOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      overflow: 'hidden',
+    },
+  });
 
 Rating.displayName = 'Rating';
 SwipeRating.displayName = 'SwipeRating';

@@ -6,6 +6,7 @@ import {
   ViewStyle,
   TextStyle,
   StyleProp,
+  StyleSheet,
 } from 'react-native';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
@@ -303,10 +304,10 @@ const TableCaption = forwardRef<
 TableCaption.displayName = 'TableCaption';
 
 // Styles
-const createTableStyles = (theme: Theme) => ({
+const createTableStyles = (theme: Theme) => StyleSheet.create({
   table: {
     backgroundColor: theme.colors.surface,
-    overflow: 'hidden' as const,
+    overflow: 'hidden' ,
   },
   bordered: {
     borderWidth: 1,
@@ -349,13 +350,13 @@ const createTableFooterStyles = (theme: Theme) => ({
   },
 });
 
-const createTableRowStyles = (theme: Theme) => ({
+const createTableRowStyles = (theme: Theme) => StyleSheet.create({
   row: {
-    flexDirection: 'row' as const,
+    flexDirection: 'row' ,
     borderBottomWidth: 1,
     borderBottomColor: theme.colors.border,
     minHeight: 44,
-    alignItems: 'center' as const,
+    alignItems: 'center' ,
   },
   headerRow: {
     backgroundColor: theme.colors.background,
@@ -366,17 +367,17 @@ const createTableRowStyles = (theme: Theme) => ({
   firstRow: {
     borderTopLeftRadius: theme.components.borderRadius.md,
     borderTopRightRadius: theme.components.borderRadius.md,
-    overflow: 'hidden' as const,
+    overflow: 'hidden' ,
   },
   lastRow: {
     borderBottomWidth: 0,
     borderBottomLeftRadius: theme.components.borderRadius.md,
     borderBottomRightRadius: theme.components.borderRadius.md,
-    overflow: 'hidden' as const,
+    overflow: 'hidden' ,
   },
 });
 
-const createTableHeadStyles = (theme: Theme) => ({
+const createTableHeadStyles = (theme: Theme) => StyleSheet.create({
   cell: {
     paddingHorizontal: theme.spacing.sm,
     paddingVertical: theme.spacing.xs,
@@ -384,21 +385,21 @@ const createTableHeadStyles = (theme: Theme) => ({
   headText: {
     fontSize: theme.typography.body.fontSize,
     lineHeight: theme.typography.body.lineHeight,
-    fontWeight: '600' as const,
+    fontWeight: '600' ,
     color: theme.colors.text,
   },
   left: {
-    textAlign: 'left' as const,
+    textAlign: 'left' ,
   },
   center: {
-    textAlign: 'center' as const,
+    textAlign: 'center' ,
   },
   right: {
-    textAlign: 'right' as const,
+    textAlign: 'right' ,
   },
 });
 
-const createTableDataStyles = (theme: Theme) => ({
+const createTableDataStyles = (theme: Theme) => StyleSheet.create({
   cell: {
     paddingHorizontal: theme.spacing.sm,
     paddingVertical: theme.spacing.xs,
@@ -409,22 +410,22 @@ const createTableDataStyles = (theme: Theme) => ({
     color: theme.colors.text,
   },
   left: {
-    textAlign: 'left' as const,
+    textAlign: 'left' ,
   },
   center: {
-    textAlign: 'center' as const,
+    textAlign: 'center' ,
   },
   right: {
-    textAlign: 'right' as const,
+    textAlign: 'right' ,
   },
 });
 
-const createTableCaptionStyles = (theme: Theme) => ({
+const createTableCaptionStyles = (theme: Theme) => StyleSheet.create({
   caption: {
     fontSize: theme.typography.body.fontSize,
     lineHeight: theme.typography.body.lineHeight,
     color: theme.colors.textSecondary,
-    textAlign: 'center' as const,
+    textAlign: 'center' ,
     paddingVertical: theme.spacing.sm,
   },
   top: {

@@ -20,14 +20,7 @@ import {
   Box,
   VScroll,
 } from 'rnc-theme';
-import {
-  Info,
-  HelpCircle,
-  Settings,
-  Star,
-  Heart,
-  AlertCircle,
-} from 'lucide-react-native';
+import { Settings, Star, Heart, AlertCircle } from 'lucide-react-native';
 
 export default function TooltipScreen() {
   const { theme } = useTheme();
@@ -35,7 +28,6 @@ export default function TooltipScreen() {
   const [showPortalContent, setShowPortalContent] = useState(false);
   const [showModalPortal, setShowModalPortal] = useState(false);
   const [showTooltipPortal, setShowTooltipPortal] = useState(false);
-  const [tooltipVisible, setTooltipVisible] = useState(false);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
 
   const showTooltip = (tooltipId: string) => {
