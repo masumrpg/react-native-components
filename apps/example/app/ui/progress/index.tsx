@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Text, ScrollView, TouchableOpacity } from 'react-native';
+import { TouchableOpacity } from 'react-native';
 import {
   Progress,
   ProgressFilledTrack,
@@ -9,6 +9,8 @@ import {
   useThemedStyles,
   Theme,
   ComponentVariant,
+  VScroll,
+  Typography,
 } from 'rnc-theme';
 
 interface TaskProgress {
@@ -135,39 +137,39 @@ const ProgressScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Progress Component Showcase</Text>
+    <VScroll style={styles.container}>
+      <Typography style={styles.title}>Progress Component Showcase</Typography>
 
       {/* Size Comparison */}
       <Box style={styles.section}>
-        <Text style={styles.sectionTitle}>Size Comparison</Text>
+        <Typography style={styles.sectionTitle}>Size Comparison</Typography>
         <VStack spacing="md">
           <VStack spacing="xs">
-            <Text style={styles.label}>Extra Small (xs)</Text>
+            <Typography style={styles.label}>Extra Small (xs)</Typography>
             <Progress value={75} size="xs" variant="primary">
               <ProgressFilledTrack />
             </Progress>
           </VStack>
           <VStack spacing="xs">
-            <Text style={styles.label}>Small (sm)</Text>
+            <Typography style={styles.label}>Small (sm)</Typography>
             <Progress value={75} size="sm" variant="primary">
               <ProgressFilledTrack />
             </Progress>
           </VStack>
           <VStack spacing="xs">
-            <Text style={styles.label}>Medium (md)</Text>
+            <Typography style={styles.label}>Medium (md)</Typography>
             <Progress value={75} size="md" variant="primary">
               <ProgressFilledTrack />
             </Progress>
           </VStack>
           <VStack spacing="xs">
-            <Text style={styles.label}>Large (lg)</Text>
+            <Typography style={styles.label}>Large (lg)</Typography>
             <Progress value={75} size="lg" variant="primary">
               <ProgressFilledTrack />
             </Progress>
           </VStack>
           <VStack spacing="xs">
-            <Text style={styles.label}>Extra Large (xl)</Text>
+            <Typography style={styles.label}>Extra Large (xl)</Typography>
             <Progress value={75} size="xl" variant="primary">
               <ProgressFilledTrack />
             </Progress>
@@ -177,7 +179,7 @@ const ProgressScreen = () => {
 
       {/* All Variants */}
       <Box style={styles.section}>
-        <Text style={styles.sectionTitle}>All Variants</Text>
+        <Typography style={styles.sectionTitle}>All Variants</Typography>
         <VStack spacing="md">
           {[
             'default',
@@ -193,9 +195,9 @@ const ProgressScreen = () => {
             'destructive',
           ].map((variant) => (
             <VStack key={variant} spacing="xs">
-              <Text style={styles.label}>
+              <Typography style={styles.label}>
                 {variant.charAt(0).toUpperCase() + variant.slice(1)}
-              </Text>
+              </Typography>
               <Progress
                 value={65}
                 variant={variant as ComponentVariant}
@@ -210,20 +212,22 @@ const ProgressScreen = () => {
 
       {/* Overall Progress */}
       <Box style={styles.overallCard}>
-        <Text style={styles.overallTitle}>Overall Progress</Text>
-        <Text style={styles.overallPercentage}>{overallProgress}%</Text>
+        <Typography style={styles.overallTitle}>Overall Progress</Typography>
+        <Typography style={styles.overallPercentage}>
+          {overallProgress}%
+        </Typography>
         <Progress value={overallProgress} size="lg" variant="primary">
           <ProgressFilledTrack />
         </Progress>
 
         <TouchableOpacity style={styles.resetButton} onPress={resetProgress}>
-          <Text style={styles.resetButtonText}>Reset Progress</Text>
+          <Typography style={styles.resetButtonText}>Reset Progress</Typography>
         </TouchableOpacity>
       </Box>
 
       {/* Task Progress List */}
       <Box style={styles.section}>
-        <Text style={styles.sectionTitle}>Project Tasks</Text>
+        <Typography style={styles.sectionTitle}>Project Tasks</Typography>
         <VStack spacing="md">
           {tasks.map((task) => (
             <Box key={task.id} style={styles.taskCard}>
@@ -233,19 +237,19 @@ const ProgressScreen = () => {
                 style={styles.taskHeader}
               >
                 <VStack spacing="xs" style={styles.taskInfo}>
-                  <Text style={styles.taskName}>{task.name}</Text>
-                  <Text
+                  <Typography style={styles.taskName}>{task.name}</Typography>
+                  <Typography
                     style={[
                       styles.taskCategory,
                       { color: getStatusColor(task.status) },
                     ]}
                   >
                     {task.category.toUpperCase()} • {task.status.toUpperCase()}
-                  </Text>
+                  </Typography>
                 </VStack>
-                <Text style={styles.taskPercentage}>
+                <Typography style={styles.taskPercentage}>
                   {Math.round(task.progress)}%
-                </Text>
+                </Typography>
               </HStack>
 
               <Progress
@@ -262,7 +266,7 @@ const ProgressScreen = () => {
 
       {/* Category Summary */}
       <Box style={styles.summaryCard}>
-        <Text style={styles.summaryTitle}>Category Summary</Text>
+        <Typography style={styles.summaryTitle}>Category Summary</Typography>
 
         {['development', 'design', 'testing', 'deployment'].map((category) => {
           const categoryTasks = tasks.filter(
@@ -277,12 +281,12 @@ const ProgressScreen = () => {
           return (
             <VStack key={category} spacing="xs" style={styles.categoryItem}>
               <HStack justify="space-between">
-                <Text style={styles.categoryName}>
+                <Typography style={styles.categoryName}>
                   {category.charAt(0).toUpperCase() + category.slice(1)}
-                </Text>
-                <Text style={styles.categoryPercentage}>
+                </Typography>
+                <Typography style={styles.categoryPercentage}>
                   {Math.round(categoryProgress)}%
-                </Text>
+                </Typography>
               </HStack>
               <Progress value={categoryProgress} size="sm" variant="secondary">
                 <ProgressFilledTrack />
@@ -294,26 +298,26 @@ const ProgressScreen = () => {
 
       {/* Real-world Examples */}
       <Box style={styles.section}>
-        <Text style={styles.sectionTitle}>Real-world Examples</Text>
+        <Typography style={styles.sectionTitle}>Real-world Examples</Typography>
         <VStack spacing="lg">
           {/* File Upload */}
           <VStack spacing="sm">
-            <Text style={styles.exampleTitle}>File Upload</Text>
+            <Typography style={styles.exampleTitle}>File Upload</Typography>
             <Progress value={85} variant="info" size="md">
               <ProgressFilledTrack />
             </Progress>
-            <Text style={styles.exampleDescription}>
+            <Typography style={styles.exampleDescription}>
               Uploading document.pdf (85%)
-            </Text>
+            </Typography>
           </VStack>
 
           {/* System Health */}
           <VStack spacing="sm">
-            <Text style={styles.exampleTitle}>System Health</Text>
+            <Typography style={styles.exampleTitle}>System Health</Typography>
             <VStack spacing="xs">
               <HStack justify="space-between">
-                <Text style={styles.metricLabel}>CPU Usage</Text>
-                <Text style={styles.metricValue}>45%</Text>
+                <Typography style={styles.metricLabel}>CPU Usage</Typography>
+                <Typography style={styles.metricValue}>45%</Typography>
               </HStack>
               <Progress value={45} variant="success" size="sm">
                 <ProgressFilledTrack />
@@ -321,8 +325,8 @@ const ProgressScreen = () => {
             </VStack>
             <VStack spacing="xs">
               <HStack justify="space-between">
-                <Text style={styles.metricLabel}>Memory Usage</Text>
-                <Text style={styles.metricValue}>78%</Text>
+                <Typography style={styles.metricLabel}>Memory Usage</Typography>
+                <Typography style={styles.metricValue}>78%</Typography>
               </HStack>
               <Progress value={78} variant="warning" size="sm">
                 <ProgressFilledTrack />
@@ -330,8 +334,8 @@ const ProgressScreen = () => {
             </VStack>
             <VStack spacing="xs">
               <HStack justify="space-between">
-                <Text style={styles.metricLabel}>Disk Usage</Text>
-                <Text style={styles.metricValue}>92%</Text>
+                <Typography style={styles.metricLabel}>Disk Usage</Typography>
+                <Typography style={styles.metricValue}>92%</Typography>
               </HStack>
               <Progress value={92} variant="destructive" size="sm">
                 <ProgressFilledTrack />
@@ -340,7 +344,7 @@ const ProgressScreen = () => {
           </VStack>
         </VStack>
       </Box>
-    </ScrollView>
+    </VScroll>
   );
 };
 

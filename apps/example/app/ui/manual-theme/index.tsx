@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
-import { ScrollView, Alert, StatusBar, View, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   useTheme,
   useThemedStyles,
@@ -8,30 +8,26 @@ import {
   CardContent,
   Card,
   Typography,
-  Switcher,
   ButtonText,
   Button,
   themeRegistry,
   CustomThemeConfigFactory,
+  VScroll,
+  Box,
+  useToast,
 } from 'rnc-theme';
 
 type ThemePreset = 'default' | 'material' | 'neon';
 
 const ThemeScreen: React.FC = () => {
-  const {
-    theme,
-    themeMode,
-    setThemeMode,
-    isDark,
-    updateCustomTheme,
-    resetTheme,
-  } = useTheme();
+  const { toast } = useToast();
+  const { theme, themeMode, isDark, updateCustomTheme, resetTheme } =
+    useTheme();
   const styles = useThemedStyles(createStyles);
   const [selectedPreset, setSelectedPreset] = useState<ThemePreset>('default');
   const [appliedTheme, setAppliedTheme] = useState<ThemePreset>('default');
   // Tambahkan state baru untuk preview
   const [previewTheme, setPreviewTheme] = useState<ThemePreset | null>(null);
-  const [isDarkModeDisabled, setIsDarkModeDisabled] = useState(false);
 
   useEffect(() => {
     // Register semua theme presets ke registry
@@ -55,15 +51,6 @@ const ThemeScreen: React.FC = () => {
     },
     [updateCustomTheme, isDark]
   );
-
-  // Improved toggle theme yang memperbarui tema aktif
-  const toggleTheme = useCallback(() => {
-    const newMode = isDark ? 'light' : 'dark';
-    setThemeMode(newMode);
-
-    // Tidak perlu setTimeout lagi karena ThemeContext akan otomatis
-    // menggunakan tema yang sesuai dari storage berdasarkan mode baru
-  }, [isDark, setThemeMode]);
 
   // Define custom theme configurations
 
@@ -227,12 +214,10 @@ const ThemeScreen: React.FC = () => {
     (preset: ThemePreset) => {
       setSelectedPreset(preset);
       setPreviewTheme(preset);
-      setIsDarkModeDisabled(preset !== 'default'); // Disable dark mode toggle saat preview
 
       if (preset === 'default') {
         resetTheme();
         setPreviewTheme(null);
-        setIsDarkModeDisabled(false);
       } else {
         const themeConfig = getThemeConfig(preset);
         if (themeConfig) {
@@ -248,7 +233,6 @@ const ThemeScreen: React.FC = () => {
     (preset: ThemePreset) => {
       setAppliedTheme(preset);
       setPreviewTheme(null);
-      setIsDarkModeDisabled(false);
 
       if (preset === 'default') {
         resetTheme();
@@ -288,7 +272,10 @@ const ThemeScreen: React.FC = () => {
         warning: 'Peringatan: Periksa input Anda!',
         info: 'Informasi: Tema telah diperbarui!',
       };
-      Alert.alert('Notifikasi', messages[type]);
+      toast({
+        title: 'Notification',
+        description: messages[type],
+      });
     },
     []
   );
@@ -299,12 +286,7 @@ const ThemeScreen: React.FC = () => {
   }, [selectedPreset, applyThemePreset, showAlert]);
 
   return (
-    <ScrollView style={styles.container}>
-      <StatusBar
-        barStyle={isDark ? 'light-content' : 'dark-content'}
-        backgroundColor={theme.colors.background}
-      />
-
+    <VScroll style={styles.container}>
       <Typography variant="heading" align="center" style={styles.title}>
         🎨 Theme System Demo
       </Typography>
@@ -322,24 +304,8 @@ const ThemeScreen: React.FC = () => {
       <Card style={styles.card}>
         <CardHeader title="🎛️ Kontrol Tema" />
         <CardContent>
-          <View style={styles.row}>
-            <Typography
-              variant="body"
-              style={{
-                opacity: isDarkModeDisabled ? 0.5 : 1,
-              }}
-            >
-              Mode Gelap {isDarkModeDisabled && '(Dinonaktifkan saat preview)'}
-            </Typography>
-            <Switcher
-              value={isDark}
-              onValueChange={toggleTheme}
-              disabled={isDarkModeDisabled}
-            />
-          </View>
-
           {previewTheme && previewTheme !== appliedTheme ? (
-            <View>
+            <Box>
               <Button
                 variant="primary"
                 onPress={applySelectedTheme}
@@ -359,7 +325,7 @@ const ThemeScreen: React.FC = () => {
               >
                 <ButtonText>❌ Batal Preview</ButtonText>
               </Button>
-            </View>
+            </Box>
           ) : (
             <Button
               variant="primary"
@@ -391,7 +357,7 @@ const ThemeScreen: React.FC = () => {
       <Card style={styles.card}>
         <CardHeader title="🎭 Preset Tema" />
         <CardContent>
-          <View style={styles.presetGrid}>
+          <Box style={styles.presetGrid}>
             {[
               { key: 'default', label: 'Default' },
               { key: 'material', label: 'Material' },
@@ -419,12 +385,10 @@ const ThemeScreen: React.FC = () => {
                 </ButtonText>
               </Button>
             ))}
-          </View>
+          </Box>
         </CardContent>
       </Card>
-
-      {/* ... rest of existing code ... */}
-    </ScrollView>
+    </VScroll>
   );
 };
 

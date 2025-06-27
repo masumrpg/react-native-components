@@ -1,11 +1,5 @@
 import React, { useState } from 'react';
-import {
-  ScrollView,
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-} from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import {
   Portal,
   PortalHost,
@@ -21,6 +15,10 @@ import {
   useTheme,
   Badge,
   BadgeText,
+  Theme,
+  useThemedStyles,
+  Box,
+  VScroll,
 } from 'rnc-theme';
 import {
   Info,
@@ -33,94 +31,12 @@ import {
 
 export default function TooltipScreen() {
   const { theme } = useTheme();
+  const styles = useThemedStyles(createStyles);
   const [showPortalContent, setShowPortalContent] = useState(false);
   const [showModalPortal, setShowModalPortal] = useState(false);
   const [showTooltipPortal, setShowTooltipPortal] = useState(false);
   const [tooltipVisible, setTooltipVisible] = useState(false);
   const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
-
-  const styles = StyleSheet.create({
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.background,
-    },
-    content: {
-      padding: theme.spacing.lg,
-      gap: theme.spacing.lg,
-    },
-    section: {
-      gap: theme.spacing.md,
-    },
-    sectionTitle: {
-      fontSize: theme.typography.title.fontSize,
-      fontWeight: theme.typography.title.fontWeight,
-      color: theme.colors.text,
-      marginBottom: theme.spacing.sm,
-    },
-    tooltipGrid: {
-      flexDirection: 'row',
-      flexWrap: 'wrap',
-      gap: theme.spacing.md,
-      justifyContent: 'space-around',
-      padding: theme.spacing.lg,
-    },
-    portalOverlay: {
-      position: 'absolute',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      backgroundColor: 'rgba(0, 0, 0, 0.5)',
-      justifyContent: 'center',
-      alignItems: 'center',
-      zIndex: 1000,
-    },
-    portalContent: {
-      backgroundColor: theme.colors.surface,
-      padding: theme.spacing.xl,
-      borderRadius: theme.components.borderRadius.lg,
-      margin: theme.spacing.lg,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 4,
-      },
-      shadowOpacity: 0.3,
-      shadowRadius: 4.65,
-      elevation: 8,
-    },
-    modalContent: {
-      backgroundColor: theme.colors.surface,
-      padding: theme.spacing.xl,
-      borderRadius: theme.components.borderRadius.lg,
-      margin: theme.spacing.lg,
-      maxWidth: 300,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
-    },
-    hostContainer: {
-      borderWidth: 2,
-      borderColor: theme.colors.border,
-      borderRadius: theme.components.borderRadius.md,
-      padding: theme.spacing.md,
-      backgroundColor: theme.colors.surface,
-    },
-    hostLabel: {
-      position: 'absolute',
-      top: -10,
-      left: 10,
-      backgroundColor: theme.colors.surface,
-      paddingHorizontal: theme.spacing.xs,
-      fontSize: 12,
-      color: theme.colors.textSecondary,
-    },
-  });
 
   const showTooltip = (tooltipId: string) => {
     setActiveTooltip(tooltipId);
@@ -128,10 +44,10 @@ export default function TooltipScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <Box themed style={styles.container}>
       {/* Main Portal Host */}
       <PortalHost name="main">
-        <ScrollView contentContainerStyle={styles.content}>
+        <VScroll contentContainerStyle={styles.content}>
           {/* Header */}
           <Card>
             <CardHeader
@@ -148,14 +64,15 @@ export default function TooltipScreen() {
           </Card>
 
           {/* Multiple Portal Hosts Example */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Multiple Portal Hosts</Text>
+          {/* <Box style={styles.section}>
+            <Typography style={styles.sectionTitle}>
+              Multiple Portal Hosts
+            </Typography>
             <Card>
               <CardContent>
                 <VStack spacing="lg">
-                  {/* Modal Host */}
-                  <View style={styles.hostContainer}>
-                    <Text style={styles.hostLabel}>Modal Host</Text>
+                  <Box style={styles.hostContainer}>
+                    <Typography style={styles.hostLabel}>Modal Host</Typography>
                     <PortalHost name="modal-host">
                       <VStack spacing="md">
                         <Typography variant="subtitle">
@@ -172,11 +89,12 @@ export default function TooltipScreen() {
                         </Button>
                       </VStack>
                     </PortalHost>
-                  </View>
+                  </Box>
 
-                  {/* Tooltip Host */}
-                  <View style={styles.hostContainer}>
-                    <Text style={styles.hostLabel}>Tooltip Host</Text>
+                  <Box style={styles.hostContainer}>
+                    <Typography style={styles.hostLabel}>
+                      Tooltip Host
+                    </Typography>
                     <PortalHost name="tooltip-host">
                       <VStack spacing="md">
                         <Typography variant="subtitle">
@@ -193,143 +111,17 @@ export default function TooltipScreen() {
                         </Button>
                       </VStack>
                     </PortalHost>
-                  </View>
+                  </Box>
                 </VStack>
               </CardContent>
             </Card>
-          </View>
-
-          {/* Touch-based Tooltips */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Touch-based Tooltips</Text>
-            <Card>
-              <CardContent>
-                <View style={styles.tooltipGrid}>
-                  <Tooltip
-                    content="Tooltip di atas"
-                    position="top"
-                    visible={activeTooltip === 'top'}
-                  >
-                    <Button
-                      variant="primary"
-                      onPress={() => showTooltip('top')}
-                    >
-                      <ButtonText>Tap for Top</ButtonText>
-                    </Button>
-                  </Tooltip>
-
-                  <Tooltip
-                    content="Tooltip di bawah"
-                    position="bottom"
-                    visible={activeTooltip === 'bottom'}
-                  >
-                    <Button
-                      variant="secondary"
-                      onPress={() => showTooltip('bottom')}
-                    >
-                      <ButtonText>Tap for Bottom</ButtonText>
-                    </Button>
-                  </Tooltip>
-
-                  <Tooltip
-                    content="Tooltip di kiri"
-                    position="left"
-                    visible={activeTooltip === 'left'}
-                  >
-                    <Button
-                      variant="success"
-                      onPress={() => showTooltip('left')}
-                    >
-                      <ButtonText>Tap for Left</ButtonText>
-                    </Button>
-                  </Tooltip>
-
-                  <Tooltip
-                    content="Tooltip di kanan"
-                    position="right"
-                    visible={activeTooltip === 'right'}
-                  >
-                    <Button
-                      variant="warning"
-                      onPress={() => showTooltip('right')}
-                    >
-                      <ButtonText>Tap for Right</ButtonText>
-                    </Button>
-                  </Tooltip>
-                </View>
-              </CardContent>
-            </Card>
-          </View>
-
-          {/* Advanced Tooltip Examples */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Advanced Tooltips</Text>
-            <Card>
-              <CardContent>
-                <VStack spacing="md">
-                  <TouchableOpacity onPress={() => showTooltip('custom')}>
-                    <Tooltip
-                      content={
-                        <VStack spacing="xs">
-                          <Typography
-                            variant="small"
-                            style={{ color: 'white', fontWeight: 'bold' }}
-                          >
-                            Custom Tooltip
-                          </Typography>
-                          <Typography
-                            variant="small"
-                            style={{ color: 'white' }}
-                          >
-                            Ini adalah tooltip dengan konten custom
-                          </Typography>
-                        </VStack>
-                      }
-                      position="top"
-                      visible={activeTooltip === 'custom'}
-                    >
-                      <HStack spacing="xs" align="center">
-                        <Info size={20} color={theme.colors.info} />
-                        <Typography>Tap for Custom Content Tooltip</Typography>
-                      </HStack>
-                    </Tooltip>
-                  </TouchableOpacity>
-
-                  <TouchableOpacity onPress={() => showTooltip('delayed')}>
-                    <Tooltip
-                      content="Tooltip dengan delay 1 detik"
-                      delay={1000}
-                      position="bottom"
-                      visible={activeTooltip === 'delayed'}
-                    >
-                      <HStack spacing="xs" align="center">
-                        <HelpCircle size={20} color={theme.colors.warning} />
-                        <Typography>Tap for Delayed Tooltip (1s)</Typography>
-                      </HStack>
-                    </Tooltip>
-                  </TouchableOpacity>
-
-                  <Tooltip
-                    content="Tooltip yang bisa dikontrol"
-                    visible={tooltipVisible}
-                    onVisibilityChange={setTooltipVisible}
-                    position="right"
-                  >
-                    <Button
-                      variant="outline"
-                      onPress={() => setTooltipVisible(!tooltipVisible)}
-                    >
-                      <ButtonText>Controlled Tooltip</ButtonText>
-                    </Button>
-                  </Tooltip>
-                </VStack>
-              </CardContent>
-            </Card>
-          </View>
+          </Box> */}
 
           {/* Icon Tooltips - Updated section */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Icon Tooltips (Long Press)</Text>
+          <Box style={styles.section}>
+            <Typography style={styles.sectionTitle}>
+              Icon Tooltips (Long Press)
+            </Typography>
             <Card>
               <CardContent>
                 <HStack spacing="lg" justify="space-around" align="center">
@@ -409,11 +201,11 @@ export default function TooltipScreen() {
                 </Typography>
               </CardContent>
             </Card>
-          </View>
+          </Box>
 
           {/* Badge Tooltips */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Badge Tooltips</Text>
+          <Box style={styles.section}>
+            <Typography style={styles.sectionTitle}>Badge Tooltips</Typography>
             <Card>
               <CardContent>
                 <HStack spacing="md" wrap justify="center">
@@ -467,11 +259,11 @@ export default function TooltipScreen() {
                 </HStack>
               </CardContent>
             </Card>
-          </View>
+          </Box>
 
           {/* Portal Example */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Portal Example</Text>
+          <Box style={styles.section}>
+            <Typography style={styles.sectionTitle}>Portal Example</Typography>
             <Card>
               <CardContent>
                 <VStack spacing="md">
@@ -489,11 +281,13 @@ export default function TooltipScreen() {
                 </VStack>
               </CardContent>
             </Card>
-          </View>
+          </Box>
 
           {/* Real-world Example */}
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Real-world Example</Text>
+          {/* <Box style={styles.section}>
+            <Typography style={styles.sectionTitle}>
+              Real-world Example
+            </Typography>
             <Card>
               <CardContent>
                 <VStack spacing="md">
@@ -516,7 +310,7 @@ export default function TooltipScreen() {
                   </HStack>
 
                   <HStack spacing="md" align="center">
-                    <View
+                    <Box
                       style={{
                         width: 50,
                         height: 50,
@@ -531,7 +325,7 @@ export default function TooltipScreen() {
                       >
                         JD
                       </Typography>
-                    </View>
+                    </Box>
                     <VStack spacing="xs" flex={1}>
                       <Typography variant="subtitle">John Doe</Typography>
                       <Typography
@@ -547,7 +341,7 @@ export default function TooltipScreen() {
                         position="left"
                         visible={activeTooltip === 'status'}
                       >
-                        <View
+                        <Box
                           style={{
                             width: 12,
                             height: 12,
@@ -561,14 +355,14 @@ export default function TooltipScreen() {
                 </VStack>
               </CardContent>
             </Card>
-          </View>
-        </ScrollView>
+          </Box> */}
+        </VScroll>
 
         {/* Portal Overlay - Main Host */}
         {showPortalContent && (
           <Portal name="overlay-example">
-            <View style={styles.portalOverlay}>
-              <View style={styles.portalContent}>
+            <Box style={styles.portalOverlay}>
+              <Box style={styles.portalContent}>
                 <VStack spacing="md" align="center">
                   <Typography variant="title">Portal Overlay</Typography>
                   <Typography style={{ textAlign: 'center' }}>
@@ -582,8 +376,8 @@ export default function TooltipScreen() {
                     <ButtonText>Close</ButtonText>
                   </Button>
                 </VStack>
-              </View>
-            </View>
+              </Box>
+            </Box>
           </Portal>
         )}
       </PortalHost>
@@ -591,8 +385,8 @@ export default function TooltipScreen() {
       {/* Modal Portal - Targeted to Modal Host */}
       {showModalPortal && (
         <Portal name="modal-example" hostName="modal-host">
-          <View style={styles.portalOverlay}>
-            <View style={styles.modalContent}>
+          <Box style={styles.portalOverlay}>
+            <Box style={styles.modalContent}>
               <VStack spacing="md" align="center">
                 <Typography variant="title">Modal Portal</Typography>
                 <Typography style={{ textAlign: 'center' }}>
@@ -605,21 +399,21 @@ export default function TooltipScreen() {
                   <ButtonText>Close Modal</ButtonText>
                 </Button>
               </VStack>
-            </View>
-          </View>
+            </Box>
+          </Box>
         </Portal>
       )}
 
       {/* Tooltip Portal - Targeted to Tooltip Host */}
       {showTooltipPortal && (
         <Portal name="tooltip-example" hostName="tooltip-host">
-          <View
+          <Box
             style={[
               styles.portalOverlay,
               { backgroundColor: 'rgba(255, 165, 0, 0.3)' },
             ]}
           >
-            <View
+            <Box
               style={[
                 styles.modalContent,
                 { backgroundColor: theme.colors.warning },
@@ -639,10 +433,93 @@ export default function TooltipScreen() {
                   <ButtonText>Close Tooltip</ButtonText>
                 </Button>
               </VStack>
-            </View>
-          </View>
+            </Box>
+          </Box>
         </Portal>
       )}
-    </View>
+    </Box>
   );
 }
+
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+    },
+    content: {
+      padding: theme.spacing.lg,
+      gap: theme.spacing.lg,
+    },
+    section: {
+      gap: theme.spacing.md,
+    },
+    sectionTitle: {
+      fontSize: theme.typography.title.fontSize,
+      fontWeight: theme.typography.title.fontWeight,
+      color: theme.colors.text,
+      marginBottom: theme.spacing.sm,
+    },
+    tooltipGrid: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      gap: theme.spacing.md,
+      justifyContent: 'space-around',
+      padding: theme.spacing.lg,
+    },
+    portalOverlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      zIndex: 1000,
+    },
+    portalContent: {
+      backgroundColor: theme.colors.surface,
+      padding: theme.spacing.xl,
+      borderRadius: theme.components.borderRadius.lg,
+      margin: theme.spacing.lg,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 4,
+      },
+      shadowOpacity: 0.3,
+      shadowRadius: 4.65,
+      elevation: 8,
+    },
+    modalContent: {
+      backgroundColor: theme.colors.surface,
+      padding: theme.spacing.xl,
+      borderRadius: theme.components.borderRadius.lg,
+      margin: theme.spacing.lg,
+      maxWidth: 300,
+      shadowColor: '#000',
+      shadowOffset: {
+        width: 0,
+        height: 2,
+      },
+      shadowOpacity: 0.25,
+      shadowRadius: 3.84,
+      elevation: 5,
+    },
+    hostContainer: {
+      borderWidth: 2,
+      borderColor: theme.colors.border,
+      borderRadius: theme.components.borderRadius.md,
+      padding: theme.spacing.md,
+      backgroundColor: theme.colors.surface,
+    },
+    hostLabel: {
+      position: 'absolute',
+      top: -10,
+      left: 10,
+      backgroundColor: theme.colors.surface,
+      paddingHorizontal: theme.spacing.xs,
+      fontSize: 12,
+      color: theme.colors.textSecondary,
+    },
+  });

@@ -13,6 +13,9 @@ import {
   TouchableOpacityProps,
   View,
   GestureResponderEvent,
+  StyleSheet,
+  StyleProp,
+  TextStyle,
 } from 'react-native';
 import Animated, {
   useSharedValue,
@@ -23,7 +26,7 @@ import Animated, {
   withSequence,
   SharedValue,
 } from 'react-native-reanimated';
-import { Theme } from '../../../types/theme';
+import { Theme, ThemeColors } from '../../../types/theme';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
@@ -38,7 +41,6 @@ import {
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 const AnimatedTouchableOpacity =
   Animated.createAnimatedComponent(TouchableOpacity);
-
 
 type ButtonComponent = 'pressable' | 'touchable';
 type IconPosition = 'left' | 'right' | 'center';
@@ -91,6 +93,7 @@ type ButtonIconProps = BaseComponentProps & {
 type ButtonTextProps = BaseComponentProps & {
   children: React.ReactNode;
   loading?: boolean;
+  style?: StyleProp<TextStyle>;
   showLoadingIndicator?: boolean;
 };
 
@@ -99,7 +102,7 @@ const VARIANT_COLORS = {
   success: '#10B981',
   warning: '#F59E0B',
   info: '#3B82F6',
-} as const;
+};
 
 const SIZE_CONFIG = {
   xs: { minHeight: 28, spinnerSize: 14 },
@@ -107,13 +110,13 @@ const SIZE_CONFIG = {
   md: { minHeight: 40, spinnerSize: 20 },
   lg: { minHeight: 48, spinnerSize: 24 },
   xl: { minHeight: 56, spinnerSize: 28 },
-} as const;
+};
 
 const DEFAULT_SPRING_CONFIG: Required<SpringConfig> = {
   damping: 12,
   stiffness: 120,
   mass: 0.8,
-} as const;
+};
 
 // Animation configurations with proper typing
 interface BounceConfig {
@@ -152,155 +155,158 @@ const ANIMATION_CONFIGS: Record<AnimationType, AnimationConfig> = {
     translateX: [0, -10, 10, -8, 8, -5, 5, 0],
     duration: 500,
   },
-} as const;
+};
 
 // Memoized style creators
-const createButtonStyles = (theme: Theme) => ({
-  base: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-    borderWidth: 1,
-  },
-  // Variants
-  default: {
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.border,
-  },
-  primary: {
-    backgroundColor: resolveColor(theme, 'primary', theme.colors.primary),
-    borderColor: resolveColor(theme, 'primary', theme.colors.primary),
-  },
-  secondary: {
-    backgroundColor: resolveColor(theme, 'secondary', theme.colors.secondary),
-    borderColor: resolveColor(theme, 'secondary', theme.colors.secondary),
-  },
-  outline: {
-    backgroundColor: 'transparent',
-    borderColor: resolveColor(theme, 'primary', theme.colors.primary),
-  },
-  filled: {
-    backgroundColor: theme.colors.surface,
-    borderColor: 'transparent',
-  },
-  ghost: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
-  },
-  success: {
-    backgroundColor: resolveColor(theme, 'success', VARIANT_COLORS.success),
-    borderColor: resolveColor(theme, 'success', VARIANT_COLORS.success),
-  },
-  error: {
-    backgroundColor: resolveColor(theme, 'error', theme.colors.error),
-    borderColor: resolveColor(theme, 'error', theme.colors.error),
-  },
-  warning: {
-    backgroundColor: resolveColor(theme, 'warning', VARIANT_COLORS.warning),
-    borderColor: resolveColor(theme, 'warning', VARIANT_COLORS.warning),
-  },
-  info: {
-    backgroundColor: resolveColor(theme, 'info', VARIANT_COLORS.info),
-    borderColor: resolveColor(theme, 'info', VARIANT_COLORS.info),
-  },
-  destructive: {
-    backgroundColor: theme.colors.destructive,
-    borderColor: theme.colors.destructive,
-  },
-  // Sizes
-  xs: {
-    paddingHorizontal: theme.spacing.xs,
-    paddingVertical: theme.spacing.xs / 2,
-    minHeight: SIZE_CONFIG.xs.minHeight,
-  },
-  sm: {
-    paddingHorizontal: theme.spacing.sm,
-    paddingVertical: theme.spacing.xs,
-    minHeight: SIZE_CONFIG.sm.minHeight,
-  },
-  md: {
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-    minHeight: SIZE_CONFIG.md.minHeight,
-  },
-  lg: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.md,
-    minHeight: SIZE_CONFIG.lg.minHeight,
-  },
-  xl: {
-    paddingHorizontal: theme.spacing.xl,
-    paddingVertical: theme.spacing.lg,
-    minHeight: SIZE_CONFIG.xl.minHeight,
-  },
-});
+const createButtonStyles = (theme: Theme) =>
+  StyleSheet.create({
+    base: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+      borderWidth: 1,
+    },
+    // Variants
+    default: {
+      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.border,
+    },
+    primary: {
+      backgroundColor: resolveColor(theme, 'primary', theme.colors.primary),
+      borderColor: resolveColor(theme, 'primary', theme.colors.primary),
+    },
+    secondary: {
+      backgroundColor: resolveColor(theme, 'secondary', theme.colors.secondary),
+      borderColor: resolveColor(theme, 'secondary', theme.colors.secondary),
+    },
+    outline: {
+      backgroundColor: 'transparent',
+      borderColor: resolveColor(theme, 'primary', theme.colors.primary),
+    },
+    filled: {
+      backgroundColor: theme.colors.surface,
+      borderColor: 'transparent',
+    },
+    ghost: {
+      backgroundColor: 'transparent',
+      borderColor: 'transparent',
+    },
+    success: {
+      backgroundColor: resolveColor(theme, 'success', VARIANT_COLORS.success),
+      borderColor: resolveColor(theme, 'success', VARIANT_COLORS.success),
+    },
+    error: {
+      backgroundColor: resolveColor(theme, 'error', theme.colors.error),
+      borderColor: resolveColor(theme, 'error', theme.colors.error),
+    },
+    warning: {
+      backgroundColor: resolveColor(theme, 'warning', VARIANT_COLORS.warning),
+      borderColor: resolveColor(theme, 'warning', VARIANT_COLORS.warning),
+    },
+    info: {
+      backgroundColor: resolveColor(theme, 'info', VARIANT_COLORS.info),
+      borderColor: resolveColor(theme, 'info', VARIANT_COLORS.info),
+    },
+    destructive: {
+      backgroundColor: theme.colors.destructive,
+      borderColor: theme.colors.destructive,
+    },
+    // Sizes
+    xs: {
+      paddingHorizontal: theme.spacing.xs,
+      paddingVertical: theme.spacing.xs / 2,
+      minHeight: SIZE_CONFIG.xs.minHeight,
+    },
+    sm: {
+      paddingHorizontal: theme.spacing.sm,
+      paddingVertical: theme.spacing.xs,
+      minHeight: SIZE_CONFIG.sm.minHeight,
+    },
+    md: {
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.sm,
+      minHeight: SIZE_CONFIG.md.minHeight,
+    },
+    lg: {
+      paddingHorizontal: theme.spacing.lg,
+      paddingVertical: theme.spacing.md,
+      minHeight: SIZE_CONFIG.lg.minHeight,
+    },
+    xl: {
+      paddingHorizontal: theme.spacing.xl,
+      paddingVertical: theme.spacing.lg,
+      minHeight: SIZE_CONFIG.xl.minHeight,
+    },
+  });
 
-const createButtonTextStyles = (theme: Theme) => ({
-  base: {
-    fontWeight: '600' as const,
-    textAlign: 'center' as const,
-  },
-  loadingContainer: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-  },
-  loadingIndicator: {
-    marginRight: theme.spacing.xs,
-  },
-  // Variants
-  default: { color: theme.colors.text },
-  primary: { color: '#FFFFFF' },
-  secondary: { color: '#FFFFFF' },
-  outline: { color: resolveColor(theme, 'primary', theme.colors.primary) },
-  filled: { color: theme.colors.text },
-  ghost: { color: resolveColor(theme, 'text', theme.colors.text) },
-  success: { color: '#FFFFFF' },
-  error: { color: '#FFFFFF' },
-  warning: { color: '#FFFFFF' },
-  info: { color: '#FFFFFF' },
-  destructive: { color: '#FFFFFF' },
-  // Sizes
-  xs: {
-    fontSize: theme.typography.small.fontSize
-      ? theme.typography.small.fontSize * 0.9
-      : theme.typography.small.fontSize,
-    lineHeight: theme.typography.small.lineHeight
-      ? theme.typography.small.lineHeight * 0.9
-      : theme.typography.small.lineHeight,
-  },
-  sm: {
-    fontSize: theme.typography.small.fontSize,
-    lineHeight: theme.typography.small.lineHeight,
-  },
-  md: {
-    fontSize: theme.typography.body.fontSize,
-    lineHeight: theme.typography.body.lineHeight,
-  },
-  lg: {
-    fontSize: theme.typography.subtitle.fontSize,
-    lineHeight: theme.typography.subtitle.lineHeight,
-  },
-  xl: {
-    fontSize: theme.typography.subtitle.fontSize
-      ? theme.typography.subtitle.fontSize * 1.1
-      : theme.typography.subtitle.fontSize,
-    lineHeight: theme.typography.subtitle.lineHeight
-      ? theme.typography.subtitle.lineHeight * 1.1
-      : theme.typography.subtitle.lineHeight,
-  },
-});
+const createButtonTextStyles = (theme: Theme) =>
+  StyleSheet.create({
+    base: {
+      fontWeight: '600',
+      textAlign: 'center',
+    },
+    loadingContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    loadingIndicator: {
+      marginRight: theme.spacing.xs,
+    },
+    // Variants
+    default: { color: theme.colors.text },
+    primary: { color: '#FFFFFF' },
+    secondary: { color: '#FFFFFF' },
+    outline: { color: resolveColor(theme, 'primary', theme.colors.primary) },
+    filled: { color: theme.colors.text },
+    ghost: { color: resolveColor(theme, 'text', theme.colors.text) },
+    success: { color: '#FFFFFF' },
+    error: { color: '#FFFFFF' },
+    warning: { color: '#FFFFFF' },
+    info: { color: '#FFFFFF' },
+    destructive: { color: '#FFFFFF' },
+    // Sizes
+    xs: {
+      fontSize: theme.typography.small.fontSize
+        ? theme.typography.small.fontSize * 0.9
+        : theme.typography.small.fontSize,
+      lineHeight: theme.typography.small.lineHeight
+        ? theme.typography.small.lineHeight * 0.9
+        : theme.typography.small.lineHeight,
+    },
+    sm: {
+      fontSize: theme.typography.small.fontSize,
+      lineHeight: theme.typography.small.lineHeight,
+    },
+    md: {
+      fontSize: theme.typography.body.fontSize,
+      lineHeight: theme.typography.body.lineHeight,
+    },
+    lg: {
+      fontSize: theme.typography.subtitle.fontSize,
+      lineHeight: theme.typography.subtitle.lineHeight,
+    },
+    xl: {
+      fontSize: theme.typography.subtitle.fontSize
+        ? theme.typography.subtitle.fontSize * 1.1
+        : theme.typography.subtitle.fontSize,
+      lineHeight: theme.typography.subtitle.lineHeight
+        ? theme.typography.subtitle.lineHeight * 1.1
+        : theme.typography.subtitle.lineHeight,
+    },
+  });
 
-const createButtonIconStyles = (theme: Theme) => ({
-  base: {
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-  },
-  xs: { width: 12, height: 12 },
-  sm: { width: 16, height: 16 },
-  md: { width: 20, height: 20 },
-  lg: { width: 24, height: 24 },
-  xl: { width: 28, height: 28 },
-});
+const createButtonIconStyles = (_: Theme) =>
+  StyleSheet.create({
+    base: {
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    xs: { width: 12, height: 12 },
+    sm: { width: 16, height: 16 },
+    md: { width: 20, height: 20 },
+    lg: { width: 24, height: 24 },
+    xl: { width: 28, height: 28 },
+  });
 
 // Helper function to clone children with props
 const cloneChildrenWithProps = (
@@ -630,7 +636,7 @@ const ButtonText: React.FC<ButtonTextProps> = React.memo(
         <Animated.View style={[styles.loadingContainer, animatedTextStyle]}>
           <Spinner
             size={SIZE_CONFIG[size].spinnerSize}
-            color={styles[variant].color}
+            color={styles[variant].color as keyof ThemeColors}
             style={styles.loadingIndicator}
           />
           <Animated.Text style={textStyle} {...props}>

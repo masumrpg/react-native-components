@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, ViewStyle, TextStyle, DimensionValue } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   Card,
   CardContent,
@@ -11,10 +11,9 @@ import {
   HStack,
   useThemedStyles,
   Theme,
+  VScroll,
 } from 'rnc-theme';
-import {
-  useLanguage,
-} from 'rnc-theme';
+import { useLanguage } from 'rnc-theme';
 
 // Main component with LanguageProvider
 const I18nScreen: React.FC = () => {
@@ -35,7 +34,7 @@ const I18nScreen: React.FC = () => {
   ];
 
   return (
-    <ScrollView style={styles.container}>
+    <VScroll style={styles.container}>
       <VStack spacing="lg" padding="md">
         {/* Header */}
         <Card variant="primary" elevation={3}>
@@ -157,53 +156,54 @@ const I18nScreen: React.FC = () => {
           </CardContent>
         </Card>
       </VStack>
-    </ScrollView>
+    </VScroll>
   );
 };
 
-const createStyles = (theme: Theme) => StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  } as ViewStyle,
-  headerTitle: {
-    color: theme.colors.surface,
-    fontWeight: 'bold' as const,
-  } as TextStyle,
-  headerSubtitle: {
-    color: theme.colors.surface,
-    opacity: 0.9,
-  } as TextStyle,
-  description: {
-    lineHeight: 20,
-    color: theme.colors.textSecondary,
-  } as TextStyle,
-  languageButton: {
-    width: '100%' as DimensionValue,
-  } as ViewStyle,
-  bullet: {
-    color: theme.colors.primary,
-    fontWeight: 'bold' as const,
-  } as TextStyle,
-  featureText: {
-    flex: 1,
-    lineHeight: 20,
-  } as TextStyle,
-  infoTitle: {
-    color: theme.colors.info,
-    fontWeight: 'bold' as const,
-  } as TextStyle,
-  infoText: {
-    lineHeight: 20,
-    color: theme.colors.textSecondary,
-  } as TextStyle,
-  infoList: {
-    paddingLeft: theme.spacing.sm,
-  } as ViewStyle,
-  infoItem: {
-    color: theme.colors.textSecondary,
-    lineHeight: 16,
-  } as TextStyle,
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    headerTitle: {
+      color: theme.colors.surface,
+      fontWeight: 'bold',
+    },
+    headerSubtitle: {
+      color: theme.colors.surface,
+      opacity: 0.9,
+    },
+    description: {
+      lineHeight: 20,
+      color: theme.colors.textSecondary,
+    },
+    languageButton: {
+      width: '100%',
+    },
+    bullet: {
+      color: theme.colors.primary,
+      fontWeight: 'bold',
+    },
+    featureText: {
+      flex: 1,
+      lineHeight: 20,
+    },
+    infoTitle: {
+      color: theme.colors.info,
+      fontWeight: 'bold',
+    },
+    infoText: {
+      lineHeight: 20,
+      color: theme.colors.textSecondary,
+    },
+    infoList: {
+      paddingLeft: theme.spacing.sm,
+    },
+    infoItem: {
+      color: theme.colors.textSecondary,
+      lineHeight: 16,
+    },
+  });
 
 export default I18nScreen;

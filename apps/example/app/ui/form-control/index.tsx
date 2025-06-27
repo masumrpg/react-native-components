@@ -1,6 +1,6 @@
 /* eslint-disable */
-import React from 'react';
-import { ScrollView, View, Text, Alert } from 'react-native';
+import { useEffect } from 'react';
+import { ScrollView } from 'react-native';
 import { useForm, Controller } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -35,6 +35,9 @@ import {
   Combobox,
   DatePicker,
   useTheme,
+  useToast,
+  Typography,
+  Box,
 } from 'rnc-theme';
 
 // Zod validation schema
@@ -108,8 +111,9 @@ const countryOptions = [
   { label: 'Singapore', value: 'sg' },
 ];
 
-export default function FormControlExample() {
+export default function FormControlScreen() {
   const { theme } = useTheme();
+  const { toast } = useToast();
 
   const {
     control,
@@ -140,7 +144,7 @@ export default function FormControlExample() {
 
   // Watch password to trigger confirmPassword validation
   const password = watch('password');
-  React.useEffect(() => {
+  useEffect(() => {
     if (touchedFields.confirmPassword) {
       trigger('confirmPassword');
     }
@@ -206,10 +210,17 @@ export default function FormControlExample() {
     try {
       // Simulate API call
       await new Promise((resolve) => setTimeout(resolve, 2000));
-      Alert.alert('Success', 'Form submitted successfully!');
+      toast({
+        title: 'Success',
+        description: 'Form submitted successfully!',
+      });
       console.log('Form data:', data);
     } catch (err) {
-      Alert.alert('Error', 'Failed to submit form. Please try again.');
+      toast({
+        title: 'Success',
+        description: 'Form submitted successfully!',
+        variant: 'error',
+      });
       console.error('Form submission error:', err);
     }
   };
@@ -225,27 +236,17 @@ export default function FormControlExample() {
         gap: theme.spacing.lg,
       }}
     >
-      <Text
-        style={{
-          ...theme.typography.heading,
-          color: theme.colors.text,
-          marginBottom: theme.spacing.lg,
-        }}
-      >
-        Enhanced FormControl with React Hook Form & Zod
-      </Text>
-
       {/* Main Registration Form */}
       <Card>
         <CardHeader>
-          <Text
+          <Typography
             style={{
               ...theme.typography.title,
               color: theme.colors.text,
             }}
           >
             User Registration Form
-          </Text>
+          </Typography>
         </CardHeader>
         <CardContent style={{ gap: theme.spacing.lg }}>
           {/* Email Field */}
@@ -601,7 +602,7 @@ export default function FormControlExample() {
             name="notifications"
             render={({ field: { onChange, value } }) => (
               <FormControl>
-                <View
+                <Box
                   style={{
                     flexDirection: 'row',
                     alignItems: 'center',
@@ -614,7 +615,7 @@ export default function FormControlExample() {
                     </FormControlLabelText>
                   </FormControlLabel>
                   <Switcher value={value} onValueChange={onChange} />
-                </View>
+                </Box>
                 <FormControlHelper>
                   <FormControlHelperText>
                     Receive push notifications for important updates.

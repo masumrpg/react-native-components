@@ -47,7 +47,7 @@ export default function UILayout() {
                 router.back();
               } else {
                 // If we can't go back, navigate to root
-                router.push('/');
+                router.push('/ui');
               }
             }}
           >

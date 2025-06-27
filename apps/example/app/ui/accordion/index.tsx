@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   Accordion,
   AccordionItem,
@@ -13,6 +13,7 @@ import {
   ButtonText,
   useTheme,
   VScroll,
+  Box,
 } from 'rnc-theme';
 import {
   Settings,
@@ -1440,7 +1441,7 @@ const AccordionScreen = () => {
         <VStack spacing="md">
           <Typography variant="h4">Size Variants</Typography>
           {(['xs', 'sm', 'md', 'lg', 'xl'] as const).map((size) => (
-            <View key={size}>
+            <Box key={size}>
               <Typography variant="subtitle" style={styles.variantLabel}>
                 Size: {size.toUpperCase()}
               </Typography>
@@ -1457,7 +1458,7 @@ const AccordionScreen = () => {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-            </View>
+            </Box>
           ))}
         </VStack>
 
@@ -1479,7 +1480,7 @@ const AccordionScreen = () => {
               'destructive',
             ] as const
           ).map((variant) => (
-            <View key={variant}>
+            <Box key={variant}>
               <Typography variant="subtitle" style={styles.variantLabel}>
                 Variant: {variant}
               </Typography>
@@ -1497,7 +1498,7 @@ const AccordionScreen = () => {
                   </AccordionContent>
                 </AccordionItem>
               </Accordion>
-            </View>
+            </Box>
           ))}
         </VStack>
       </Card>

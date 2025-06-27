@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View, Alert } from 'react-native';
+import { Alert, StyleSheet, TouchableOpacity } from 'react-native';
 import {
   Table,
   TableHeader,
@@ -14,6 +14,9 @@ import {
   useThemedStyles,
   Theme,
   ComponentVariant,
+  Box,
+  Typography,
+  VScroll,
 } from 'rnc-theme';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -22,8 +25,8 @@ const SimpleTable: React.FC = () => {
   const styles = useThemedStyles(createStyles);
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>1. Simple Table</Text>
+    <Box style={styles.section}>
+      <Typography style={styles.sectionTitle}>1. Simple Table</Typography>
       <Table>
         <TableHeader>
           <TableRow>
@@ -46,7 +49,7 @@ const SimpleTable: React.FC = () => {
           </TableRow>
         </TableBody>
       </Table>
-    </View>
+    </Box>
   );
 };
 
@@ -55,8 +58,8 @@ const StripedTable: React.FC = () => {
   const styles = useThemedStyles(createStyles);
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>2. Striped Table</Text>
+    <Box style={styles.section}>
+      <Typography style={styles.sectionTitle}>2. Striped Table</Typography>
       <Table striped>
         <TableCaption position="top">Monthly Sales Report</TableCaption>
         <TableHeader>
@@ -95,7 +98,7 @@ const StripedTable: React.FC = () => {
           </TableRow>
         </TableFooter>
       </Table>
-    </View>
+    </Box>
   );
 };
 
@@ -224,13 +227,13 @@ const InteractiveTable: React.FC = () => {
   };
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>
+    <Box style={styles.section}>
+      <Typography style={styles.sectionTitle}>
         3. Interactive Table with Sorting & Filtering
-      </Text>
+      </Typography>
 
       {/* Filter Controls */}
-      <View style={styles.filterRow}>
+      <Box style={styles.filterRow}>
         {['all', 'Electronics', 'Furniture'].map((category) => (
           <TouchableOpacity
             key={category}
@@ -240,17 +243,17 @@ const InteractiveTable: React.FC = () => {
             ]}
             onPress={() => setFilterCategory(category)}
           >
-            <Text
+            <Typography
               style={[
                 styles.filterButtonText,
                 filterCategory === category && styles.filterButtonTextActive,
               ]}
             >
               {category === 'all' ? 'All Categories' : category}
-            </Text>
+            </Typography>
           </TouchableOpacity>
         ))}
-      </View>
+      </Box>
 
       <Table bordered striped scrollable>
         <TableHeader>
@@ -260,7 +263,7 @@ const InteractiveTable: React.FC = () => {
                 style={styles.sortableHeader}
                 onPress={() => handleSort('name')}
               >
-                <Text style={styles.headerText}>Product Name</Text>
+                <Typography style={styles.headerText}>Product Name</Typography>
                 <Ionicons name={getSortIcon('name')} size={16} color="#666" />
               </TouchableOpacity>
             </TableHead>
@@ -269,7 +272,7 @@ const InteractiveTable: React.FC = () => {
                 style={styles.sortableHeader}
                 onPress={() => handleSort('category')}
               >
-                <Text style={styles.headerText}>Category</Text>
+                <Typography style={styles.headerText}>Category</Typography>
                 <Ionicons
                   name={getSortIcon('category')}
                   size={16}
@@ -282,7 +285,7 @@ const InteractiveTable: React.FC = () => {
                 style={styles.sortableHeader}
                 onPress={() => handleSort('price')}
               >
-                <Text style={styles.headerText}>Price</Text>
+                <Typography style={styles.headerText}>Price</Typography>
                 <Ionicons name={getSortIcon('price')} size={16} color="#666" />
               </TouchableOpacity>
             </TableHead>
@@ -291,7 +294,7 @@ const InteractiveTable: React.FC = () => {
                 style={styles.sortableHeader}
                 onPress={() => handleSort('stock')}
               >
-                <Text style={styles.headerText}>Stock</Text>
+                <Typography style={styles.headerText}>Stock</Typography>
                 <Ionicons name={getSortIcon('stock')} size={16} color="#666" />
               </TouchableOpacity>
             </TableHead>
@@ -312,7 +315,7 @@ const InteractiveTable: React.FC = () => {
           ))}
         </TableBody>
       </Table>
-    </View>
+    </Box>
   );
 };
 
@@ -400,12 +403,14 @@ const DashboardTable: React.FC = () => {
     analyticsData.length;
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>4. Analytics Dashboard Table</Text>
+    <Box style={styles.section}>
+      <Typography style={styles.sectionTitle}>
+        4. Analytics Dashboard Table
+      </Typography>
 
       {/* Time Range Selector */}
-      <View style={styles.filterRow}>
-        <Text style={styles.filterLabel}>Time Range:</Text>
+      <Box style={styles.filterRow}>
+        <Typography style={styles.filterLabel}>Time Range:</Typography>
         {['24h', '7d', '30d', '90d'].map((range) => (
           <TouchableOpacity
             key={range}
@@ -415,17 +420,17 @@ const DashboardTable: React.FC = () => {
             ]}
             onPress={() => setTimeRange(range)}
           >
-            <Text
+            <Typography
               style={[
                 styles.filterButtonText,
                 timeRange === range && styles.filterButtonTextActive,
               ]}
             >
               {range}
-            </Text>
+            </Typography>
           </TouchableOpacity>
         ))}
-      </View>
+      </Box>
 
       <Table bordered variant="elevated" scrollable>
         <TableCaption position="top">
@@ -449,38 +454,42 @@ const DashboardTable: React.FC = () => {
           {analyticsData.map((item) => (
             <TableRow key={item.id}>
               <TableData flex={2}>
-                <Text style={styles.pageUrl}>{item.page}</Text>
+                <Typography style={styles.pageUrl}>{item.page}</Typography>
               </TableData>
               <TableData align="right">
-                <Text style={styles.metricValue}>
+                <Typography style={styles.metricValue}>
                   {item.views.toLocaleString()}
-                </Text>
+                </Typography>
               </TableData>
               <TableData align="right">
-                <Text style={styles.metricValue}>
+                <Typography style={styles.metricValue}>
                   {item.uniqueVisitors.toLocaleString()}
-                </Text>
+                </Typography>
               </TableData>
               <TableData align="right">
-                <Text
+                <Typography
                   style={[
                     styles.metricValue,
                     { color: item.bounceRate > 40 ? '#EF4444' : '#10B981' },
                   ]}
                 >
                   {item.bounceRate}%
-                </Text>
+                </Typography>
               </TableData>
               <TableData align="center">
-                <Text style={styles.metricValue}>{item.avgTimeOnPage}</Text>
+                <Typography style={styles.metricValue}>
+                  {item.avgTimeOnPage}
+                </Typography>
               </TableData>
               <TableData align="right">
-                <Text style={styles.metricValue}>{item.conversions}</Text>
+                <Typography style={styles.metricValue}>
+                  {item.conversions}
+                </Typography>
               </TableData>
               <TableData align="right">
-                <Text style={[styles.metricValue, styles.revenueText]}>
+                <Typography style={[styles.metricValue, styles.revenueText]}>
                   ${item.revenue.toLocaleString()}
-                </Text>
+                </Typography>
               </TableData>
               <TableData align="center">{getTrendIcon(item.trend)}</TableData>
             </TableRow>
@@ -490,37 +499,39 @@ const DashboardTable: React.FC = () => {
         <TableFooter>
           <TableRow>
             <TableData flex={2}>
-              <Text style={styles.footerText}>Totals</Text>
+              <Typography style={styles.footerText}>Totals</Typography>
             </TableData>
             <TableData align="right">
-              <Text style={styles.footerText}>
+              <Typography style={styles.footerText}>
                 {totalViews.toLocaleString()}
-              </Text>
+              </Typography>
             </TableData>
             <TableData align="right">
-              <Text style={styles.footerText}>-</Text>
+              <Typography style={styles.footerText}>-</Typography>
             </TableData>
             <TableData align="right">
-              <Text style={styles.footerText}>{avgBounceRate.toFixed(1)}%</Text>
+              <Typography style={styles.footerText}>
+                {avgBounceRate.toFixed(1)}%
+              </Typography>
             </TableData>
             <TableData align="center">
-              <Text style={styles.footerText}>-</Text>
+              <Typography style={styles.footerText}>-</Typography>
             </TableData>
             <TableData align="right">
-              <Text style={styles.footerText}>-</Text>
+              <Typography style={styles.footerText}>-</Typography>
             </TableData>
             <TableData align="right">
-              <Text style={[styles.footerText, styles.revenueText]}>
+              <Typography style={[styles.footerText, styles.revenueText]}>
                 ${totalRevenue.toLocaleString()}
-              </Text>
+              </Typography>
             </TableData>
             <TableData align="center">
-              <Text style={styles.footerText}>-</Text>
+              <Typography style={styles.footerText}>-</Typography>
             </TableData>
           </TableRow>
         </TableFooter>
       </Table>
-    </View>
+    </Box>
   );
 };
 
@@ -599,7 +610,10 @@ const ActionableTable: React.FC = () => {
       user: 'default',
     };
     return (
-      <Badge variant={variants[role as keyof typeof variants] as ComponentVariant} size="sm">
+      <Badge
+        variant={variants[role as keyof typeof variants] as ComponentVariant}
+        size="sm"
+      >
         <BadgeText>{role.charAt(0).toUpperCase() + role.slice(1)}</BadgeText>
       </Badge>
     );
@@ -624,10 +638,10 @@ const ActionableTable: React.FC = () => {
   };
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>
+    <Box style={styles.section}>
+      <Typography style={styles.sectionTitle}>
         5. User Management Table with Actions
-      </Text>
+      </Typography>
 
       <Table bordered>
         <TableHeader>
@@ -644,22 +658,22 @@ const ActionableTable: React.FC = () => {
           {users.map((user) => (
             <TableRow key={user.id}>
               <TableData flex={2}>
-                <View>
-                  <Text style={styles.userName}>{user.name}</Text>
-                  <Text style={styles.userEmail}>{user.email}</Text>
-                </View>
+                <Box>
+                  <Typography style={styles.userName}>{user.name}</Typography>
+                  <Typography style={styles.userEmail}>{user.email}</Typography>
+                </Box>
               </TableData>
               <TableData>{getRoleBadge(user.role)}</TableData>
               <TableData align="center">
                 {getStatusBadge(user.status)}
               </TableData>
               <TableData>
-                <Text style={styles.dateText}>
+                <Typography style={styles.dateText}>
                   {new Date(user.lastLogin).toLocaleDateString()}
-                </Text>
+                </Typography>
               </TableData>
               <TableData align="center">
-                <View style={styles.actionButtons}>
+                <Box style={styles.actionButtons}>
                   <TouchableOpacity
                     style={[styles.actionButton, styles.editButton]}
                     onPress={() =>
@@ -696,13 +710,13 @@ const ActionableTable: React.FC = () => {
                   >
                     <Ionicons name="trash" size={14} color="white" />
                   </TouchableOpacity>
-                </View>
+                </Box>
               </TableData>
             </TableRow>
           ))}
         </TableBody>
       </Table>
-    </View>
+    </Box>
   );
 };
 
@@ -711,60 +725,64 @@ const MinimalTable: React.FC = () => {
   const styles = useThemedStyles(createStyles);
 
   return (
-    <View style={styles.section}>
-      <Text style={styles.sectionTitle}>6. Minimal Design Table</Text>
+    <Box style={styles.section}>
+      <Typography style={styles.sectionTitle}>
+        6. Minimal Design Table
+      </Typography>
 
       <Table variant="minimal" bordered={false}>
         <TableBody>
           <TableRow>
             <TableData>
-              <Text style={styles.labelText}>Name</Text>
+              <Typography style={styles.labelText}>Name</Typography>
             </TableData>
             <TableData>
-              <Text style={styles.valueText}>John Doe</Text>
-            </TableData>
-          </TableRow>
-          <TableRow>
-            <TableData>
-              <Text style={styles.labelText}>Email</Text>
-            </TableData>
-            <TableData>
-              <Text style={styles.valueText}>john@example.com</Text>
+              <Typography style={styles.valueText}>John Doe</Typography>
             </TableData>
           </TableRow>
           <TableRow>
             <TableData>
-              <Text style={styles.labelText}>Phone</Text>
+              <Typography style={styles.labelText}>Email</Typography>
             </TableData>
             <TableData>
-              <Text style={styles.valueText}>+1 (555) 123-4567</Text>
+              <Typography style={styles.valueText}>john@example.com</Typography>
             </TableData>
           </TableRow>
           <TableRow>
             <TableData>
-              <Text style={styles.labelText}>Department</Text>
+              <Typography style={styles.labelText}>Phone</Typography>
             </TableData>
             <TableData>
-              <Text style={styles.valueText}>Engineering</Text>
+              <Typography style={styles.valueText}>
+                +1 (555) 123-4567
+              </Typography>
+            </TableData>
+          </TableRow>
+          <TableRow>
+            <TableData>
+              <Typography style={styles.labelText}>Department</Typography>
+            </TableData>
+            <TableData>
+              <Typography style={styles.valueText}>Engineering</Typography>
             </TableData>
           </TableRow>
         </TableBody>
       </Table>
-    </View>
+    </Box>
   );
 };
 
 // Main Examples Component
-const TableExamples: React.FC = () => {
+const TableScreen: React.FC = () => {
   const styles = useThemedStyles(createStyles);
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.title}>Table Component Examples</Text>
-      <Text style={styles.subtitle}>
+    <VScroll style={styles.container}>
+      <Typography style={styles.title}>Table Component Examples</Typography>
+      <Typography style={styles.subtitle}>
         Berbagai contoh penggunaan Table component dari yang sederhana hingga
         kompleks
-      </Text>
+      </Typography>
 
       <SimpleTable />
       <StripedTable />
@@ -772,140 +790,141 @@ const TableExamples: React.FC = () => {
       <DashboardTable />
       <ActionableTable />
       <MinimalTable />
-    </ScrollView>
+    </VScroll>
   );
 };
 
-const createStyles = (theme: Theme) => ({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-    padding: theme.spacing.md,
-  },
-  title: {
-    fontSize: theme.typography.title.fontSize,
-    fontWeight: '700' as const,
-    color: theme.colors.text,
-    marginBottom: theme.spacing.sm,
-  },
-  subtitle: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.textSecondary,
-    marginBottom: theme.spacing.xl,
-  },
-  section: {
-    marginBottom: theme.spacing.xl,
-  },
-  sectionTitle: {
-    fontSize: theme.typography.subtitle.fontSize,
-    fontWeight: '600' as const,
-    color: theme.colors.text,
-    marginBottom: theme.spacing.md,
-  },
-  filterRow: {
-    flexDirection: 'row' as const,
-    gap: theme.spacing.sm,
-    flexWrap: 'wrap' as const,
-    marginBottom: theme.spacing.md,
-    alignItems: 'center' as const,
-  },
-  filterLabel: {
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
-    color: theme.colors.text,
-  },
-  filterButton: {
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-    borderRadius: theme.components.borderRadius.md,
-    backgroundColor: theme.colors.surface,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  filterButtonActive: {
-    backgroundColor: theme.colors.primary,
-    borderColor: theme.colors.primary,
-  },
-  filterButtonText: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.text,
-  },
-  filterButtonTextActive: {
-    color: 'white',
-  },
-  sortableHeader: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    gap: theme.spacing.xs,
-  },
-  headerText: {
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
-    color: theme.colors.text,
-  },
-  pageUrl: {
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '500' as const,
-    color: theme.colors.primary,
-  },
-  metricValue: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.text,
-  },
-  revenueText: {
-    fontWeight: '600' as const,
-    color: theme.colors.success,
-  },
-  footerText: {
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
-    color: theme.colors.text,
-  },
-  userName: {
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
-    color: theme.colors.text,
-  },
-  userEmail: {
-    fontSize: theme.typography.caption.fontSize,
-    color: theme.colors.textSecondary,
-  },
-  dateText: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.textSecondary,
-  },
-  actionButtons: {
-    flexDirection: 'row' as const,
-    gap: theme.spacing.xs,
-  },
-  actionButton: {
-    width: 28,
-    height: 28,
-    borderRadius: theme.components.borderRadius.sm,
-    alignItems: 'center' as const,
-    justifyContent: 'center' as const,
-  },
-  editButton: {
-    backgroundColor: theme.colors.primary,
-  },
-  activateButton: {
-    backgroundColor: theme.colors.success,
-  },
-  deactivateButton: {
-    backgroundColor: theme.colors.warning,
-  },
-  deleteButton: {
-    backgroundColor: theme.colors.error,
-  },
-  labelText: {
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '500' as const,
-    color: theme.colors.textSecondary,
-  },
-  valueText: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.text,
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+      padding: theme.spacing.md,
+    },
+    title: {
+      fontSize: theme.typography.title.fontSize,
+      fontWeight: '700',
+      color: theme.colors.text,
+      marginBottom: theme.spacing.sm,
+    },
+    subtitle: {
+      fontSize: theme.typography.body.fontSize,
+      color: theme.colors.textSecondary,
+      marginBottom: theme.spacing.xl,
+    },
+    section: {
+      marginBottom: theme.spacing.xl,
+    },
+    sectionTitle: {
+      fontSize: theme.typography.subtitle.fontSize,
+      fontWeight: '600',
+      color: theme.colors.text,
+      marginBottom: theme.spacing.md,
+    },
+    filterRow: {
+      flexDirection: 'row',
+      gap: theme.spacing.sm,
+      flexWrap: 'wrap',
+      marginBottom: theme.spacing.md,
+      alignItems: 'center',
+    },
+    filterLabel: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: '600',
+      color: theme.colors.text,
+    },
+    filterButton: {
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.sm,
+      borderRadius: theme.components.borderRadius.md,
+      backgroundColor: theme.colors.surface,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+    },
+    filterButtonActive: {
+      backgroundColor: theme.colors.primary,
+      borderColor: theme.colors.primary,
+    },
+    filterButtonText: {
+      fontSize: theme.typography.body.fontSize,
+      color: theme.colors.text,
+    },
+    filterButtonTextActive: {
+      color: 'white',
+    },
+    sortableHeader: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: theme.spacing.xs,
+    },
+    headerText: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: '600',
+      color: theme.colors.text,
+    },
+    pageUrl: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: '500',
+      color: theme.colors.primary,
+    },
+    metricValue: {
+      fontSize: theme.typography.body.fontSize,
+      color: theme.colors.text,
+    },
+    revenueText: {
+      fontWeight: '600',
+      color: theme.colors.success,
+    },
+    footerText: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: '600',
+      color: theme.colors.text,
+    },
+    userName: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: '600',
+      color: theme.colors.text,
+    },
+    userEmail: {
+      fontSize: theme.typography.caption.fontSize,
+      color: theme.colors.textSecondary,
+    },
+    dateText: {
+      fontSize: theme.typography.body.fontSize,
+      color: theme.colors.textSecondary,
+    },
+    actionButtons: {
+      flexDirection: 'row',
+      gap: theme.spacing.xs,
+    },
+    actionButton: {
+      width: 28,
+      height: 28,
+      borderRadius: theme.components.borderRadius.sm,
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    editButton: {
+      backgroundColor: theme.colors.primary,
+    },
+    activateButton: {
+      backgroundColor: theme.colors.success,
+    },
+    deactivateButton: {
+      backgroundColor: theme.colors.warning,
+    },
+    deleteButton: {
+      backgroundColor: theme.colors.error,
+    },
+    labelText: {
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: '500',
+      color: theme.colors.textSecondary,
+    },
+    valueText: {
+      fontSize: theme.typography.body.fontSize,
+      color: theme.colors.text,
+    },
+  });
 
-export default TableExamples;
+export default TableScreen;

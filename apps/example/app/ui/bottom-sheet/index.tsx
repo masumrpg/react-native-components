@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import {
   useBottomSheet,
   Card,
@@ -10,6 +10,9 @@ import {
   ButtonText,
   Typography,
   Box,
+  Theme,
+  useThemedStyles,
+  Title,
 } from 'rnc-theme';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -125,7 +128,8 @@ interface Notification {
   read: boolean;
 }
 
-const BottomSheetScreen: React.FC = () => {
+const BottomScreen: React.FC = () => {
+  const styles = useThemedStyles(createStyle);
   const [notifications, setNotifications] =
     useState<Notification[]>(NOTIFICATIONS);
 
@@ -144,17 +148,17 @@ const BottomSheetScreen: React.FC = () => {
   const showSimpleExample = () => {
     setMaxTo('50%');
     setVariant('scroll');
-    setSheetTitle('Simple Example');
+    setSheetTitle(<Title>Simple Example</Title>);
     setContent(
-      <View>
-        <Text style={styles.description}>
+      <Box>
+        <Typography style={styles.description}>
           This is a simple example of the bottom sheet component. You can put
           any content here!
-        </Text>
+        </Typography>
         <Button onPress={close}>
           <ButtonText>Close</ButtonText>
         </Button>
-      </View>
+      </Box>
     );
     expand('30%');
   };
@@ -164,20 +168,22 @@ const BottomSheetScreen: React.FC = () => {
     setMaxTo('60%');
     setVariant('scroll');
     setSheetTitle(
-      <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-        <Text style={{ fontSize: 18, marginRight: 8 }}>🎉</Text>
-        <Text style={{ fontSize: 20, fontWeight: '600' }}>Custom Title</Text>
-      </View>
+      <Box style={{ flexDirection: 'row', alignItems: 'center' }}>
+        <Typography style={{ fontSize: 18, marginRight: 8 }}>🎉</Typography>
+        <Typography style={{ fontSize: 20, fontWeight: '600' }}>
+          Custom Title
+        </Typography>
+      </Box>
     );
     setContent(
-      <View>
-        <Text style={styles.description}>
+      <Box>
+        <Typography style={styles.description}>
           This is an example with custom ReactNode title!
-        </Text>
+        </Typography>
         <Button onPress={close}>
           <ButtonText>Close</ButtonText>
         </Button>
-      </View>
+      </Box>
     );
     expand('30%');
   };
@@ -187,31 +193,33 @@ const BottomSheetScreen: React.FC = () => {
     setMaxTo('70%');
     setVariant('flatlist');
     setSheetTitle(
-      <View style={{ alignItems: 'center' }}>
-        <View
+      <Box style={{ alignItems: 'center' }}>
+        <Box
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             marginBottom: 4,
           }}
         >
-          <Text style={{ fontSize: 18, marginRight: 8 }}>📝</Text>
-          <Text style={{ fontSize: 20, fontWeight: '600' }}>Item List</Text>
-        </View>
-        <Text style={{ fontSize: 12, color: '#666' }}>
+          <Typography style={{ fontSize: 18, marginRight: 8 }}>📝</Typography>
+          <Typography style={{ fontSize: 20, fontWeight: '600' }}>
+            Item List
+          </Typography>
+        </Box>
+        <Typography style={{ fontSize: 12, color: '#666' }}>
           Select an item below
-        </Text>
-      </View>
+        </Typography>
+      </Box>
     );
 
     // Set the content for the header section
     setContent(
-      <View style={styles.headerContent}>
-        <Text style={styles.description}>
+      <Box style={styles.headerContent}>
+        <Typography style={styles.description}>
           This is an example of the bottom sheet with FlatList. Below is a list
           of items:
-        </Text>
-      </View>
+        </Typography>
+      </Box>
     );
 
     // Set the data for the FlatList
@@ -225,35 +233,39 @@ const BottomSheetScreen: React.FC = () => {
           // Example of what happens when an item is pressed
           setVariant('scroll');
           setSheetTitle(
-            <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={{ fontSize: 18, marginRight: 8 }}>ℹ️</Text>
-              <Text style={{ fontSize: 20, fontWeight: '600' }}>
+            <Box style={{ flexDirection: 'row', alignItems: 'center' }}>
+              <Typography style={{ fontSize: 18, marginRight: 8 }}>
+                ℹ️
+              </Typography>
+              <Typography style={{ fontSize: 20, fontWeight: '600' }}>
                 {item.title}
-              </Text>
-            </View>
+              </Typography>
+            </Box>
           );
           setContent(
-            <View>
-              <Text style={styles.title}>{item.title}</Text>
-              <Text style={styles.description}>{item.description}</Text>
-              <Text style={styles.moreText}>
+            <Box>
+              <Typography style={styles.title}>{item.title}</Typography>
+              <Typography style={styles.description}>
+                {item.description}
+              </Typography>
+              <Typography style={styles.moreText}>
                 Here you can show more details about the selected item. This
                 demonstrates how you can transition between flatlist and scroll
                 variants.
-              </Text>
+              </Typography>
               <Button onPress={showFlatListExample}>
                 <ButtonText>Back to List</ButtonText>
               </Button>
               <Button onPress={close}>
                 <ButtonText>Close</ButtonText>
               </Button>
-            </View>
+            </Box>
           );
           expand('80%'); // You can also change the height when showing details
         }}
       >
-        <Text style={styles.title}>{item.title}</Text>
-        <Text style={styles.subtitle}>{item.description}</Text>
+        <Typography style={styles.title}>{item.title}</Typography>
+        <Typography style={styles.subtitle}>{item.description}</Typography>
       </TouchableOpacity>
     ));
 
@@ -265,31 +277,31 @@ const BottomSheetScreen: React.FC = () => {
     setMaxTo('90%');
     setVariant('scroll');
     setSheetTitle(
-      <View style={{ alignItems: 'center' }}>
+      <Box style={{ alignItems: 'center' }}>
         <Typography variant="h6">Featured Products</Typography>
-        <Typography variant="caption" color="textSecondary">
+        <Typography variant="caption">
           Discover our latest collection
         </Typography>
-      </View>
+      </Box>
     );
 
     setContent(
-      <View style={{ padding: 16 }}>
+      <Box style={{ padding: 16 }}>
         {PRODUCTS.map((product) => (
           <Card key={product.id} style={{ marginBottom: 16 }}>
             <CardContent>
-              <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                <Text style={{ fontSize: 40, marginRight: 12 }}>
+              <Box style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Typography style={{ fontSize: 40, marginRight: 12 }}>
                   {product.image}
-                </Text>
-                <View style={{ flex: 1 }}>
+                </Typography>
+                <Box style={{ flex: 1 }}>
                   <Typography variant="subtitle" style={{ fontWeight: '600' }}>
                     {product.title}
                   </Typography>
                   <Typography variant="caption" color="textSecondary">
                     {product.category}
                   </Typography>
-                  <View
+                  <Box
                     style={{
                       flexDirection: 'row',
                       alignItems: 'center',
@@ -304,13 +316,13 @@ const BottomSheetScreen: React.FC = () => {
                       {' '}
                       ({product.reviews} reviews)
                     </Typography>
-                  </View>
-                </View>
-                <View style={{ alignItems: 'flex-end' }}>
+                  </Box>
+                </Box>
+                <Box style={{ alignItems: 'flex-end' }}>
                   <Typography variant="subtitle" style={{ fontWeight: '600' }}>
                     {product.price}
                   </Typography>
-                  <View
+                  <Box
                     style={{
                       backgroundColor: product.inStock ? '#E8F5E8' : '#FFE8E8',
                       paddingHorizontal: 8,
@@ -328,10 +340,10 @@ const BottomSheetScreen: React.FC = () => {
                     >
                       {product.inStock ? 'In Stock' : 'Out of Stock'}
                     </Typography>
-                  </View>
-                </View>
-              </View>
-              <View
+                  </Box>
+                </Box>
+              </Box>
+              <Box
                 style={{
                   flexDirection: 'row',
                   marginTop: 12,
@@ -351,16 +363,16 @@ const BottomSheetScreen: React.FC = () => {
                 <Button variant="outline" onPress={() => viewProduct(product)}>
                   <ButtonText variant="outline">View Details</ButtonText>
                 </Button>
-              </View>
+              </Box>
             </CardContent>
           </Card>
         ))}
-        <View style={{ marginTop: 16 }}>
+        <Box style={{ marginTop: 16 }}>
           <Button onPress={close}>
             <ButtonText>Close</ButtonText>
           </Button>
-        </View>
-      </View>
+        </Box>
+      </Box>
     );
     expand('60%');
   };
@@ -370,9 +382,9 @@ const BottomSheetScreen: React.FC = () => {
     setMaxTo('80%');
     setVariant('scroll');
     setSheetTitle(
-      <View style={{ alignItems: 'center' }}>
+      <Box style={{ alignItems: 'center' }}>
         <Typography variant="subtitle">Recent Activity</Typography>
-        <View
+        <Box
           style={{
             backgroundColor: '#E3F2FD',
             paddingHorizontal: 12,
@@ -381,15 +393,15 @@ const BottomSheetScreen: React.FC = () => {
             marginTop: 4,
           }}
         >
-          <Typography variant="caption" color="textSecondary">
+          <Typography variant="caption">
             {notifications.filter((n) => !n.read).length} unread
           </Typography>
-        </View>
-      </View>
+        </Box>
+      </Box>
     );
 
     setContent(
-      <View style={{ padding: 16 }}>
+      <Box style={{ padding: 16 }}>
         {notifications.map((notification) => (
           <Card
             key={notification.id}
@@ -401,8 +413,8 @@ const BottomSheetScreen: React.FC = () => {
             }}
           >
             <CardContent>
-              <View style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
-                <View
+              <Box style={{ flexDirection: 'row', alignItems: 'flex-start' }}>
+                <Box
                   style={{
                     backgroundColor: getNotificationColor(notification.type),
                     padding: 8,
@@ -415,9 +427,9 @@ const BottomSheetScreen: React.FC = () => {
                     size={16}
                     color="white"
                   />
-                </View>
-                <View style={{ flex: 1 }}>
-                  <View
+                </Box>
+                <Box style={{ flex: 1 }}>
+                  <Box
                     style={{
                       flexDirection: 'row',
                       justifyContent: 'space-between',
@@ -435,7 +447,7 @@ const BottomSheetScreen: React.FC = () => {
                     >
                       {notification.time}
                     </Typography>
-                  </View>
+                  </Box>
                   <Typography variant="body">{notification.message}</Typography>
                   {!notification.read && (
                     <Button
@@ -449,12 +461,12 @@ const BottomSheetScreen: React.FC = () => {
                       </ButtonText>
                     </Button>
                   )}
-                </View>
-              </View>
+                </Box>
+              </Box>
             </CardContent>
           </Card>
         ))}
-        <View
+        <Box
           style={{
             flexDirection: 'row',
             gap: 12,
@@ -475,8 +487,8 @@ const BottomSheetScreen: React.FC = () => {
           <Button variant="primary" style={{ flex: 1 }} onPress={close}>
             <ButtonText variant="primary">Close</ButtonText>
           </Button>
-        </View>
-      </View>
+        </Box>
+      </Box>
     );
     expand('70%');
   };
@@ -509,55 +521,55 @@ const BottomSheetScreen: React.FC = () => {
   const viewProduct = (product: Product) => {
     setVariant('scroll');
     setSheetTitle(
-      <View style={{ alignItems: 'center' }}>
+      <Box style={{ alignItems: 'center' }}>
         <Typography variant="subtitle">{product.title}</Typography>
         <Typography variant="caption" color="textSecondary">
           Product Details
         </Typography>
-      </View>
+      </Box>
     );
 
     setContent(
-      <View style={{ padding: 16 }}>
+      <Box style={{ padding: 16 }}>
         <Card>
           <CardContent>
-            <View style={{ alignItems: 'center', marginBottom: 16 }}>
-              <Text style={{ fontSize: 80, marginBottom: 8 }}>
+            <Box style={{ alignItems: 'center', marginBottom: 16 }}>
+              <Typography style={{ fontSize: 80, marginBottom: 8 }}>
                 {product.image}
-              </Text>
+              </Typography>
               <Typography variant="title">{product.title}</Typography>
               <Typography variant="body">{product.description}</Typography>
-            </View>
-            <View
+            </Box>
+            <Box
               style={{
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 marginBottom: 16,
               }}
             >
-              <View>
+              <Box>
                 <Typography variant="caption" color="textSecondary">
                   Price
                 </Typography>
                 <Typography variant="subtitle">{product.price}</Typography>
-              </View>
-              <View>
+              </Box>
+              <Box>
                 <Typography variant="caption" color="textSecondary">
                   Rating
                 </Typography>
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+                <Box style={{ flexDirection: 'row', alignItems: 'center' }}>
                   <MaterialIcons name="star" size={16} color="#FFD700" />
                   <Typography variant="caption">{product.rating}</Typography>
-                </View>
-              </View>
-              <View>
+                </Box>
+              </Box>
+              <Box>
                 <Typography variant="caption" color="textSecondary">
                   Reviews
                 </Typography>
                 <Typography variant="caption">{product.reviews}</Typography>
-              </View>
-            </View>
-            <View
+              </Box>
+            </Box>
+            <Box
               style={{
                 flexDirection: 'row',
                 gap: 12,
@@ -576,15 +588,15 @@ const BottomSheetScreen: React.FC = () => {
               <Button variant="outline" onPress={showProductCatalog}>
                 <ButtonText variant="outline">Back to Catalog</ButtonText>
               </Button>
-            </View>
+            </Box>
           </CardContent>
         </Card>
-        <View style={{ marginTop: 16 }}>
+        <Box style={{ marginTop: 16 }}>
           <Button onPress={close}>
             <ButtonText>Close</ButtonText>
           </Button>
-        </View>
-      </View>
+        </Box>
+      </Box>
     );
     expand('80%');
   };
@@ -596,7 +608,7 @@ const BottomSheetScreen: React.FC = () => {
           <Typography variant="subtitle">Basic Examples</Typography>
         </CardHeader>
         <CardContent>
-          <View style={styles.buttonContainer}>
+          <Box style={styles.buttonContainer}>
             <Button style={styles.button} onPress={showSimpleExample}>
               <ButtonText>Simple Example</ButtonText>
             </Button>
@@ -606,7 +618,7 @@ const BottomSheetScreen: React.FC = () => {
             <Button style={styles.button} onPress={showFlatListExample}>
               <ButtonText>FlatList Example</ButtonText>
             </Button>
-          </View>
+          </Box>
         </CardContent>
       </Card>
 
@@ -615,62 +627,63 @@ const BottomSheetScreen: React.FC = () => {
           <Typography variant="subtitle">Real-World Examples</Typography>
         </CardHeader>
         <CardContent>
-          <View style={styles.buttonContainer}>
+          <Box style={styles.buttonContainer}>
             <Button style={styles.button} onPress={showProductCatalog}>
               <ButtonText>Product Catalog</ButtonText>
             </Button>
             <Button style={styles.button} onPress={showNotificationCenter}>
               <ButtonText>Notification Center</ButtonText>
             </Button>
-          </View>
+          </Box>
         </CardContent>
       </Card>
     </Box>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-  description: {
-    fontSize: 16,
-    marginBottom: 20,
-    textAlign: 'center',
-    color: '#666',
-  },
-  buttonContainer: {
-    gap: 12,
-  },
-  button: {
-    marginBottom: 10,
-  },
-  headerContent: {
-    padding: 16,
-  },
-  itemContainer: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#eee',
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 4,
-  },
-  moreText: {
-    fontSize: 14,
-    color: '#666',
-    marginTop: 10,
-    lineHeight: 20,
-  },
-});
+const createStyle = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: 20,
+    },
+    title: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      marginBottom: 10,
+      textAlign: 'center',
+    },
+    description: {
+      fontSize: 16,
+      marginBottom: 20,
+      textAlign: 'center',
+      color: theme.colors.textSecondary,
+    },
+    buttonContainer: {
+      gap: 12,
+    },
+    button: {
+      marginBottom: 10,
+    },
+    headerContent: {
+      padding: 16,
+    },
+    itemContainer: {
+      padding: 16,
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.border,
+    },
+    subtitle: {
+      fontSize: 14,
+      color: theme.colors.textSecondary,
+      marginTop: 4,
+    },
+    moreText: {
+      fontSize: 14,
+      color: theme.colors.textSecondary,
+      marginTop: 10,
+      lineHeight: 20,
+    },
+  });
 
-export default BottomSheetScreen;
+export default BottomScreen;

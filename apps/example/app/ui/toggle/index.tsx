@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   ToggleMode,
   VStack,
@@ -9,13 +9,14 @@ import {
   CardContent,
   CardHeader,
   useTheme,
+  VScroll,
 } from 'rnc-theme';
 
 const ToggleScreen = () => {
   const { isDark } = useTheme();
 
   return (
-    <ScrollView style={styles.container}>
+    <VScroll themed style={styles.container}>
       <VStack spacing="lg" padding="md">
         {/* Current Theme Info */}
         <Card>
@@ -176,7 +177,7 @@ const ToggleScreen = () => {
           </CardContent>
         </Card>
       </VStack>
-    </ScrollView>
+    </VScroll>
   );
 };
 

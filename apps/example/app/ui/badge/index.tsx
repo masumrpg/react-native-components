@@ -1,274 +1,222 @@
-import React, { useState } from 'react';
-import { ScrollView, View, Text, TouchableOpacity } from 'react-native';
-import { Badge, BadgeText, useThemedStyles, Theme, BadgeIcon } from 'rnc-theme';
+import React from 'react';
+import { StyleSheet } from 'react-native';
+import {
+  Badge,
+  BadgeText,
+  useThemedStyles,
+  Theme,
+  BadgeIcon,
+  VScroll,
+  Box,
+  Typography,
+  Card,
+} from 'rnc-theme';
 import { Ionicons } from '@expo/vector-icons';
-
-interface NotificationItem {
-  id: string;
-  type: 'message' | 'alert' | 'success' | 'error';
-  count: number;
-  title: string;
-  isRead: boolean;
-}
 
 const BadgeScreen: React.FC = () => {
   const styles = useThemedStyles(createStyles);
-  const [notifications, setNotifications] = useState<NotificationItem[]>([
-    { id: '1', type: 'message', count: 5, title: 'Messages', isRead: false },
-    { id: '2', type: 'alert', count: 2, title: 'Alerts', isRead: false },
-    { id: '3', type: 'success', count: 1, title: 'Updates', isRead: true },
-    { id: '4', type: 'error', count: 0, title: 'Errors', isRead: true },
-  ]);
-
-  const getBadgeVariant = (type: string, isRead: boolean) => {
-    if (isRead) return 'secondary';
-    switch (type) {
-      case 'message':
-        return 'primary';
-      case 'alert':
-        return 'warning';
-      case 'success':
-        return 'success';
-      case 'error':
-        return 'error';
-      default:
-        return 'default';
-    }
-  };
-
-  const getIcon = (type: string) => {
-    switch (type) {
-      case 'message':
-        return 'mail';
-      case 'alert':
-        return 'warning';
-      case 'success':
-        return 'checkmark-circle';
-      case 'error':
-        return 'alert-circle';
-      default:
-        return 'notifications';
-    }
-  };
-
-  const markAsRead = (id: string) => {
-    setNotifications((prev) =>
-      prev.map((item) => (item.id === id ? { ...item, isRead: true } : item))
-    );
-  };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={{ gap: 20 }}>
+    <VScroll style={styles.container}>
+      <Box themed={false} style={{ gap: 20 }}>
         {/* Basic Badge */}
-        <Badge animated={true} fadeIn={true}>
-          <BadgeText>Default</BadgeText>
-        </Badge>
+        <Card style={styles.sectionCard}>
+          <Typography style={styles.sectionTitle}>Basic Badge</Typography>
+          <Badge animated={true} fadeIn={true}>
+            <BadgeText>Default</BadgeText>
+          </Badge>
+        </Card>
 
-        {/* Different Variants */}
-        <Text style={styles.sectionTitle}>Original Variants</Text>
-        <View style={styles.statusRow}>
-          <Badge variant="primary">
-            <BadgeText>Primary</BadgeText>
-          </Badge>
-          <Badge variant="secondary">
-            <BadgeText>Secondary</BadgeText>
-          </Badge>
-          <Badge variant="success">
-            <BadgeText>Success</BadgeText>
-          </Badge>
-          <Badge variant="warning">
-            <BadgeText>Warning</BadgeText>
-          </Badge>
-          <Badge variant="error">
-            <BadgeText>Error</BadgeText>
-          </Badge>
-        </View>
+        {/* Original Variants */}
+        <Card style={styles.sectionCard}>
+          <Typography style={styles.sectionTitle}>Original Variants</Typography>
+          <Box style={styles.statusRow}>
+            <Badge variant="primary">
+              <BadgeText>Primary</BadgeText>
+            </Badge>
+            <Badge variant="secondary">
+              <BadgeText>Secondary</BadgeText>
+            </Badge>
+            <Badge variant="success">
+              <BadgeText>Success</BadgeText>
+            </Badge>
+            <Badge variant="warning">
+              <BadgeText>Warning</BadgeText>
+            </Badge>
+            <Badge variant="error">
+              <BadgeText>Error</BadgeText>
+            </Badge>
+          </Box>
+        </Card>
 
         {/* New Variants */}
-        <Text style={styles.sectionTitle}>New Variants</Text>
-        <View style={styles.statusRow}>
-          <Badge variant="outline">
-            <BadgeText>Outline</BadgeText>
-          </Badge>
-          <Badge variant="filled">
-            <BadgeText>Filled</BadgeText>
-          </Badge>
-          <Badge variant="ghost">
-            <BadgeText>Ghost</BadgeText>
-          </Badge>
-          <Badge variant="info">
-            <BadgeText>Info</BadgeText>
-          </Badge>
-          <Badge variant="destructive">
-            <BadgeText>Destructive</BadgeText>
-          </Badge>
-        </View>
+        <Card style={styles.sectionCard}>
+          <Typography style={styles.sectionTitle}>New Variants</Typography>
+          <Box style={styles.statusRow}>
+            <Badge variant="outline">
+              <BadgeText>Outline</BadgeText>
+            </Badge>
+            <Badge variant="filled">
+              <BadgeText>Filled</BadgeText>
+            </Badge>
+            <Badge variant="ghost">
+              <BadgeText>Ghost</BadgeText>
+            </Badge>
+            <Badge variant="info">
+              <BadgeText>Info</BadgeText>
+            </Badge>
+            <Badge variant="destructive">
+              <BadgeText>Destructive</BadgeText>
+            </Badge>
+          </Box>
+        </Card>
 
         {/* Different Sizes */}
-        <Text style={styles.sectionTitle}>All Sizes</Text>
-        <View style={styles.sizeRow}>
-          <Badge size="xs">
-            <BadgeText>XS</BadgeText>
-          </Badge>
-          <Badge size="sm">
-            <BadgeText>Small</BadgeText>
-          </Badge>
-          <Badge size="md">
-            <BadgeText>Medium</BadgeText>
-          </Badge>
-          <Badge size="lg">
-            <BadgeText>Large</BadgeText>
-          </Badge>
-        </View>
+        <Card style={styles.sectionCard}>
+          <Typography style={styles.sectionTitle}>All Sizes</Typography>
+          <Box style={styles.sizeRow}>
+            <Badge size="xs">
+              <BadgeText>XS</BadgeText>
+            </Badge>
+            <Badge size="sm">
+              <BadgeText>Small</BadgeText>
+            </Badge>
+            <Badge size="md">
+              <BadgeText>Medium</BadgeText>
+            </Badge>
+            <Badge size="lg">
+              <BadgeText>Large</BadgeText>
+            </Badge>
+          </Box>
+        </Card>
 
         {/* Size Comparison with New Variants */}
-        <Text style={styles.sectionTitle}>Size Comparison - New Variants</Text>
-        <View style={styles.sizeComparison}>
-          <Text style={styles.smallDescription}>
-            Outline variant in different sizes:
-          </Text>
-          <View style={styles.sizeRow}>
-            <Badge variant="outline" size="xs">
-              <BadgeText>XS</BadgeText>
-            </Badge>
-            <Badge variant="outline" size="sm">
-              <BadgeText>SM</BadgeText>
-            </Badge>
-            <Badge variant="outline" size="md">
-              <BadgeText>MD</BadgeText>
-            </Badge>
-            <Badge variant="outline" size="lg">
-              <BadgeText>LG</BadgeText>
-            </Badge>
-          </View>
+        <Card style={styles.sectionCard}>
+          <Typography style={styles.sectionTitle}>
+            Size Comparison - New Variants
+          </Typography>
+          <Box style={styles.sizeComparison}>
+            <Typography style={styles.smallDescription}>
+              Outline variant in different sizes:
+            </Typography>
+            <Box style={styles.sizeRow}>
+              <Badge variant="outline" size="xs">
+                <BadgeText>XS</BadgeText>
+              </Badge>
+              <Badge variant="outline" size="sm">
+                <BadgeText>SM</BadgeText>
+              </Badge>
+              <Badge variant="outline" size="md">
+                <BadgeText>MD</BadgeText>
+              </Badge>
+              <Badge variant="outline" size="lg">
+                <BadgeText>LG</BadgeText>
+              </Badge>
+            </Box>
 
-          <Text style={styles.smallDescription}>
-            Ghost variant in different sizes:
-          </Text>
-          <View style={styles.sizeRow}>
-            <Badge variant="ghost" size="xs">
-              <BadgeText>XS</BadgeText>
-            </Badge>
-            <Badge variant="ghost" size="sm">
-              <BadgeText>SM</BadgeText>
-            </Badge>
-            <Badge variant="ghost" size="md">
-              <BadgeText>MD</BadgeText>
-            </Badge>
-            <Badge variant="ghost" size="lg">
-              <BadgeText>LG</BadgeText>
-            </Badge>
-          </View>
-        </View>
+            <Typography style={styles.smallDescription}>
+              Ghost variant in different sizes:
+            </Typography>
+            <Box style={styles.sizeRow}>
+              <Badge variant="ghost" size="xs">
+                <BadgeText>XS</BadgeText>
+              </Badge>
+              <Badge variant="ghost" size="sm">
+                <BadgeText>SM</BadgeText>
+              </Badge>
+              <Badge variant="ghost" size="md">
+                <BadgeText>MD</BadgeText>
+              </Badge>
+              <Badge variant="ghost" size="lg">
+                <BadgeText>LG</BadgeText>
+              </Badge>
+            </Box>
+          </Box>
+        </Card>
 
         {/* Badge with Icons - New Variants */}
-        <Text style={styles.sectionTitle}>New Variants with Icons</Text>
-        <View style={styles.statusRow}>
-          <Badge variant="outline">
-            <BadgeIcon position="left">
-              <Ionicons name="star-outline" size={16} color="#007AFF" />
-            </BadgeIcon>
-            <BadgeText>Outline</BadgeText>
-          </Badge>
+        <Card style={styles.sectionCard}>
+          <Typography style={styles.sectionTitle}>
+            New Variants with Icons
+          </Typography>
+          <Box style={styles.statusRow}>
+            <Badge variant="outline">
+              <BadgeIcon position="left">
+                <Ionicons name="star-outline" size={16} color="#007AFF" />
+              </BadgeIcon>
+              <BadgeText>Outline</BadgeText>
+            </Badge>
 
-          <Badge variant="ghost">
-            <BadgeIcon position="left">
-              <Ionicons name="eye-outline" size={16} color="#666" />
-            </BadgeIcon>
-            <BadgeText>Ghost</BadgeText>
-          </Badge>
+            <Badge variant="ghost">
+              <BadgeIcon position="left">
+                <Ionicons name="eye-outline" size={16} color="#666" />
+              </BadgeIcon>
+              <BadgeText>Ghost</BadgeText>
+            </Badge>
 
-          <Badge variant="info">
-            <BadgeIcon position="left">
-              <Ionicons name="information-circle" size={16} color="white" />
-            </BadgeIcon>
-            <BadgeText>Info</BadgeText>
-          </Badge>
+            <Badge variant="info">
+              <BadgeIcon position="left">
+                <Ionicons name="information-circle" size={16} color="white" />
+              </BadgeIcon>
+              <BadgeText>Info</BadgeText>
+            </Badge>
 
-          <Badge variant="destructive">
-            <BadgeIcon position="left">
-              <Ionicons name="trash" size={16} color="white" />
-            </BadgeIcon>
-            <BadgeText>Delete</BadgeText>
-          </Badge>
-        </View>
+            <Badge variant="destructive">
+              <BadgeIcon position="left">
+                <Ionicons name="trash" size={16} color="white" />
+              </BadgeIcon>
+              <BadgeText>Delete</BadgeText>
+            </Badge>
+          </Box>
+        </Card>
 
-        {/* Badge with Left Icon */}
-        <Badge variant="primary">
-          <BadgeIcon position="left">
-            <Ionicons name="star" size={16} color="white" />
-          </BadgeIcon>
-          <BadgeText>Featured</BadgeText>
-        </Badge>
+        {/* Badge with Icon Positions */}
+        <Card style={styles.sectionCard}>
+          <Typography style={styles.sectionTitle}>Icon Positions</Typography>
+          <Box style={styles.badgeColumn}>
+            {/* Badge with Left Icon */}
+            <Badge variant="primary">
+              <BadgeIcon position="left">
+                <Ionicons name="star" size={16} color="white" />
+              </BadgeIcon>
+              <BadgeText>Featured</BadgeText>
+            </Badge>
 
-        {/* Badge with Right Icon */}
-        <Badge variant="success">
-          <BadgeText>Completed</BadgeText>
-          <BadgeIcon position="right">
-            <Ionicons name="checkmark" size={16} color="white" />
-          </BadgeIcon>
-        </Badge>
+            {/* Badge with Right Icon */}
+            <Badge variant="success">
+              <BadgeText>Completed</BadgeText>
+              <BadgeIcon position="right">
+                <Ionicons name="checkmark" size={16} color="white" />
+              </BadgeIcon>
+            </Badge>
 
-        {/* Badge with Both Icons */}
-        <Badge variant="warning">
-          <BadgeIcon position="left">
-            <Ionicons name="warning" size={16} color="white" />
-          </BadgeIcon>
-          <BadgeText>Alert</BadgeText>
-          <BadgeIcon position="right">
-            <Ionicons name="arrow-forward" size={16} color="white" />
-          </BadgeIcon>
-        </Badge>
+            {/* Badge with Both Icons */}
+            <Badge variant="warning">
+              <BadgeIcon position="left">
+                <Ionicons name="warning" size={16} color="white" />
+              </BadgeIcon>
+              <BadgeText>Alert</BadgeText>
+              <BadgeIcon position="right">
+                <Ionicons name="arrow-forward" size={16} color="white" />
+              </BadgeIcon>
+            </Badge>
 
-        {/* Icon Only Badge */}
-        <Badge variant="error" size="sm">
-          <BadgeIcon>
-            <Ionicons name="close" size={14} color="white" />
-          </BadgeIcon>
-        </Badge>
-
-        {/* Complex */}
-        <Text style={styles.title}>Notification Center</Text>
-
-        {/* Notification List */}
-        {notifications.map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            style={styles.notificationItem}
-            onPress={() => markAsRead(item.id)}
-          >
-            <View style={styles.notificationContent}>
-              <Ionicons
-                name={getIcon(item.type)}
-                size={24}
-                color={styles.iconColor.color}
-              />
-              <Text style={styles.notificationTitle}>{item.title}</Text>
-            </View>
-
-            {item.count > 0 && (
-              <Badge
-                variant={getBadgeVariant(item.type, item.isRead)}
-                size={item.count > 99 ? 'lg' : 'md'}
-                rounded={true}
-              >
-                <BadgeText>
-                  {item.count > 99 ? '99+' : item.count.toString()}
-                </BadgeText>
-              </Badge>
-            )}
-          </TouchableOpacity>
-        ))}
+            {/* Icon Only Badge */}
+            <Badge variant="error" size="sm">
+              <BadgeIcon>
+                <Ionicons name="close" size={14} color="white" />
+              </BadgeIcon>
+            </Badge>
+          </Box>
+        </Card>
 
         {/* Status Badges */}
-        <View style={styles.statusSection}>
-          <Text style={styles.sectionTitle}>User Status</Text>
-
-          <View style={styles.statusRow}>
+        <Card style={styles.sectionCard}>
+          <Typography style={styles.sectionTitle}>User Status</Typography>
+          <Box style={styles.statusRow}>
             <Badge variant="success" size="sm">
               <BadgeIcon position="left">
-                <View style={styles.onlineIndicator} />
+                <Box style={styles.onlineIndicator} />
               </BadgeIcon>
               <BadgeText>Online</BadgeText>
             </Badge>
@@ -286,109 +234,118 @@ const BadgeScreen: React.FC = () => {
               </BadgeIcon>
               <BadgeText>Premium</BadgeText>
             </Badge>
-          </View>
-        </View>
+          </Box>
+        </Card>
 
         {/* Custom Styled Badges */}
-        <View style={styles.customSection}>
-          <Text style={styles.sectionTitle}>Custom Badges</Text>
+        <Card style={styles.sectionCard}>
+          <Typography style={styles.sectionTitle}>Custom Badges</Typography>
+          <Box style={styles.badgeColumn}>
+            <Badge style={styles.customBadge}>
+              <BadgeText style={styles.customBadgeText}>Custom Style</BadgeText>
+            </Badge>
 
-          <Badge style={styles.customBadge}>
-            <BadgeText style={styles.customBadgeText}>Custom Style</BadgeText>
-          </Badge>
-
-          <Badge variant="primary" rounded={false}>
-            <BadgeText>Square Badge</BadgeText>
-          </Badge>
-        </View>
-      </View>
-    </ScrollView>
+            <Badge variant="primary" rounded={false}>
+              <BadgeText>Square Badge</BadgeText>
+            </Badge>
+          </Box>
+        </Card>
+      </Box>
+    </VScroll>
   );
 };
 
-const createStyles = (theme: Theme) => ({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-    padding: theme.spacing.md,
-  },
-  title: {
-    fontSize: theme.typography.title.fontSize,
-    fontWeight: '600' as const,
-    color: theme.colors.text,
-    marginBottom: theme.spacing.lg,
-  },
-  notificationItem: {
-    flexDirection: 'row' as const,
-    justifyContent: 'space-between' as const,
-    alignItems: 'center' as const,
-    padding: theme.spacing.md,
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.components.borderRadius.md,
-    marginBottom: theme.spacing.sm,
-  },
-  notificationContent: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    gap: theme.spacing.sm,
-  },
-  notificationTitle: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.text,
-  },
-  iconColor: {
-    color: theme.colors.text,
-  },
-  statusSection: {
-    marginTop: theme.spacing.xl,
-  },
-  sectionTitle: {
-    fontSize: theme.typography.subtitle.fontSize,
-    fontWeight: '600' as const,
-    color: theme.colors.text,
-    marginBottom: theme.spacing.md,
-  },
-  statusRow: {
-    flexDirection: 'row' as const,
-    gap: theme.spacing.sm,
-    flexWrap: 'wrap' as const,
-  },
-  // Missing style properties - added below
-  sizeRow: {
-    flexDirection: 'row' as const,
-    gap: theme.spacing.sm,
-    flexWrap: 'wrap' as const,
-    alignItems: 'center' as const,
-  },
-  sizeComparison: {
-    gap: theme.spacing.md,
-  },
-  smallDescription: {
-    fontSize: theme.typography.caption.fontSize,
-    color: theme.colors.textSecondary,
-    marginBottom: theme.spacing.sm,
-    fontStyle: 'italic' as const,
-  },
-  onlineIndicator: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#00FF00',
-  },
-  customSection: {
-    marginTop: theme.spacing.xl,
-    paddingBottom: theme.spacing.xxl,
-    gap: theme.spacing.sm,
-  },
-  customBadge: {
-    backgroundColor: '#FF6B6B',
-    borderWidth: 2,
-    borderColor: '#FF5252',
-  },
-  customBadgeText: {
-    color: 'white',
-    fontWeight: 'bold' as const,
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      padding: theme.spacing.md,
+      backgroundColor: theme.colors.background,
+    },
+    sectionCard: {
+      padding: theme.spacing.lg,
+      marginBottom: theme.spacing.sm,
+    },
+    title: {
+      fontSize: theme.typography.title.fontSize,
+      fontWeight: '600',
+      color: theme.colors.text,
+      marginBottom: theme.spacing.lg,
+    },
+    notificationItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: theme.spacing.md,
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.components.borderRadius.md,
+      marginBottom: theme.spacing.sm,
+    },
+    notificationContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: theme.spacing.sm,
+    },
+    notificationTitle: {
+      fontSize: theme.typography.body.fontSize,
+      color: theme.colors.text,
+    },
+    iconColor: {
+      color: theme.colors.text,
+    },
+    statusSection: {
+      marginTop: theme.spacing.xl,
+    },
+    sectionTitle: {
+      fontSize: theme.typography.subtitle.fontSize,
+      fontWeight: '600',
+      color: theme.colors.text,
+      marginBottom: theme.spacing.md,
+    },
+    statusRow: {
+      flexDirection: 'row',
+      gap: theme.spacing.sm,
+      flexWrap: 'wrap',
+    },
+    sizeRow: {
+      flexDirection: 'row',
+      gap: theme.spacing.sm,
+      flexWrap: 'wrap',
+      alignItems: 'center',
+    },
+    badgeColumn: {
+      gap: theme.spacing.sm,
+      alignItems: 'flex-start',
+    },
+    sizeComparison: {
+      gap: theme.spacing.md,
+    },
+    smallDescription: {
+      fontSize: theme.typography.caption.fontSize,
+      color: theme.colors.textSecondary,
+      marginBottom: theme.spacing.sm,
+      fontStyle: 'italic',
+    },
+    onlineIndicator: {
+      width: 8,
+      height: 8,
+      borderRadius: 4,
+      backgroundColor: '#00FF00',
+    },
+    customSection: {
+      marginTop: theme.spacing.xl,
+      paddingBottom: theme.spacing.xxl,
+      gap: theme.spacing.sm,
+    },
+    customBadge: {
+      backgroundColor: '#FF6B6B',
+      borderWidth: 2,
+      borderColor: '#FF5252',
+    },
+    customBadgeText: {
+      color: 'white',
+      fontWeight: 'bold',
+    },
+  });
 
 export default BadgeScreen;

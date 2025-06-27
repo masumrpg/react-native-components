@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { ScrollView, Switch } from 'react-native';
 import {
   RadioGroup,
   Radio,
@@ -7,51 +6,21 @@ import {
   Typography,
   Card,
   VStack,
-  HStack,
-  useTheme,
   useThemedStyles,
   Theme,
+  VScroll,
 } from 'rnc-theme';
 
-export default function RadioExample() {
-  const { theme, themeMode, setThemeMode } = useTheme();
+export default function RadioScreen() {
   const styles = useThemedStyles(createStyles);
   const [selectedValue, setSelectedValue] = useState('option1');
   const [selectedSize, setSelectedSize] = useState('md');
   const [selectedVariant, setSelectedVariant] = useState('primary');
   const [selectedPayment, setSelectedPayment] = useState('credit');
 
-  const toggleTheme = () => {
-    setThemeMode(themeMode === 'light' ? 'dark' : 'light');
-  };
-
   return (
-    <ScrollView style={styles.container}>
+    <VScroll style={styles.container}>
       <VStack spacing="lg">
-        {/* Header */}
-        <Card style={styles.headerCard}>
-          <VStack spacing="md">
-            <Typography variant="title" style={styles.title}>
-              Radio Button Showcase
-            </Typography>
-
-            <HStack justify="space-between" align="center">
-              <Typography variant="body">
-                Theme: {themeMode === 'light' ? 'Light' : 'Dark'}
-              </Typography>
-              <Switch
-                value={themeMode === 'dark'}
-                onValueChange={toggleTheme}
-                trackColor={{
-                  false: theme.colors.border,
-                  true: theme.colors.primary,
-                }}
-                thumbColor={theme.colors.surface}
-              />
-            </HStack>
-          </VStack>
-        </Card>
-
         {/* Size Comparison */}
         <Card style={styles.card}>
           <VStack spacing="md">
@@ -336,7 +305,7 @@ export default function RadioExample() {
           </VStack>
         </Card>
       </VStack>
-    </ScrollView>
+    </VScroll>
   );
 }
 

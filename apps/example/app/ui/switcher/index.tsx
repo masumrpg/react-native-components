@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   Switcher,
   SwitcherLabel,
@@ -9,6 +9,7 @@ import {
   Card,
   CardContent,
   CardHeader,
+  VScroll,
 } from 'rnc-theme';
 
 const SwitcherScreen = () => {
@@ -31,7 +32,7 @@ const SwitcherScreen = () => {
   const [disabledOffSwitch, setDisabledOffSwitch] = useState(false);
 
   return (
-    <ScrollView style={styles.container}>
+    <VScroll themed style={styles.container}>
       <VStack spacing="lg" padding="md">
         {/* Basic Examples */}
         <Card>
@@ -367,14 +368,13 @@ const SwitcherScreen = () => {
           </CardContent>
         </Card>
       </VStack>
-    </ScrollView>
+    </VScroll>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
 });
 

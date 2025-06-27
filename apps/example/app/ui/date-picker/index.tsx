@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, Alert } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   DatePicker,
   Card,
@@ -11,11 +11,14 @@ import {
   useTheme,
   VStack,
   HStack,
+  VScroll,
+  useToast,
 } from 'rnc-theme';
 import { Text } from 'react-native';
 
 const DatePickerScreen = () => {
   const { theme } = useTheme();
+  const { toast } = useToast();
 
   const [basicDate, setBasicDate] = useState<string>('');
   const [birthdayDate, setBirthdayDate] = useState<string>('');
@@ -24,7 +27,10 @@ const DatePickerScreen = () => {
 
   const handleBasicDateSelect = (date: string) => {
     setBasicDate(date);
-    Alert.alert('Tanggal Dipilih', `Anda memilih: ${date}`);
+    toast({
+      title: 'Date Picker',
+      description: `You choose: ${date}`,
+    });
   };
 
   const handleBirthdaySelect = (date: string) => {
@@ -40,16 +46,24 @@ const DatePickerScreen = () => {
   };
 
   const today = new Date();
-  const maxBirthday = new Date(today.getFullYear() - 13, today.getMonth(), today.getDate())
+  const maxBirthday = new Date(
+    today.getFullYear() - 13,
+    today.getMonth(),
+    today.getDate()
+  )
     .toISOString()
     .split('T')[0];
   const minAppointment = today.toISOString().split('T')[0];
-  const maxAppointment = new Date(today.getFullYear() + 1, today.getMonth(), today.getDate())
+  const maxAppointment = new Date(
+    today.getFullYear() + 1,
+    today.getMonth(),
+    today.getDate()
+  )
     .toISOString()
     .split('T')[0];
 
   return (
-    <ScrollView
+    <VScroll
       style={[styles.container, { backgroundColor: theme.colors.background }]}
       contentContainerStyle={styles.content}
     >
@@ -318,7 +332,7 @@ const DatePickerScreen = () => {
           <ButtonText>Reset Semua Tanggal</ButtonText>
         </Button>
       </VStack>
-    </ScrollView>
+    </VScroll>
   );
 };
 

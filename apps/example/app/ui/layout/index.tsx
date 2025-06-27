@@ -1,5 +1,4 @@
 import React from 'react';
-import { Text, ScrollView } from 'react-native';
 import {
   VStack,
   HStack,
@@ -8,42 +7,47 @@ import {
   HDivider,
   VDivider,
   Grid,
+  VScroll,
+  Typography,
 } from 'rnc-theme';
 
 const LayoutScreen = () => {
   return (
-    <ScrollView style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
+    <VScroll themed style={{ flex: 1 }} showsVerticalScrollIndicator={false}>
       <VStack flex={1} padding="lg" spacing="lg">
         {/* Header Section */}
         <Box padding="lg" backgroundColor="primary" borderRadius="lg">
           <Center>
-            <Text style={{ color: 'white', fontSize: 24, fontWeight: 'bold' }}>
+            <Typography style={{ fontSize: 24, fontWeight: 'bold' }}>
               Layout Components Demo
-            </Text>
-            <Text
+            </Typography>
+            <Typography
               style={{
-                color: 'white',
                 fontSize: 14,
                 opacity: 0.8,
                 marginTop: 4,
               }}
             >
               Showcase of Grid, Stack, and Box components
-            </Text>
+            </Typography>
           </Center>
         </Box>
 
         {/* Grid Section */}
         <VStack spacing="md">
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#333' }}>
+          <Typography
+            style={{ fontSize: 20, fontWeight: 'bold', color: '#333' }}
+          >
             🔲 Grid Layout Examples
-          </Text>
+          </Typography>
 
           {/* 2 Column Grid - 2 Kiri, 2 Kanan */}
           <VStack spacing="sm">
-            <Text style={{ fontSize: 16, fontWeight: '600', color: '#666' }}>
+            <Typography
+              style={{ fontSize: 16, fontWeight: '600', color: '#666' }}
+            >
               2 Column Grid (2 Kiri, 2 Kanan)
-            </Text>
+            </Typography>
             <Grid columns={2} spacing="sm">
               <Box
                 padding="md"
@@ -53,14 +57,14 @@ const LayoutScreen = () => {
                 borderColor="#BBDEFB"
               >
                 <Center>
-                  <Text style={{ fontWeight: 'bold', color: '#1976D2' }}>
+                  <Typography style={{ fontWeight: 'bold', color: '#1976D2' }}>
                     📱 Mobile
-                  </Text>
-                  <Text
+                  </Typography>
+                  <Typography
                     style={{ fontSize: 12, color: '#1976D2', marginTop: 4 }}
                   >
                     Responsive Design
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box
@@ -71,14 +75,14 @@ const LayoutScreen = () => {
                 borderColor="#C8E6C9"
               >
                 <Center>
-                  <Text style={{ fontWeight: 'bold', color: '#388E3C' }}>
+                  <Typography style={{ fontWeight: 'bold', color: '#388E3C' }}>
                     💻 Desktop
-                  </Text>
-                  <Text
+                  </Typography>
+                  <Typography
                     style={{ fontSize: 12, color: '#388E3C', marginTop: 4 }}
                   >
                     Web Application
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box
@@ -89,14 +93,14 @@ const LayoutScreen = () => {
                 borderColor="#FFCDD2"
               >
                 <Center>
-                  <Text style={{ fontWeight: 'bold', color: '#D32F2F' }}>
+                  <Typography style={{ fontWeight: 'bold', color: '#D32F2F' }}>
                     🎨 Design
-                  </Text>
-                  <Text
+                  </Typography>
+                  <Typography
                     style={{ fontSize: 12, color: '#D32F2F', marginTop: 4 }}
                   >
                     UI/UX Components
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box
@@ -107,14 +111,14 @@ const LayoutScreen = () => {
                 borderColor="#FFE0B2"
               >
                 <Center>
-                  <Text style={{ fontWeight: 'bold', color: '#F57C00' }}>
+                  <Typography style={{ fontWeight: 'bold', color: '#F57C00' }}>
                     ⚡ Performance
-                  </Text>
-                  <Text
+                  </Typography>
+                  <Typography
                     style={{ fontSize: 12, color: '#F57C00', marginTop: 4 }}
                   >
                     Fast & Optimized
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
             </Grid>
@@ -124,62 +128,64 @@ const LayoutScreen = () => {
 
           {/* 3 Column Grid - 2 Kiri, 2 Tengah, 2 Kanan */}
           <VStack spacing="sm">
-            <Text style={{ fontSize: 16, fontWeight: '600', color: '#666' }}>
+            <Typography
+              style={{ fontSize: 16, fontWeight: '600', color: '#666' }}
+            >
               3 Column Grid (2 Kiri, 2 Tengah, 2 Kanan)
-            </Text>
+            </Typography>
             <Grid columns={3} spacing="xs">
               <Box padding="sm" backgroundColor="#FF6B6B" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 11, fontWeight: 'bold' }}
                   >
                     🏠 Home
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box padding="sm" backgroundColor="#4ECDC4" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 11, fontWeight: 'bold' }}
                   >
                     👤 Profile
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box padding="sm" backgroundColor="#45B7D1" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 11, fontWeight: 'bold' }}
                   >
                     ⚙️ Settings
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box padding="sm" backgroundColor="#96CEB4" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 11, fontWeight: 'bold' }}
                   >
                     📊 Analytics
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box padding="sm" backgroundColor="#FFEAA7" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: '#333', fontSize: 11, fontWeight: 'bold' }}
                   >
                     💬 Messages
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box padding="sm" backgroundColor="#DDA0DD" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 11, fontWeight: 'bold' }}
                   >
                     🔔 Notifications
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
             </Grid>
@@ -189,80 +195,82 @@ const LayoutScreen = () => {
 
           {/* 4 Column Grid - 2 per baris */}
           <VStack spacing="sm">
-            <Text style={{ fontSize: 16, fontWeight: '600', color: '#666' }}>
+            <Typography
+              style={{ fontSize: 16, fontWeight: '600', color: '#666' }}
+            >
               4 Column Grid (2 per baris)
-            </Text>
+            </Typography>
             <Grid columns={4} spacing="xs">
               <Box padding="xs" backgroundColor="#FF5722" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}
                   >
                     📈
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box padding="xs" backgroundColor="#9C27B0" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}
                   >
                     📉
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box padding="xs" backgroundColor="#2196F3" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}
                   >
                     📊
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box padding="xs" backgroundColor="#4CAF50" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}
                   >
                     📋
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box padding="xs" backgroundColor="#FF9800" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}
                   >
                     🎯
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box padding="xs" backgroundColor="#607D8B" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}
                   >
                     🔍
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box padding="xs" backgroundColor="#795548" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}
                   >
                     📝
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box padding="xs" backgroundColor="#E91E63" borderRadius="sm">
                 <Center>
-                  <Text
+                  <Typography
                     style={{ color: 'white', fontSize: 10, fontWeight: 'bold' }}
                   >
                     ❤️
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
             </Grid>
@@ -272,9 +280,11 @@ const LayoutScreen = () => {
 
           {/* 5 Column Grid */}
           <VStack spacing="sm">
-            <Text style={{ fontSize: 16, fontWeight: '600', color: '#666' }}>
+            <Typography
+              style={{ fontSize: 16, fontWeight: '600', color: '#666' }}
+            >
               5 Column Grid (Compact Layout)
-            </Text>
+            </Typography>
             <Grid columns={5} spacing="xs">
               {['🌟', '⭐', '✨', '💫', '🌙', '☀️', '🌈', '🔥', '💎', '🎉'].map(
                 (emoji, index) => (
@@ -285,7 +295,7 @@ const LayoutScreen = () => {
                     borderRadius="sm"
                   >
                     <Center>
-                      <Text style={{ fontSize: 12 }}>{emoji}</Text>
+                      <Typography style={{ fontSize: 12 }}>{emoji}</Typography>
                     </Center>
                   </Box>
                 )
@@ -298,15 +308,19 @@ const LayoutScreen = () => {
 
         {/* Stack Layout Section */}
         <VStack spacing="md">
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#333' }}>
+          <Typography
+            style={{ fontSize: 20, fontWeight: 'bold', color: '#333' }}
+          >
             📚 Stack Layout Examples
-          </Text>
+          </Typography>
 
           {/* Horizontal Stack */}
           <VStack spacing="sm">
-            <Text style={{ fontSize: 16, fontWeight: '600', color: '#666' }}>
+            <Typography
+              style={{ fontSize: 16, fontWeight: '600', color: '#666' }}
+            >
               Horizontal Stack with Flex
-            </Text>
+            </Typography>
             <HStack spacing="md" justify="space-between">
               <Box
                 flex={1}
@@ -316,7 +330,7 @@ const LayoutScreen = () => {
                 borderWidth={1}
                 borderColor="#B3D9FF"
               >
-                <Text
+                <Typography
                   style={{
                     textAlign: 'center',
                     color: '#1976D2',
@@ -324,8 +338,8 @@ const LayoutScreen = () => {
                   }}
                 >
                   📱 Mobile First
-                </Text>
-                <Text
+                </Typography>
+                <Typography
                   style={{
                     textAlign: 'center',
                     color: '#1976D2',
@@ -334,7 +348,7 @@ const LayoutScreen = () => {
                   }}
                 >
                   Responsive Design
-                </Text>
+                </Typography>
               </Box>
 
               <VDivider thickness={2} color="#E0E0E0" />
@@ -347,7 +361,7 @@ const LayoutScreen = () => {
                 borderWidth={1}
                 borderColor="#CE93D8"
               >
-                <Text
+                <Typography
                   style={{
                     textAlign: 'center',
                     color: '#7B1FA2',
@@ -355,8 +369,8 @@ const LayoutScreen = () => {
                   }}
                 >
                   💻 Desktop Enhanced
-                </Text>
-                <Text
+                </Typography>
+                <Typography
                   style={{
                     textAlign: 'center',
                     color: '#7B1FA2',
@@ -365,16 +379,18 @@ const LayoutScreen = () => {
                   }}
                 >
                   More space for content and features
-                </Text>
+                </Typography>
               </Box>
             </HStack>
           </VStack>
 
           {/* Vertical Stack */}
           <VStack spacing="sm">
-            <Text style={{ fontSize: 16, fontWeight: '600', color: '#666' }}>
+            <Typography
+              style={{ fontSize: 16, fontWeight: '600', color: '#666' }}
+            >
               Vertical Stack with Status
-            </Text>
+            </Typography>
             <VStack spacing="sm">
               <Box
                 padding="md"
@@ -384,14 +400,16 @@ const LayoutScreen = () => {
                 borderColor="#A5D6A7"
               >
                 <HStack spacing="sm" align="center">
-                  <Text style={{ fontSize: 16 }}>✅</Text>
+                  <Typography style={{ fontSize: 16 }}>✅</Typography>
                   <VStack flex={1}>
-                    <Text style={{ color: '#388E3C', fontWeight: 'bold' }}>
+                    <Typography
+                      style={{ color: '#388E3C', fontWeight: 'bold' }}
+                    >
                       Task Completed
-                    </Text>
-                    <Text style={{ color: '#388E3C', fontSize: 12 }}>
+                    </Typography>
+                    <Typography style={{ color: '#388E3C', fontSize: 12 }}>
                       All tests passed successfully
-                    </Text>
+                    </Typography>
                   </VStack>
                 </HStack>
               </Box>
@@ -403,14 +421,16 @@ const LayoutScreen = () => {
                 borderColor="#FFCC02"
               >
                 <HStack spacing="sm" align="center">
-                  <Text style={{ fontSize: 16 }}>⚠️</Text>
+                  <Typography style={{ fontSize: 16 }}>⚠️</Typography>
                   <VStack flex={1}>
-                    <Text style={{ color: '#F57C00', fontWeight: 'bold' }}>
+                    <Typography
+                      style={{ color: '#F57C00', fontWeight: 'bold' }}
+                    >
                       Warning
-                    </Text>
-                    <Text style={{ color: '#F57C00', fontSize: 12 }}>
+                    </Typography>
+                    <Typography style={{ color: '#F57C00', fontSize: 12 }}>
                       Some issues need attention
-                    </Text>
+                    </Typography>
                   </VStack>
                 </HStack>
               </Box>
@@ -422,14 +442,16 @@ const LayoutScreen = () => {
                 borderColor="#EF5350"
               >
                 <HStack spacing="sm" align="center">
-                  <Text style={{ fontSize: 16 }}>❌</Text>
+                  <Typography style={{ fontSize: 16 }}>❌</Typography>
                   <VStack flex={1}>
-                    <Text style={{ color: '#D32F2F', fontWeight: 'bold' }}>
+                    <Typography
+                      style={{ color: '#D32F2F', fontWeight: 'bold' }}
+                    >
                       Error
-                    </Text>
-                    <Text style={{ color: '#D32F2F', fontSize: 12 }}>
+                    </Typography>
+                    <Typography style={{ color: '#D32F2F', fontSize: 12 }}>
                       Build failed, please check logs
-                    </Text>
+                    </Typography>
                   </VStack>
                 </HStack>
               </Box>
@@ -441,26 +463,28 @@ const LayoutScreen = () => {
 
         {/* Card Layout Section */}
         <VStack spacing="md">
-          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#333' }}>
+          <Typography
+            style={{ fontSize: 20, fontWeight: 'bold', color: '#333' }}
+          >
             🃏 Card Layout Examples
-          </Text>
+          </Typography>
 
           <Grid columns={2} spacing="md">
             <Box variant="card">
               <VStack spacing="sm">
                 <HStack spacing="sm" align="center">
-                  <Text style={{ fontSize: 20 }}>📱</Text>
-                  <Text
+                  <Typography style={{ fontSize: 20 }}>📱</Typography>
+                  <Typography
                     style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}
                   >
                     Mobile App
-                  </Text>
+                  </Typography>
                 </HStack>
-                <Text style={{ fontSize: 14, color: '#666' }}>
+                <Typography style={{ fontSize: 14, color: '#666' }}>
                   Cross-platform mobile application with native performance.
-                </Text>
+                </Typography>
                 <Box padding="sm" backgroundColor="primary" borderRadius="sm">
-                  <Text
+                  <Typography
                     style={{
                       color: 'white',
                       textAlign: 'center',
@@ -469,7 +493,7 @@ const LayoutScreen = () => {
                     }}
                   >
                     Download
-                  </Text>
+                  </Typography>
                 </Box>
               </VStack>
             </Box>
@@ -477,18 +501,18 @@ const LayoutScreen = () => {
             <Box variant="card">
               <VStack spacing="sm">
                 <HStack spacing="sm" align="center">
-                  <Text style={{ fontSize: 20 }}>💻</Text>
-                  <Text
+                  <Typography style={{ fontSize: 20 }}>💻</Typography>
+                  <Typography
                     style={{ fontSize: 16, fontWeight: 'bold', color: '#333' }}
                   >
                     Web Platform
-                  </Text>
+                  </Typography>
                 </HStack>
-                <Text style={{ fontSize: 14, color: '#666' }}>
+                <Typography style={{ fontSize: 14, color: '#666' }}>
                   Modern web application with responsive design and PWA support.
-                </Text>
+                </Typography>
                 <Box padding="sm" backgroundColor="secondary" borderRadius="sm">
-                  <Text
+                  <Typography
                     style={{
                       color: 'white',
                       textAlign: 'center',
@@ -497,7 +521,7 @@ const LayoutScreen = () => {
                     }}
                   >
                     Launch
-                  </Text>
+                  </Typography>
                 </Box>
               </VStack>
             </Box>
@@ -505,14 +529,18 @@ const LayoutScreen = () => {
 
           {/* Feature Cards Grid */}
           <VStack spacing="sm">
-            <Text style={{ fontSize: 16, fontWeight: '600', color: '#666' }}>
+            <Typography
+              style={{ fontSize: 16, fontWeight: '600', color: '#666' }}
+            >
               Feature Cards (3 Column)
-            </Text>
+            </Typography>
             <Grid columns={3} spacing="sm">
               <Box variant="card" style={{ padding: 12 }}>
                 <Center>
-                  <Text style={{ fontSize: 24, marginBottom: 8 }}>🚀</Text>
-                  <Text
+                  <Typography style={{ fontSize: 24, marginBottom: 8 }}>
+                    🚀
+                  </Typography>
+                  <Typography
                     style={{
                       fontSize: 12,
                       fontWeight: 'bold',
@@ -521,8 +549,8 @@ const LayoutScreen = () => {
                     }}
                   >
                     Fast
-                  </Text>
-                  <Text
+                  </Typography>
+                  <Typography
                     style={{
                       fontSize: 10,
                       color: '#666',
@@ -531,13 +559,15 @@ const LayoutScreen = () => {
                     }}
                   >
                     Lightning speed
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box variant="card" style={{ padding: 12 }}>
                 <Center>
-                  <Text style={{ fontSize: 24, marginBottom: 8 }}>🔒</Text>
-                  <Text
+                  <Typography style={{ fontSize: 24, marginBottom: 8 }}>
+                    🔒
+                  </Typography>
+                  <Typography
                     style={{
                       fontSize: 12,
                       fontWeight: 'bold',
@@ -546,8 +576,8 @@ const LayoutScreen = () => {
                     }}
                   >
                     Secure
-                  </Text>
-                  <Text
+                  </Typography>
+                  <Typography
                     style={{
                       fontSize: 10,
                       color: '#666',
@@ -556,13 +586,15 @@ const LayoutScreen = () => {
                     }}
                   >
                     Bank-level security
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
               <Box variant="card" style={{ padding: 12 }}>
                 <Center>
-                  <Text style={{ fontSize: 24, marginBottom: 8 }}>📱</Text>
-                  <Text
+                  <Typography style={{ fontSize: 24, marginBottom: 8 }}>
+                    📱
+                  </Typography>
+                  <Typography
                     style={{
                       fontSize: 12,
                       fontWeight: 'bold',
@@ -571,8 +603,8 @@ const LayoutScreen = () => {
                     }}
                   >
                     Mobile
-                  </Text>
-                  <Text
+                  </Typography>
+                  <Typography
                     style={{
                       fontSize: 10,
                       color: '#666',
@@ -581,7 +613,7 @@ const LayoutScreen = () => {
                     }}
                   >
                     Mobile optimized
-                  </Text>
+                  </Typography>
                 </Center>
               </Box>
             </Grid>
@@ -596,16 +628,20 @@ const LayoutScreen = () => {
           style={{ marginTop: 24, marginBottom: 16 }}
         >
           <Center>
-            <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
+            <Typography
+              style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}
+            >
               🎉 Layout Demo Complete
-            </Text>
-            <Text style={{ color: '#BDC3C7', fontSize: 12, marginTop: 4 }}>
+            </Typography>
+            <Typography
+              style={{ color: '#BDC3C7', fontSize: 12, marginTop: 4 }}
+            >
               Powered by RNC Theme Components
-            </Text>
+            </Typography>
           </Center>
         </Box>
       </VStack>
-    </ScrollView>
+    </VScroll>
   );
 };
 

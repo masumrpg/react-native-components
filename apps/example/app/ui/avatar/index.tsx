@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { ScrollView, Switch } from 'react-native';
 import {
   Avatar,
   AvatarBadge,
@@ -14,18 +13,14 @@ import {
   useThemedStyles,
   Theme,
   ThemeColors,
+  VScroll,
 } from 'rnc-theme';
 import { User, Camera, Heart, Star } from 'lucide-react-native';
 
 export default function AvatarScreen() {
-  const { theme, themeMode, setThemeMode } = useTheme();
+  const { theme } = useTheme();
   const styles = useThemedStyles(createStyles);
-  const [showBadges, setShowBadges] = useState(true);
   const [selectedAvatar, setSelectedAvatar] = useState<string | null>(null);
-
-  const toggleTheme = () => {
-    setThemeMode(themeMode === 'light' ? 'dark' : 'light');
-  };
 
   const sampleUsers = [
     {
@@ -79,45 +74,8 @@ export default function AvatarScreen() {
   };
 
   return (
-    <ScrollView style={styles.container}>
+    <VScroll style={styles.container}>
       <VStack spacing="lg">
-        {/* Header */}
-        <Card style={styles.headerCard}>
-          <VStack spacing="md">
-            <Typography variant="title" style={styles.title}>
-              Avatar Components
-            </Typography>
-
-            <HStack justify="space-between" align="center">
-              <Typography variant="body">
-                Theme: {themeMode === 'light' ? 'Light' : 'Dark'}
-              </Typography>
-              <Switch
-                value={themeMode === 'dark'}
-                onValueChange={toggleTheme}
-                trackColor={{
-                  false: theme.colors.border,
-                  true: theme.colors.primary,
-                }}
-                thumbColor={theme.colors.surface}
-              />
-            </HStack>
-
-            <HStack justify="space-between" align="center">
-              <Typography variant="body">Show Status Badges</Typography>
-              <Switch
-                value={showBadges}
-                onValueChange={setShowBadges}
-                trackColor={{
-                  false: theme.colors.border,
-                  true: theme.colors.primary,
-                }}
-                thumbColor={theme.colors.surface}
-              />
-            </HStack>
-          </VStack>
-        </Card>
-
         {/* Sizes */}
         <Card style={styles.card}>
           <VStack spacing="md">
@@ -280,7 +238,6 @@ export default function AvatarScreen() {
                     size="lg"
                     source={{ uri: user.image }}
                     fallbackText={user.name}
-                    showBadge={showBadges}
                     badgeColor={
                       getStatusColor(user.status) as keyof ThemeColors
                     }
@@ -386,7 +343,6 @@ export default function AvatarScreen() {
                       fallbackText={user.name}
                       borderWidth={3}
                       borderColor="background"
-                      showBadge={showBadges}
                       badgeColor={
                         getStatusColor(user.status) as keyof ThemeColors
                       }
@@ -424,7 +380,6 @@ export default function AvatarScreen() {
                       borderColor={
                         selectedAvatar === user.id ? 'primary' : 'border'
                       }
-                      showBadge={showBadges}
                       badgeColor={
                         getStatusColor(user.status) as keyof ThemeColors
                       }
@@ -485,7 +440,7 @@ export default function AvatarScreen() {
           </VStack>
         </Card>
       </VStack>
-    </ScrollView>
+    </VScroll>
   );
 }
 

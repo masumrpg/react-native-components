@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   Button,
   ButtonText,
@@ -12,6 +12,8 @@ import {
   CardHeader,
   CardContent,
   CardFooter,
+  VScroll,
+  Box,
 } from 'rnc-theme';
 // Import Lucide icons untuk custom toast
 import {
@@ -24,7 +26,7 @@ import {
   Bell,
 } from 'lucide-react-native';
 
-export default function ToastExample() {
+export default function ToastScreen() {
   const { toast, dismissAll, toastAsync, updateToast } = useToast();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -281,15 +283,7 @@ export default function ToastExample() {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
-        <H2>Toast Examples</H2>
-        <Body style={styles.description}>
-          Stacked toast notifications with different variants, animations, and
-          async operations.
-        </Body>
-      </View>
-
+    <VScroll themed style={styles.container}>
       {/* Basic Variants Card */}
       <Card variant="default" style={styles.card}>
         <CardHeader
@@ -298,7 +292,7 @@ export default function ToastExample() {
           borderBottom
         />
         <CardContent>
-          <View style={styles.buttonGroup}>
+          <Box style={styles.buttonGroup}>
             <Button onPress={showDefaultToast} style={styles.button}>
               <ButtonText>Default Toast</ButtonText>
             </Button>
@@ -330,7 +324,7 @@ export default function ToastExample() {
             >
               <ButtonText>Info Toast</ButtonText>
             </Button>
-          </View>
+          </Box>
         </CardContent>
       </Card>
 
@@ -342,7 +336,7 @@ export default function ToastExample() {
           borderBottom
         />
         <CardContent>
-          <View style={styles.buttonGroup}>
+          <Box style={styles.buttonGroup}>
             <Button onPress={showCustomIconToast} style={styles.button}>
               <ButtonText>❤️ Heart Toast</ButtonText>
             </Button>
@@ -361,7 +355,7 @@ export default function ToastExample() {
             <Button onPress={showNotificationToast} style={styles.button}>
               <ButtonText>🔔 Notification Toast</ButtonText>
             </Button>
-          </View>
+          </Box>
         </CardContent>
         <CardFooter>
           <Body style={styles.cardFooterText}>
@@ -378,7 +372,7 @@ export default function ToastExample() {
           borderBottom
         />
         <CardContent>
-          <View style={styles.buttonGroup}>
+          <Box style={styles.buttonGroup}>
             <Button
               onPress={showLoadingToast}
               variant="primary"
@@ -416,7 +410,7 @@ export default function ToastExample() {
                 {isLoading ? 'Uploading...' : '📷 Custom Async Photo Upload'}
               </ButtonText>
             </Button>
-          </View>
+          </Box>
         </CardContent>
         <CardFooter>
           <Body style={styles.cardFooterText}>
@@ -434,7 +428,7 @@ export default function ToastExample() {
           borderBottom
         />
         <CardContent>
-          <View style={styles.buttonGroup}>
+          <Box style={styles.buttonGroup}>
             <Button onPress={showToastWithAction} style={styles.button}>
               <ButtonText>Toast with Action</ButtonText>
             </Button>
@@ -451,7 +445,7 @@ export default function ToastExample() {
             >
               <ButtonText>Dismiss All</ButtonText>
             </Button>
-          </View>
+          </Box>
         </CardContent>
       </Card>
 
@@ -554,13 +548,14 @@ try {
           </Code>
         </CardContent>
       </Card>
-    </ScrollView>
+    </VScroll>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingVertical: 16,
   },
   header: {
     marginBottom: 24,

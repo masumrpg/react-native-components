@@ -1,6 +1,12 @@
 import React, { useState } from 'react';
-import { View, ScrollView } from 'react-native';
-import { Combobox, Typography, useTheme, type ComboboxOption } from 'rnc-theme';
+import {
+  Box,
+  Combobox,
+  Typography,
+  useTheme,
+  VScroll,
+  type ComboboxOption,
+} from 'rnc-theme';
 
 const countries: ComboboxOption[] = [
   { label: 'Indonesia', value: 'id' },
@@ -46,7 +52,7 @@ export default function ComboboxScreen() {
   const [searchableValue, setSearchableValue] = useState<string>('');
 
   return (
-    <ScrollView
+    <VScroll
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -57,7 +63,7 @@ export default function ComboboxScreen() {
       }}
     >
       {/* Basic Combobox */}
-      <View style={{ gap: 8 }}>
+      <Box style={{ gap: 8 }}>
         <Typography variant="title" weight="semibold">
           Basic Combobox
         </Typography>
@@ -69,10 +75,10 @@ export default function ComboboxScreen() {
           onValueChange={(value) => setSelectedCountry(value as string)}
           helperText="Choose your country"
         />
-      </View>
+      </Box>
 
       {/* Multiple Selection */}
-      <View style={{ gap: 8 }}>
+      <Box style={{ gap: 8 }}>
         <Typography variant="title" weight="semibold">
           Multiple Selection
         </Typography>
@@ -86,10 +92,10 @@ export default function ComboboxScreen() {
           clearable
           helperText="You can select multiple fruits"
         />
-      </View>
+      </Box>
 
       {/* Searchable Combobox */}
-      <View style={{ gap: 8 }}>
+      <Box style={{ gap: 8 }}>
         <Typography variant="title" weight="semibold">
           Searchable Combobox
         </Typography>
@@ -103,10 +109,10 @@ export default function ComboboxScreen() {
           clearable
           helperText="Type to search for programming languages"
         />
-      </View>
+      </Box>
 
       {/* Different Variants */}
-      <View style={{ gap: 8 }}>
+      <Box style={{ gap: 8 }}>
         <Typography variant="title" weight="semibold">
           Different Variants
         </Typography>
@@ -122,10 +128,10 @@ export default function ComboboxScreen() {
           options={countries.slice(0, 5)}
           placeholder="Filled style"
         />
-      </View>
+      </Box>
 
       {/* Different Sizes */}
-      <View style={{ gap: 8 }}>
+      <Box style={{ gap: 8 }}>
         <Typography variant="title" weight="semibold">
           Different Sizes
         </Typography>
@@ -150,10 +156,10 @@ export default function ComboboxScreen() {
           options={fruits.slice(0, 4)}
           placeholder="Large combobox"
         />
-      </View>
+      </Box>
 
       {/* States */}
-      <View style={{ gap: 8 }}>
+      <Box style={{ gap: 8 }}>
         <Typography variant="title" weight="semibold">
           Different States
         </Typography>
@@ -182,10 +188,10 @@ export default function ComboboxScreen() {
           placeholder="Disabled combobox"
           helperText="This combobox is disabled"
         />
-      </View>
+      </Box>
 
       {/* Advanced Features */}
-      <View style={{ gap: 8 }}>
+      <Box style={{ gap: 8 }}>
         <Typography variant="title" weight="semibold">
           Advanced Features
         </Typography>
@@ -200,7 +206,7 @@ export default function ComboboxScreen() {
           helperText="Combine all features together"
           maxDropdownHeight={450}
         />
-      </View>
-    </ScrollView>
+      </Box>
+    </VScroll>
   );
 }

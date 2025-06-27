@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { ScrollView } from 'react-native';
 import {
   Checkbox,
   CheckboxGroup,
@@ -7,9 +6,12 @@ import {
   HStack,
   Typography,
   Card,
+  VScroll,
+  useTheme,
 } from 'rnc-theme';
 
 export default function CheckboxScreen() {
+  const { theme } = useTheme();
   // Individual checkbox states
   const [singleChecked, setSingleChecked] = useState(false);
   const [primaryChecked, setPrimaryChecked] = useState(true);
@@ -27,18 +29,14 @@ export default function CheckboxScreen() {
     'primary',
     'outline',
   ]);
-  const [settingsValues, setSettingsValues] = useState<string[]>(['notifications', 'location']);
+  const [settingsValues, setSettingsValues] = useState<string[]>([
+    'notifications',
+    'location',
+  ]);
 
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: '#f5f5f5' }}>
+    <VScroll style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <VStack spacing="lg" style={{ padding: 16 }}>
-        <Typography
-          variant="title"
-          style={{ fontSize: 28, fontWeight: 'bold', marginBottom: 8 }}
-        >
-          Checkbox Examples
-        </Typography>
-
         {/* Size Comparison */}
         <Card style={{ padding: 16 }}>
           <VStack spacing="md">
@@ -546,6 +544,6 @@ export default function CheckboxScreen() {
           </VStack>
         </Card>
       </VStack>
-    </ScrollView>
+    </VScroll>
   );
 }

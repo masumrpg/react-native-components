@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { View, Text, ScrollView, Switch } from 'react-native';
 import {
   Heart,
   Star,
@@ -15,96 +14,34 @@ import {
   Button,
   ButtonIcon,
   useTheme,
+  VScroll,
+  Typography,
+  Box,
+  Theme,
+  useThemedStyles,
 } from 'rnc-theme';
+import { StyleSheet } from 'react-native';
 
 const ButtonScreen: React.FC = () => {
-  const { theme, themeMode, setThemeMode } = useTheme();
+  const { theme } = useTheme();
   const [loading, setLoading] = useState(false);
-
-  const toggleTheme = () => {
-    setThemeMode(themeMode === 'light' ? 'dark' : 'light');
-  };
 
   const handleLoadingDemo = () => {
     setLoading(true);
     setTimeout(() => setLoading(false), 2000);
   };
 
-  const createStyles = () => ({
-    container: {
-      flex: 1,
-      backgroundColor: theme.colors.background,
-      padding: theme.spacing.md,
-    },
-    header: {
-      fontSize: theme.typography.heading.fontSize,
-      fontWeight: theme.typography.heading.fontWeight,
-      color: theme.colors.text,
-      marginBottom: theme.spacing.lg,
-      textAlign: 'center' as const,
-    },
-    section: {
-      marginBottom: theme.spacing.xl,
-    },
-    sectionTitle: {
-      fontSize: theme.typography.subtitle.fontSize,
-      fontWeight: theme.typography.subtitle.fontWeight,
-      color: theme.colors.text,
-      marginBottom: theme.spacing.md,
-    },
-    themeControl: {
-      flexDirection: 'row' as const,
-      alignItems: 'center' as const,
-      justifyContent: 'space-between' as const,
-      padding: theme.spacing.md,
-      backgroundColor: theme.colors.surface,
-      borderRadius: theme.components.borderRadius.md,
-      marginBottom: theme.spacing.lg,
-    },
-    themeText: {
-      fontSize: theme.typography.body.fontSize,
-      color: theme.colors.text,
-    },
-    buttonGrid: {
-      flexDirection: 'row' as const,
-      flexWrap: 'wrap' as const,
-      gap: theme.spacing.sm,
-      marginBottom: theme.spacing.md,
-    },
-    buttonRow: {
-      flexDirection: 'row' as const,
-      gap: theme.spacing.sm,
-      marginBottom: theme.spacing.sm,
-    },
-  });
-
-  const styles = createStyles();
+  const styles = useThemedStyles(createStyles);
 
   return (
-    <ScrollView style={styles.container}>
-      <Text style={styles.header}>UI Components Demo</Text>
-
-      {/* Theme Control */}
-      <View style={styles.themeControl}>
-        <Text style={styles.themeText}>
-          Mode: {themeMode === 'light' ? 'Light' : 'Dark'}
-        </Text>
-        <Switch
-          value={themeMode === 'dark'}
-          onValueChange={toggleTheme}
-          trackColor={{
-            false: theme.colors.border,
-            true: theme.colors.primary,
-          }}
-          thumbColor={theme.colors.surface}
-        />
-      </View>
+    <VScroll style={styles.container}>
+      <Typography style={styles.header}>UI Components Demo</Typography>
 
       {/* Button Variants Demo */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Button Variants</Text>
+      <Box style={styles.section}>
+        <Typography style={styles.sectionTitle}>Button Variants</Typography>
 
-        <View style={styles.buttonGrid}>
+        <Box style={styles.buttonGrid}>
           <Button variant="default">
             <ButtonText variant="default">Default</ButtonText>
           </Button>
@@ -120,9 +57,9 @@ const ButtonScreen: React.FC = () => {
           <Button variant="outline">
             <ButtonText variant="outline">Outline</ButtonText>
           </Button>
-        </View>
+        </Box>
 
-        <View style={styles.buttonGrid}>
+        <Box style={styles.buttonGrid}>
           <Button variant="filled">
             <ButtonText variant="filled">Filled</ButtonText>
           </Button>
@@ -138,9 +75,9 @@ const ButtonScreen: React.FC = () => {
           <Button variant="error">
             <ButtonText variant="error">Error</ButtonText>
           </Button>
-        </View>
+        </Box>
 
-        <View style={styles.buttonGrid}>
+        <Box style={styles.buttonGrid}>
           <Button variant="warning">
             <ButtonText variant="warning">Warning</ButtonText>
           </Button>
@@ -152,14 +89,14 @@ const ButtonScreen: React.FC = () => {
           <Button variant="destructive">
             <ButtonText variant="destructive">Destructive</ButtonText>
           </Button>
-        </View>
-      </View>
+        </Box>
+      </Box>
 
       {/* Button Sizes Demo */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Button Sizes</Text>
+      <Box style={styles.section}>
+        <Typography style={styles.sectionTitle}>Button Sizes</Typography>
 
-        <View style={styles.buttonRow}>
+        <Box style={styles.buttonRow}>
           <Button variant="primary" size="xs">
             <ButtonText variant="primary" size="xs">
               XS
@@ -189,14 +126,16 @@ const ButtonScreen: React.FC = () => {
               XL
             </ButtonText>
           </Button>
-        </View>
-      </View>
+        </Box>
+      </Box>
 
       {/* New Variant Showcase */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>New Variant Showcase</Text>
+      <Box style={styles.section}>
+        <Typography style={styles.sectionTitle}>
+          New Variant Showcase
+        </Typography>
 
-        <View style={styles.buttonGrid}>
+        <Box style={styles.buttonGrid}>
           <Button variant="default">
             <ButtonIcon
               icon={<Settings color={theme.colors.text} />}
@@ -223,14 +162,14 @@ const ButtonScreen: React.FC = () => {
             />
             <ButtonText variant="destructive">Destructive</ButtonText>
           </Button>
-        </View>
-      </View>
+        </Box>
+      </Box>
 
       {/* Size Comparison */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Size Comparison</Text>
+      <Box style={styles.section}>
+        <Typography style={styles.sectionTitle}>Size Comparison</Typography>
 
-        <View style={styles.buttonRow}>
+        <Box style={styles.buttonRow}>
           <Button variant="outline" size="xs">
             <ButtonText variant="outline" size="xs">
               XS
@@ -256,14 +195,14 @@ const ButtonScreen: React.FC = () => {
               XL
             </ButtonText>
           </Button>
-        </View>
-      </View>
+        </Box>
+      </Box>
 
       {/* Button with Icons Demo */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Buttons with Icons</Text>
+      <Box style={styles.section}>
+        <Typography style={styles.sectionTitle}>Buttons with Icons</Typography>
 
-        <View style={styles.buttonGrid}>
+        <Box style={styles.buttonGrid}>
           <Button variant="primary">
             <ButtonIcon
               icon={<Heart color={'#fff'} />}
@@ -299,10 +238,10 @@ const ButtonScreen: React.FC = () => {
             />
             <ButtonText variant="success">Download</ButtonText>
           </Button>
-        </View>
+        </Box>
 
         {/* Icon Only Buttons */}
-        <View style={styles.buttonRow}>
+        <Box style={styles.buttonRow}>
           <Button variant="primary" style={{ width: 48, height: 48 }}>
             <ButtonIcon icon={<Plus color={'#fff'} />} variant="primary" />
           </Button>
@@ -318,14 +257,14 @@ const ButtonScreen: React.FC = () => {
           <Button variant="success" style={{ width: 48, height: 48 }}>
             <ButtonIcon icon={<Save color={'#fff'} />} variant="success" />
           </Button>
-        </View>
-      </View>
+        </Box>
+      </Box>
 
       {/* Button States Demo */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Button States</Text>
+      <Box style={styles.section}>
+        <Typography style={styles.sectionTitle}>Button States</Typography>
 
-        <View style={styles.buttonGrid}>
+        <Box style={styles.buttonGrid}>
           <Button variant="primary" disabled>
             <ButtonText variant="primary" disabled>
               Disabled
@@ -346,14 +285,14 @@ const ButtonScreen: React.FC = () => {
               {loading ? 'Loading...' : 'Click for Loading'}
             </ButtonText>
           </Button>
-        </View>
-      </View>
+        </Box>
+      </Box>
 
       {/* Component Types Demo */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Component Types</Text>
+      <Box style={styles.section}>
+        <Typography style={styles.sectionTitle}>Component Types</Typography>
 
-        <View style={styles.buttonGrid}>
+        <Box style={styles.buttonGrid}>
           <Button variant="primary" component="pressable">
             <ButtonText variant="primary">Pressable</ButtonText>
           </Button>
@@ -361,12 +300,12 @@ const ButtonScreen: React.FC = () => {
           <Button variant="secondary" component="touchable">
             <ButtonText variant="secondary">TouchableOpacity</ButtonText>
           </Button>
-        </View>
-      </View>
+        </Box>
+      </Box>
 
       {/* Full Width Button */}
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Full Width Button</Text>
+      <Box style={styles.section}>
+        <Typography style={styles.sectionTitle}>Full Width Button</Typography>
 
         <Button variant="primary" fullWidth>
           <ButtonIcon
@@ -376,9 +315,57 @@ const ButtonScreen: React.FC = () => {
           />
           <ButtonText variant="primary">Full Width Button</ButtonText>
         </Button>
-      </View>
-    </ScrollView>
+      </Box>
+    </VScroll>
   );
 };
 
 export default ButtonScreen;
+
+const createStyles = (theme: Theme) => StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: theme.colors.background,
+    padding: theme.spacing.md,
+  },
+  header: {
+    fontSize: theme.typography.heading.fontSize,
+    fontWeight: theme.typography.heading.fontWeight,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.lg,
+    textAlign: 'center' as const,
+  },
+  section: {
+    marginBottom: theme.spacing.xl,
+  },
+  sectionTitle: {
+    fontSize: theme.typography.subtitle.fontSize,
+    fontWeight: theme.typography.subtitle.fontWeight,
+    color: theme.colors.text,
+    marginBottom: theme.spacing.md,
+  },
+  themeControl: {
+    flexDirection: 'row' as const,
+    alignItems: 'center' as const,
+    justifyContent: 'space-between' as const,
+    padding: theme.spacing.md,
+    backgroundColor: theme.colors.surface,
+    borderRadius: theme.components.borderRadius.md,
+    marginBottom: theme.spacing.lg,
+  },
+  themeText: {
+    fontSize: theme.typography.body.fontSize,
+    color: theme.colors.text,
+  },
+  buttonGrid: {
+    flexDirection: 'row' as const,
+    flexWrap: 'wrap' as const,
+    gap: theme.spacing.sm,
+    marginBottom: theme.spacing.md,
+  },
+  buttonRow: {
+    flexDirection: 'row' as const,
+    gap: theme.spacing.sm,
+    marginBottom: theme.spacing.sm,
+  },
+});

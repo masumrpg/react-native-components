@@ -1,14 +1,23 @@
 import React from 'react';
-import { Text } from 'react-native';
-import { VStack, HStack, Box, Center, HDivider, VDivider } from 'rnc-theme';
+import {
+  VStack,
+  HStack,
+  Box,
+  Center,
+  HDivider,
+  VDivider,
+  Typography,
+} from 'rnc-theme';
 
 const DividerScreen = () => {
   return (
-    <VStack flex={1} padding="lg" spacing="md">
+    <VStack themed flex={1} padding="lg" spacing="md">
       {/* Header */}
       <Box padding="md" backgroundColor="blue" borderRadius="md">
         <Center>
-          <Text style={{ color: 'white', fontSize: 18 }}>Header</Text>
+          <Typography style={{ color: 'white', fontSize: 18 }}>
+            Header
+          </Typography>
         </Center>
       </Box>
 
@@ -22,7 +31,7 @@ const DividerScreen = () => {
           backgroundColor="lightgray"
           borderRadius="sm"
         >
-          <Text>Left Content</Text>
+          <Typography>Left Content</Typography>
         </Box>
 
         <VDivider thickness={1} length="100%" />
@@ -33,7 +42,7 @@ const DividerScreen = () => {
           backgroundColor="lightblue"
           borderRadius="sm"
         >
-          <Text>Right Content</Text>
+          <Typography>Right Content</Typography>
         </Box>
       </HStack>
 
@@ -41,7 +50,7 @@ const DividerScreen = () => {
 
       {/* Footer */}
       <Center padding="md" backgroundColor="gray" borderRadius="md">
-        <Text style={{ color: 'white' }}>Footer</Text>
+        <Typography style={{ color: 'white' }}>Footer</Typography>
       </Center>
     </VStack>
   );

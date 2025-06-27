@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   Card,
   CardContent,
@@ -10,13 +10,19 @@ import {
   ButtonText,
   ButtonIcon,
   useTheme,
+  VScroll,
+  Box,
+  Theme,
+  useThemedStyles,
 } from 'rnc-theme';
 import { MaterialIcons } from '@expo/vector-icons';
 
 const CardScreen = () => {
   const { theme } = useTheme();
+  const styles = useThemedStyles(createStyles);
+
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <VScroll style={styles.container} contentContainerStyle={styles.content}>
       {/* 1. Simplest Card */}
       <Card margin="md">
         <CardContent>
@@ -52,29 +58,29 @@ const CardScreen = () => {
         <CardHeader title="Interactive Card" subtitle="With multiple actions" />
         <CardContent>
           <Typography style={styles.mb8}>Primary content area with:</Typography>
-          <View style={styles.bulletPoints}>
+          <Box style={styles.bulletPoints}>
             <MaterialIcons name="check-circle" size={16} color="green" />
             <Typography style={styles.bulletText}>
               Multiple action buttons
             </Typography>
-          </View>
-          <View style={styles.bulletPoints}>
+          </Box>
+          <Box style={styles.bulletPoints}>
             <MaterialIcons name="check-circle" size={16} color="green" />
             <Typography style={styles.bulletText}>Custom styling</Typography>
-          </View>
+          </Box>
         </CardContent>
-        <CardFooter justifyContent="space-between">
+        <CardFooter justify="space-between">
           <Button variant="ghost" size="sm">
             <ButtonText>Cancel</ButtonText>
           </Button>
-          <View style={styles.footerButtons}>
+          <Box style={styles.footerButtons}>
             <Button variant="outline" size="sm" style={styles.mr8}>
               <ButtonText>Save</ButtonText>
             </Button>
             <Button variant="primary" size="sm">
               <ButtonText>Submit</ButtonText>
             </Button>
-          </View>
+          </Box>
         </CardFooter>
       </Card>
 
@@ -93,31 +99,31 @@ const CardScreen = () => {
           subtitleStyle={styles.lightText}
         />
         <CardContent padding="lg">
-          <View style={styles.complexContent}>
-            <View style={styles.statsContainer}>
-              <View style={styles.statItem}>
+          <Box style={styles.complexContent}>
+            <Box style={styles.statsContainer}>
+              <Box style={styles.statItem}>
                 <Typography style={styles.statNumber}>128</Typography>
                 <Typography style={styles.lightStatLabel}>Views</Typography>
-              </View>
-              <View style={styles.statItem}>
+              </Box>
+              <Box style={styles.statItem}>
                 <Typography style={styles.statNumber}>47</Typography>
                 <Typography style={styles.lightStatLabel}>Likes</Typography>
-              </View>
-              <View style={styles.statItem}>
+              </Box>
+              <Box style={styles.statItem}>
                 <Typography style={styles.statNumber}>12</Typography>
                 <Typography style={styles.lightStatLabel}>Comments</Typography>
-              </View>
-            </View>
+              </Box>
+            </Box>
             <Typography style={styles.lightTextWithMargin}>
               Advanced card with custom styling, statistics, and multiple
               interactive elements.
             </Typography>
-          </View>
+          </Box>
         </CardContent>
         <CardFooter
           padding="lg"
           style={styles.complexFooter}
-          justifyContent="space-between"
+          justify="space-between"
         >
           <Button variant="ghost" size="sm" style={styles.lightButton}>
             <ButtonIcon
@@ -210,12 +216,12 @@ const CardScreen = () => {
       <Card variant="ghost" margin="md">
         <CardHeader title="Ghost Card" subtitle="Transparent styling" />
         <CardContent>
-          <View style={styles.iconContainer}>
+          <Box style={styles.iconContainer}>
             <MaterialIcons name="lightbulb" size={24} color="orange" />
             <Typography style={styles.ml8}>
               Ghost variant with transparent background
             </Typography>
-          </View>
+          </Box>
         </CardContent>
       </Card>
 
@@ -228,12 +234,12 @@ const CardScreen = () => {
           subtitleStyle={styles.lightText}
         />
         <CardContent>
-          <View style={styles.iconContainer}>
+          <Box style={styles.iconContainer}>
             <MaterialIcons name="check-circle" size={24} color="green" />
             <Typography style={styles.ml8}>Operation successful!</Typography>
-          </View>
+          </Box>
         </CardContent>
-        <CardFooter justifyContent="flex-end">
+        <CardFooter justify="flex-end">
           <Button size="sm" variant="success">
             <ButtonIcon
               icon={
@@ -254,12 +260,12 @@ const CardScreen = () => {
           subtitleStyle={styles.lightText}
         />
         <CardContent>
-          <View style={styles.iconContainer}>
+          <Box style={styles.iconContainer}>
             <MaterialIcons name="error" size={24} color="red" />
             <Typography style={styles.ml8}>Something went wrong!</Typography>
-          </View>
+          </Box>
         </CardContent>
-        <CardFooter justifyContent="space-between">
+        <CardFooter justify="space-between">
           <Button size="sm" variant="ghost">
             <ButtonIcon
               icon={<MaterialIcons name="arrow-back" size={18} color="red" />}
@@ -284,12 +290,12 @@ const CardScreen = () => {
           subtitleStyle={styles.lightText}
         />
         <CardContent>
-          <View style={styles.iconContainer}>
+          <Box style={styles.iconContainer}>
             <MaterialIcons name="info" size={24} color="blue" />
             <Typography style={styles.ml8}>
               Important information here
             </Typography>
-          </View>
+          </Box>
         </CardContent>
       </Card>
 
@@ -302,14 +308,14 @@ const CardScreen = () => {
           subtitleStyle={styles.lightText}
         />
         <CardContent>
-          <View style={styles.iconContainer}>
+          <Box style={styles.iconContainer}>
             <MaterialIcons name="warning" size={24} color="orange" />
             <Typography style={styles.ml8}>
               Please review this information
             </Typography>
-          </View>
+          </Box>
         </CardContent>
-        <CardFooter justifyContent="flex-end">
+        <CardFooter justify="flex-end">
           <Button size="sm" variant="warning">
             <ButtonText>Review</ButtonText>
           </Button>
@@ -329,127 +335,128 @@ const CardScreen = () => {
           subtitleStyle={styles.lightText}
         />
         <CardContent>
-          <View style={styles.statsGrid}>
-            <View style={styles.statsItem}>
+          <Box style={styles.statsGrid}>
+            <Box style={styles.statsItem}>
               <Typography style={styles.statsLabel}>New Users</Typography>
               <Typography style={styles.statsValue}>1,234</Typography>
-            </View>
-            <View style={styles.statsItem}>
+            </Box>
+            <Box style={styles.statsItem}>
               <Typography style={styles.statsLabel}>Active</Typography>
               <Typography style={styles.statsValue}>891</Typography>
-            </View>
-            <View style={styles.statsItem}>
+            </Box>
+            <Box style={styles.statsItem}>
               <Typography style={styles.statsLabel}>Revenue</Typography>
               <Typography style={styles.statsValue}>$12.4k</Typography>
-            </View>
-          </View>
+            </Box>
+          </Box>
         </CardContent>
       </Card>
-    </ScrollView>
+    </VScroll>
   );
 };
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#f9f9f9' as const,
-  },
-  content: {
-    padding: 16,
-    gap: 16,
-  },
-  lightText: {
-    color: '#ffffff' as const,
-  },
-  interactiveCard: {
-    borderColor: '#e2e8f0' as const,
-  },
-  bulletPoints: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    marginBottom: 4,
-  },
-  bulletText: {
-    marginLeft: 8,
-  },
-  footerButtons: {
-    flexDirection: 'row' as const,
-  },
-  mr8: {
-    marginRight: 8,
-  },
-  mb8: {
-    marginBottom: 8,
-  },
-  mt16: {
-    marginTop: 16,
-  },
-  complexContent: {
-    paddingVertical: 8,
-  },
-  statsContainer: {
-    flexDirection: 'row' as const,
-    justifyContent: 'space-around' as const,
-    paddingVertical: 8,
-  },
-  statItem: {
-    alignItems: 'center' as const,
-  },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: 'bold' as const,
-    color: '#ffffff' as const,
-  },
-  statLabel: {
-    fontSize: 12,
-    opacity: 0.8,
-  },
-  // Combined styles untuk menghindari array
-  lightStatLabel: {
-    color: '#ffffff' as const,
-    fontSize: 12,
-    opacity: 0.8,
-  },
-  lightTextWithMargin: {
-    color: '#ffffff' as const,
-    marginTop: 16,
-  },
-  complexFooter: {},
-  lightButton: {
-    borderColor: 'rgba(255,255,255,0.3)' as const,
-  },
-  iconContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  ml8: {
-    marginLeft: 8,
-  },
-  statsGrid: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    paddingVertical: 16,
-  },
-  statsItem: {
-    alignItems: 'center',
-  },
-  statsLabel: {
-    fontSize: 12,
-    color: 'rgba(255,255,255,0.7)',
-    marginBottom: 4,
-  },
-  statsValue: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    color: '#ffffff',
-  },
-  sectionTitleWithMargin: {
-    marginTop: 32,
-    marginBottom: 16,
-    fontSize: 20,
-    fontWeight: '600',
-    color: '#000000',
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    content: {
+      padding: 16,
+      gap: 16,
+    },
+    lightText: {
+      color: '#ffffff',
+    },
+    interactiveCard: {
+      borderColor: '#e2e8f0',
+    },
+    bulletPoints: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      marginBottom: 4,
+    },
+    bulletText: {
+      marginLeft: 8,
+    },
+    footerButtons: {
+      flexDirection: 'row',
+    },
+    mr8: {
+      marginRight: 8,
+    },
+    mb8: {
+      marginBottom: 8,
+    },
+    mt16: {
+      marginTop: 16,
+    },
+    complexContent: {
+      paddingVertical: 8,
+    },
+    statsContainer: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      paddingVertical: 8,
+    },
+    statItem: {
+      alignItems: 'center',
+    },
+    statNumber: {
+      fontSize: 24,
+      fontWeight: 'bold',
+      color: '#ffffff',
+    },
+    statLabel: {
+      fontSize: 12,
+      opacity: 0.8,
+    },
+    // Combined styles untuk menghindari array
+    lightStatLabel: {
+      color: '#ffffff',
+      fontSize: 12,
+      opacity: 0.8,
+    },
+    lightTextWithMargin: {
+      color: '#ffffff',
+      marginTop: 16,
+    },
+    complexFooter: {},
+    lightButton: {
+      borderColor: 'rgba(255,255,255,0.3)',
+    },
+    iconContainer: {
+      flexDirection: 'row',
+      alignItems: 'center',
+    },
+    ml8: {
+      marginLeft: 8,
+    },
+    statsGrid: {
+      flexDirection: 'row',
+      justifyContent: 'space-around',
+      paddingVertical: 16,
+    },
+    statsItem: {
+      alignItems: 'center',
+    },
+    statsLabel: {
+      fontSize: 12,
+      color: 'rgba(255,255,255,0.7)',
+      marginBottom: 4,
+    },
+    statsValue: {
+      fontSize: 20,
+      fontWeight: 'bold',
+      color: '#ffffff',
+    },
+    sectionTitleWithMargin: {
+      marginTop: 32,
+      marginBottom: 16,
+      fontSize: 20,
+      fontWeight: '600',
+      color: '#000000',
+    },
+  });
 
 export default CardScreen;

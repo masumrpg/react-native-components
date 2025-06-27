@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
-import { Calendar, useTheme, VStack, ListMarkedDates } from 'rnc-theme';
+import { StyleSheet } from 'react-native';
+import {
+  Calendar,
+  useTheme,
+  VStack,
+  ListMarkedDates,
+  VScroll,
+} from 'rnc-theme';
 import { DateData } from 'react-native-calendars';
 
 const CalendarScreen = () => {
-  const { theme } = useTheme();
+  const { theme, isDark } = useTheme();
 
   const listMarkedDates: ListMarkedDates = [
     {
@@ -26,18 +32,19 @@ const CalendarScreen = () => {
   };
 
   return (
-    <ScrollView
+    <VScroll
       style={[styles.container, { backgroundColor: theme.colors.background }]}
       contentContainerStyle={styles.content}
     >
       <VStack>
         <Calendar
+          key={isDark ? 'dark' : 'light'}
           onDayPress={handleDayPress}
           selectedDate={selectedDate}
           listMarkedDates={listMarkedDates}
         />
       </VStack>
-    </ScrollView>
+    </VScroll>
   );
 };
 

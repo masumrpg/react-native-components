@@ -3,14 +3,13 @@ import { DimensionValue, StyleProp, View, ViewStyle } from 'react-native';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-import { resolveColor } from '../../../utils';
 
 interface BaseLayoutProps {
   children?: React.ReactNode;
   style?: StyleProp<ViewStyle>;
   padding?: keyof Theme['spacing'];
   margin?: keyof Theme['spacing'];
-  backgroundColor?: keyof Theme['colors'];
+  backgroundColor?: ViewStyle['backgroundColor'];
   borderRadius?: keyof Theme['components']['borderRadius'];
   flex?: number;
   width?: DimensionValue | undefined;
@@ -34,7 +33,7 @@ type CenterProps = BaseLayoutProps;
 
 interface BoxProps extends BaseLayoutProps {
   borderWidth?: number;
-  borderColor?: keyof Theme['colors'];
+  borderColor?: ViewStyle['borderColor'];
   shadowOpacity?: number;
   elevation?: number;
   variant?: 'default' | 'card' | 'surface';
@@ -73,11 +72,8 @@ const HStack = forwardRef<React.ComponentRef<typeof View>, StackProps>(
       gap: spacing ? theme.spacing[spacing] : 0,
       padding: padding ? theme.spacing[padding] : undefined,
       margin: margin ? theme.spacing[margin] : undefined,
-      backgroundColor: resolveColor(
-        theme,
-        backgroundColor,
-        themed ? theme.colors.background : 'transparent'
-      ),
+      backgroundColor:
+        backgroundColor ?? (themed ? theme.colors.background : 'transparent'),
       borderRadius: borderRadius
         ? theme.components.borderRadius[borderRadius]
         : undefined,
@@ -129,11 +125,8 @@ const VStack = forwardRef<React.ComponentRef<typeof View>, StackProps>(
       gap: spacing ? theme.spacing[spacing] : 0,
       padding: padding ? theme.spacing[padding] : undefined,
       margin: margin ? theme.spacing[margin] : undefined,
-      backgroundColor: resolveColor(
-        theme,
-        backgroundColor,
-        themed ? theme.colors.background : 'transparent'
-      ),
+      backgroundColor:
+        backgroundColor ?? (themed ? theme.colors.background : 'transparent'),
       borderRadius: borderRadius
         ? theme.components.borderRadius[borderRadius]
         : undefined,
@@ -181,11 +174,8 @@ const ZStack = forwardRef<React.ComponentRef<typeof View>, BaseLayoutProps>(
       justifyContent: justify,
       padding: padding ? theme.spacing[padding] : undefined,
       margin: margin ? theme.spacing[margin] : undefined,
-      backgroundColor: resolveColor(
-        theme,
-        backgroundColor,
-        themed ? theme.colors.background : 'transparent'
-      ),
+      backgroundColor:
+        backgroundColor ?? (themed ? theme.colors.background : 'transparent'),
       borderRadius: borderRadius
         ? theme.components.borderRadius[borderRadius]
         : undefined,
@@ -233,11 +223,8 @@ const Center = forwardRef<React.ComponentRef<typeof View>, CenterProps>(
       justifyContent: justify,
       padding: padding ? theme.spacing[padding] : undefined,
       margin: margin ? theme.spacing[margin] : undefined,
-      backgroundColor: resolveColor(
-        theme,
-        backgroundColor,
-        themed ? theme.colors.background : 'transparent'
-      ),
+      backgroundColor:
+        backgroundColor ?? (themed ? theme.colors.background : 'transparent'),
       borderRadius: borderRadius
         ? theme.components.borderRadius[borderRadius]
         : undefined,
@@ -273,7 +260,7 @@ const Box = forwardRef<React.ComponentRef<typeof View>, BoxProps>(
       flex,
       width,
       height,
-      themed = true,
+      themed = false,
       variant = 'default',
       align = 'stretch',
       justify = 'flex-start',
@@ -302,16 +289,13 @@ const Box = forwardRef<React.ComponentRef<typeof View>, BoxProps>(
       justifyContent: justify,
       padding: padding ? theme.spacing[padding] : undefined,
       margin: margin ? theme.spacing[margin] : undefined,
-      backgroundColor: resolveColor(
-        theme,
-        backgroundColor,
-        themed ? theme.colors.surface : 'transparent'
-      ),
+      backgroundColor:
+        backgroundColor ?? (themed ? theme.colors.background : 'transparent'),
       borderRadius: borderRadius
         ? theme.components.borderRadius[borderRadius]
         : undefined,
       borderWidth: borderWidth ?? undefined,
-      borderColor: resolveColor(theme, borderColor, theme.colors.border),
+      borderColor: borderColor ?? theme.colors.border,
       shadowOpacity: shadowOpacity ?? undefined,
       elevation: elevation ?? undefined,
       flex,
@@ -361,11 +345,8 @@ const Grid = forwardRef<React.ComponentRef<typeof View>, GridProps>(
       justifyContent: justify,
       padding: padding ? theme.spacing[padding] : undefined,
       margin: margin ? theme.spacing[margin] : undefined,
-      backgroundColor: resolveColor(
-        theme,
-        backgroundColor,
-        themed ? theme.colors.background : 'transparent'
-      ),
+      backgroundColor:
+        backgroundColor ?? (themed ? theme.colors.background : 'transparent'),
       borderRadius: borderRadius
         ? theme.components.borderRadius[borderRadius]
         : undefined,
@@ -407,31 +388,31 @@ const Grid = forwardRef<React.ComponentRef<typeof View>, GridProps>(
 Grid.displayName = 'Grid';
 
 // Styled functions untuk useThemedStyles
-const createHStackStyles = (theme: Theme) => ({
+const createHStackStyles = (_: Theme) => ({
   base: {
     flexDirection: 'row' as const,
   },
 });
 
-const createVStackStyles = (theme: Theme) => ({
+const createVStackStyles = (_: Theme) => ({
   base: {
     flexDirection: 'column' as const,
   },
 });
 
-const createZStackStyles = (theme: Theme) => ({
+const createZStackStyles = (_: Theme) => ({
   base: {
     position: 'relative' as const,
   },
 });
 
-const createCenterStyles = (theme: Theme) => ({
+const createCenterStyles = (_: Theme) => ({
   base: {
     // Base styles, alignment handled via props
   },
 });
 
-const createGridStyles = (theme: Theme) => ({
+const createGridStyles = (_: Theme) => ({
   base: {
     flexDirection: 'row' as const,
     flexWrap: 'wrap' as const,

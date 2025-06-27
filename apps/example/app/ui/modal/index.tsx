@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { ScrollView, View, Text, Switch } from 'react-native';
 import {
   Modal,
   ModalHeader,
@@ -10,9 +9,13 @@ import {
   Card,
   CardContent,
   useTheme,
+  VScroll,
+  Typography,
+  Box,
+  Switcher,
 } from 'rnc-theme';
 
-export default function ModalExample() {
+export default function ModalScreen() {
   const { theme } = useTheme();
   const [basicModalVisible, setBasicModalVisible] = useState(false);
   const [confirmModalVisible, setConfirmModalVisible] = useState(false);
@@ -77,7 +80,7 @@ export default function ModalExample() {
   ];
 
   return (
-    <ScrollView
+    <VScroll
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -87,7 +90,7 @@ export default function ModalExample() {
         gap: theme.spacing.lg,
       }}
     >
-      <Text
+      <Typography
         style={{
           ...theme.typography.heading,
           color: theme.colors.text,
@@ -95,12 +98,12 @@ export default function ModalExample() {
         }}
       >
         Modal Examples
-      </Text>
+      </Typography>
 
       {/* Size Comparison */}
       <Card>
         <CardContent>
-          <Text
+          <Typography
             style={{
               ...theme.typography.title,
               color: theme.colors.text,
@@ -108,8 +111,8 @@ export default function ModalExample() {
             }}
           >
             Size Comparison
-          </Text>
-          <View
+          </Typography>
+          <Box
             style={{
               flexDirection: 'row',
               flexWrap: 'wrap',
@@ -129,14 +132,14 @@ export default function ModalExample() {
                 <ButtonText>{size.toUpperCase()}</ButtonText>
               </Button>
             ))}
-          </View>
+          </Box>
         </CardContent>
       </Card>
 
       {/* Variant Showcase */}
       <Card>
         <CardContent>
-          <Text
+          <Typography
             style={{
               ...theme.typography.title,
               color: theme.colors.text,
@@ -144,8 +147,8 @@ export default function ModalExample() {
             }}
           >
             Variant Showcase
-          </Text>
-          <View
+          </Typography>
+          <Box
             style={{
               flexDirection: 'row',
               flexWrap: 'wrap',
@@ -165,14 +168,14 @@ export default function ModalExample() {
                 <ButtonText>{variant}</ButtonText>
               </Button>
             ))}
-          </View>
+          </Box>
         </CardContent>
       </Card>
 
       {/* Basic Modal */}
       <Card>
         <CardContent>
-          <Text
+          <Typography
             style={{
               ...theme.typography.title,
               color: theme.colors.text,
@@ -180,7 +183,7 @@ export default function ModalExample() {
             }}
           >
             Basic Modal
-          </Text>
+          </Typography>
           <Button onPress={() => setBasicModalVisible(true)}>
             <ButtonText>Open Basic Modal</ButtonText>
           </Button>
@@ -190,7 +193,7 @@ export default function ModalExample() {
       {/* Confirmation Modal */}
       <Card>
         <CardContent>
-          <Text
+          <Typography
             style={{
               ...theme.typography.title,
               color: theme.colors.text,
@@ -198,7 +201,7 @@ export default function ModalExample() {
             }}
           >
             Confirmation Modal
-          </Text>
+          </Typography>
           <Button onPress={() => setConfirmModalVisible(true)}>
             <ButtonText>Open Confirmation Modal</ButtonText>
           </Button>
@@ -208,7 +211,7 @@ export default function ModalExample() {
       {/* Bottom Modal */}
       <Card>
         <CardContent>
-          <Text
+          <Typography
             style={{
               ...theme.typography.title,
               color: theme.colors.text,
@@ -216,7 +219,7 @@ export default function ModalExample() {
             }}
           >
             Bottom Modal
-          </Text>
+          </Typography>
           <Button onPress={() => setBottomModalVisible(true)}>
             <ButtonText>Open Bottom Modal</ButtonText>
           </Button>
@@ -226,7 +229,7 @@ export default function ModalExample() {
       {/* Animation Settings */}
       <Card>
         <CardContent>
-          <Text
+          <Typography
             style={{
               ...theme.typography.title,
               color: theme.colors.text,
@@ -234,9 +237,9 @@ export default function ModalExample() {
             }}
           >
             Animation Settings
-          </Text>
+          </Typography>
 
-          <View
+          <Box
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
@@ -244,21 +247,21 @@ export default function ModalExample() {
               marginBottom: theme.spacing.sm,
             }}
           >
-            <Text
+            <Typography
               style={{ ...theme.typography.body, color: theme.colors.text }}
             >
               Slide Animation
-            </Text>
-            <Switch
+            </Typography>
+            <Switcher
               value={slideAnimation}
               onValueChange={(value) => {
                 setSlideAnimation(value);
                 setScaleAnimation(!value);
               }}
             />
-          </View>
+          </Box>
 
-          <View
+          <Box
             style={{
               flexDirection: 'row',
               justifyContent: 'space-between',
@@ -266,19 +269,19 @@ export default function ModalExample() {
               marginBottom: theme.spacing.md,
             }}
           >
-            <Text
+            <Typography
               style={{ ...theme.typography.body, color: theme.colors.text }}
             >
               Scale Animation
-            </Text>
-            <Switch
+            </Typography>
+            <Switcher
               value={scaleAnimation}
               onValueChange={(value) => {
                 setScaleAnimation(value);
                 setSlideAnimation(!value);
               }}
             />
-          </View>
+          </Box>
 
           <Button onPress={() => setAnimatedModal(true)}>
             <ButtonText>Test Animation</ButtonText>
@@ -298,10 +301,12 @@ export default function ModalExample() {
           subtitle={`This modal demonstrates the ${currentSize} size`}
         />
         <ModalContent>
-          <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
+          <Typography
+            style={{ ...theme.typography.body, color: theme.colors.text }}
+          >
             This is a {currentSize} sized modal. You can see how different sizes
             affect the modal dimensions and layout.
-          </Text>
+          </Typography>
         </ModalContent>
         <ModalFooter>
           <Button onPress={() => setSizeModalVisible(false)}>
@@ -324,11 +329,13 @@ export default function ModalExample() {
           subtitle={`This modal demonstrates the ${currentVariant} variant styling`}
         />
         <ModalContent>
-          <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
+          <Typography
+            style={{ ...theme.typography.body, color: theme.colors.text }}
+          >
             This modal uses the {currentVariant} variant. Each variant has
             different styling including border colors, background colors, and
             visual emphasis.
-          </Text>
+          </Typography>
         </ModalContent>
         <ModalFooter>
           <Button
@@ -352,11 +359,13 @@ export default function ModalExample() {
           subtitle="This is a simple modal example"
         />
         <ModalContent>
-          <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
+          <Typography
+            style={{ ...theme.typography.body, color: theme.colors.text }}
+          >
             This is the content of the modal. You can put any React Native
             components here. The modal supports different sizes, positions, and
             animations.
-          </Text>
+          </Typography>
         </ModalContent>
         <ModalFooter>
           <Button
@@ -387,7 +396,7 @@ export default function ModalExample() {
           subtitle="Please review your action carefully"
         />
         <ModalContent>
-          <Text
+          <Typography
             style={{
               ...theme.typography.body,
               color: theme.colors.text,
@@ -396,8 +405,8 @@ export default function ModalExample() {
             }}
           >
             Are you sure you want to delete this item?
-          </Text>
-          <Text
+          </Typography>
+          <Typography
             style={{
               ...theme.typography.small,
               color: theme.colors.textSecondary,
@@ -405,7 +414,7 @@ export default function ModalExample() {
             }}
           >
             This action cannot be undone.
-          </Text>
+          </Typography>
         </ModalContent>
         <ModalFooter>
           <Button
@@ -448,10 +457,12 @@ export default function ModalExample() {
       >
         <ModalHeader title="Bottom Sheet" />
         <ModalContent>
-          <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
+          <Typography
+            style={{ ...theme.typography.body, color: theme.colors.text }}
+          >
             This modal slides up from the bottom of the screen, similar to a
             bottom sheet.
-          </Text>
+          </Typography>
         </ModalContent>
         <ModalFooter>
           <Button onPress={() => setBottomModalVisible(false)}>
@@ -474,11 +485,13 @@ export default function ModalExample() {
           subtitle="Testing different animation types"
         />
         <ModalContent>
-          <Text style={{ ...theme.typography.body, color: theme.colors.text }}>
+          <Typography
+            style={{ ...theme.typography.body, color: theme.colors.text }}
+          >
             This modal demonstrates {slideAnimation ? 'slide' : 'scale'}{' '}
             animation. You can switch between different animation types using
             the settings above.
-          </Text>
+          </Typography>
         </ModalContent>
         <ModalFooter>
           <Button onPress={() => setAnimatedModal(false)}>
@@ -486,6 +499,6 @@ export default function ModalExample() {
           </Button>
         </ModalFooter>
       </Modal>
-    </ScrollView>
+    </VScroll>
   );
 }

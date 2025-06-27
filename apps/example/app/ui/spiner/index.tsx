@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, ScrollView } from 'react-native';
+import { StyleSheet, TouchableOpacity } from 'react-native';
 import {
   Spinner,
   useThemedStyles,
@@ -7,6 +7,8 @@ import {
   VStack,
   Card,
   Typography,
+  Box,
+  VScroll,
 } from 'rnc-theme';
 
 const SpinnerScreen: React.FC = () => {
@@ -31,13 +33,9 @@ const SpinnerScreen: React.FC = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView contentContainerStyle={styles.content}>
+    <Box style={styles.container}>
+      <VScroll contentContainerStyle={styles.content}>
         <VStack spacing="lg">
-          <Typography variant="title" style={styles.title}>
-            Spinner Examples
-          </Typography>
-
           {/* Size Showcase */}
           <Card style={styles.card}>
             <VStack spacing="md">
@@ -45,35 +43,35 @@ const SpinnerScreen: React.FC = () => {
                 Sizes
               </Typography>
               <VStack spacing="sm">
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Extra Small (xs)</Typography>
                   <Spinner size="xs" variant="primary" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Small (sm)</Typography>
                   <Spinner size="sm" variant="primary" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Medium (md)</Typography>
                   <Spinner size="md" variant="primary" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Large (lg)</Typography>
                   <Spinner size="lg" variant="primary" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Extra Large (xl)</Typography>
                   <Spinner size="xl" variant="primary" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Custom Size (48px)</Typography>
                   <Spinner size={48} variant="primary" />
-                </View>
+                </Box>
               </VStack>
             </VStack>
           </Card>
@@ -85,60 +83,60 @@ const SpinnerScreen: React.FC = () => {
                 Variants
               </Typography>
               <VStack spacing="sm">
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Default</Typography>
                   <Spinner variant="default" size="md" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Primary</Typography>
                   <Spinner variant="primary" size="md" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Secondary</Typography>
                   <Spinner variant="secondary" size="md" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Success</Typography>
                   <Spinner variant="success" size="md" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Error</Typography>
                   <Spinner variant="error" size="md" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Warning</Typography>
                   <Spinner variant="warning" size="md" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Info</Typography>
                   <Spinner variant="info" size="md" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Destructive</Typography>
                   <Spinner variant="destructive" size="md" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Outline</Typography>
                   <Spinner variant="outline" size="md" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Filled</Typography>
                   <Spinner variant="filled" size="md" />
-                </View>
+                </Box>
 
-                <View style={styles.spinnerRow}>
+                <Box style={styles.spinnerRow}>
                   <Typography variant="body">Ghost</Typography>
                   <Spinner variant="ghost" size="md" />
-                </View>
+                </Box>
               </VStack>
             </VStack>
           </Card>
@@ -159,12 +157,14 @@ const SpinnerScreen: React.FC = () => {
                 disabled={loadingStates.data}
               >
                 {loadingStates.data ? (
-                  <View style={styles.buttonContent}>
-                    <Spinner size="sm" variant="primary" color="white" />
-                    <Text style={styles.buttonText}>Loading...</Text>
-                  </View>
+                  <Box style={styles.buttonContent}>
+                    <Spinner size="sm" variant="primary" color="surface" />
+                    <Typography style={styles.buttonText}>
+                      Loading...
+                    </Typography>
+                  </Box>
                 ) : (
-                  <Text style={styles.buttonText}>Load Data</Text>
+                  <Typography style={styles.buttonText}>Load Data</Typography>
                 )}
               </TouchableOpacity>
 
@@ -178,17 +178,19 @@ const SpinnerScreen: React.FC = () => {
                 disabled={loadingStates.upload}
               >
                 {loadingStates.upload ? (
-                  <View style={styles.buttonContent}>
+                  <Box style={styles.buttonContent}>
                     <Spinner
                       size="sm"
                       variant="success"
-                      color="white"
+                      color="surface"
                       thickness={3}
                     />
-                    <Text style={styles.buttonText}>Uploading...</Text>
-                  </View>
+                    <Typography style={styles.buttonText}>
+                      Uploading...
+                    </Typography>
+                  </Box>
                 ) : (
-                  <Text style={styles.buttonText}>Upload File</Text>
+                  <Typography style={styles.buttonText}>Upload File</Typography>
                 )}
               </TouchableOpacity>
 
@@ -202,12 +204,14 @@ const SpinnerScreen: React.FC = () => {
                 disabled={loadingStates.download}
               >
                 {loadingStates.download ? (
-                  <View style={styles.buttonContent}>
-                    <Spinner size="sm" variant="secondary" color="white" />
-                    <Text style={styles.buttonText}>Downloading...</Text>
-                  </View>
+                  <Box style={styles.buttonContent}>
+                    <Spinner size="sm" variant="secondary" color="surface" />
+                    <Typography style={styles.buttonText}>
+                      Downloading...
+                    </Typography>
+                  </Box>
                 ) : (
-                  <Text style={styles.buttonText}>Download</Text>
+                  <Typography style={styles.buttonText}>Download</Typography>
                 )}
               </TouchableOpacity>
             </VStack>
@@ -220,30 +224,36 @@ const SpinnerScreen: React.FC = () => {
                 Inline Loading
               </Typography>
 
-              <View style={styles.inlineItem}>
-                <Text style={styles.inlineText}>Fetching user data</Text>
+              <Box style={styles.inlineItem}>
+                <Typography style={styles.inlineText}>
+                  Fetching user data
+                </Typography>
                 <Spinner size="sm" variant="primary" />
-              </View>
+              </Box>
 
-              <View style={styles.inlineItem}>
-                <Text style={styles.inlineText}>Processing payment</Text>
+              <Box style={styles.inlineItem}>
+                <Typography style={styles.inlineText}>
+                  Processing payment
+                </Typography>
                 <Spinner size="sm" variant="warning" thickness={2} />
-              </View>
+              </Box>
 
-              <View style={styles.inlineItem}>
-                <Text style={styles.inlineText}>Syncing...</Text>
+              <Box style={styles.inlineItem}>
+                <Typography style={styles.inlineText}>Syncing...</Typography>
                 <Spinner size={20} variant="success" />
-              </View>
+              </Box>
 
-              <View style={styles.inlineItem}>
-                <Text style={styles.inlineText}>Error occurred</Text>
+              <Box style={styles.inlineItem}>
+                <Typography style={styles.inlineText}>
+                  Error occurred
+                </Typography>
                 <Spinner size="sm" variant="error" />
-              </View>
+              </Box>
 
-              <View style={styles.inlineItem}>
-                <Text style={styles.inlineText}>Getting info</Text>
+              <Box style={styles.inlineItem}>
+                <Typography style={styles.inlineText}>Getting info</Typography>
                 <Spinner size="sm" variant="info" />
-              </View>
+              </Box>
             </VStack>
           </Card>
 
@@ -254,7 +264,7 @@ const SpinnerScreen: React.FC = () => {
                 Real-world Examples
               </Typography>
 
-              <View style={styles.realWorldItem}>
+              <Box style={styles.realWorldItem}>
                 <Typography variant="body">File Upload Progress</Typography>
                 <Spinner
                   size="lg"
@@ -262,14 +272,14 @@ const SpinnerScreen: React.FC = () => {
                   thickness={3}
                   duration={800}
                 />
-              </View>
+              </Box>
 
-              <View style={styles.realWorldItem}>
+              <Box style={styles.realWorldItem}>
                 <Typography variant="body">Network Request</Typography>
                 <Spinner size="md" variant="info" duration={1200} />
-              </View>
+              </Box>
 
-              <View style={styles.realWorldItem}>
+              <Box style={styles.realWorldItem}>
                 <Typography variant="body">Data Processing</Typography>
                 <Spinner
                   size="sm"
@@ -277,7 +287,7 @@ const SpinnerScreen: React.FC = () => {
                   thickness={1}
                   duration={600}
                 />
-              </View>
+              </Box>
             </VStack>
           </Card>
 
@@ -292,131 +302,134 @@ const SpinnerScreen: React.FC = () => {
                 style={[styles.button, styles.fullScreenButton]}
                 onPress={handleFullScreenLoading}
               >
-                <Text style={styles.buttonText}>Show Full Screen Loading</Text>
+                <Typography style={styles.buttonText}>
+                  Show Full Screen Loading
+                </Typography>
               </TouchableOpacity>
             </VStack>
           </Card>
         </VStack>
-      </ScrollView>
+      </VScroll>
 
       {/* Full Screen Overlay */}
       {isLoading && (
-        <View style={styles.overlay}>
-          <View style={styles.overlayContent}>
+        <Box style={styles.overlay}>
+          <Box style={styles.overlayContent}>
             <Spinner size="xl" variant="primary" />
-            <Text style={styles.overlayText}>Loading...</Text>
-          </View>
-        </View>
+            <Typography style={styles.overlayText}>Loading...</Typography>
+          </Box>
+        </Box>
       )}
-    </View>
+    </Box>
   );
 };
 
-const createStyles = (theme: Theme) => ({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  content: {
-    padding: theme.spacing.md,
-    paddingBottom: theme.spacing.xl,
-  },
-  title: {
-    fontSize: theme.typography.heading.fontSize,
-    fontWeight: theme.typography.heading.fontWeight,
-    color: theme.colors.text,
-    textAlign: 'center' as const,
-    marginBottom: theme.spacing.lg,
-  },
-  card: {
-    padding: theme.spacing.md,
-  },
-  sectionTitle: {
-    fontSize: theme.typography.subtitle.fontSize,
-    fontWeight: theme.typography.subtitle.fontWeight,
-    color: theme.colors.text,
-    textAlign: 'center' as const,
-  },
-  spinnerRow: {
-    flexDirection: 'row' as const,
-    justifyContent: 'space-between' as const,
-    alignItems: 'center' as const,
-    paddingVertical: theme.spacing.xs,
-  },
-  button: {
-    backgroundColor: theme.colors.primary,
-    padding: theme.spacing.md,
-    borderRadius: theme.components.borderRadius.md,
-    alignItems: 'center' as const,
-    minHeight: 50,
-    justifyContent: 'center' as const,
-  },
-  uploadButton: {
-    backgroundColor: theme.colors.success,
-  },
-  downloadButton: {
-    backgroundColor: theme.colors.secondary,
-  },
-  fullScreenButton: {
-    backgroundColor: theme.colors.warning,
-  },
-  buttonDisabled: {
-    opacity: 0.7,
-  },
-  buttonContent: {
-    flexDirection: 'row' as const,
-    alignItems: 'center' as const,
-    gap: theme.spacing.sm,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: theme.typography.body.fontSize,
-    fontWeight: '600' as const,
-  },
-  inlineItem: {
-    flexDirection: 'row' as const,
-    justifyContent: 'space-between' as const,
-    alignItems: 'center' as const,
-    padding: theme.spacing.md,
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.components.borderRadius.md,
-  },
-  inlineText: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.text,
-  },
-  realWorldItem: {
-    flexDirection: 'row' as const,
-    justifyContent: 'space-between' as const,
-    alignItems: 'center' as const,
-    padding: theme.spacing.md,
-    backgroundColor: theme.colors.surface,
-    borderRadius: theme.components.borderRadius.md,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-  overlay: {
-    position: 'absolute' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'center' as const,
-    alignItems: 'center' as const,
-  },
-  overlayContent: {
-    backgroundColor: theme.colors.surface,
-    padding: theme.spacing.xl,
-    borderRadius: theme.components.borderRadius.lg,
-    alignItems: 'center' as const,
-    gap: theme.spacing.md,
-  },
-  overlayText: {
-    fontSize: theme.typography.body.fontSize,
-    color: theme.colors.text,
-    fontWeight: '600' as const,
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    content: {
+      padding: theme.spacing.md,
+      paddingBottom: theme.spacing.xl,
+    },
+    title: {
+      fontSize: theme.typography.heading.fontSize,
+      fontWeight: theme.typography.heading.fontWeight,
+      color: theme.colors.text,
+      textAlign: 'center',
+      marginBottom: theme.spacing.lg,
+    },
+    card: {
+      padding: theme.spacing.md,
+    },
+    sectionTitle: {
+      fontSize: theme.typography.subtitle.fontSize,
+      fontWeight: theme.typography.subtitle.fontWeight,
+      color: theme.colors.text,
+      textAlign: 'center',
+    },
+    spinnerRow: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      paddingVertical: theme.spacing.xs,
+    },
+    button: {
+      backgroundColor: theme.colors.primary,
+      padding: theme.spacing.md,
+      borderRadius: theme.components.borderRadius.md,
+      alignItems: 'center',
+      minHeight: 50,
+      justifyContent: 'center',
+    },
+    uploadButton: {
+      backgroundColor: theme.colors.success,
+    },
+    downloadButton: {
+      backgroundColor: theme.colors.secondary,
+    },
+    fullScreenButton: {
+      backgroundColor: theme.colors.warning,
+    },
+    buttonDisabled: {
+      opacity: 0.7,
+    },
+    buttonContent: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      gap: theme.spacing.sm,
+    },
+    buttonText: {
+      color: 'white',
+      fontSize: theme.typography.body.fontSize,
+      fontWeight: '600',
+    },
+    inlineItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: theme.spacing.md,
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.components.borderRadius.md,
+    },
+    inlineText: {
+      fontSize: theme.typography.body.fontSize,
+      color: theme.colors.text,
+    },
+    realWorldItem: {
+      flexDirection: 'row',
+      justifyContent: 'space-between',
+      alignItems: 'center',
+      padding: theme.spacing.md,
+      backgroundColor: theme.colors.surface,
+      borderRadius: theme.components.borderRadius.md,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+    },
+    overlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.5)',
+      justifyContent: 'center',
+      alignItems: 'center',
+    },
+    overlayContent: {
+      backgroundColor: theme.colors.surface,
+      padding: theme.spacing.xl,
+      borderRadius: theme.components.borderRadius.lg,
+      alignItems: 'center',
+      gap: theme.spacing.md,
+    },
+    overlayText: {
+      fontSize: theme.typography.body.fontSize,
+      color: theme.colors.text,
+      fontWeight: '600',
+    },
+  });
 
 export default SpinnerScreen;

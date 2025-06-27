@@ -1,6 +1,5 @@
-import { ScrollView, Text } from 'react-native';
 import React from 'react';
-import { Input, useTheme } from 'rnc-theme';
+import { Input, Typography, useTheme, VScroll } from 'rnc-theme';
 import {
   X,
   Info,
@@ -14,7 +13,7 @@ export default function InputScreen() {
   const [searchValue, setSearchValue] = React.useState('');
 
   return (
-    <ScrollView
+    <VScroll
       style={{
         flex: 1,
         backgroundColor: theme.colors.background,
@@ -25,9 +24,9 @@ export default function InputScreen() {
       }}
     >
       {/* Section Title */}
-      <Text style={{ fontSize: 16, fontWeight: '600', marginBottom: 8 }}>
+      <Typography style={{ fontSize: 16, fontWeight: '600', marginBottom: 8 }}>
         Basic Variants
-      </Text>
+      </Typography>
 
       {/* Default Variant */}
       <Input
@@ -54,7 +53,7 @@ export default function InputScreen() {
       <Input label="Ghost Input" placeholder="Ghost variant" variant="ghost" />
 
       {/* Section Title */}
-      <Text
+      <Typography
         style={{
           fontSize: 16,
           fontWeight: '600',
@@ -63,7 +62,7 @@ export default function InputScreen() {
         }}
       >
         Color Variants
-      </Text>
+      </Typography>
 
       {/* Primary Variant */}
       <Input
@@ -121,7 +120,7 @@ export default function InputScreen() {
       />
 
       {/* Section Title */}
-      <Text
+      <Typography
         style={{
           fontSize: 16,
           fontWeight: '600',
@@ -130,7 +129,7 @@ export default function InputScreen() {
         }}
       >
         Special Input Types
-      </Text>
+      </Typography>
 
       {/* Password Input */}
       <Input
@@ -165,7 +164,7 @@ export default function InputScreen() {
       />
 
       {/* Section Title */}
-      <Text
+      <Typography
         style={{
           fontSize: 16,
           fontWeight: '600',
@@ -174,7 +173,7 @@ export default function InputScreen() {
         }}
       >
         States
-      </Text>
+      </Typography>
 
       {/* Disabled State */}
       <Input
@@ -200,7 +199,7 @@ export default function InputScreen() {
       />
 
       {/* Section Title */}
-      <Text
+      <Typography
         style={{
           fontSize: 16,
           fontWeight: '600',
@@ -209,7 +208,7 @@ export default function InputScreen() {
         }}
       >
         Size Variants
-      </Text>
+      </Typography>
 
       {/* Extra Small Size */}
       <Input
@@ -250,6 +249,6 @@ export default function InputScreen() {
         size="xl"
         leftIcon={<Info size={24} color={theme.colors.textSecondary} />}
       />
-    </ScrollView>
+    </VScroll>
   );
 }

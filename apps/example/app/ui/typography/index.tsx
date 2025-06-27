@@ -1,4 +1,4 @@
-import { View, ScrollView, StyleSheet } from 'react-native';
+import { StyleSheet } from 'react-native';
 import React, { useState } from 'react';
 import {
   Body,
@@ -28,6 +28,8 @@ import {
   H6,
   Theme,
   useThemedStyles,
+  VScroll,
+  Box,
 } from 'rnc-theme';
 import { MaterialIcons } from '@expo/vector-icons';
 
@@ -37,7 +39,7 @@ export default function TypographyScreen() {
   const styles = useThemedStyles(createStyles);
 
   return (
-    <ScrollView
+    <VScroll
       style={[styles.container, { backgroundColor: theme.colors.background }]}
     >
       <VStack spacing="lg" padding="md">
@@ -179,9 +181,9 @@ export default function TypographyScreen() {
           <CardContent>
             <VStack spacing="md">
               <HStack spacing="md" align="center">
-                <View style={styles.avatar}>
+                <Box style={styles.avatar}>
                   <Typography style={styles.avatarText}>JD</Typography>
-                </View>
+                </Box>
                 <VStack spacing="xs" flex={1}>
                   <H4>Jane Doe</H4>
                   <Subtitle color={theme.colors.textSecondary}>
@@ -202,18 +204,18 @@ export default function TypographyScreen() {
               <VStack spacing="sm">
                 <H5>Skills</H5>
                 <HStack spacing="sm" wrap>
-                  <View style={styles.skillTag}>
+                  <Box style={styles.skillTag}>
                     <Small style={styles.skillText}>React Native</Small>
-                  </View>
-                  <View style={styles.skillTag}>
+                  </Box>
+                  <Box style={styles.skillTag}>
                     <Small style={styles.skillText}>TypeScript</Small>
-                  </View>
-                  <View style={styles.skillTag}>
+                  </Box>
+                  <Box style={styles.skillTag}>
                     <Small style={styles.skillText}>Node.js</Small>
-                  </View>
-                  <View style={styles.skillTag}>
+                  </Box>
+                  <Box style={styles.skillTag}>
                     <Small style={styles.skillText}>AWS</Small>
-                  </View>
+                  </Box>
                 </HStack>
               </VStack>
             </VStack>
@@ -234,14 +236,14 @@ export default function TypographyScreen() {
           <CardContent>
             <VStack spacing="md">
               <HStack spacing="md" align="flex-start">
-                <View
+                <Box
                   style={[
                     styles.notificationIcon,
                     { backgroundColor: theme.colors.primary },
                   ]}
                 >
                   <MaterialIcons name="notifications" size={16} color="white" />
-                </View>
+                </Box>
                 <VStack spacing="xs" flex={1}>
                   <H5>New Feature Available</H5>
                   <Body>
@@ -347,20 +349,20 @@ export default function TypographyScreen() {
             <VStack spacing="md">
               {/* Incoming message */}
               <HStack spacing="sm" align="flex-start">
-                <View style={styles.messageAvatar}>
+                <Box style={styles.messageAvatar}>
                   <Small style={styles.avatarText}>A</Small>
-                </View>
+                </Box>
                 <VStack spacing="xs" flex={1}>
                   <HStack spacing="sm" align="center">
                     <Subtitle>Alice Johnson</Subtitle>
                     <Small color={theme.colors.textSecondary}>10:30 AM</Small>
                   </HStack>
-                  <View style={[styles.messageBubble, styles.incomingMessage]}>
+                  <Box style={[styles.messageBubble, styles.incomingMessage]}>
                     <Body style={styles.messageText}>
                       Hey! How's the new typography component coming along? I
                       saw the preview and it looks amazing! 🎉
                     </Body>
-                  </View>
+                  </Box>
                 </VStack>
               </HStack>
 
@@ -371,18 +373,18 @@ export default function TypographyScreen() {
                     <Small color={theme.colors.textSecondary}>10:32 AM</Small>
                     <Subtitle>You</Subtitle>
                   </HStack>
-                  <View style={[styles.messageBubble, styles.outgoingMessage]}>
+                  <Box style={[styles.messageBubble, styles.outgoingMessage]}>
                     <Body style={styles.outgoingMessageText}>
                       Thanks! It's been a lot of work but I'm really happy with
                       how it turned out. The semantic colors and HTML-like
                       components make it so much easier to use.
                     </Body>
-                  </View>
+                  </Box>
                   <TextSuccess>✓ Read</TextSuccess>
                 </VStack>
-                <View style={styles.messageAvatar}>
+                <Box style={styles.messageAvatar}>
                   <Small style={styles.avatarText}>Y</Small>
-                </View>
+                </Box>
               </HStack>
             </VStack>
           </CardContent>
@@ -561,7 +563,7 @@ export default function TypographyScreen() {
                 <Typography variant="subtitle" weight="600">
                   Featured Content
                 </Typography>
-                <View
+                <Box
                   style={{
                     backgroundColor: theme.colors.error,
                     paddingHorizontal: 6,
@@ -570,7 +572,7 @@ export default function TypographyScreen() {
                   }}
                 >
                   <Small style={{ color: 'white', fontSize: 10 }}>NEW</Small>
-                </View>
+                </Box>
               </HStack>
 
               <HStack spacing="sm" align="center">
@@ -649,7 +651,7 @@ export default function TypographyScreen() {
           <CardContent>
             <VStack spacing="md">
               <HStack spacing="md" align="flex-start">
-                <View
+                <Box
                   style={{
                     width: 80,
                     height: 80,
@@ -664,7 +666,7 @@ export default function TypographyScreen() {
                     size={40}
                     color={theme.colors.primary}
                   />
-                </View>
+                </Box>
                 <VStack spacing="xs" flex={1}>
                   <H4>iPhone 15 Pro Max</H4>
                   <Typography
@@ -699,7 +701,7 @@ export default function TypographyScreen() {
               </Typography>
 
               <HStack spacing="sm">
-                <View
+                <Box
                   style={{
                     backgroundColor: theme.colors.success + '20',
                     paddingHorizontal: 8,
@@ -714,8 +716,8 @@ export default function TypographyScreen() {
                   >
                     In Stock
                   </Typography>
-                </View>
-                <View
+                </Box>
+                <Box
                   style={{
                     backgroundColor: theme.colors.info + '20',
                     paddingHorizontal: 8,
@@ -730,7 +732,7 @@ export default function TypographyScreen() {
                   >
                     Free Shipping
                   </Typography>
-                </View>
+                </Box>
               </HStack>
             </VStack>
           </CardContent>
@@ -789,7 +791,7 @@ export default function TypographyScreen() {
           </CardContent>
         </Card>
       </VStack>
-    </ScrollView>
+    </VScroll>
   );
 }
 

@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react';
-import { View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   ThemeManager,
   ThemePresetConfig,
@@ -15,9 +15,10 @@ import {
   Theme,
   VScroll,
   Heading,
+  Box,
 } from 'rnc-theme';
 
-const ThemeManagerExampleScreen: React.FC = () => {
+const ThemeManagerScreen: React.FC = () => {
   const { theme } = useTheme();
   const styles = useThemedStyles(createStyles);
 
@@ -1014,7 +1015,7 @@ const ThemeManagerExampleScreen: React.FC = () => {
 
   return (
     <VScroll>
-      <View style={styles.container}>
+      <Box style={styles.container}>
         {/* Default ThemeManager */}
         <Heading style={{ paddingHorizontal: 16 }}>
           Default Theme Manager
@@ -1034,7 +1035,7 @@ const ThemeManagerExampleScreen: React.FC = () => {
                 messages.
               </Typography>
 
-              <View style={styles.buttonContainer}>
+              <Box style={styles.buttonContainer}>
                 <Button variant="primary" style={styles.demoButton}>
                   <ButtonText>Primary Button</ButtonText>
                 </Button>
@@ -1046,46 +1047,46 @@ const ThemeManagerExampleScreen: React.FC = () => {
                 <Button variant="outline" style={styles.demoButton}>
                   <ButtonText>Outline Button</ButtonText>
                 </Button>
-              </View>
+              </Box>
 
-              <View style={styles.colorDemo}>
-                <View
+              <Box style={styles.colorDemo}>
+                <Box
                   style={[
                     styles.colorBox,
                     { backgroundColor: theme.colors.primary },
                   ]}
                 />
-                <View
+                <Box
                   style={[
                     styles.colorBox,
                     { backgroundColor: theme.colors.secondary },
                   ]}
                 />
-                <View
+                <Box
                   style={[
                     styles.colorBox,
                     { backgroundColor: theme.colors.accent },
                   ]}
                 />
-                <View
+                <Box
                   style={[
                     styles.colorBox,
                     { backgroundColor: theme.colors.success },
                   ]}
                 />
-                <View
+                <Box
                   style={[
                     styles.colorBox,
                     { backgroundColor: theme.colors.warning },
                   ]}
                 />
-                <View
+                <Box
                   style={[
                     styles.colorBox,
                     { backgroundColor: theme.colors.error },
                   ]}
                 />
-              </View>
+              </Box>
             </CardContent>
           </Card>
         </ThemeManager>
@@ -1131,7 +1132,7 @@ const ThemeManagerExampleScreen: React.FC = () => {
                 and messages compared to the default version above.
               </Typography>
 
-              <View style={styles.buttonContainer}>
+              <Box style={styles.buttonContainer}>
                 <Button variant="primary" style={styles.demoButton}>
                   <ButtonText>Tombol Utama</ButtonText>
                 </Button>
@@ -1143,85 +1144,86 @@ const ThemeManagerExampleScreen: React.FC = () => {
                 <Button variant="outline" style={styles.demoButton}>
                   <ButtonText>Tombol Outline</ButtonText>
                 </Button>
-              </View>
+              </Box>
 
-              <View style={styles.colorDemo}>
-                <View
+              <Box style={styles.colorDemo}>
+                <Box
                   style={[
                     styles.colorBox,
                     { backgroundColor: theme.colors.primary },
                   ]}
                 />
-                <View
+                <Box
                   style={[
                     styles.colorBox,
                     { backgroundColor: theme.colors.secondary },
                   ]}
                 />
-                <View
+                <Box
                   style={[
                     styles.colorBox,
                     { backgroundColor: theme.colors.accent },
                   ]}
                 />
-                <View
+                <Box
                   style={[
                     styles.colorBox,
                     { backgroundColor: theme.colors.success },
                   ]}
                 />
-                <View
+                <Box
                   style={[
                     styles.colorBox,
                     { backgroundColor: theme.colors.warning },
                   ]}
                 />
-                <View
+                <Box
                   style={[
                     styles.colorBox,
                     { backgroundColor: theme.colors.error },
                   ]}
                 />
-              </View>
+              </Box>
             </CardContent>
           </Card>
         </ThemeManager>
-      </View>
+      </Box>
     </VScroll>
   );
 };
 
-const createStyles = (theme: Theme) => ({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  },
-  demoCard: {
-    marginBottom: theme.spacing.lg,
-  },
-  demoText: {
-    marginBottom: theme.spacing.md,
-    lineHeight: 24,
-  },
-  buttonContainer: {
-    marginBottom: theme.spacing.lg,
-  },
-  demoButton: {
-    marginBottom: theme.spacing.sm,
-  },
-  colorDemo: {
-    flexDirection: 'row' as const,
-    flexWrap: 'wrap' as const,
-    justifyContent: 'space-between' as const,
-  },
-  colorBox: {
-    width: 40,
-    height: 40,
-    borderRadius: theme.components.borderRadius.md,
-    marginBottom: theme.spacing.sm,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-  },
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    demoCard: {
+      marginBottom: theme.spacing.lg,
+    },
+    demoText: {
+      marginBottom: theme.spacing.md,
+      lineHeight: 24,
+    },
+    buttonContainer: {
+      marginBottom: theme.spacing.lg,
+    },
+    demoButton: {
+      marginBottom: theme.spacing.sm,
+    },
+    colorDemo: {
+      flexDirection: 'row',
+      flexWrap: 'wrap',
+      justifyContent: 'space-between',
+    },
+    colorBox: {
+      width: 40,
+      height: 40,
+      borderRadius: theme.components.borderRadius.md,
+      marginBottom: theme.spacing.sm,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+    },
+  });
 
-export default ThemeManagerExampleScreen;
+export default ThemeManagerScreen;

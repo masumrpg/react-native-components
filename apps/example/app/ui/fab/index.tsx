@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { View, StyleSheet, ScrollView, Switch } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   Fab,
   FabVariant,
@@ -11,9 +11,10 @@ import {
   HStack,
   Button,
   ButtonText,
-  useTheme,
   useThemedStyles,
   Theme,
+  Box,
+  VScroll,
 } from 'rnc-theme';
 import {
   BicepsFlexed,
@@ -84,14 +85,9 @@ const createStyles = (theme: Theme) =>
   });
 
 export default function FabScreen() {
-  const { theme, themeMode, setThemeMode } = useTheme();
   const styles = useThemedStyles(createStyles);
   const [fabVariant, setFabVariant] = useState<FabVariant>('single');
   const [selectedExample, setSelectedExample] = useState<string>('basic');
-
-  const toggleTheme = () => {
-    setThemeMode(themeMode === 'light' ? 'dark' : 'light');
-  };
 
   const fabVariants: { key: FabVariant; label: string; description: string }[] =
     [
@@ -281,8 +277,8 @@ export default function FabScreen() {
   };
 
   return (
-    <View style={styles.container}>
-      <ScrollView
+    <Box style={styles.container}>
+      <VScroll
         style={styles.container}
         contentContainerStyle={styles.content}
         showsVerticalScrollIndicator={false}
@@ -301,22 +297,6 @@ export default function FabScreen() {
                   Each variant offers unique interaction patterns and visual
                   layouts.
                 </Typography>
-
-                {/* Theme Toggle */}
-                <View style={styles.themeToggle}>
-                  <Typography variant="body">
-                    Dark Mode: {themeMode === 'dark' ? 'On' : 'Off'}
-                  </Typography>
-                  <Switch
-                    value={themeMode === 'dark'}
-                    onValueChange={toggleTheme}
-                    trackColor={{
-                      false: theme.colors.border,
-                      true: theme.colors.primary,
-                    }}
-                    thumbColor={theme.colors.background}
-                  />
-                </View>
               </VStack>
             </CardContent>
           </Card>
@@ -410,12 +390,12 @@ export default function FabScreen() {
           </Card>
 
           {/* Spacer for FAB visibility */}
-          <View style={{ height: 120 }} />
+          <Box style={{ height: 120 }} />
         </VStack>
-      </ScrollView>
+      </VScroll>
 
       {/* Render the selected FAB */}
       {renderFab()}
-    </View>
+    </Box>
   );
 }

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, StyleSheet, View } from 'react-native';
+import { StyleSheet } from 'react-native';
 import {
   Skeleton,
   SkeletonText,
@@ -10,6 +10,8 @@ import {
   Button,
   ButtonText,
   Typography,
+  VScroll,
+  Box,
 } from 'rnc-theme';
 
 const SkeletonScreen = () => {
@@ -20,7 +22,7 @@ const SkeletonScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <VScroll themed style={styles.container} contentContainerStyle={styles.content}>
       {/* Control Button */}
       <Card margin="md">
         <CardContent>
@@ -37,13 +39,13 @@ const SkeletonScreen = () => {
         <CardHeader title="Basic Skeleton" />
         <CardContent>
           {isLoading ? (
-            <View>
+            <Box>
               <Skeleton width="100%" height={20} style={styles.mb8} />
               <Skeleton width="80%" height={20} style={styles.mb8} />
               <Skeleton width="60%" height={20} />
-            </View>
+            </Box>
           ) : (
-            <View>
+            <Box>
               <Typography style={styles.mb8}>
                 This is the actual content that would be displayed.
               </Typography>
@@ -51,7 +53,7 @@ const SkeletonScreen = () => {
                 The skeleton provides a placeholder while loading.
               </Typography>
               <Typography>Content is now fully loaded!</Typography>
-            </View>
+            </Box>
           )}
         </CardContent>
       </Card>
@@ -63,20 +65,19 @@ const SkeletonScreen = () => {
           {isLoading ? (
             <SkeletonText lines={4} lineHeight={18} lastLineWidth="70%" />
           ) : (
-            <View>
+            <Box>
               <Typography style={styles.mb8}>
                 Lorem ipsum dolor sit amet, consectetur adipiscing elit.
               </Typography>
               <Typography style={styles.mb8}>
-                Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                Sed do eiusmod tempor incididunt ut labore et dolore magna
+                aliqua.
               </Typography>
               <Typography style={styles.mb8}>
                 Ut enim ad minim veniam, quis nostrud exercitation.
               </Typography>
-              <Typography>
-                Duis aute irure dolor in reprehenderit.
-              </Typography>
-            </View>
+              <Typography>Duis aute irure dolor in reprehenderit.</Typography>
+            </Box>
           )}
         </CardContent>
       </Card>
@@ -85,28 +86,28 @@ const SkeletonScreen = () => {
       <Card margin="md">
         <CardHeader title="Skeleton Circle" />
         <CardContent>
-          <View style={styles.profileContainer}>
+          <Box style={styles.profileContainer}>
             {isLoading ? (
               <SkeletonCircle diameter={60} />
             ) : (
-              <View style={styles.avatar}>
+              <Box style={styles.avatar}>
                 <Typography style={styles.avatarText}>JD</Typography>
-              </View>
+              </Box>
             )}
-            <View style={styles.profileInfo}>
+            <Box style={styles.profileInfo}>
               {isLoading ? (
-                <View>
+                <Box>
                   <Skeleton width={120} height={20} style={styles.mb4} />
                   <Skeleton width={80} height={16} />
-                </View>
+                </Box>
               ) : (
-                <View>
+                <Box>
                   <Typography style={styles.profileName}>John Doe</Typography>
                   <Typography style={styles.profileRole}>Developer</Typography>
-                </View>
+                </Box>
               )}
-            </View>
-          </View>
+            </Box>
+          </Box>
         </CardContent>
       </Card>
 
@@ -115,45 +116,52 @@ const SkeletonScreen = () => {
         <CardHeader title="Complex Layout" />
         <CardContent>
           {isLoading ? (
-            <View>
+            <Box>
               {/* Header skeleton */}
-              <View style={styles.complexHeader}>
+              <Box style={styles.complexHeader}>
                 <SkeletonCircle diameter={40} />
-                <View style={styles.complexHeaderText}>
+                <Box style={styles.complexHeaderText}>
                   <Skeleton width={100} height={16} style={styles.mb4} />
                   <Skeleton width={60} height={12} />
-                </View>
-              </View>
+                </Box>
+              </Box>
 
               {/* Content skeleton */}
-              <View style={styles.mt16}>
-                <Skeleton width="100%" height={120} borderRadius="lg" style={styles.mb8} />
+              <Box style={styles.mt16}>
+                <Skeleton
+                  width="100%"
+                  height={120}
+                  borderRadius="lg"
+                  style={styles.mb8}
+                />
                 <SkeletonText lines={3} lineHeight={16} lastLineWidth="80%" />
-              </View>
+              </Box>
 
               {/* Footer skeleton */}
-              <View style={styles.complexFooter}>
+              <Box style={styles.complexFooter}>
                 <Skeleton width={60} height={32} borderRadius="md" />
                 <Skeleton width={80} height={32} borderRadius="md" />
-              </View>
-            </View>
+              </Box>
+            </Box>
           ) : (
-            <View>
+            <Box>
               {/* Actual content */}
-              <View style={styles.complexHeader}>
-                <View style={styles.actualAvatar}>
+              <Box style={styles.complexHeader}>
+                <Box style={styles.actualAvatar}>
                   <Typography style={styles.avatarText}>AB</Typography>
-                </View>
-                <View style={styles.complexHeaderText}>
+                </Box>
+                <Box style={styles.complexHeaderText}>
                   <Typography style={styles.actualName}>Alice Brown</Typography>
                   <Typography style={styles.actualRole}>Designer</Typography>
-                </View>
-              </View>
+                </Box>
+              </Box>
 
-              <View style={styles.mt16}>
-                <View style={styles.actualImage}>
-                  <Typography style={styles.imageText}>📸 Image Content</Typography>
-                </View>
+              <Box style={styles.mt16}>
+                <Box style={styles.actualImage}>
+                  <Typography style={styles.imageText}>
+                    📸 Image Content
+                  </Typography>
+                </Box>
                 <Typography style={styles.mb8}>
                   This is a complex layout with multiple elements.
                 </Typography>
@@ -163,27 +171,30 @@ const SkeletonScreen = () => {
                 <Typography>
                   Including images, text, and interactive elements.
                 </Typography>
-              </View>
+              </Box>
 
-              <View style={styles.complexFooter}>
+              <Box style={styles.complexFooter}>
                 <Button size="sm" variant="outline">
                   <ButtonText>Like</ButtonText>
                 </Button>
                 <Button size="sm" variant="primary">
                   <ButtonText>Share</ButtonText>
                 </Button>
-              </View>
-            </View>
+              </Box>
+            </Box>
           )}
         </CardContent>
       </Card>
 
       {/* 5. Product Card Skeleton - Real World Example */}
       <Card margin="md">
-        <CardHeader title="Product Card Skeleton" subtitle="E-commerce use case" />
+        <CardHeader
+          title="Product Card Skeleton"
+          subtitle="E-commerce use case"
+        />
         <CardContent>
           {isLoading ? (
-            <View>
+            <Box>
               {/* Product Image Skeleton */}
               <Skeleton
                 width="100%"
@@ -193,7 +204,7 @@ const SkeletonScreen = () => {
               />
 
               {/* Product Info Skeleton */}
-              <View style={styles.productInfo}>
+              <Box style={styles.productInfo}>
                 {/* Category */}
                 <Skeleton width={80} height={14} style={styles.mb8} />
 
@@ -202,150 +213,197 @@ const SkeletonScreen = () => {
                 <Skeleton width="75%" height={20} style={styles.mb8} />
 
                 {/* Rating */}
-                <View style={styles.ratingContainer}>
+                <Box style={styles.ratingContainer}>
                   <Skeleton width={100} height={16} style={styles.mr8} />
                   <Skeleton width={60} height={16} />
-                </View>
+                </Box>
 
                 {/* Price */}
-                <View style={styles.priceContainer}>
+                <Box style={styles.priceContainer}>
                   <Skeleton width={80} height={24} style={styles.mr8} />
                   <Skeleton width={60} height={18} />
-                </View>
+                </Box>
 
                 {/* Features */}
-                <View style={styles.featuresContainer}>
+                <Box style={styles.featuresContainer}>
                   <Skeleton width={120} height={16} style={styles.mb4} />
-                  <View style={styles.featuresList}>
+                  <Box style={styles.featuresList}>
                     <Skeleton width={90} height={14} style={styles.mr8} />
                     <Skeleton width={70} height={14} style={styles.mr8} />
                     <Skeleton width={100} height={14} />
-                  </View>
-                </View>
+                  </Box>
+                </Box>
 
                 {/* Action Buttons */}
-                <View style={styles.actionButtons}>
-                  <Skeleton width={120} height={40} borderRadius="md" style={styles.mr8} />
+                <Box style={styles.actionButtons}>
+                  <Skeleton
+                    width={120}
+                    height={40}
+                    borderRadius="md"
+                    style={styles.mr8}
+                  />
                   <Skeleton width={40} height={40} borderRadius="md" />
-                </View>
-              </View>
-            </View>
+                </Box>
+              </Box>
+            </Box>
           ) : (
-            <View>
+            <Box>
               {/* Actual Product Content */}
-              <View style={styles.productImage}>
-                <Typography style={styles.productImageText}>📱 iPhone 15 Pro</Typography>
-              </View>
+              <Box style={styles.productImage}>
+                <Typography style={styles.productImageText}>
+                  📱 iPhone 15 Pro
+                </Typography>
+              </Box>
 
-              <View style={styles.productInfo}>
+              <Box style={styles.productInfo}>
                 <Typography style={styles.categoryText}>Electronics</Typography>
 
                 <Typography style={styles.productTitle}>
                   iPhone 15 Pro Max 256GB Natural Titanium
                 </Typography>
 
-                <View style={styles.ratingContainer}>
-                  <Typography style={styles.ratingText}>⭐ 4.8 (2,341)</Typography>
-                  <Typography style={styles.reviewText}>reviews</Typography>
-                </View>
+                <Box style={styles.ratingContainer}>
+                  <Typography style={styles.ratingText}>
+                    ⭐ 4.8 (2,341)
+                  </Typography>
+                  <Typography style={styles.reBoxText}>reBoxs</Typography>
+                </Box>
 
-                <View style={styles.priceContainer}>
+                <Box style={styles.priceContainer}>
                   <Typography style={styles.currentPrice}>$1,199</Typography>
                   <Typography style={styles.originalPrice}>$1,299</Typography>
-                </View>
+                </Box>
 
-                <View style={styles.featuresContainer}>
-                  <Typography style={styles.featuresTitle}>Key Features:</Typography>
-                  <View style={styles.featuresList}>
+                <Box style={styles.featuresContainer}>
+                  <Typography style={styles.featuresTitle}>
+                    Key Features:
+                  </Typography>
+                  <Box style={styles.featuresList}>
                     <Typography style={styles.featureItem}>A17 Pro</Typography>
-                    <Typography style={styles.featureItem}>Pro Camera</Typography>
+                    <Typography style={styles.featureItem}>
+                      Pro Camera
+                    </Typography>
                     <Typography style={styles.featureItem}>Titanium</Typography>
-                  </View>
-                </View>
+                  </Box>
+                </Box>
 
-                <View style={styles.actionButtons}>
+                <Box style={styles.actionButtons}>
                   <Button variant="primary" style={styles.addToCartBtn}>
                     <ButtonText>Add to Cart</ButtonText>
                   </Button>
                   <Button variant="outline" style={styles.wishlistBtn}>
                     <ButtonText>♡</ButtonText>
                   </Button>
-                </View>
-              </View>
-            </View>
+                </Box>
+              </Box>
+            </Box>
           )}
         </CardContent>
       </Card>
 
       {/* 6. News Feed Skeleton - Social Media Use Case */}
       <Card margin="md">
-        <CardHeader title="News Feed Skeleton" subtitle="Social media use case" />
+        <CardHeader
+          title="News Feed Skeleton"
+          subtitle="Social media use case"
+        />
         <CardContent>
           {isLoading ? (
-            <View>
+            <Box>
               {/* Post Header */}
-              <View style={styles.postHeader}>
+              <Box style={styles.postHeader}>
                 <SkeletonCircle diameter={50} />
-                <View style={styles.postHeaderInfo}>
+                <Box style={styles.postHeaderInfo}>
                   <Skeleton width={120} height={16} style={styles.mb4} />
                   <Skeleton width={80} height={12} />
-                </View>
+                </Box>
                 <Skeleton width={24} height={24} />
-              </View>
+              </Box>
 
               {/* Post Content */}
-              <View style={styles.postContent}>
-                <SkeletonText lines={3} lineHeight={16} lastLineWidth="60%" style={styles.mb12} />
+              <Box style={styles.postContent}>
+                <SkeletonText
+                  lines={3}
+                  lineHeight={16}
+                  lastLineWidth="60%"
+                  style={styles.mb12}
+                />
 
                 {/* Post Image */}
-                <Skeleton width="100%" height={250} borderRadius="lg" style={styles.mb12} />
+                <Skeleton
+                  width="100%"
+                  height={250}
+                  borderRadius="lg"
+                  style={styles.mb12}
+                />
 
                 {/* Engagement Stats */}
-                <View style={styles.engagementStats}>
+                <Box style={styles.engagementStats}>
                   <Skeleton width={60} height={14} style={styles.mr16} />
                   <Skeleton width={80} height={14} style={styles.mr16} />
                   <Skeleton width={70} height={14} />
-                </View>
+                </Box>
 
                 {/* Action Buttons */}
-                <View style={styles.postActions}>
-                  <Skeleton width={60} height={32} borderRadius="md" style={styles.mr8} />
-                  <Skeleton width={70} height={32} borderRadius="md" style={styles.mr8} />
-                  <Skeleton width={60} height={32} borderRadius="md" style={styles.mr8} />
+                <Box style={styles.postActions}>
+                  <Skeleton
+                    width={60}
+                    height={32}
+                    borderRadius="md"
+                    style={styles.mr8}
+                  />
+                  <Skeleton
+                    width={70}
+                    height={32}
+                    borderRadius="md"
+                    style={styles.mr8}
+                  />
+                  <Skeleton
+                    width={60}
+                    height={32}
+                    borderRadius="md"
+                    style={styles.mr8}
+                  />
                   <Skeleton width={50} height={32} borderRadius="md" />
-                </View>
-              </View>
-            </View>
+                </Box>
+              </Box>
+            </Box>
           ) : (
-            <View>
+            <Box>
               {/* Actual Post Content */}
-              <View style={styles.postHeader}>
-                <View style={styles.postAvatar}>
+              <Box style={styles.postHeader}>
+                <Box style={styles.postAvatar}>
                   <Typography style={styles.avatarText}>MK</Typography>
-                </View>
-                <View style={styles.postHeaderInfo}>
+                </Box>
+                <Box style={styles.postHeaderInfo}>
                   <Typography style={styles.postAuthor}>Maria Kim</Typography>
                   <Typography style={styles.postTime}>2 hours ago</Typography>
-                </View>
+                </Box>
                 <Typography style={styles.postMenu}>⋯</Typography>
-              </View>
+              </Box>
 
-              <View style={styles.postContent}>
+              <Box style={styles.postContent}>
                 <Typography style={styles.postText}>
-                  Just finished an amazing hiking trip in the mountains! The view was absolutely breathtaking. Can't wait to go back next weekend.
+                  Just finished an amazing hiking trip in the mountains! The Box
+                  was absolutely breathtaking. Can't wait to go back next
+                  weekend.
                 </Typography>
 
-                <View style={styles.postImageContainer}>
-                  <Typography style={styles.postImageText}>🏔️ Mountain View</Typography>
-                </View>
+                <Box style={styles.postImageContainer}>
+                  <Typography style={styles.postImageText}>
+                    🏔️ Mountain Box
+                  </Typography>
+                </Box>
 
-                <View style={styles.engagementStats}>
+                <Box style={styles.engagementStats}>
                   <Typography style={styles.statText}>👍 234 likes</Typography>
-                  <Typography style={styles.statText}>💬 45 comments</Typography>
+                  <Typography style={styles.statText}>
+                    💬 45 comments
+                  </Typography>
                   <Typography style={styles.statText}>🔄 12 shares</Typography>
-                </View>
+                </Box>
 
-                <View style={styles.postActions}>
+                <Box style={styles.postActions}>
                   <Button size="sm" variant="ghost">
                     <ButtonText>Like</ButtonText>
                   </Button>
@@ -358,122 +416,158 @@ const SkeletonScreen = () => {
                   <Button size="sm" variant="ghost">
                     <ButtonText>Save</ButtonText>
                   </Button>
-                </View>
-              </View>
-            </View>
+                </Box>
+              </Box>
+            </Box>
           )}
         </CardContent>
       </Card>
 
       {/* 7. Dashboard Widget Skeleton - Analytics Use Case */}
       <Card margin="md">
-        <CardHeader title="Dashboard Widget" subtitle="Analytics dashboard use case" />
+        <CardHeader
+          title="Dashboard Widget"
+          subtitle="Analytics dashboard use case"
+        />
         <CardContent>
           {isLoading ? (
-            <View>
+            <Box>
               {/* Widget Header */}
-              <View style={styles.widgetHeader}>
+              <Box style={styles.widgetHeader}>
                 <Skeleton width={150} height={20} style={styles.mb4} />
                 <Skeleton width={100} height={14} />
-              </View>
+              </Box>
 
               {/* Stats Grid */}
-              <View style={styles.statsGrid}>
-                <View style={styles.statCard}>
-                  <Skeleton width={40} height={40} borderRadius="md" style={styles.mb8} />
+              <Box style={styles.statsGrid}>
+                <Box style={styles.statCard}>
+                  <Skeleton
+                    width={40}
+                    height={40}
+                    borderRadius="md"
+                    style={styles.mb8}
+                  />
                   <Skeleton width={60} height={24} style={styles.mb4} />
                   <Skeleton width={80} height={14} />
-                </View>
-                <View style={styles.statCard}>
-                  <Skeleton width={40} height={40} borderRadius="md" style={styles.mb8} />
+                </Box>
+                <Box style={styles.statCard}>
+                  <Skeleton
+                    width={40}
+                    height={40}
+                    borderRadius="md"
+                    style={styles.mb8}
+                  />
                   <Skeleton width={70} height={24} style={styles.mb4} />
                   <Skeleton width={90} height={14} />
-                </View>
-              </View>
+                </Box>
+              </Box>
 
               {/* Chart Area */}
-              <View style={styles.chartArea}>
-                <Skeleton width="100%" height={200} borderRadius="lg" style={styles.mb12} />
-              </View>
+              <Box style={styles.chartArea}>
+                <Skeleton
+                  width="100%"
+                  height={200}
+                  borderRadius="lg"
+                  style={styles.mb12}
+                />
+              </Box>
 
               {/* Recent Activity */}
-              <View style={styles.recentActivity}>
+              <Box style={styles.recentActivity}>
                 <Skeleton width={120} height={16} style={styles.mb12} />
                 {[1, 2, 3].map((item) => (
-                  <View key={item} style={styles.activityItem}>
+                  <Box key={item} style={styles.activityItem}>
                     <SkeletonCircle diameter={32} />
-                    <View style={styles.activityInfo}>
+                    <Box style={styles.activityInfo}>
                       <Skeleton width={150} height={14} style={styles.mb4} />
                       <Skeleton width={100} height={12} />
-                    </View>
+                    </Box>
                     <Skeleton width={60} height={12} />
-                  </View>
+                  </Box>
                 ))}
-              </View>
-            </View>
+              </Box>
+            </Box>
           ) : (
-            <View>
+            <Box>
               {/* Actual Dashboard Content */}
-              <View style={styles.widgetHeader}>
-                <Typography style={styles.widgetTitle}>Sales Overview</Typography>
-                <Typography style={styles.widgetSubtitle}>Last 30 days</Typography>
-              </View>
+              <Box style={styles.widgetHeader}>
+                <Typography style={styles.widgetTitle}>
+                  Sales OverBox
+                </Typography>
+                <Typography style={styles.widgetSubtitle}>
+                  Last 30 days
+                </Typography>
+              </Box>
 
-              <View style={styles.statsGrid}>
-                <View style={styles.statCard}>
-                  <View style={styles.statIcon}>
+              <Box style={styles.statsGrid}>
+                <Box style={styles.statCard}>
+                  <Box style={styles.statIcon}>
                     <Typography style={styles.statIconText}>💰</Typography>
-                  </View>
+                  </Box>
                   <Typography style={styles.statValue}>$24.5K</Typography>
                   <Typography style={styles.statLabel}>Revenue</Typography>
-                </View>
-                <View style={styles.statCard}>
-                  <View style={styles.statIcon}>
+                </Box>
+                <Box style={styles.statCard}>
+                  <Box style={styles.statIcon}>
                     <Typography style={styles.statIconText}>📊</Typography>
-                  </View>
+                  </Box>
                   <Typography style={styles.statValue}>1,234</Typography>
                   <Typography style={styles.statLabel}>Orders</Typography>
-                </View>
-              </View>
+                </Box>
+              </Box>
 
-              <View style={styles.chartContainer}>
+              <Box style={styles.chartContainer}>
                 <Typography style={styles.chartText}>📈 Sales Chart</Typography>
-              </View>
+              </Box>
 
-              <View style={styles.recentActivity}>
-                <Typography style={styles.activityTitle}>Recent Activity</Typography>
-                <View style={styles.activityItem}>
-                  <View style={styles.activityAvatar}>
+              <Box style={styles.recentActivity}>
+                <Typography style={styles.activityTitle}>
+                  Recent Activity
+                </Typography>
+                <Box style={styles.activityItem}>
+                  <Box style={styles.activityAvatar}>
                     <Typography style={styles.avatarText}>JD</Typography>
-                  </View>
-                  <View style={styles.activityInfo}>
-                    <Typography style={styles.activityText}>New order from John Doe</Typography>
-                    <Typography style={styles.activityTime}>5 minutes ago</Typography>
-                  </View>
+                  </Box>
+                  <Box style={styles.activityInfo}>
+                    <Typography style={styles.activityText}>
+                      New order from John Doe
+                    </Typography>
+                    <Typography style={styles.activityTime}>
+                      5 minutes ago
+                    </Typography>
+                  </Box>
                   <Typography style={styles.activityAmount}>$299</Typography>
-                </View>
-                <View style={styles.activityItem}>
-                  <View style={styles.activityAvatar}>
+                </Box>
+                <Box style={styles.activityItem}>
+                  <Box style={styles.activityAvatar}>
                     <Typography style={styles.avatarText}>SM</Typography>
-                  </View>
-                  <View style={styles.activityInfo}>
-                    <Typography style={styles.activityText}>Payment received from Sarah Miller</Typography>
-                    <Typography style={styles.activityTime}>12 minutes ago</Typography>
-                  </View>
+                  </Box>
+                  <Box style={styles.activityInfo}>
+                    <Typography style={styles.activityText}>
+                      Payment received from Sarah Miller
+                    </Typography>
+                    <Typography style={styles.activityTime}>
+                      12 minutes ago
+                    </Typography>
+                  </Box>
                   <Typography style={styles.activityAmount}>$150</Typography>
-                </View>
-                <View style={styles.activityItem}>
-                  <View style={styles.activityAvatar}>
+                </Box>
+                <Box style={styles.activityItem}>
+                  <Box style={styles.activityAvatar}>
                     <Typography style={styles.avatarText}>RJ</Typography>
-                  </View>
-                  <View style={styles.activityInfo}>
-                    <Typography style={styles.activityText}>Refund processed for Robert Johnson</Typography>
-                    <Typography style={styles.activityTime}>1 hour ago</Typography>
-                  </View>
+                  </Box>
+                  <Box style={styles.activityInfo}>
+                    <Typography style={styles.activityText}>
+                      Refund processed for Robert Johnson
+                    </Typography>
+                    <Typography style={styles.activityTime}>
+                      1 hour ago
+                    </Typography>
+                  </Box>
                   <Typography style={styles.activityAmount}>-$75</Typography>
-                </View>
-              </View>
-            </View>
+                </Box>
+              </Box>
+            </Box>
           )}
         </CardContent>
       </Card>
@@ -482,28 +576,28 @@ const SkeletonScreen = () => {
       <Card margin="md">
         <CardHeader title="Different Sizes" />
         <CardContent>
-          <View style={styles.sizesContainer}>
-            <View style={styles.sizeItem}>
+          <Box style={styles.sizesContainer}>
+            <Box style={styles.sizeItem}>
               <Typography style={styles.sizeLabel}>Extra Small</Typography>
               <Skeleton width="100%" size="xs" />
-            </View>
-            <View style={styles.sizeItem}>
+            </Box>
+            <Box style={styles.sizeItem}>
               <Typography style={styles.sizeLabel}>Small</Typography>
               <Skeleton width="100%" size="sm" />
-            </View>
-            <View style={styles.sizeItem}>
+            </Box>
+            <Box style={styles.sizeItem}>
               <Typography style={styles.sizeLabel}>Medium</Typography>
               <Skeleton width="100%" size="md" />
-            </View>
-            <View style={styles.sizeItem}>
+            </Box>
+            <Box style={styles.sizeItem}>
               <Typography style={styles.sizeLabel}>Large</Typography>
               <Skeleton width="100%" size="lg" />
-            </View>
-            <View style={styles.sizeItem}>
+            </Box>
+            <Box style={styles.sizeItem}>
               <Typography style={styles.sizeLabel}>Extra Large</Typography>
               <Skeleton width="100%" size="xl" />
-            </View>
-          </View>
+            </Box>
+          </Box>
         </CardContent>
       </Card>
 
@@ -511,25 +605,34 @@ const SkeletonScreen = () => {
       <Card margin="md">
         <CardHeader title="Static Skeleton" subtitle="Without animation" />
         <CardContent>
-          <View>
-            <Skeleton width="100%" height={20} animated={false} style={styles.mb8} />
-            <Skeleton width="80%" height={20} animated={false} style={styles.mb8} />
+          <Box>
+            <Skeleton
+              width="100%"
+              height={20}
+              animated={false}
+              style={styles.mb8}
+            />
+            <Skeleton
+              width="80%"
+              height={20}
+              animated={false}
+              style={styles.mb8}
+            />
             <Skeleton width="60%" height={20} animated={false} />
-          </View>
+          </Box>
         </CardContent>
       </Card>
-    </ScrollView>
+    </VScroll>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   content: {
     padding: 16,
-    gap: 16
+    gap: 16,
   },
   mb4: {
     marginBottom: 4,
@@ -675,7 +778,7 @@ const styles = StyleSheet.create({
     fontWeight: '600',
     marginRight: 8,
   },
-  reviewText: {
+  reBoxText: {
     fontSize: 14,
     color: '#666',
   },

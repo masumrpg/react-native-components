@@ -33,7 +33,7 @@ type CardFooterProps = React.ComponentPropsWithoutRef<typeof View> & {
   style?: ViewStyle;
   padding?: keyof Theme['spacing'];
   showBorder?: boolean;
-  justifyContent?: ViewStyle['justifyContent'];
+  justify?: ViewStyle['justifyContent'];
 };
 
 type CardHeaderProps = React.ComponentPropsWithoutRef<typeof View> & {
@@ -256,7 +256,7 @@ const CardFooter = forwardRef<React.ComponentRef<typeof View>, CardFooterProps>(
       style,
       padding = 'sm',
       showBorder = false,
-      justifyContent = 'flex-end',
+      justify: justifyContent = 'flex-end',
       ...props
     },
     ref

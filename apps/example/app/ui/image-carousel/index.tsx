@@ -1,15 +1,11 @@
 import {
   StyleSheet,
-  SafeAreaView,
   Platform,
-  StatusBar,
-  View,
-  Text,
   useWindowDimensions,
-  ScrollView,
+  StatusBar,
 } from 'react-native';
 import React from 'react';
-import { ImageCarousel, useTheme } from 'rnc-theme';
+import { Box, ImageCarousel, Typography, useTheme, VScroll } from 'rnc-theme';
 
 const ImageCarouselScreen = () => {
   const { theme } = useTheme();
@@ -62,19 +58,25 @@ const ImageCarouselScreen = () => {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView>
-        <View style={styles.carouselContainer}>
-          <Text style={styles.text}>Image Carousel Square</Text>
+    <Box themed style={[styles.container, { paddingVertical: 16 }]}>
+      <VScroll>
+        <Box style={styles.carouselContainer}>
+          <Typography style={styles.sectionTitle}>
+            Image Carousel Square
+          </Typography>
           <ImageCarousel data={data} autoPlay={true} pagination={true} />
-        </View>
-        <View style={styles.carouselContainer}>
-          <Text style={styles.text}>Image Carousel Landscape</Text>
+        </Box>
+        <Box style={styles.carouselContainer}>
+          <Typography style={styles.sectionTitle}>
+            Image Carousel Landscape
+          </Typography>
           <ImageCarousel data={data2} autoPlay={true} pagination={true} />
-        </View>
+        </Box>
 
-        <View style={styles.carouselContainer}>
-          <Text style={styles.sectionTitle}>Fullscreen Landscape</Text>
+        <Box style={styles.carouselContainer}>
+          <Typography style={styles.sectionTitle}>
+            Fullscreen Landscape
+          </Typography>
           <ImageCarousel
             data={data2}
             fullscreen={true}
@@ -84,12 +86,12 @@ const ImageCarouselScreen = () => {
             autoPlay={true}
             autoPlayInterval={5000}
           />
-        </View>
+        </Box>
 
-        <View style={styles.carouselContainer}>
-          <Text style={styles.sectionTitle}>
+        <Box style={styles.carouselContainer}>
+          <Typography style={styles.sectionTitle}>
             Fullscreen with Overlay Controls
-          </Text>
+          </Typography>
           <ImageCarousel
             data={data2}
             fullscreen={true}
@@ -100,10 +102,12 @@ const ImageCarouselScreen = () => {
             dotStyle={{ backgroundColor: 'rgba(255,255,255,0.5)' }}
             activeDotStyle={{ backgroundColor: 'white' }}
           />
-        </View>
+        </Box>
 
-        <View style={styles.carouselContainer}>
-          <Text style={styles.sectionTitle}>Custom Styled Carousel</Text>
+        <Box style={styles.carouselContainer}>
+          <Typography style={styles.sectionTitle}>
+            Custom Styled Carousel
+          </Typography>
           <ImageCarousel
             data={data}
             pagination={true}
@@ -125,10 +129,10 @@ const ImageCarouselScreen = () => {
               width: 20,
             }}
           />
-        </View>
+        </Box>
 
-        <View style={[styles.carouselContainer, { marginBottom: 30 }]}>
-          <Text style={styles.sectionTitle}>Mini Carousel</Text>
+        <Box style={[styles.carouselContainer, { marginBottom: 30 }]}>
+          <Typography style={styles.sectionTitle}>Mini Carousel</Typography>
           <ImageCarousel
             data={data2}
             width={width * 0.5}
@@ -138,9 +142,9 @@ const ImageCarouselScreen = () => {
             autoPlayInterval={1500}
             imageStyle={{ borderRadius: theme.components.borderRadius.sm }}
           />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </Box>
+      </VScroll>
+    </Box>
   );
 };
 
@@ -150,17 +154,14 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: Platform.OS === 'android' ? StatusBar.currentHeight : 0,
-    backgroundColor: 'white',
   },
   sectionTitle: {
     fontSize: 18,
     fontWeight: '600',
     textAlign: 'center',
-    color: 'black',
     marginBottom: 16,
     marginTop: 16,
   },
-  text: { textAlign: 'center', color: 'black', marginBottom: 10 },
   carouselContainer: {
     marginBottom: 20,
   },

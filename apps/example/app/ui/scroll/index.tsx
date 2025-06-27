@@ -1,5 +1,7 @@
+import { router } from 'expo-router';
+import { ArrowLeft } from 'lucide-react-native';
 import React, { useState } from 'react';
-import { View, Image } from 'react-native';
+import { Image, StyleSheet } from 'react-native';
 import Animated from 'react-native-reanimated';
 import {
   VScroll,
@@ -15,6 +17,10 @@ import {
   useThemedStyles,
   Theme,
   HideOnScrollResult,
+  useTheme,
+  Button,
+  ButtonIcon,
+  ToggleMode,
 } from 'rnc-theme';
 
 interface Product {
@@ -179,6 +185,7 @@ const stories: Story[] = [
 const HEADER_HEIGHT = 100;
 
 const ScrollScreen = () => {
+  const { theme } = useTheme();
   const styles = useThemedStyles(createStyles);
   const [hideOnScrollResult, setHideOnScrollResult] =
     useState<HideOnScrollResult | null>(null);
@@ -211,18 +218,23 @@ const ScrollScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <Box style={styles.container}>
       {/* Animated Header with hideOnScroll integration */}
       <Animated.View style={[styles.header, hideOnScrollResult?.animatedStyle]}>
-        <Box
+        <HStack
+          justify="space-between"
           padding="md"
-          backgroundColor="surface"
+          backgroundColor={theme.colors.surface}
           style={styles.headerContent}
         >
+          <Button variant="ghost" onPress={() => router.back()}>
+            <ButtonIcon icon={<ArrowLeft color={theme.colors.text} />} />
+          </Button>
           <Typography variant="h6" weight="600">
             Scroll Examples
           </Typography>
-        </Box>
+          <ToggleMode styleType="ghost" />
+        </HStack>
       </Animated.View>
 
       <VScroll
@@ -246,12 +258,15 @@ const ScrollScreen = () => {
             <CardContent>
               <HScroll backgroundColor="surface" padding="sm" borderRadius="md">
                 <HStack spacing="sm">
-                  {[1, 2, 3, 4, 5].map((item) => (
+                  {[
+                    1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17,
+                    18, 19, 20,
+                  ].map((item) => (
                     <Box
                       key={item}
                       width={100}
                       height={100}
-                      backgroundColor="primary"
+                      backgroundColor={theme.colors.primary}
                       borderRadius="md"
                       padding="md"
                     >
@@ -275,8 +290,8 @@ const ScrollScreen = () => {
                 themed
                 renderItem={({ item }) => (
                   <Box padding="xs">
-                    <View style={styles.storyContainer}>
-                      <View
+                    <Box style={styles.storyContainer}>
+                      <Box
                         style={[
                           styles.storyRing,
                           item.viewed && styles.storyRingViewed,
@@ -286,14 +301,14 @@ const ScrollScreen = () => {
                           source={{ uri: item.avatar }}
                           style={styles.storyAvatar}
                         />
-                      </View>
+                      </Box>
                       <Typography
                         variant="caption"
                         style={styles.storyUsername}
                       >
                         {item.username}
                       </Typography>
-                    </View>
+                    </Box>
                   </Box>
                 )}
                 keyExtractor={(item) => item.id}
@@ -337,12 +352,8 @@ const ScrollScreen = () => {
                       <Typography variant="subtitle" weight="600">
                         {item.name}
                       </Typography>
-                      <Typography variant="body" color="primary">
-                        ${item.price}
-                      </Typography>
-                      <Typography variant="caption" color="textSecondary">
-                        {item.category}
-                      </Typography>
+                      <Typography variant="body">${item.price}</Typography>
+                      <Typography variant="caption">{item.category}</Typography>
                     </VStack>
                   </Box>
                 )}
@@ -367,85 +378,85 @@ const ScrollScreen = () => {
           </Card>
         </VStack>
       </VScroll>
-    </View>
+    </Box>
   );
 };
 
-const createStyles = (theme: Theme) => ({
-  container: {
-    flex: 1,
-    backgroundColor: theme.colors.background,
-  } as const,
-  header: {
-    position: 'absolute' as const,
-    top: 0,
-    left: 0,
-    right: 0,
-    zIndex: 1000,
-    backgroundColor: theme.colors.background,
-    shadowColor: 'black',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 5,
-  } as const,
-  headerContent: {
-    height: HEADER_HEIGHT,
-    justifyContent: 'center' as const,
-  } as const,
-  content: {
-    flex: 1,
-    paddingTop: 100, // Add margin to account for header height
-  } as const,
-  title: {
-    textAlign: 'center' as const,
-    marginBottom: theme.spacing.lg,
-  } as const,
-  storyContainer: {
-    alignItems: 'center' as const,
-    width: 80,
-  } as const,
-  storyRing: {
-    width: 64,
-    height: 64,
-    borderRadius: 32,
-    borderWidth: 2,
-    borderColor: theme.colors.primary,
-    padding: 2,
-  } as const,
-  storyRingViewed: {
-    borderColor: theme.colors.border,
-  } as const,
-  storyAvatar: {
-    width: '100%',
-    height: '100%',
-    borderRadius: 30,
-  } as const,
-  storyUsername: {
-    marginTop: 4,
-    maxWidth: 80,
-  } as const,
-  productCard: {
-    shadowColor: 'black',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 2,
-  } as const,
-  productImage: {
-    width: '100%',
-    height: 150,
-    borderRadius: theme.components.borderRadius.md,
-  } as const,
-  messageContainer: {
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.border,
-  } as const,
-  messageAvatar: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-  } as const,
-});
+const createStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: theme.colors.background,
+    },
+    header: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      zIndex: 1000,
+      backgroundColor: theme.colors.background,
+      shadowColor: 'black',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 5,
+    },
+    headerContent: {
+      height: HEADER_HEIGHT,
+    },
+    content: {
+      flex: 1,
+      paddingTop: 100, // Add margin to account for header height
+    },
+    title: {
+      textAlign: 'center',
+      marginBottom: theme.spacing.lg,
+    },
+    storyContainer: {
+      alignItems: 'center',
+      width: 80,
+    },
+    storyRing: {
+      width: 64,
+      height: 64,
+      borderRadius: 32,
+      borderWidth: 2,
+      borderColor: theme.colors.primary,
+      padding: 2,
+    },
+    storyRingViewed: {
+      borderColor: theme.colors.border,
+    },
+    storyAvatar: {
+      width: '100%',
+      height: '100%',
+      borderRadius: 30,
+    },
+    storyUsername: {
+      marginTop: 4,
+      maxWidth: 80,
+    },
+    productCard: {
+      shadowColor: 'black',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 2,
+    },
+    productImage: {
+      width: '100%',
+      height: 150,
+      borderRadius: theme.components.borderRadius.md,
+    },
+    messageContainer: {
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.border,
+    },
+    messageAvatar: {
+      width: 48,
+      height: 48,
+      borderRadius: 24,
+    },
+  });
 
 export default ScrollScreen;
