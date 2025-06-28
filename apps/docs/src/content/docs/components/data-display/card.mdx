@@ -1,0 +1,615 @@
+---
+title: Card
+description: Flexible card component with multiple variants, customizable headers, content areas, and footers for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Card provides a versatile container component with built-in theming, elevation support, and modular sub-components for headers, content, and footers. It supports multiple visual variants and responsive sizing options with platform-specific shadow handling.
+
+## Import
+
+```tsx
+import { Card, CardHeader, CardContent, CardFooter } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Card">
+    ```tsx
+    <Card>
+      <CardContent>
+        <Text>Basic card content</Text>
+      </CardContent>
+    </Card>
+    ```
+  </TabItem>
+
+  <TabItem label="With Header">
+    ```tsx
+    <Card variant="primary">
+      <CardHeader title="Card Title" subtitle="Optional subtitle" />
+      <CardContent>
+        <Text>Card content goes here</Text>
+      </CardContent>
+    </Card>
+    ```
+  </TabItem>
+
+  <TabItem label="Complete Card">
+    ```tsx
+    <Card variant="outline" elevation={2}>
+      <CardHeader
+        title="User Profile"
+        subtitle="Manage your account settings"
+        borderBottom
+      />
+      <CardContent>
+        <Text>Profile information and settings</Text>
+      </CardContent>
+      <CardFooter showBorder justify="space-between">
+        <Button variant="outline">Cancel</Button>
+        <Button variant="primary">Save</Button>
+      </CardFooter>
+    </Card>
+    ```
+  </TabItem>
+
+  <TabItem label="Disabled State">
+    ```tsx
+    <Card disabled variant="secondary">
+      <CardContent>
+        <Text>This card is disabled</Text>
+      </CardContent>
+    </Card>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Card Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `ComponentVariant` | `'default'` | Visual style variant |
+| `size` | `ComponentSize` | `'md'` | Card size (xs, sm, md, lg, xl) |
+| `disabled` | `boolean` | `false` | Disable card interactions |
+| `padding` | `keyof Theme['spacing']` | `'md'` | Internal padding |
+| `margin` | `keyof Theme['spacing']` | - | External margin |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | `'lg'` | Border radius value |
+| `elevation` | `number` | `3` | Shadow elevation (0 for no shadow) |
+| `shadowOpacity` | `number` | `0.1` | Shadow opacity value |
+| `backgroundColor` | `string` | - | Custom background color |
+
+### CardHeader Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | - | Header title text |
+| `subtitle` | `string` | - | Header subtitle text |
+| `padding` | `keyof Theme['spacing']` | `'sm'` | Header padding |
+| `titleVariant` | `keyof Theme['typography']` | `'subtitle'` | Title typography variant |
+| `subtitleVariant` | `keyof Theme['typography']` | `'body'` | Subtitle typography variant |
+| `borderBottom` | `boolean` | `false` | Show bottom border |
+| `titleStyle` | `TextStyle` | - | Custom title styles |
+| `subtitleStyle` | `TextStyle` | - | Custom subtitle styles |
+
+### CardContent Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `padding` | `keyof Theme['spacing']` | `'sm'` | Content padding |
+| `style` | `ViewStyle` | - | Additional content styles |
+
+### CardFooter Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `padding` | `keyof Theme['spacing']` | `'sm'` | Footer padding |
+| `showBorder` | `boolean` | `false` | Show top border |
+| `justify` | `ViewStyle['justifyContent']` | `'flex-end'` | Content justification |
+| `style` | `ViewStyle` | - | Additional footer styles |
+
+### Variants
+
+| Variant | Description | Use Case |
+|---------|-------------|----------|
+| `default` | Standard card appearance | General content containers |
+| `primary` | Primary branded card | Important content, featured items |
+| `secondary` | Secondary styled card | Supporting content |
+| `outline` | Outlined transparent card | Subtle containers, form sections |
+| `ghost` | Minimal transparent card | Subtle grouping without visual weight |
+| `filled` | Filled background card | Content differentiation |
+| `success` | Success state card | Positive feedback, confirmations |
+| `error` | Error state card | Error messages, warnings |
+| `warning` | Warning state card | Caution notices |
+| `info` | Information card | Tips, help content |
+| `destructive` | Destructive action card | Delete confirmations, critical actions |
+
+## Examples
+
+### Information Cards
+
+```tsx
+<VStack spacing="lg" padding="lg">
+  <Card variant="info">
+    <CardHeader
+      title="Tip"
+      subtitle="Improve your workflow"
+      borderBottom
+    />
+    <CardContent>
+      <Text>
+        Use keyboard shortcuts to navigate faster through the application.
+        Press Ctrl+K to open the command palette.
+      </Text>
+    </CardContent>
+  </Card>
+
+  <Card variant="warning">
+    <CardHeader title="Storage Warning" />
+    <CardContent>
+      <Text>
+        You're running low on storage space. Consider deleting old files
+        or upgrading your plan.
+      </Text>
+    </CardContent>
+    <CardFooter>
+      <Button variant="outline" size="sm">Learn More</Button>
+    </CardFooter>
+  </Card>
+</VStack>
+```
+
+### User Profile Cards
+
+```tsx
+<Card variant="default" elevation={4}>
+  <CardHeader
+    title="John Doe"
+    subtitle="Software Engineer"
+    borderBottom
+  />
+  <CardContent>
+    <VStack spacing="md">
+      <HStack spacing="md" align="center">
+        <Icon name="email" />
+        <Text>john.doe@example.com</Text>
+      </HStack>
+      <HStack spacing="md" align="center">
+        <Icon name="phone" />
+        <Text>+1 (555) 123-4567</Text>
+      </HStack>
+      <HStack spacing="md" align="center">
+        <Icon name="location" />
+        <Text>San Francisco, CA</Text>
+      </HStack>
+    </VStack>
+  </CardContent>
+  <CardFooter showBorder justify="space-between">
+    <Button variant="outline">Message</Button>
+    <Button variant="primary">Connect</Button>
+  </CardFooter>
+</Card>
+```
+
+### Dashboard Cards
+
+```tsx
+<HStack spacing="lg" wrap>
+  <Card variant="success" size="sm" style={{ minWidth: 200 }}>
+    <CardContent>
+      <VStack spacing="sm">
+        <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'white' }}>
+          2,543
+        </Text>
+        <Text style={{ color: 'rgba(255,255,255,0.8)' }}>
+          Total Sales
+        </Text>
+      </VStack>
+    </CardContent>
+  </Card>
+
+  <Card variant="primary" size="sm" style={{ minWidth: 200 }}>
+    <CardContent>
+      <VStack spacing="sm">
+        <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'white' }}>
+          342
+        </Text>
+        <Text style={{ color: 'rgba(255,255,255,0.8)' }}>
+          New Customers
+        </Text>
+      </VStack>
+    </CardContent>
+  </Card>
+
+  <Card variant="warning" size="sm" style={{ minWidth: 200 }}>
+    <CardContent>
+      <VStack spacing="sm">
+        <Text style={{ fontSize: 24, fontWeight: 'bold', color: 'white' }}>
+          23
+        </Text>
+        <Text style={{ color: 'rgba(255,255,255,0.8)' }}>
+          Pending Orders
+        </Text>
+      </VStack>
+    </CardContent>
+  </Card>
+</HStack>
+```
+
+### Product Cards
+
+```tsx
+const ProductCard = ({ product }) => (
+  <Card variant="outline" elevation={2}>
+    <CardContent padding="none">
+      <Image
+        source={{ uri: product.image }}
+        style={{ width: '100%', height: 200, borderRadius: 8 }}
+      />
+    </CardContent>
+    <CardContent>
+      <VStack spacing="sm">
+        <Text style={{ fontSize: 18, fontWeight: '600' }}>
+          {product.name}
+        </Text>
+        <Text style={{ color: '#666' }}>
+          {product.description}
+        </Text>
+        <HStack justify="space-between" align="center">
+          <Text style={{ fontSize: 20, fontWeight: 'bold', color: '#007AFF' }}>
+            ${product.price}
+          </Text>
+          <HStack spacing="xs" align="center">
+            <Icon name="star" color="#FFD700" />
+            <Text>{product.rating}</Text>
+          </HStack>
+        </HStack>
+      </VStack>
+    </CardContent>
+    <CardFooter>
+      <Button variant="primary" fullWidth>
+        Add to Cart
+      </Button>
+    </CardFooter>
+  </Card>
+);
+```
+
+### Settings Cards
+
+```tsx
+<VStack spacing="md">
+  <Card variant="default">
+    <CardHeader
+      title="Account Settings"
+      subtitle="Manage your account preferences"
+      borderBottom
+    />
+    <CardContent>
+      <VStack spacing="lg">
+        <HStack justify="space-between" align="center">
+          <VStack>
+            <Text style={{ fontWeight: '600' }}>Email Notifications</Text>
+            <Text style={{ color: '#666', fontSize: 14 }}>
+              Receive updates via email
+            </Text>
+          </VStack>
+          <Switch value={emailNotifications} onValueChange={setEmailNotifications} />
+        </HStack>
+
+        <HStack justify="space-between" align="center">
+          <VStack>
+            <Text style={{ fontWeight: '600' }}>Two-Factor Authentication</Text>
+            <Text style={{ color: '#666', fontSize: 14 }}>
+              Add an extra layer of security
+            </Text>
+          </VStack>
+          <Switch value={twoFactor} onValueChange={setTwoFactor} />
+        </HStack>
+      </VStack>
+    </CardContent>
+  </Card>
+
+  <Card variant="error">
+    <CardHeader title="Danger Zone" />
+    <CardContent>
+      <Text style={{ color: 'white', marginBottom: 16 }}>
+        These actions cannot be undone. Please proceed with caution.
+      </Text>
+    </CardContent>
+    <CardFooter>
+      <Button variant="destructive">
+        Delete Account
+      </Button>
+    </CardFooter>
+  </Card>
+</VStack>
+```
+
+### Form Cards
+
+```tsx
+const ContactForm = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+
+  return (
+    <Card variant="default" elevation={3}>
+      <CardHeader
+        title="Contact Us"
+        subtitle="We'd love to hear from you"
+        borderBottom
+      />
+      <CardContent>
+        <VStack spacing="lg">
+          <VStack spacing="sm">
+            <Text style={{ fontWeight: '600' }}>Name</Text>
+            <TextInput
+              value={formData.name}
+              onChangeText={(name) => setFormData(prev => ({ ...prev, name }))}
+              placeholder="Enter your name"
+            />
+          </VStack>
+
+          <VStack spacing="sm">
+            <Text style={{ fontWeight: '600' }}>Email</Text>
+            <TextInput
+              value={formData.email}
+              onChangeText={(email) => setFormData(prev => ({ ...prev, email }))}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+            />
+          </VStack>
+
+          <VStack spacing="sm">
+            <Text style={{ fontWeight: '600' }}>Message</Text>
+            <TextInput
+              value={formData.message}
+              onChangeText={(message) => setFormData(prev => ({ ...prev, message }))}
+              placeholder="Enter your message"
+              multiline
+              numberOfLines={4}
+            />
+          </VStack>
+        </VStack>
+      </CardContent>
+      <CardFooter showBorder justify="space-between">
+        <Button variant="outline" onPress={handleReset}>
+          Reset
+        </Button>
+        <Button variant="primary" onPress={handleSubmit}>
+          Send Message
+        </Button>
+      </CardFooter>
+    </Card>
+  );
+};
+```
+
+## Advanced Usage
+
+### Nested Cards
+
+```tsx
+<Card variant="default" elevation={4}>
+  <CardHeader title="Project Overview" borderBottom />
+  <CardContent>
+    <VStack spacing="md">
+      <Text>Main project information and statistics</Text>
+
+      <Card variant="ghost" elevation={0}>
+        <CardHeader title="Team Members" />
+        <CardContent>
+          <Text>Nested card for team information</Text>
+        </CardContent>
+      </Card>
+
+      <Card variant="outline" elevation={1}>
+        <CardHeader title="Recent Activity" />
+        <CardContent>
+          <Text>Another nested card for activity feed</Text>
+        </CardContent>
+      </Card>
+    </VStack>
+  </CardContent>
+</Card>
+```
+
+### Dynamic Card States
+
+```tsx
+const StatusCard = ({ status, data }) => {
+  const getVariant = () => {
+    switch (status) {
+      case 'loading': return 'default';
+      case 'success': return 'success';
+      case 'error': return 'error';
+      case 'warning': return 'warning';
+      default: return 'default';
+    }
+  };
+
+  const getContent = () => {
+    switch (status) {
+      case 'loading':
+        return (
+          <CardContent>
+            <HStack spacing="md" align="center">
+              <ActivityIndicator />
+              <Text>Loading data...</Text>
+            </HStack>
+          </CardContent>
+        );
+      case 'success':
+        return (
+          <>
+            <CardHeader title="Success!" />
+            <CardContent>
+              <Text style={{ color: 'white' }}>{data.message}</Text>
+            </CardContent>
+          </>
+        );
+      case 'error':
+        return (
+          <>
+            <CardHeader title="Error" />
+            <CardContent>
+              <Text style={{ color: 'white' }}>{data.error}</Text>
+            </CardContent>
+            <CardFooter>
+              <Button variant="outline" onPress={data.onRetry}>
+                Retry
+              </Button>
+            </CardFooter>
+          </>
+        );
+      default:
+        return (
+          <CardContent>
+            <Text>Default content</Text>
+          </CardContent>
+        );
+    }
+  };
+
+  return (
+    <Card variant={getVariant()} elevation={status === 'loading' ? 1 : 3}>
+      {getContent()}
+    </Card>
+  );
+};
+```
+
+### Responsive Card Grid
+
+```tsx
+const CardGrid = ({ items }) => {
+  const screenWidth = Dimensions.get('window').width;
+  const cardWidth = screenWidth > 768 ? (screenWidth - 48) / 3 : screenWidth - 32;
+
+  return (
+    <ScrollView contentContainerStyle={{ padding: 16 }}>
+      <View style={{
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        justifyContent: 'space-between'
+      }}>
+        {items.map((item, index) => (
+          <Card
+            key={index}
+            variant="outline"
+            style={{
+              width: cardWidth,
+              marginBottom: 16
+            }}
+          >
+            <CardHeader title={item.title} />
+            <CardContent>
+              <Text>{item.description}</Text>
+            </CardContent>
+          </Card>
+        ))}
+      </View>
+    </ScrollView>
+  );
+};
+```
+
+## Size Variations
+
+<Tabs>
+  <TabItem label="Extra Small">
+    ```tsx
+    <Card size="xs" variant="primary">
+      <CardContent>
+        <Text>Extra small card</Text>
+      </CardContent>
+    </Card>
+    ```
+  </TabItem>
+
+  <TabItem label="Small">
+    ```tsx
+    <Card size="sm" variant="secondary">
+      <CardContent>
+        <Text>Small card</Text>
+      </CardContent>
+    </Card>
+    ```
+  </TabItem>
+
+  <TabItem label="Medium">
+    ```tsx
+    <Card size="md" variant="outline">
+      <CardContent>
+        <Text>Medium card (default)</Text>
+      </CardContent>
+    </Card>
+    ```
+  </TabItem>
+
+  <TabItem label="Large">
+    ```tsx
+    <Card size="lg" variant="filled">
+      <CardContent>
+        <Text>Large card</Text>
+      </CardContent>
+    </Card>
+    ```
+  </TabItem>
+
+  <TabItem label="Extra Large">
+    ```tsx
+    <Card size="xl" variant="ghost">
+      <CardContent>
+        <Text>Extra large card</Text>
+      </CardContent>
+    </Card>
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="Content Organization" icon="list-format">
+- Use CardHeader for titles and navigation elements
+- Keep CardContent focused on the main information
+- Place actions in CardFooter for better user experience
+- Maintain consistent padding across card sections
+</Card>
+
+<Card title="Visual Hierarchy" icon="seti:plan">
+- Use elevation to establish depth and importance
+- Choose variants that match content purpose and urgency
+- Maintain consistent spacing between cards in lists
+- Consider disabled state for temporary unavailable content
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use appropriate elevation values to avoid excessive shadows
+- Consider using ghost variant for minimal visual impact
+- Implement virtualization for long lists of cards
+- Optimize images and content within cards for smooth scrolling
+</Card>
+
+<Card title="Platform Considerations" icon="seti:config">
+- Elevation automatically uses box-shadow on web platforms
+- Test shadow appearance across different devices
+- Consider reduced motion preferences for accessibility
+- Ensure sufficient contrast in all variant combinations
+</Card>
+
+<Aside type="tip">
+Cards work particularly well for displaying related information as a cohesive unit. Consider using them for user profiles, product listings, dashboard widgets, and form sections.
+</Aside>
+
+<Aside type="caution">
+Avoid nesting too many cards or creating overly complex hierarchies, as this can create visual confusion and affect the overall user experience.
+</Aside>

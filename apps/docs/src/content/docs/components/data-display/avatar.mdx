@@ -1,0 +1,639 @@
+---
+title: Avatar
+description: Flexible avatar component with image support, fallback options, badges, and group functionality for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Avatar provides a comprehensive solution for displaying user profile images with automatic fallbacks, animated interactions, and grouping capabilities. It supports various shapes, sizes, and styling variants with built-in badge functionality.
+
+## Import
+
+```tsx
+import { Avatar, AvatarBadge, AvatarGroup } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Avatar">
+    ```tsx
+    <Avatar
+      source={{ uri: 'https://example.com/avatar.jpg' }}
+      fallbackText="John Doe"
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="With Initials">
+    ```tsx
+    <Avatar
+      fallbackText="Sarah Johnson"
+      variant="primary"
+      size="lg"
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="With Badge">
+    ```tsx
+    <Avatar
+      source={{ uri: 'https://example.com/avatar.jpg' }}
+      showBadge={true}
+      badgeColor="success"
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Icon">
+    ```tsx
+    <Avatar
+      fallbackIcon={<UserIcon />}
+      variant="outline"
+      shape="square"
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Avatar Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | `ComponentSize` | `'md'` | Avatar size (xs, sm, md, lg, xl) |
+| `variant` | `ComponentVariant` | `'default'` | Visual style variant |
+| `shape` | `'circle' \| 'square'` | `'circle'` | Avatar shape |
+| `source` | `{ uri: string } \| number` | - | Image source for avatar |
+| `fallbackText` | `string` | - | Text to generate initials from |
+| `fallbackIcon` | `React.ReactNode` | `<User />` | Custom fallback icon |
+| `onPress` | `() => void` | - | Press handler function |
+| `disabled` | `boolean` | `false` | Disable avatar interactions |
+| `borderWidth` | `number` | `0` | Border width around avatar |
+| `borderColor` | `keyof Theme['colors']` | - | Border color from theme |
+| `showBadge` | `boolean` | `false` | Show status badge |
+| `badgeColor` | `keyof Theme['colors']` | `'success'` | Badge color from theme |
+| `badgeSize` | `number` | - | Custom badge size |
+| `animated` | `boolean` | `true` | Enable entry and press animations |
+| `imageStyle` | `ImageStyle` | - | Additional image styles |
+| `textStyle` | `TextStyle` | - | Additional text styles |
+
+### AvatarBadge Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `color` | `keyof Theme['colors']` | `'success'` | Badge background color |
+| `size` | `number` | `10` | Badge diameter |
+| `position` | `'top-right' \| 'top-left' \| 'bottom-right' \| 'bottom-left'` | `'top-right'` | Badge position |
+
+### AvatarGroup Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Avatar components to group |
+| `max` | `number` | `3` | Maximum avatars to show |
+| `size` | `ComponentSize` | `'md'` | Size for all avatars in group |
+| `spacing` | `number` | `-8` | Spacing between avatars (negative for overlap) |
+| `showMore` | `boolean` | `true` | Show remaining count avatar |
+| `moreText` | `string` | `+{count}` | Custom text for more avatar |
+| `onMorePress` | `() => void` | - | Handler for more avatar press |
+
+### Size Configurations
+
+| Size | Dimensions | Font Size | Icon Size | Badge Size |
+|------|------------|-----------|-----------|------------|
+| `xs` | 24x24 | 10px | 12px | 6px |
+| `sm` | 32x32 | 12px | 16px | 8px |
+| `md` | 40x40 | 14px | 20px | 10px |
+| `lg` | 56x56 | 18px | 28px | 12px |
+| `xl` | 72x72 | 24px | 36px | 16px |
+
+### Variants
+
+| Variant | Description | Use Case |
+|---------|-------------|----------|
+| `default` | Default surface styling | General purpose avatars |
+| `primary` | Primary theme color | Important users, admins |
+| `secondary` | Secondary theme color | Secondary users |
+| `outline` | Transparent with border | Placeholder avatars |
+| `filled` | Filled surface | Standard user avatars |
+| `ghost` | Fully transparent | Subtle avatar displays |
+| `success` | Success state color | Online/active users |
+| `error` | Error state color | Blocked/error states |
+| `warning` | Warning state color | Warning states |
+| `info` | Info state color | Information states |
+| `destructive` | Destructive action color | Deleted/removed users |
+
+## Examples
+
+### User Profile Display
+
+```tsx
+const UserProfile = ({ user }) => {
+  return (
+    <VStack spacing="md" align="center" padding="lg">
+      <Avatar
+        size="xl"
+        source={{ uri: user.avatar }}
+        fallbackText={user.name}
+        showBadge={user.isOnline}
+        badgeColor="success"
+        onPress={() => navigateToProfile(user.id)}
+      />
+
+      <VStack spacing="xs" align="center">
+        <Text variant="heading" size="lg">{user.name}</Text>
+        <Text variant="body" color="muted">{user.role}</Text>
+      </VStack>
+    </VStack>
+  );
+};
+```
+
+### Size Variations
+
+```tsx
+<HStack spacing="md" align="center" padding="lg">
+  <Avatar size="xs" fallbackText="XS" variant="primary" />
+  <Avatar size="sm" fallbackText="SM" variant="primary" />
+  <Avatar size="md" fallbackText="MD" variant="primary" />
+  <Avatar size="lg" fallbackText="LG" variant="primary" />
+  <Avatar size="xl" fallbackText="XL" variant="primary" />
+</HStack>
+```
+
+### Shape and Variant Combinations
+
+```tsx
+<VStack spacing="lg" padding="lg">
+  {/* Circle Variants */}
+  <HStack spacing="md" align="center">
+    <Avatar variant="default" fallbackText="DE" />
+    <Avatar variant="primary" fallbackText="PR" />
+    <Avatar variant="outline" fallbackText="OU" />
+    <Avatar variant="success" fallbackText="SU" />
+    <Avatar variant="error" fallbackText="ER" />
+  </HStack>
+
+  {/* Square Variants */}
+  <HStack spacing="md" align="center">
+    <Avatar shape="square" variant="default" fallbackText="DE" />
+    <Avatar shape="square" variant="primary" fallbackText="PR" />
+    <Avatar shape="square" variant="outline" fallbackText="OU" />
+    <Avatar shape="square" variant="success" fallbackText="SU" />
+    <Avatar shape="square" variant="error" fallbackText="ER" />
+  </HStack>
+</VStack>
+```
+
+### Badge Positions and Colors
+
+```tsx
+<VStack spacing="lg" padding="lg">
+  <Text variant="heading" size="md">Status Indicators</Text>
+
+  <HStack spacing="md" align="center">
+    <Avatar
+      fallbackText="Online"
+      showBadge={true}
+      badgeColor="success"
+      badgeSize={12}
+    />
+
+    <Avatar
+      fallbackText="Away"
+      showBadge={true}
+      badgeColor="warning"
+      badgeSize={12}
+    />
+
+    <Avatar
+      fallbackText="Busy"
+      showBadge={true}
+      badgeColor="error"
+      badgeSize={12}
+    />
+
+    <Avatar
+      fallbackText="Offline"
+      showBadge={true}
+      badgeColor="muted"
+      badgeSize={12}
+    />
+  </HStack>
+
+  <Text variant="heading" size="md">Badge Positions</Text>
+
+  <HStack spacing="md" align="center">
+    <Avatar fallbackText="TR">
+      <AvatarBadge position="top-right" color="success" />
+    </Avatar>
+
+    <Avatar fallbackText="TL">
+      <AvatarBadge position="top-left" color="warning" />
+    </Avatar>
+
+    <Avatar fallbackText="BR">
+      <AvatarBadge position="bottom-right" color="error" />
+    </Avatar>
+
+    <Avatar fallbackText="BL">
+      <AvatarBadge position="bottom-left" color="info" />
+    </Avatar>
+  </HStack>
+</VStack>
+```
+
+### Avatar Groups
+
+```tsx
+const TeamMembers = ({ team }) => {
+  return (
+    <VStack spacing="lg" padding="lg">
+      <Text variant="heading" size="md">Team Members</Text>
+
+      {/* Basic Group */}
+      <AvatarGroup max={3} size="md">
+        {team.members.map(member => (
+          <Avatar
+            key={member.id}
+            source={{ uri: member.avatar }}
+            fallbackText={member.name}
+          />
+        ))}
+      </AvatarGroup>
+
+      {/* Large Group with Custom More */}
+      <AvatarGroup
+        max={5}
+        size="lg"
+        spacing={-12}
+        showMore={true}
+        moreText={`+${team.members.length - 5} more`}
+        onMorePress={() => showAllMembers()}
+      >
+        {team.members.map(member => (
+          <Avatar
+            key={member.id}
+            source={{ uri: member.avatar }}
+            fallbackText={member.name}
+            showBadge={member.isOnline}
+            badgeColor="success"
+          />
+        ))}
+      </AvatarGroup>
+
+      {/* Compact Group */}
+      <AvatarGroup max={4} size="sm" spacing={-6}>
+        {team.members.map(member => (
+          <Avatar
+            key={member.id}
+            source={{ uri: member.avatar }}
+            fallbackText={member.name}
+            variant="outline"
+          />
+        ))}
+      </AvatarGroup>
+    </VStack>
+  );
+};
+```
+
+### Interactive Avatars
+
+```tsx
+const UserList = ({ users, onUserSelect, selectedUserId }) => {
+  return (
+    <VStack spacing="md" padding="lg">
+      <Text variant="heading">Select User</Text>
+
+      <HStack spacing="md" wrap={true}>
+        {users.map(user => (
+          <Avatar
+            key={user.id}
+            size="lg"
+            source={{ uri: user.avatar }}
+            fallbackText={user.name}
+            variant={selectedUserId === user.id ? 'primary' : 'outline'}
+            borderWidth={selectedUserId === user.id ? 3 : 1}
+            borderColor={selectedUserId === user.id ? 'primary' : 'border'}
+            showBadge={user.isActive}
+            badgeColor={user.isActive ? 'success' : 'muted'}
+            onPress={() => onUserSelect(user.id)}
+            animated={true}
+          />
+        ))}
+      </HStack>
+    </VStack>
+  );
+};
+```
+
+### Fallback Hierarchy
+
+```tsx
+const AvatarFallbacks = () => {
+  return (
+    <VStack spacing="lg" padding="lg">
+      <Text variant="heading">Fallback Examples</Text>
+
+      <HStack spacing="md" align="center">
+        {/* Image loads successfully */}
+        <Avatar
+          source={{ uri: 'https://valid-image-url.jpg' }}
+          fallbackText="John Doe"
+          fallbackIcon={<UserIcon />}
+        />
+
+        {/* Image fails, shows initials */}
+        <Avatar
+          source={{ uri: 'https://invalid-image-url.jpg' }}
+          fallbackText="Jane Smith"
+          fallbackIcon={<UserIcon />}
+        />
+
+        {/* No image or text, shows custom icon */}
+        <Avatar
+          fallbackIcon={<CameraIcon />}
+          variant="outline"
+        />
+
+        {/* No props, shows default User icon */}
+        <Avatar variant="filled" />
+      </HStack>
+    </VStack>
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Avatar with Animation Controls
+
+```tsx
+const AnimatedAvatar = ({ user, onStatusChange }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const avatarRef = useRef<AvatarRef>(null);
+
+  const handlePress = () => {
+    // Trigger custom animation
+    avatarRef.current?.animate?.();
+    onStatusChange(user.id);
+  };
+
+  return (
+    <Pressable
+      onPressIn={() => setIsHovered(true)}
+      onPressOut={() => setIsHovered(false)}
+    >
+      <Avatar
+        ref={avatarRef}
+        size="xl"
+        source={{ uri: user.avatar }}
+        fallbackText={user.name}
+        variant={isHovered ? 'primary' : 'default'}
+        showBadge={true}
+        badgeColor={user.status === 'online' ? 'success' : 'muted'}
+        borderWidth={isHovered ? 3 : 0}
+        borderColor="primary"
+        animated={true}
+        onPress={handlePress}
+      />
+    </Pressable>
+  );
+};
+```
+
+### Dynamic Avatar States
+
+```tsx
+const UserStatusAvatar = ({ user, connectionStatus }) => {
+  const getAvatarConfig = () => {
+    switch (connectionStatus) {
+      case 'connecting':
+        return {
+          variant: 'outline',
+          badgeColor: 'warning',
+          disabled: true
+        };
+      case 'connected':
+        return {
+          variant: 'default',
+          badgeColor: 'success',
+          disabled: false
+        };
+      case 'disconnected':
+        return {
+          variant: 'muted',
+          badgeColor: 'error',
+          disabled: true
+        };
+      default:
+        return {
+          variant: 'default',
+          badgeColor: 'muted',
+          disabled: false
+        };
+    }
+  };
+
+  const config = getAvatarConfig();
+
+  return (
+    <Avatar
+      size="lg"
+      source={{ uri: user.avatar }}
+      fallbackText={user.name}
+      variant={config.variant}
+      showBadge={true}
+      badgeColor={config.badgeColor}
+      disabled={config.disabled}
+      animated={!config.disabled}
+      onPress={() => !config.disabled && openUserProfile(user.id)}
+    />
+  );
+};
+```
+
+### Avatar with Loading State
+
+```tsx
+const LoadingAvatar = ({ userId, size = 'md' }) => {
+  const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
+  const { data: user, loading } = useUser(userId);
+
+  if (loading) {
+    return (
+      <Avatar
+        size={size}
+        variant="outline"
+        animated={false}
+      >
+        <ActivityIndicator size="small" />
+      </Avatar>
+    );
+  }
+
+  return (
+    <Avatar
+      size={size}
+      source={user?.avatar ? { uri: user.avatar } : undefined}
+      fallbackText={user?.name}
+      variant="default"
+      onPress={() => navigateToProfile(userId)}
+      imageStyle={{
+        opacity: imageLoading ? 0.5 : 1
+      }}
+    />
+  );
+};
+```
+
+## Integration Examples
+
+<Tabs>
+  <TabItem label="Chat Interface">
+    ```tsx
+    const ChatMessage = ({ message, sender, isCurrentUser }) => {
+      return (
+        <HStack
+          spacing="sm"
+          align="flex-start"
+          direction={isCurrentUser ? 'row-reverse' : 'row'}
+          padding="sm"
+        >
+          <Avatar
+            size="sm"
+            source={{ uri: sender.avatar }}
+            fallbackText={sender.name}
+            showBadge={sender.isOnline}
+            badgeColor="success"
+          />
+
+          <VStack
+            spacing="xs"
+            flex={1}
+            align={isCurrentUser ? 'flex-end' : 'flex-start'}
+          >
+            <Text size="sm" color="muted">{sender.name}</Text>
+            <MessageBubble
+              content={message.content}
+              isCurrentUser={isCurrentUser}
+            />
+          </VStack>
+        </HStack>
+      );
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Contact List">
+    ```tsx
+    const ContactItem = ({ contact, onPress, showStatus = true }) => {
+      return (
+        <Pressable onPress={() => onPress(contact)}>
+          <HStack spacing="md" align="center" padding="md">
+            <Avatar
+              size="md"
+              source={{ uri: contact.avatar }}
+              fallbackText={contact.name}
+              showBadge={showStatus && contact.isOnline}
+              badgeColor={contact.isOnline ? 'success' : 'muted'}
+            />
+
+            <VStack spacing="xs" flex={1}>
+              <Text variant="body" weight="medium">
+                {contact.name}
+              </Text>
+              <Text variant="caption" color="muted">
+                {contact.lastSeen}
+              </Text>
+            </VStack>
+
+            {contact.unreadCount > 0 && (
+              <Badge variant="error" size="sm">
+                {contact.unreadCount}
+              </Badge>
+            )}
+          </HStack>
+        </Pressable>
+      );
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Team Dashboard">
+    ```tsx
+    const TeamCard = ({ team }) => {
+      return (
+        <Card padding="lg">
+          <VStack spacing="md">
+            <HStack justify="space-between" align="center">
+              <Text variant="heading" size="md">{team.name}</Text>
+              <Text variant="caption" color="muted">
+                {team.members.length} members
+              </Text>
+            </HStack>
+
+            <AvatarGroup
+              max={4}
+              size="sm"
+              spacing={-6}
+              onMorePress={() => showTeamMembers(team.id)}
+            >
+              {team.members.map(member => (
+                <Avatar
+                  key={member.id}
+                  source={{ uri: member.avatar }}
+                  fallbackText={member.name}
+                  showBadge={member.isActive}
+                  badgeColor="success"
+                />
+              ))}
+            </AvatarGroup>
+
+            <HStack spacing="sm" justify="space-between">
+              <Button variant="outline" size="sm" flex={1}>
+                <ButtonText>View Team</ButtonText>
+              </Button>
+              <Button variant="ghost" size="sm">
+                <ButtonIcon icon={<MoreIcon />} />
+              </Button>
+            </HStack>
+          </VStack>
+        </Card>
+      );
+    };
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="Image Handling" icon="seti:image">
+- Always provide fallback text or icons for failed image loads
+- Use appropriate image sizes to avoid unnecessary bandwidth usage
+- Consider implementing image caching for better performance
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use `React.memo` for avatar lists that don't change frequently
+- Implement lazy loading for avatar groups with many members
+- Consider virtual scrolling for very large contact lists
+</Card>
+
+<Card title="Status Indicators" icon="seti:clock">
+- Use consistent badge colors across your application
+- Position badges consistently (typically top-right)
+- Provide clear visual hierarchy for different status types
+</Card>
+
+<Aside type="tip">
+When using Avatar groups, consider the visual weight and spacing. Negative spacing creates overlap effects that work well for team displays, while positive spacing is better for selection interfaces.
+</Aside>
+
+<Aside type="caution">
+Be mindful of privacy when displaying user avatars. Always respect user preferences for avatar visibility and provide appropriate fallbacks for users without profile images.
+</Aside>

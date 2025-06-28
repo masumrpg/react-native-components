@@ -1,0 +1,657 @@
+---
+title: Badge
+description: Flexible badge component with animated interactions, multiple variants, and customizable styling options for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Badge provides a versatile solution for displaying status indicators, labels, and notifications with built-in animations, multiple styling variants, and flexible composition. It supports animated transitions and customizable visual feedback.
+
+## Import
+
+```tsx
+import { Badge, BadgeText, BadgeIcon } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Badge">
+    ```tsx
+    <Badge>
+      <BadgeText>New</BadgeText>
+    </Badge>
+    ```
+  </TabItem>
+
+  <TabItem label="With Icon">
+    ```tsx
+    <Badge variant="success">
+      <BadgeIcon position="left">
+        <CheckIcon />
+      </BadgeIcon>
+      <BadgeText>Verified</BadgeText>
+    </Badge>
+    ```
+  </TabItem>
+
+  <TabItem label="Status Badge">
+    ```tsx
+    <Badge variant="warning" size="sm">
+      <BadgeText>Pending</BadgeText>
+    </Badge>
+    ```
+  </TabItem>
+
+  <TabItem label="Notification Badge">
+    ```tsx
+    <Badge variant="error" size="xs" rounded={true}>
+      <BadgeText>3</BadgeText>
+    </Badge>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Badge Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `BadgeVariant` | `'default'` | Visual style variant |
+| `size` | `BadgeSize` | `'md'` | Badge size (xs, sm, md, lg) |
+| `rounded` | `boolean` | `true` | Apply rounded corners |
+| `animated` | `boolean` | `true` | Enable animations |
+| `scale` | `number` | `1` | Scale factor for animation |
+| `fadeIn` | `boolean` | `true` | Enable fade-in animation |
+| `style` | `StyleProp<ViewStyle>` | - | Additional container styles |
+
+### BadgeText Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Text content to display |
+| `style` | `TextStyle` | - | Additional text styles |
+
+### BadgeIcon Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Icon component to render |
+| `position` | `'left' \| 'right'` | `'left'` | Icon position relative to text |
+| `style` | `StyleProp<ViewStyle>` | - | Additional icon container styles |
+
+### Variants
+
+| Variant | Description | Use Case |
+|---------|-------------|----------|
+| `default` | Default neutral badge | General labels, categories |
+| `primary` | Primary brand badge | Important status, highlights |
+| `secondary` | Secondary brand badge | Alternative status indicators |
+| `success` | Success state badge | Completed, verified, active states |
+| `warning` | Warning state badge | Pending, caution states |
+| `error` | Error/danger badge | Failed, critical states |
+| `outline` | Outlined transparent badge | Subtle status indicators |
+| `filled` | Filled surface badge | Standard status labels |
+| `ghost` | Transparent badge | Minimal status indicators |
+| `info` | Information badge | Informational states |
+| `destructive` | Destructive action badge | Delete, remove indicators |
+
+### Sizes
+
+| Size | Description | Use Case |
+|------|-------------|----------|
+| `xs` | Extra small | Notification dots, counters |
+| `sm` | Small | Compact status indicators |
+| `md` | Medium | Standard badges |
+| `lg` | Large | Prominent status displays |
+
+## Examples
+
+### Status Indicators
+
+```tsx
+<HStack spacing="md" align="center">
+  <Badge variant="success">
+    <BadgeIcon position="left">
+      <CheckIcon size={12} />
+    </BadgeIcon>
+    <BadgeText>Active</BadgeText>
+  </Badge>
+
+  <Badge variant="warning">
+    <BadgeIcon position="left">
+      <ClockIcon size={12} />
+    </BadgeIcon>
+    <BadgeText>Pending</BadgeText>
+  </Badge>
+
+  <Badge variant="error">
+    <BadgeIcon position="left">
+      <XIcon size={12} />
+    </BadgeIcon>
+    <BadgeText>Failed</BadgeText>
+  </Badge>
+
+  <Badge variant="info">
+    <BadgeIcon position="left">
+      <InfoIcon size={12} />
+    </BadgeIcon>
+    <BadgeText>Draft</BadgeText>
+  </Badge>
+</HStack>
+```
+
+### Size Variations
+
+```tsx
+<VStack spacing="md" align="flex-start">
+  <Badge size="xs" variant="primary">
+    <BadgeText>XS</BadgeText>
+  </Badge>
+
+  <Badge size="sm" variant="primary">
+    <BadgeText>Small</BadgeText>
+  </Badge>
+
+  <Badge size="md" variant="primary">
+    <BadgeText>Medium</BadgeText>
+  </Badge>
+
+  <Badge size="lg" variant="primary">
+    <BadgeText>Large</BadgeText>
+  </Badge>
+</VStack>
+```
+
+### Notification Badges
+
+```tsx
+<HStack spacing="lg" align="center">
+  {/* Simple counter */}
+  <View style={{ position: 'relative' }}>
+    <BellIcon size={24} />
+    <Badge
+      variant="error"
+      size="xs"
+      style={{
+        position: 'absolute',
+        top: -8,
+        right: -8,
+        minWidth: 20,
+        height: 20
+      }}
+    >
+      <BadgeText>5</BadgeText>
+    </Badge>
+  </View>
+
+  {/* Message indicator */}
+  <View style={{ position: 'relative' }}>
+    <MessageIcon size={24} />
+    <Badge
+      variant="success"
+      size="xs"
+      style={{
+        position: 'absolute',
+        top: -4,
+        right: -4
+      }}
+    >
+      <BadgeText>New</BadgeText>
+    </Badge>
+  </View>
+
+  {/* Activity dot */}
+  <View style={{ position: 'relative' }}>
+    <Avatar source={{ uri: 'user-avatar.jpg' }} />
+    <Badge
+      variant="success"
+      size="xs"
+      style={{
+        position: 'absolute',
+        bottom: 2,
+        right: 2,
+        width: 12,
+        height: 12
+      }}
+    />
+  </View>
+</HStack>
+```
+
+### Category Tags
+
+```tsx
+<ScrollView horizontal showsHorizontalScrollIndicator={false}>
+  <HStack spacing="sm" padding="md">
+    <Badge variant="outline">
+      <BadgeText>Technology</BadgeText>
+    </Badge>
+
+    <Badge variant="outline">
+      <BadgeText>Design</BadgeText>
+    </Badge>
+
+    <Badge variant="outline">
+      <BadgeText>Business</BadgeText>
+    </Badge>
+
+    <Badge variant="outline">
+      <BadgeText>Marketing</BadgeText>
+    </Badge>
+
+    <Badge variant="outline">
+      <BadgeText>Development</BadgeText>
+    </Badge>
+  </HStack>
+</ScrollView>
+```
+
+### User Role Badges
+
+```tsx
+const UserProfile = ({ user }) => {
+  const getRoleBadge = (role) => {
+    switch (role) {
+      case 'admin':
+        return {
+          variant: 'destructive',
+          icon: <ShieldIcon size={12} />,
+          text: 'Admin'
+        };
+      case 'moderator':
+        return {
+          variant: 'warning',
+          icon: <StarIcon size={12} />,
+          text: 'Moderator'
+        };
+      case 'premium':
+        return {
+          variant: 'primary',
+          icon: <CrownIcon size={12} />,
+          text: 'Premium'
+        };
+      case 'verified':
+        return {
+          variant: 'success',
+          icon: <CheckIcon size={12} />,
+          text: 'Verified'
+        };
+      default:
+        return null;
+    }
+  };
+
+  const roleBadge = getRoleBadge(user.role);
+
+  return (
+    <HStack spacing="md" align="center">
+      <Avatar source={{ uri: user.avatar }} />
+      <VStack spacing="xs">
+        <HStack spacing="sm" align="center">
+          <Text style={{ fontWeight: '600' }}>{user.name}</Text>
+          {roleBadge && (
+            <Badge variant={roleBadge.variant} size="sm">
+              <BadgeIcon position="left">
+                {roleBadge.icon}
+              </BadgeIcon>
+              <BadgeText>{roleBadge.text}</BadgeText>
+            </Badge>
+          )}
+        </HStack>
+        <Text style={{ color: 'gray' }}>@{user.username}</Text>
+      </VStack>
+    </HStack>
+  );
+};
+```
+
+### E-commerce Product Badges
+
+```tsx
+const ProductCard = ({ product }) => {
+  return (
+    <Card>
+      <View style={{ position: 'relative' }}>
+        <Image source={{ uri: product.image }} style={styles.productImage} />
+
+        {/* Discount Badge */}
+        {product.discount && (
+          <Badge
+            variant="error"
+            size="sm"
+            style={{
+              position: 'absolute',
+              top: 8,
+              left: 8
+            }}
+          >
+            <BadgeText>-{product.discount}%</BadgeText>
+          </Badge>
+        )}
+
+        {/* Stock Status */}
+        {product.stock < 5 && (
+          <Badge
+            variant="warning"
+            size="xs"
+            style={{
+              position: 'absolute',
+              top: 8,
+              right: 8
+            }}
+          >
+            <BadgeText>Low Stock</BadgeText>
+          </Badge>
+        )}
+
+        {/* New Product */}
+        {product.isNew && (
+          <Badge
+            variant="success"
+            size="sm"
+            style={{
+              position: 'absolute',
+              bottom: 8,
+              left: 8
+            }}
+          >
+            <BadgeIcon position="left">
+              <SparkleIcon size={12} />
+            </BadgeIcon>
+            <BadgeText>New</BadgeText>
+          </Badge>
+        )}
+      </View>
+
+      <VStack spacing="sm" padding="md">
+        <HStack spacing="sm" align="center" justify="space-between">
+          <Text style={{ fontWeight: '600' }}>{product.name}</Text>
+
+          {/* Rating Badge */}
+          <Badge variant="filled" size="sm">
+            <BadgeIcon position="left">
+              <StarIcon size={12} />
+            </BadgeIcon>
+            <BadgeText>{product.rating}</BadgeText>
+          </Badge>
+        </HStack>
+
+        <HStack spacing="sm" align="center">
+          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+            ${product.price}
+          </Text>
+
+          {/* Free Shipping */}
+          {product.freeShipping && (
+            <Badge variant="info" size="xs">
+              <BadgeText>Free Ship</BadgeText>
+            </Badge>
+          )}
+        </HStack>
+
+        {/* Category Tags */}
+        <HStack spacing="xs" wrap>
+          {product.categories.map((category, index) => (
+            <Badge key={index} variant="ghost" size="xs">
+              <BadgeText>{category}</BadgeText>
+            </Badge>
+          ))}
+        </HStack>
+      </VStack>
+    </Card>
+  );
+};
+```
+
+### Order Status Timeline
+
+```tsx
+const OrderTimeline = ({ order }) => {
+  const getStatusBadge = (status, isActive) => {
+    const config = {
+      ordered: { variant: 'success', text: 'Ordered' },
+      processing: { variant: 'warning', text: 'Processing' },
+      shipped: { variant: 'info', text: 'Shipped' },
+      delivered: { variant: 'success', text: 'Delivered' }
+    };
+
+    const statusConfig = config[status];
+
+    return (
+      <Badge
+        variant={isActive ? statusConfig.variant : 'outline'}
+        size="sm"
+        animated={isActive}
+        scale={isActive ? 1.05 : 1}
+      >
+        <BadgeText>{statusConfig.text}</BadgeText>
+      </Badge>
+    );
+  };
+
+  return (
+    <VStack spacing="lg" padding="lg">
+      <Text style={{ fontSize: 18, fontWeight: '600' }}>
+        Order #{order.id}
+      </Text>
+
+      <HStack spacing="md" align="center" justify="space-between">
+        {['ordered', 'processing', 'shipped', 'delivered'].map((status, index) => (
+          <VStack key={status} spacing="xs" align="center">
+            {getStatusBadge(status, order.currentStatus === status)}
+            <Text style={{ fontSize: 12, color: 'gray' }}>
+              {order.timestamps[status]}
+            </Text>
+          </VStack>
+        ))}
+      </HStack>
+    </VStack>
+  );
+};
+```
+
+## Advanced Usage
+
+### Animated Badge Counter
+
+```tsx
+const AnimatedCounter = ({ count, maxCount = 99 }) => {
+  const [displayCount, setDisplayCount] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDisplayCount(count);
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [count]);
+
+  const displayText = displayCount > maxCount ? `${maxCount}+` : displayCount.toString();
+
+  return (
+    <Badge
+      variant="error"
+      size="xs"
+      animated={true}
+      scale={displayCount > 0 ? 1 : 0}
+      fadeIn={true}
+      style={{
+        transform: [{ scale: displayCount > 0 ? 1 : 0 }]
+      }}
+    >
+      <BadgeText>{displayText}</BadgeText>
+    </Badge>
+  );
+};
+```
+
+### Dynamic Status Badge
+
+```tsx
+const DynamicStatusBadge = ({ status, lastUpdated }) => {
+  const [isBlinking, setIsBlinking] = useState(false);
+
+  useEffect(() => {
+    if (status === 'processing') {
+      const interval = setInterval(() => {
+        setIsBlinking(prev => !prev);
+      }, 1000);
+
+      return () => clearInterval(interval);
+    }
+  }, [status]);
+
+  const getStatusConfig = () => {
+    switch (status) {
+      case 'online':
+        return { variant: 'success', text: 'Online', icon: <CircleIcon /> };
+      case 'offline':
+        return { variant: 'error', text: 'Offline', icon: <CircleIcon /> };
+      case 'processing':
+        return { variant: 'warning', text: 'Processing', icon: <LoaderIcon /> };
+      case 'idle':
+        return { variant: 'info', text: 'Idle', icon: <PauseIcon /> };
+      default:
+        return { variant: 'default', text: 'Unknown', icon: <QuestionIcon /> };
+    }
+  };
+
+  const config = getStatusConfig();
+
+  return (
+    <Badge
+      variant={config.variant}
+      size="sm"
+      animated={true}
+      scale={isBlinking ? 1.1 : 1}
+      style={{
+        opacity: status === 'processing' && isBlinking ? 0.7 : 1
+      }}
+    >
+      <BadgeIcon position="left">
+        {config.icon}
+      </BadgeIcon>
+      <BadgeText>{config.text}</BadgeText>
+    </Badge>
+  );
+};
+```
+
+### Custom Themed Badges
+
+```tsx
+const ThemedBadgeSet = () => {
+  const { theme } = useTheme();
+
+  const customBadgeStyle = {
+    backgroundColor: theme.colors.surface + '20',
+    borderColor: theme.colors.primary,
+    borderWidth: 2
+  };
+
+  return (
+    <VStack spacing="md">
+      <Badge style={customBadgeStyle} rounded={false}>
+        <BadgeText style={{ color: theme.colors.primary }}>
+          Custom Theme
+        </BadgeText>
+      </Badge>
+
+      <Badge
+        variant="ghost"
+        style={{
+          backgroundColor: 'linear-gradient(45deg, #FF6B6B, #4ECDC4)',
+          borderRadius: 20
+        }}
+      >
+        <BadgeText style={{ color: 'white' }}>Gradient</BadgeText>
+      </Badge>
+    </VStack>
+  );
+};
+```
+
+## Animation Types
+
+<Tabs>
+  <TabItem label="Scale Animation">
+    ```tsx
+    const [scale, setScale] = useState(1);
+
+    <Badge
+      variant="primary"
+      animated={true}
+      scale={scale}
+      onPress={() => setScale(scale === 1 ? 1.2 : 1)}
+    >
+      <BadgeText>Scale Me</BadgeText>
+    </Badge>
+    ```
+  </TabItem>
+
+  <TabItem label="Fade Animation">
+    ```tsx
+    const [visible, setVisible] = useState(true);
+
+    <Badge
+      variant="success"
+      animated={true}
+      fadeIn={visible}
+      style={{ opacity: visible ? 1 : 0 }}
+    >
+      <BadgeText>Fade Badge</BadgeText>
+    </Badge>
+    ```
+  </TabItem>
+
+  <TabItem label="Spring Animation">
+    ```tsx
+    <Badge
+      variant="warning"
+      animated={true}
+      style={{
+        transform: [
+          {
+            scale: withSpring(1, {
+              damping: 10,
+              stiffness: 100
+            })
+          }
+        ]
+      }}
+    >
+      <BadgeText>Spring Badge</BadgeText>
+    </Badge>
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="Visual Hierarchy" icon="seti:plan">
+- Use color-coded variants to indicate status clearly (success for positive, error for negative)
+- Keep badge text concise - prefer single words or short phrases
+- Position badges consistently across your application for predictable user experience
+</Card>
+
+<Card title="Content Guidelines" icon="laptop">
+- Use title case for category tags and sentence case for status indicators
+- Avoid using badges for lengthy text content
+- Consider internationalization when designing badge content
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use `React.memo` for badge components that render frequently
+- Minimize animated badges on screens with many items
+- Consider virtualization for long lists containing badges
+</Card>
+
+<Aside type="tip">
+When using badges for notifications, ensure they remain visible and accessible. Consider using appropriate contrast ratios and providing alternative text for screen readers.
+</Aside>
+
+<Aside type="caution">
+Avoid overusing badges as they can create visual clutter. Use them strategically to highlight truly important information and status changes.
+</Aside>

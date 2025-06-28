@@ -90,6 +90,17 @@ export default defineConfig({
                 { label: 'Combobox', slug: 'components/form/combobox' },
               ],
             },
+            {
+              label: 'Data Display',
+              collapsed: false,
+              items: [
+                { label: 'Avatar', slug: 'components/data-display/avatar' },
+                { label: 'Badge', slug: 'components/data-display/badge' },
+                { label: 'Card', slug: 'components/data-display/card' },
+                { label: 'Table', slug: 'components/data-display/table' },
+                { label: 'List', slug: 'components/data-display/list' },
+              ],
+            },
           ],
         },
         {

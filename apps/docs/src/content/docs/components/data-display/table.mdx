@@ -1,0 +1,756 @@
+---
+title: Table
+description: Comprehensive table component with flexible layout, styling variants, and responsive design for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Table provides a complete solution for displaying structured data with built-in styling variants, striped rows, borders, and scrollable content. It supports semantic table structure with header, body, and footer sections, along with customizable cell alignment and flexible layouts.
+
+## Import
+
+```tsx
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableFooter,
+  TableRow,
+  TableHead,
+  TableData,
+  TableCaption
+} from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Table">
+    ```tsx
+    <Table>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Name</TableHead>
+          <TableHead>Email</TableHead>
+          <TableHead>Status</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableData>John Doe</TableData>
+          <TableData>john@example.com</TableData>
+          <TableData>Active</TableData>
+        </TableRow>
+        <TableRow>
+          <TableData>Jane Smith</TableData>
+          <TableData>jane@example.com</TableData>
+          <TableData>Inactive</TableData>
+        </TableRow>
+      </TableBody>
+    </Table>
+    ```
+  </TabItem>
+
+  <TabItem label="With Caption">
+    ```tsx
+    <Table>
+      <TableCaption position="top">User Management</TableCaption>
+      <TableHeader>
+        <TableRow>
+          <TableHead>ID</TableHead>
+          <TableHead>Name</TableHead>
+          <TableHead align="right">Balance</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableData>001</TableData>
+          <TableData>Alice Johnson</TableData>
+          <TableData align="right">$1,250.00</TableData>
+        </TableRow>
+      </TableBody>
+    </Table>
+    ```
+  </TabItem>
+
+  <TabItem label="Striped Rows">
+    ```tsx
+    <Table striped>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Product</TableHead>
+          <TableHead>Category</TableHead>
+          <TableHead align="right">Price</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableData>MacBook Pro</TableData>
+          <TableData>Laptop</TableData>
+          <TableData align="right">$2,399</TableData>
+        </TableRow>
+        <TableRow>
+          <TableData>iPhone 15</TableData>
+          <TableData>Phone</TableData>
+          <TableData align="right">$999</TableData>
+        </TableRow>
+      </TableBody>
+    </Table>
+    ```
+  </TabItem>
+
+  <TabItem label="Scrollable Table">
+    ```tsx
+    <Table scrollable bordered>
+      <TableHeader>
+        <TableRow>
+          <TableHead flex={2}>Description</TableHead>
+          <TableHead>Q1</TableHead>
+          <TableHead>Q2</TableHead>
+          <TableHead>Q3</TableHead>
+          <TableHead>Q4</TableHead>
+          <TableHead>Total</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableData flex={2}>Revenue</TableData>
+          <TableData>$125K</TableData>
+          <TableData>$150K</TableData>
+          <TableData>$175K</TableData>
+          <TableData>$200K</TableData>
+          <TableData>$650K</TableData>
+        </TableRow>
+      </TableBody>
+    </Table>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Table Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Table content (Header, Body, Footer) |
+| `style` | `StyleProp<ViewStyle>` | - | Additional table styles |
+| `bordered` | `boolean` | `true` | Show table borders |
+| `striped` | `boolean` | `false` | Alternate row background colors |
+| `scrollable` | `boolean` | `false` | Enable horizontal scrolling |
+| `variant` | `'default' \| 'minimal' \| 'elevated'` | `'default'` | Visual style variant |
+
+### TableHeader Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Header rows content |
+| `style` | `StyleProp<ViewStyle>` | - | Additional header styles |
+
+### TableBody Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Body rows content |
+| `style` | `StyleProp<ViewStyle>` | - | Additional body styles |
+| `striped` | `boolean` | - | Inherit from Table component |
+
+### TableFooter Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Footer rows content |
+| `style` | `StyleProp<ViewStyle>` | - | Additional footer styles |
+
+### TableRow Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Row cells content |
+| `style` | `StyleProp<ViewStyle>` | - | Additional row styles |
+| `isHeader` | `boolean` | `false` | Automatically set for header rows |
+| `isEven` | `boolean` | `false` | Automatically set for striped tables |
+| `isFirst` | `boolean` | `false` | Automatically set for first row |
+| `isLast` | `boolean` | `false` | Automatically set for last row |
+
+### TableHead Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Header cell content |
+| `style` | `TextStyle` | - | Additional text styles |
+| `align` | `'left' \| 'center' \| 'right'` | `'left'` | Text alignment |
+| `flex` | `number` | `1` | Flex ratio for column width |
+| `sortable` | `boolean` | `false` | Enable sorting indicator |
+| `onSort` | `() => void` | - | Sort callback function |
+
+### TableData Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Data cell content |
+| `style` | `TextStyle` | - | Additional text styles |
+| `align` | `'left' \| 'center' \| 'right'` | `'left'` | Text alignment |
+| `flex` | `number` | `1` | Flex ratio for column width |
+
+### TableCaption Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Caption text content |
+| `style` | `TextStyle` | - | Additional caption styles |
+| `position` | `'top' \| 'bottom'` | `'bottom'` | Caption position |
+
+### Variants
+
+| Variant | Description | Use Case |
+|---------|-------------|----------|
+| `default` | Standard table with surface background | General data display |
+| `minimal` | Transparent background, minimal styling | Clean, content-focused tables |
+| `elevated` | Table with shadow and elevation | Important data, cards |
+
+## Examples
+
+### Data Management Table
+
+```tsx
+const UserTable = ({ users, onSort, sortField, sortDirection }) => {
+  return (
+    <Table striped bordered>
+      <TableCaption position="top">
+        Active Users ({users.length})
+      </TableCaption>
+
+      <TableHeader>
+        <TableRow>
+          <TableHead
+            sortable
+            onSort={() => onSort('name')}
+            flex={2}
+          >
+            Name {sortField === 'name' && (sortDirection === 'asc' ? '↑' : '↓')}
+          </TableHead>
+          <TableHead
+            sortable
+            onSort={() => onSort('email')}
+            flex={2}
+          >
+            Email {sortField === 'email' && (sortDirection === 'asc' ? '↑' : '↓')}
+          </TableHead>
+          <TableHead align="center">Status</TableHead>
+          <TableHead align="right">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {users.map((user, index) => (
+          <TableRow key={user.id}>
+            <TableData flex={2}>{user.name}</TableData>
+            <TableData flex={2}>{user.email}</TableData>
+            <TableData align="center">
+              <Badge variant={user.isActive ? 'success' : 'error'}>
+                {user.isActive ? 'Active' : 'Inactive'}
+              </Badge>
+            </TableData>
+            <TableData align="right">
+              <HStack spacing="xs">
+                <Button size="sm" variant="ghost">
+                  <ButtonText>Edit</ButtonText>
+                </Button>
+                <Button size="sm" variant="ghost">
+                  <ButtonText>Delete</ButtonText>
+                </Button>
+              </HStack>
+            </TableData>
+          </TableRow>
+        ))}
+      </TableBody>
+
+      <TableFooter>
+        <TableRow>
+          <TableData flex={2}>Total Users</TableData>
+          <TableData flex={2}></TableData>
+          <TableData align="center">{users.filter(u => u.isActive).length} Active</TableData>
+          <TableData align="right">
+            <Button size="sm" variant="primary">
+              <ButtonText>Add User</ButtonText>
+            </Button>
+          </TableData>
+        </TableRow>
+      </TableFooter>
+    </Table>
+  );
+};
+```
+
+### Financial Report Table
+
+```tsx
+const FinancialTable = ({ data }) => {
+  return (
+    <Table variant="elevated" scrollable>
+      <TableCaption position="top">
+        Quarterly Financial Report 2024
+      </TableCaption>
+
+      <TableHeader>
+        <TableRow>
+          <TableHead flex={2}>Account</TableHead>
+          <TableHead align="right">Q1</TableHead>
+          <TableHead align="right">Q2</TableHead>
+          <TableHead align="right">Q3</TableHead>
+          <TableHead align="right">Q4</TableHead>
+          <TableHead align="right">Total</TableHead>
+          <TableHead align="center">Trend</TableHead>
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {data.map((item) => (
+          <TableRow key={item.account}>
+            <TableData flex={2}>{item.account}</TableData>
+            <TableData align="right">
+              ${item.q1.toLocaleString()}
+            </TableData>
+            <TableData align="right">
+              ${item.q2.toLocaleString()}
+            </TableData>
+            <TableData align="right">
+              ${item.q3.toLocaleString()}
+            </TableData>
+            <TableData align="right">
+              ${item.q4.toLocaleString()}
+            </TableData>
+            <TableData align="right">
+              <Text style={{ fontWeight: '600' }}>
+                ${item.total.toLocaleString()}
+              </Text>
+            </TableData>
+            <TableData align="center">
+              {item.trend > 0 ? '📈' : item.trend < 0 ? '📉' : '➖'}
+            </TableData>
+          </TableRow>
+        ))}
+      </TableBody>
+
+      <TableFooter>
+        <TableRow>
+          <TableData flex={2}>
+            <Text style={{ fontWeight: '600' }}>Net Total</Text>
+          </TableData>
+          <TableData align="right">
+            <Text style={{ fontWeight: '600' }}>
+              ${data.reduce((sum, item) => sum + item.q1, 0).toLocaleString()}
+            </Text>
+          </TableData>
+          <TableData align="right">
+            <Text style={{ fontWeight: '600' }}>
+              ${data.reduce((sum, item) => sum + item.q2, 0).toLocaleString()}
+            </Text>
+          </TableData>
+          <TableData align="right">
+            <Text style={{ fontWeight: '600' }}>
+              ${data.reduce((sum, item) => sum + item.q3, 0).toLocaleString()}
+            </Text>
+          </TableData>
+          <TableData align="right">
+            <Text style={{ fontWeight: '600' }}>
+              ${data.reduce((sum, item) => sum + item.q4, 0).toLocaleString()}
+            </Text>
+          </TableData>
+          <TableData align="right">
+            <Text style={{ fontWeight: '600' }}>
+              ${data.reduce((sum, item) => sum + item.total, 0).toLocaleString()}
+            </Text>
+          </TableData>
+          <TableData align="center"></TableData>
+        </TableRow>
+      </TableFooter>
+    </Table>
+  );
+};
+```
+
+### Product Catalog Table
+
+```tsx
+const ProductCatalog = ({ products, onAddToCart }) => {
+  return (
+    <Table striped variant="minimal">
+      <TableHeader>
+        <TableRow>
+          <TableHead flex={3}>Product</TableHead>
+          <TableHead align="center">Stock</TableHead>
+          <TableHead align="right">Price</TableHead>
+          <TableHead align="center">Rating</TableHead>
+          <TableHead align="center">Actions</TableHead>
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {products.map((product) => (
+          <TableRow key={product.id}>
+            <TableData flex={3}>
+              <VStack spacing="xs">
+                <Text style={{ fontWeight: '600' }}>
+                  {product.name}
+                </Text>
+                <Text style={{ fontSize: 12, opacity: 0.7 }}>
+                  {product.category}
+                </Text>
+              </VStack>
+            </TableData>
+
+            <TableData align="center">
+              <Badge
+                variant={product.stock > 10 ? 'success' :
+                        product.stock > 0 ? 'warning' : 'error'}
+              >
+                {product.stock > 0 ? `${product.stock} units` : 'Out of Stock'}
+              </Badge>
+            </TableData>
+
+            <TableData align="right">
+              <VStack spacing="xs" align="end">
+                <Text style={{ fontWeight: '600' }}>
+                  ${product.price}
+                </Text>
+                {product.originalPrice && (
+                  <Text style={{
+                    fontSize: 12,
+                    textDecorationLine: 'line-through',
+                    opacity: 0.6
+                  }}>
+                    ${product.originalPrice}
+                  </Text>
+                )}
+              </VStack>
+            </TableData>
+
+            <TableData align="center">
+              <HStack spacing="xs" align="center">
+                <Text>⭐</Text>
+                <Text>{product.rating}</Text>
+                <Text style={{ fontSize: 12, opacity: 0.6 }}>
+                  ({product.reviews})
+                </Text>
+              </HStack>
+            </TableData>
+
+            <TableData align="center">
+              <Button
+                size="sm"
+                variant="primary"
+                disabled={product.stock === 0}
+                onPress={() => onAddToCart(product)}
+              >
+                <ButtonText>Add to Cart</ButtonText>
+              </Button>
+            </TableData>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
+```
+
+### Responsive Mobile Table
+
+```tsx
+const MobileTable = ({ data }) => {
+  return (
+    <Table scrollable bordered variant="default">
+      <TableHeader>
+        <TableRow>
+          <TableHead flex={2}>Task</TableHead>
+          <TableHead>Priority</TableHead>
+          <TableHead>Status</TableHead>
+          <TableHead>Due Date</TableHead>
+          <TableHead>Assigned</TableHead>
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {data.map((task) => (
+          <TableRow key={task.id}>
+            <TableData flex={2}>
+              <VStack spacing="xs">
+                <Text numberOfLines={2}>{task.title}</Text>
+                <Text style={{ fontSize: 12, opacity: 0.6 }} numberOfLines={1}>
+                  {task.description}
+                </Text>
+              </VStack>
+            </TableData>
+
+            <TableData>
+              <Badge
+                variant={
+                  task.priority === 'high' ? 'error' :
+                  task.priority === 'medium' ? 'warning' : 'info'
+                }
+              >
+                {task.priority}
+              </Badge>
+            </TableData>
+
+            <TableData>
+              <Badge
+                variant={
+                  task.status === 'completed' ? 'success' :
+                  task.status === 'in-progress' ? 'warning' : 'default'
+                }
+              >
+                {task.status}
+              </Badge>
+            </TableData>
+
+            <TableData>
+              <Text style={{ fontSize: 12 }}>
+                {new Date(task.dueDate).toLocaleDateString()}
+              </Text>
+            </TableData>
+
+            <TableData>
+              <Text style={{ fontSize: 12 }} numberOfLines={1}>
+                {task.assignee}
+              </Text>
+            </TableData>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Cell Components
+
+```tsx
+const CustomTable = ({ data }) => {
+  const renderStatusCell = (status) => (
+    <HStack spacing="xs" align="center">
+      <View style={{
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        backgroundColor: status === 'active' ? '#22c55e' : '#ef4444'
+      }} />
+      <Text style={{ textTransform: 'capitalize' }}>{status}</Text>
+    </HStack>
+  );
+
+  const renderProgressCell = (progress) => (
+    <VStack spacing="xs">
+      <Text style={{ fontSize: 12 }}>{progress}%</Text>
+      <View style={{
+        height: 4,
+        backgroundColor: '#e5e7eb',
+        borderRadius: 2,
+        overflow: 'hidden'
+      }}>
+        <View style={{
+          height: '100%',
+          width: `${progress}%`,
+          backgroundColor: '#3b82f6',
+        }} />
+      </View>
+    </VStack>
+  );
+
+  return (
+    <Table variant="elevated">
+      <TableHeader>
+        <TableRow>
+          <TableHead>Project</TableHead>
+          <TableHead align="center">Status</TableHead>
+          <TableHead align="center">Progress</TableHead>
+          <TableHead align="right">Budget</TableHead>
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {data.map((project) => (
+          <TableRow key={project.id}>
+            <TableData>{project.name}</TableData>
+            <TableData align="center">
+              {renderStatusCell(project.status)}
+            </TableData>
+            <TableData align="center">
+              {renderProgressCell(project.progress)}
+            </TableData>
+            <TableData align="right">
+              ${project.budget.toLocaleString()}
+            </TableData>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
+```
+
+### Interactive Sorting
+
+```tsx
+const SortableTable = ({ data: initialData }) => {
+  const [data, setData] = useState(initialData);
+  const [sortConfig, setSortConfig] = useState({
+    key: null,
+    direction: 'asc'
+  });
+
+  const handleSort = (key) => {
+    let direction = 'asc';
+    if (sortConfig.key === key && sortConfig.direction === 'asc') {
+      direction = 'desc';
+    }
+
+    const sortedData = [...data].sort((a, b) => {
+      if (a[key] < b[key]) return direction === 'asc' ? -1 : 1;
+      if (a[key] > b[key]) return direction === 'asc' ? 1 : -1;
+      return 0;
+    });
+
+    setData(sortedData);
+    setSortConfig({ key, direction });
+  };
+
+  const getSortIcon = (key) => {
+    if (sortConfig.key !== key) return '↕️';
+    return sortConfig.direction === 'asc' ? '↑' : '↓';
+  };
+
+  return (
+    <Table striped>
+      <TableHeader>
+        <TableRow>
+          <TableHead
+            sortable
+            onSort={() => handleSort('name')}
+          >
+            Name {getSortIcon('name')}
+          </TableHead>
+          <TableHead
+            sortable
+            onSort={() => handleSort('age')}
+            align="center"
+          >
+            Age {getSortIcon('age')}
+          </TableHead>
+          <TableHead
+            sortable
+            onSort={() => handleSort('salary')}
+            align="right"
+          >
+            Salary {getSortIcon('salary')}
+          </TableHead>
+        </TableRow>
+      </TableHeader>
+
+      <TableBody>
+        {data.map((person, index) => (
+          <TableRow key={index}>
+            <TableData>{person.name}</TableData>
+            <TableData align="center">{person.age}</TableData>
+            <TableData align="right">
+              ${person.salary.toLocaleString()}
+            </TableData>
+          </TableRow>
+        ))}
+      </TableBody>
+    </Table>
+  );
+};
+```
+
+## Styling Variants
+
+<Tabs>
+  <TabItem label="Default">
+    ```tsx
+    <Table variant="default" bordered>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Standard Table</TableHead>
+          <TableHead>With Borders</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableData>Default styling</TableData>
+          <TableData>Surface background</TableData>
+        </TableRow>
+      </TableBody>
+    </Table>
+    ```
+  </TabItem>
+
+  <TabItem label="Minimal">
+    ```tsx
+    <Table variant="minimal" bordered={false}>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Clean Design</TableHead>
+          <TableHead>No Background</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableData>Minimal styling</TableData>
+          <TableData>Content focused</TableData>
+        </TableRow>
+      </TableBody>
+    </Table>
+    ```
+  </TabItem>
+
+  <TabItem label="Elevated">
+    ```tsx
+    <Table variant="elevated" bordered>
+      <TableHeader>
+        <TableRow>
+          <TableHead>Premium Look</TableHead>
+          <TableHead>With Shadow</TableHead>
+        </TableRow>
+      </TableHeader>
+      <TableBody>
+        <TableRow>
+          <TableData>Elevated styling</TableData>
+          <TableData>Card-like appearance</TableData>
+        </TableRow>
+      </TableBody>
+    </Table>
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="Data Organization" icon="seti:folder">
+- Use semantic table structure (Header, Body, Footer) for better accessibility
+- Implement sorting and filtering for large datasets
+- Use consistent alignment for similar data types (numbers right-aligned)
+</Card>
+
+<Card title="Mobile Responsiveness" icon="random">
+- Enable horizontal scrolling for tables with many columns
+- Consider alternative layouts (cards) for very small screens
+- Use appropriate flex ratios to prioritize important columns
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Implement virtualization for large datasets
+- Use `React.memo` for table rows when data changes frequently
+- Consider pagination for better performance and user experience
+</Card>
+
+<Aside type="tip">
+When displaying financial or numerical data, always right-align numbers and use consistent formatting. Consider adding thousand separators and currency symbols for better readability.
+</Aside>
+
+<Aside type="caution">
+For tables with many columns on mobile devices, consider using horizontal scrolling or alternative layouts like cards or lists to maintain usability.
+</Aside>
