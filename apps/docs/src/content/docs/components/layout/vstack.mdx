@@ -1,0 +1,452 @@
+---
+title: VStack
+description: Vertical stack layout component for arranging child components in a column with flexible spacing and alignment options
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+VStack arranges child components vertically in a column, providing flexible spacing, alignment, and wrapping options. It's ideal for creating forms, lists, card layouts, and any vertical content organization.
+
+## Import
+
+```tsx
+import { VStack } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Column">
+    ```tsx
+    <VStack spacing="md">
+      <Text>First Item</Text>
+      <Text>Second Item</Text>
+      <Text>Third Item</Text>
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Form Layout">
+    ```tsx
+    <VStack
+      spacing="lg"
+      padding="md"
+      align="stretch"
+    >
+      <TextInput placeholder="Name" />
+      <TextInput placeholder="Email" />
+      <TextInput placeholder="Message" multiline />
+      <Button title="Submit" />
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Card Stack">
+    ```tsx
+    <VStack spacing="md" padding="lg">
+      {items.map(item => (
+        <Box
+          key={item.id}
+          variant="card"
+          padding="md"
+        >
+          <Text>{item.title}</Text>
+          <Text>{item.description}</Text>
+        </Box>
+      ))}
+    </VStack>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### VStack-Specific Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `spacing` | `keyof Theme['spacing']` | `0` | Gap between child components |
+| `wrap` | `boolean` | `false` | Allow items to wrap (creates rows) |
+
+### Inherited Props
+
+VStack inherits all [BaseLayoutProps](/components/layout/vstack/#baselayoutprops) for consistent styling and behavior.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `align` | `ViewStyle['alignItems']` | `'stretch'` | Cross-axis alignment (horizontal) |
+| `justify` | `ViewStyle['justifyContent']` | `'flex-start'` | Main-axis alignment (vertical) |
+
+### BaseLayoutProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Child components to render |
+| `style` | `StyleProp<ViewStyle>` | - | Additional style properties |
+| `padding` | `keyof Theme['spacing']` | - | Padding around content |
+| `margin` | `keyof Theme['spacing']` | - | Margin around component |
+| `backgroundColor` | `ViewStyle['backgroundColor']` | - | Background color |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | - | Border radius value |
+| `flex` | `number` | - | Flex grow/shrink value |
+| `width` | `DimensionValue` | - | Component width |
+| `height` | `DimensionValue` | - | Component height |
+| `themed` | `boolean` | `false` | Enable theme styles |
+| `align` | `ViewStyle['alignItems']` | - | Cross-axis alignment |
+| `justify` | `ViewStyle['justifyContent']` | - | Main-axis alignment |
+
+## Examples
+
+### Profile Form
+
+```tsx
+<VStack
+  spacing="lg"
+  padding="xl"
+  align="stretch"
+  backgroundColor="#fff"
+>
+  <VStack spacing="xs" align="center">
+    <Avatar size={80} />
+    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>John Doe</Text>
+    <Text style={{ color: '#666' }}>Software Developer</Text>
+  </VStack>
+
+  <VStack spacing="md">
+    <TextInput
+      label="Full Name"
+      placeholder="Enter your name"
+    />
+    <TextInput
+      label="Email"
+      placeholder="Enter your email"
+      keyboardType="email-address"
+    />
+    <TextInput
+      label="Bio"
+      placeholder="Tell us about yourself"
+      multiline
+      numberOfLines={4}
+    />
+  </VStack>
+
+  <HStack spacing="md">
+    <Button title="Cancel" variant="outline" flex={1} />
+    <Button title="Save Changes" flex={1} />
+  </HStack>
+</VStack>
+```
+
+### Settings List
+
+```tsx
+<VStack spacing="xs" padding="md">
+  {settingsItems.map((item, index) => (
+    <HStack
+      key={item.id}
+      justify="space-between"
+      align="center"
+      padding="md"
+      style={{
+        borderBottomWidth: index < settingsItems.length - 1 ? 1 : 0,
+        borderBottomColor: '#e0e0e0'
+      }}
+    >
+      <HStack spacing="md" align="center">
+        <Icon name={item.icon} size={20} />
+        <VStack spacing="xs">
+          <Text style={{ fontWeight: '500' }}>{item.title}</Text>
+          {item.subtitle && (
+            <Text style={{ fontSize: 12, color: '#666' }}>
+              {item.subtitle}
+            </Text>
+          )}
+        </VStack>
+      </HStack>
+      <Switch value={item.enabled} onValueChange={item.onToggle} />
+    </HStack>
+  ))}
+</VStack>
+```
+
+### Article Layout
+
+```tsx
+<VStack spacing="lg" padding="lg">
+  <VStack spacing="sm">
+    <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+      Article Title
+    </Text>
+    <HStack spacing="md" align="center">
+      <Avatar size={24} />
+      <Text style={{ fontSize: 14, color: '#666' }}>
+        By Author Name • 5 min read
+      </Text>
+    </HStack>
+  </VStack>
+
+  <Image
+    source={{ uri: 'article-image.jpg' }}
+    style={{ width: '100%', height: 200, borderRadius: 8 }}
+  />
+
+  <VStack spacing="md">
+    <Text style={{ lineHeight: 24 }}>
+      Article content paragraph 1...
+    </Text>
+    <Text style={{ lineHeight: 24 }}>
+      Article content paragraph 2...
+    </Text>
+  </VStack>
+
+  <HStack spacing="md" justify="space-between">
+    <Button title="👍 Like" variant="outline" />
+    <Button title="💬 Comment" variant="outline" />
+    <Button title="📤 Share" variant="outline" />
+  </HStack>
+</VStack>
+```
+
+### Dashboard Cards
+
+```tsx
+<VStack spacing="lg" padding="lg">
+  <Text style={{ fontSize: 20, fontWeight: 'bold' }}>Dashboard</Text>
+
+  <VStack spacing="md">
+    {dashboardCards.map(card => (
+      <Box
+        key={card.id}
+        variant="card"
+        padding="lg"
+      >
+        <VStack spacing="sm">
+          <HStack justify="space-between" align="center">
+            <Text style={{ fontSize: 16, fontWeight: '600' }}>
+              {card.title}
+            </Text>
+            <Icon name={card.icon} color={card.color} />
+          </HStack>
+
+          <Text style={{ fontSize: 24, fontWeight: 'bold', color: card.color }}>
+            {card.value}
+          </Text>
+
+          <Text style={{ fontSize: 12, color: '#666' }}>
+            {card.description}
+          </Text>
+        </VStack>
+      </Box>
+    ))}
+  </VStack>
+</VStack>
+```
+
+## Alignment Options
+
+### Horizontal Alignment (align)
+
+<Tabs>
+  <TabItem label="Stretch (Default)">
+    ```tsx
+    <VStack align="stretch" spacing="md" padding="md">
+      <Button title="Full Width Button 1" />
+      <Button title="Full Width Button 2" />
+      <Button title="Full Width Button 3" />
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Center">
+    ```tsx
+    <VStack align="center" spacing="md" padding="md">
+      <Text>Centered Text</Text>
+      <Button title="Centered Button" />
+      <Image source={icon} style={{ width: 50, height: 50 }} />
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Flex Start">
+    ```tsx
+    <VStack align="flex-start" spacing="md" padding="md">
+      <Text>Left Aligned</Text>
+      <Button title="Left Button" />
+      <Text>All items start from left edge</Text>
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Flex End">
+    ```tsx
+    <VStack align="flex-end" spacing="md" padding="md">
+      <Text>Right Aligned</Text>
+      <Button title="Right Button" />
+      <Text>All items end at right edge</Text>
+    </VStack>
+    ```
+  </TabItem>
+</Tabs>
+
+### Vertical Distribution (justify)
+
+<Tabs>
+  <TabItem label="Space Between">
+    ```tsx
+    <VStack
+      justify="space-between"
+      padding="md"
+      style={{ height: 300 }}
+    >
+      <Text>Top Item</Text>
+      <Text>Middle Item</Text>
+      <Text>Bottom Item</Text>
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Center">
+    ```tsx
+    <VStack
+      justify="center"
+      align="center"
+      spacing="md"
+      style={{ height: 300 }}
+    >
+      <Text>Vertically</Text>
+      <Text>Centered</Text>
+      <Text>Content</Text>
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Flex End">
+    ```tsx
+    <VStack
+      justify="flex-end"
+      spacing="md"
+      padding="md"
+      style={{ height: 300 }}
+    >
+      <Button title="Bottom Button 1" />
+      <Button title="Bottom Button 2" />
+    </VStack>
+    ```
+  </TabItem>
+</Tabs>
+
+## Advanced Patterns
+
+### Sticky Footer Layout
+
+```tsx
+<VStack flex={1} justify="space-between">
+  <VStack spacing="lg" padding="lg">
+    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+      Main Content
+    </Text>
+    <Text>Your scrollable content goes here...</Text>
+  </VStack>
+
+  <Box padding="lg" backgroundColor="#f9f9f9">
+    <Button title="Sticky Bottom Button" />
+  </Box>
+</VStack>
+```
+
+### Expandable Sections
+
+```tsx
+const [expanded, setExpanded] = useState(false);
+
+<VStack spacing="md" padding="lg">
+  <HStack
+    justify="space-between"
+    align="center"
+    onPress={() => setExpanded(!expanded)}
+  >
+    <Text style={{ fontSize: 16, fontWeight: '600' }}>
+      Section Title
+    </Text>
+    <Icon name={expanded ? 'chevron-up' : 'chevron-down'} />
+  </HStack>
+
+  {expanded && (
+    <VStack spacing="sm" padding="md" backgroundColor="#f5f5f5">
+      <Text>Expandable content item 1</Text>
+      <Text>Expandable content item 2</Text>
+      <Text>Expandable content item 3</Text>
+    </VStack>
+  )}
+</VStack>
+```
+
+### Progressive Form
+
+```tsx
+const [step, setStep] = useState(1);
+
+<VStack spacing="lg" padding="lg" flex={1}>
+  {/* Progress indicator */}
+  <HStack spacing="xs" justify="center">
+    {[1, 2, 3].map(stepNumber => (
+      <Box
+        key={stepNumber}
+        style={{
+          width: 30,
+          height: 4,
+          backgroundColor: step >= stepNumber ? '#007AFF' : '#E0E0E0',
+          borderRadius: 2
+        }}
+      />
+    ))}
+  </HStack>
+
+  {/* Step content */}
+  <VStack spacing="md" flex={1}>
+    {step === 1 && <PersonalInfoForm />}
+    {step === 2 && <AddressForm />}
+    {step === 3 && <ConfirmationForm />}
+  </VStack>
+
+  {/* Navigation */}
+  <HStack spacing="md">
+    {step > 1 && (
+      <Button
+        title="Previous"
+        variant="outline"
+        flex={1}
+        onPress={() => setStep(step - 1)}
+      />
+    )}
+    <Button
+      title={step === 3 ? "Submit" : "Next"}
+      flex={1}
+      onPress={() => step < 3 ? setStep(step + 1) : handleSubmit()}
+    />
+  </HStack>
+</VStack>
+```
+
+## Best Practices
+
+<Card title="Spacing & Layout" icon="substack">
+- Use consistent spacing values from your theme
+- Prefer `align="stretch"` for form inputs to maintain consistent widths
+- Use `justify="space-between"` with explicit heights for sticky layouts
+</Card>
+
+<Card title="Content Organization" icon="list-format">
+- Group related content using nested VStack components
+- Use `spacing` consistently within related sections
+- Consider visual hierarchy with varying spacing sizes
+</Card>
+
+<Card title="Performance Tips" icon="warning">
+- Avoid deeply nested VStack components when a simple spacing approach works
+- Use `ScrollView` wrapper for long vertical content
+- Consider `FlatList` for dynamic lists instead of mapping in VStack
+</Card>
+
+<Aside type="tip">
+When creating vertical lists with VStack, provide appropriate accessibility roles and ensure interactive elements have descriptive labels for screen readers.
+</Aside>

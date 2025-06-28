@@ -1,0 +1,523 @@
+---
+title: Box
+description: Versatile container component with theming variants, shadows, borders, and flexible styling options
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Box is the most versatile container component, providing a foundation for building cards, panels, and styled containers. It includes built-in variants, shadow support, border options, and seamless theme integration.
+
+## Import
+
+```tsx
+import { Box } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Container">
+    ```tsx
+    <Box padding="md" backgroundColor="#f5f5f5">
+      <Text>Basic box container</Text>
+    </Box>
+    ```
+  </TabItem>
+
+  <TabItem label="Card Variant">
+    ```tsx
+    <Box variant="card">
+      <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+        Card Title
+      </Text>
+      <Text style={{ marginTop: 8 }}>
+        Card content with automatic styling
+      </Text>
+    </Box>
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Styling">
+    ```tsx
+    <Box
+      padding="lg"
+      borderRadius="lg"
+      borderWidth={2}
+      borderColor="#007AFF"
+      backgroundColor="#F0F8FF"
+    >
+      <Text>Custom styled box</Text>
+    </Box>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Box-Specific Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `'default' \| 'card' \| 'surface'` | `'default'` | Pre-defined styling variant |
+| `borderWidth` | `number` | `undefined` | Border thickness |
+| `borderColor` | `ViewStyle['borderColor']` | `theme.colors.border` | Border color |
+| `shadowOpacity` | `number` | `undefined` | Shadow opacity (iOS) |
+| `elevation` | `number` | `undefined` | Elevation shadow (Android) |
+
+### Inherited Props
+
+Box inherits all [BaseLayoutProps](/components/layout/box/#baselayoutprops) for consistent styling and behavior.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `align` | `ViewStyle['alignItems']` | `'stretch'` | Cross-axis alignment |
+| `justify` | `ViewStyle['justifyContent']` | `'flex-start'` | Main-axis alignment |
+
+### BaseLayoutProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Child components to render |
+| `style` | `StyleProp<ViewStyle>` | - | Additional style properties |
+| `padding` | `keyof Theme['spacing']` | - | Padding around content |
+| `margin` | `keyof Theme['spacing']` | - | Margin around component |
+| `backgroundColor` | `ViewStyle['backgroundColor']` | - | Background color |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | - | Border radius value |
+| `flex` | `number` | - | Flex grow/shrink value |
+| `width` | `DimensionValue` | - | Component width |
+| `height` | `DimensionValue` | - | Component height |
+| `themed` | `boolean` | `false` | Enable theme styles |
+| `align` | `ViewStyle['alignItems']` | - | Cross-axis alignment |
+| `justify` | `ViewStyle['justifyContent']` | - | Main-axis alignment |
+
+## Variants
+
+### Default Variant
+
+```tsx
+<Box variant="default" padding="md">
+  <Text>Default box with surface background</Text>
+</Box>
+```
+
+### Card Variant
+
+```tsx
+<Box variant="card">
+  <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Card Title</Text>
+  <Text style={{ marginTop: 8, color: '#666' }}>
+    Automatic padding, border radius, and shadow styling
+  </Text>
+</Box>
+```
+
+### Surface Variant
+
+```tsx
+<Box variant="surface" padding="lg">
+  <Text>Surface variant uses background color from theme</Text>
+</Box>
+```
+
+## Examples
+
+### Product Card
+
+```tsx
+<Box variant="card" style={{ maxWidth: 300 }}>
+  <Image
+    source={{ uri: 'product-image.jpg' }}
+    style={{
+      width: '100%',
+      height: 200,
+      borderTopLeftRadius: 12,
+      borderTopRightRadius: 12
+    }}
+  />
+
+  <VStack spacing="sm" padding="md">
+    <HStack justify="space-between" align="center">
+      <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+        Product Name
+      </Text>
+      <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#007AFF' }}>
+        $99.99
+      </Text>
+    </HStack>
+
+    <Text style={{ fontSize: 14, color: '#666' }}>
+      Product description and key features
+    </Text>
+
+    <HStack spacing="xs">
+      {[1,2,3,4,5].map(star => (
+        <Text key={star}>⭐</Text>
+      ))}
+      <Text style={{ fontSize: 12, color: '#666', marginLeft: 8 }}>
+        (4.8)
+      </Text>
+    </HStack>
+
+    <Button title="Add to Cart" style={{ marginTop: 8 }} />
+  </VStack>
+</Box>
+```
+
+### Stats Dashboard
+
+```tsx
+<HStack spacing="md" padding="lg">
+  {statsData.map(stat => (
+    <Box
+      key={stat.id}
+      variant="card"
+      flex={1}
+      align="center"
+    >
+      <VStack spacing="xs" align="center">
+        <Text style={{
+          fontSize: 24,
+          fontWeight: 'bold',
+          color: stat.color
+        }}>
+          {stat.value}
+        </Text>
+        <Text style={{
+          fontSize: 12,
+          color: '#666',
+          textAlign: 'center'
+        }}>
+          {stat.label}
+        </Text>
+        <Text style={{
+          fontSize: 10,
+          color: stat.trend > 0 ? '#00C851' : '#FF4444'
+        }}>
+          {stat.trend > 0 ? '↗' : '↘'} {Math.abs(stat.trend)}%
+        </Text>
+      </VStack>
+    </Box>
+  ))}
+</HStack>
+```
+
+### Notification Card
+
+```tsx
+<Box
+  padding="md"
+  borderRadius="md"
+  borderWidth={1}
+  borderColor="#E3F2FD"
+  backgroundColor="#F3F8FF"
+  style={{ marginHorizontal: 16, marginVertical: 8 }}
+>
+  <HStack spacing="md" align="flex-start">
+    <Box
+      style={{
+        width: 40,
+        height: 40,
+        borderRadius: 20,
+        backgroundColor: '#2196F3',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      <Text style={{ color: 'white', fontSize: 18 }}>📧</Text>
+    </Box>
+
+    <VStack spacing="xs" flex={1}>
+      <HStack justify="space-between" align="center">
+        <Text style={{ fontSize: 14, fontWeight: '600' }}>
+          New Message
+        </Text>
+        <Text style={{ fontSize: 12, color: '#666' }}>
+          2 min ago
+        </Text>
+      </HStack>
+
+      <Text style={{ fontSize: 13, color: '#444' }}>
+        You have received a new message from John Doe
+      </Text>
+
+      <HStack spacing="sm" style={{ marginTop: 8 }}>
+        <Button title="Reply" size="small" />
+        <Button title="Mark as Read" variant="outline" size="small" />
+      </HStack>
+    </VStack>
+  </HStack>
+</Box>
+```
+
+### Error/Warning Box
+
+```tsx
+<Box
+  padding="md"
+  borderRadius="md"
+  borderWidth={1}
+  borderColor="#FFCDD2"
+  backgroundColor="#FFEBEE"
+>
+  <HStack spacing="md" align="center">
+    <Text style={{ fontSize: 18 }}>⚠️</Text>
+    <VStack spacing="xs" flex={1}>
+      <Text style={{ fontSize: 14, fontWeight: '600', color: '#C62828' }}>
+        Error: Validation Failed
+      </Text>
+      <Text style={{ fontSize: 12, color: '#B71C1C' }}>
+        Please check the required fields and try again
+      </Text>
+    </VStack>
+  </HStack>
+</Box>
+```
+
+### Profile Card
+
+```tsx
+<Box variant="card" style={{ maxWidth: 280 }}>
+  <VStack spacing="md" align="center">
+    <Avatar
+      size={80}
+      source={{ uri: 'avatar.jpg' }}
+      style={{ marginTop: -40 }} // Overlap effect
+    />
+
+    <VStack spacing="xs" align="center">
+      <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+        Sarah Johnson
+      </Text>
+      <Text style={{ fontSize: 14, color: '#666' }}>
+        Senior Designer
+      </Text>
+      <Text style={{ fontSize: 12, color: '#999' }}>
+        San Francisco, CA
+      </Text>
+    </VStack>
+
+    <HStack spacing="lg" style={{ marginTop: 8 }}>
+      <VStack spacing="xs" align="center">
+        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>124</Text>
+        <Text style={{ fontSize: 11, color: '#666' }}>Posts</Text>
+      </VStack>
+      <VStack spacing="xs" align="center">
+        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>2.1k</Text>
+        <Text style={{ fontSize: 11, color: '#666' }}>Followers</Text>
+      </VStack>
+      <VStack spacing="xs" align="center">
+        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>180</Text>
+        <Text style={{ fontSize: 11, color: '#666' }}>Following</Text>
+      </VStack>
+    </HStack>
+
+    <HStack spacing="sm" style={{ width: '100%', marginTop: 16 }}>
+      <Button title="Follow" flex={1} />
+      <Button title="Message" variant="outline" flex={1} />
+    </HStack>
+  </VStack>
+</Box>
+```
+
+## Shadow and Elevation
+
+### iOS Shadow
+
+```tsx
+<Box
+  padding="lg"
+  backgroundColor="#fff"
+  borderRadius="lg"
+  shadowOpacity={0.15}
+  style={{
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+  }}
+>
+  <Text>Box with iOS shadow</Text>
+</Box>
+```
+
+### Android Elevation
+
+```tsx
+<Box
+  padding="lg"
+  backgroundColor="#fff"
+  borderRadius="lg"
+  elevation={6}
+>
+  <Text>Box with Android elevation</Text>
+</Box>
+```
+
+### Cross-Platform Shadow
+
+```tsx
+<Box
+  padding="lg"
+  backgroundColor="#fff"
+  borderRadius="lg"
+  // iOS shadow
+  shadowOpacity={0.1}
+  style={{
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowRadius: 4,
+  }}
+  // Android elevation
+  elevation={3}
+>
+  <Text>Cross-platform shadow</Text>
+</Box>
+```
+
+## Border Variations
+
+<Tabs>
+  <TabItem label="All Borders">
+    ```tsx
+    <Box
+      padding="md"
+      borderWidth={1}
+      borderColor="#E0E0E0"
+      borderRadius="md"
+    >
+      <Text>Box with full border</Text>
+    </Box>
+    ```
+  </TabItem>
+
+  <TabItem label="Bottom Border Only">
+    ```tsx
+    <Box
+      padding="md"
+      style={{
+        borderBottomWidth: 1,
+        borderBottomColor: '#E0E0E0'
+      }}
+    >
+      <Text>Box with bottom border</Text>
+    </Box>
+    ```
+  </TabItem>
+
+  <TabItem label="Dashed Border">
+    ```tsx
+    <Box
+      padding="md"
+      borderWidth={1}
+      borderColor="#007AFF"
+      style={{
+        borderStyle: 'dashed'
+      }}
+    >
+      <Text>Box with dashed border</Text>
+    </Box>
+    ```
+  </TabItem>
+</Tabs>
+
+## Advanced Patterns
+
+### Expandable Card
+
+```tsx
+const [expanded, setExpanded] = useState(false);
+
+<Box variant="card">
+  <HStack
+    justify="space-between"
+    align="center"
+    onPress={() => setExpanded(!expanded)}
+  >
+    <Text style={{ fontSize: 16, fontWeight: '600' }}>
+      Expandable Section
+    </Text>
+    <Text style={{ fontSize: 18 }}>
+      {expanded ? '🔽' : '▶️'}
+    </Text>
+  </HStack>
+
+  {expanded && (
+    <VStack spacing="md" style={{ marginTop: 16 }}>
+      <Text>Expanded content goes here...</Text>
+      <Text>More details and information</Text>
+    </VStack>
+  )}
+</Box>
+```
+
+### Loading State Box
+
+```tsx
+const [loading, setLoading] = useState(true);
+
+<Box variant="card" style={{ minHeight: 120 }}>
+  {loading ? (
+    <VStack spacing="md" align="center" justify="center" flex={1}>
+      <ActivityIndicator size="large" />
+      <Text style={{ color: '#666' }}>Loading content...</Text>
+    </VStack>
+  ) : (
+    <VStack spacing="sm">
+      <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+        Content Title
+      </Text>
+      <Text>Loaded content appears here</Text>
+    </VStack>
+  )}
+</Box>
+```
+
+### Interactive Card with States
+
+```tsx
+const [pressed, setPressed] = useState(false);
+const [selected, setSelected] = useState(false);
+
+<Box
+  variant="card"
+  onPressIn={() => setPressed(true)}
+  onPressOut={() => setPressed(false)}
+  onPress={() => setSelected(!selected)}
+  style={{
+    opacity: pressed ? 0.8 : 1,
+    borderColor: selected ? '#007AFF' : 'transparent',
+    borderWidth: 2,
+    transform: [{ scale: pressed ? 0.98 : 1 }]
+  }}
+>
+  <HStack justify="space-between" align="center">
+    <Text style={{ fontSize: 16, fontWeight: '500' }}>
+      Selectable Option
+    </Text>
+    {selected && <Text style={{ color: '#007AFF' }}>✓</Text>}
+  </HStack>
+</Box>
+```
+
+## Best Practices
+
+<Card title="Variant Usage" icon="approve-check">
+- Use `variant="card"` for standalone content containers
+- Use `variant="surface"` for section backgrounds
+- Use `variant="default"` as a base for custom styling
+</Card>
+
+<Card title="Shadow Guidelines" icon="information">
+- Keep shadow values subtle for better visual hierarchy
+- Use consistent shadow values across similar components
+- Test shadows on both light and dark backgrounds
+</Card>
+
+<Card title="Performance Notes" icon="warning">
+- Avoid excessive nesting of Box components
+- Use borderRadius from theme for consistency
+- Be mindful of shadow performance on older devices
+</Card>
+
+<Aside type="tip">
+When using Box as an interactive element, provide appropriate accessibility roles and descriptive labels to ensure screen readers can properly announce the content and purpose.
+</Aside>

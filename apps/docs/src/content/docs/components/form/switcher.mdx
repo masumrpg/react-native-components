@@ -1,0 +1,622 @@
+---
+title: Switcher
+description: iOS-style animated toggle switch component with smooth spring animations, multiple variants, and flexible theming for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Switcher provides an elegant toggle switch component with iOS-like animations and visual feedback. Built with React Native Reanimated, it offers smooth spring animations, customizable colors, and multiple size variants for versatile use cases.
+
+## Import
+
+```tsx
+import { Switcher, SwitcherLabel } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Switch">
+    ```tsx
+    const [isEnabled, setIsEnabled] = useState(false);
+
+    <Switcher
+      value={isEnabled}
+      onValueChange={setIsEnabled}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="With Label">
+    ```tsx
+    const [notifications, setNotifications] = useState(true);
+
+    <HStack align="center">
+      <SwitcherLabel position="left">
+        <Text>Enable Notifications</Text>
+      </SwitcherLabel>
+      <Switcher
+        value={notifications}
+        onValueChange={setNotifications}
+      />
+    </HStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Colors">
+    ```tsx
+    <Switcher
+      value={darkMode}
+      onValueChange={setDarkMode}
+      trackColor={{
+        false: '#767577',
+        true: '#81b0ff'
+      }}
+      thumbColor="#f5dd4b"
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="Disabled State">
+    ```tsx
+    <Switcher
+      value={false}
+      disabled={true}
+      onValueChange={() => {}}
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Switcher Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `boolean` | - | Current switch state (controlled) |
+| `onValueChange` | `(value: boolean) => void` | - | Callback when switch state changes |
+| `size` | `ComponentSize` | `'md'` | Switch size (xs, sm, md, lg, xl) |
+| `variant` | `ComponentVariant` | `'primary'` | Visual style variant |
+| `disabled` | `boolean` | `false` | Disable switch interactions |
+| `trackColor` | `{ false?: string; true?: string }` | - | Custom track colors for off/on states |
+| `thumbColor` | `string` | `'#FFFFFF'` | Custom thumb color |
+| `animated` | `boolean` | `true` | Enable smooth animations |
+| `style` | `StyleProp<ViewStyle>` | - | Additional container styles |
+
+### SwitcherLabel Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Label content to display |
+| `position` | `'left' \| 'right'` | `'right'` | Label position relative to switch |
+| `style` | `StyleProp<ViewStyle>` | - | Additional label styles |
+
+### Variants
+
+| Variant | Description | Default Color | Use Case |
+|---------|-------------|---------------|----------|
+| `primary` | Primary brand color | `theme.colors.primary` | Main settings, preferences |
+| `secondary` | Secondary brand color | `theme.colors.secondary` | Secondary options |
+| `outline` | Outlined style | `theme.colors.primary` | Alternative styling |
+| `filled` | Filled variant | `theme.colors.primary` | Form inputs |
+| `ghost` | Subtle styling | `theme.colors.primary` | Minimal interfaces |
+| `success` | Success/confirmation | `theme.colors.success` | Positive actions |
+| `error` | Error/danger state | `theme.colors.error` | Dangerous toggles |
+| `warning` | Warning state | `theme.colors.warning` | Caution settings |
+| `info` | Information state | `theme.colors.info` | Info toggles |
+| `destructive` | Destructive actions | `theme.colors.error` | Delete, disable actions |
+
+### Size Dimensions
+
+| Size | Width | Height | Thumb Size | Use Case |
+|------|-------|--------|------------|----------|
+| `xs` | 24px | 14px | 10px | Compact lists, tight spaces |
+| `sm` | 28px | 16px | 12px | Dense interfaces |
+| `md` | 44px | 26px | 22px | Standard use (default) |
+| `lg` | 52px | 32px | 28px | Prominent settings |
+| `xl` | 60px | 36px | 32px | Large touch targets |
+
+## Examples
+
+### Settings Screen
+
+```tsx
+const SettingsScreen = () => {
+  const [settings, setSettings] = useState({
+    notifications: true,
+    darkMode: false,
+    autoBackup: true,
+    biometric: false,
+    analytics: false
+  });
+
+  const updateSetting = (key: string) => (value: boolean) => {
+    setSettings(prev => ({ ...prev, [key]: value }));
+  };
+
+  return (
+    <VStack spacing="lg" padding="xl">
+      <VStack spacing="md">
+        <Text variant="h3">General</Text>
+
+        <HStack justify="space-between" align="center">
+          <VStack>
+            <Text variant="body">Push Notifications</Text>
+            <Text variant="caption" color="textSecondary">
+              Receive alerts and updates
+            </Text>
+          </VStack>
+          <Switcher
+            value={settings.notifications}
+            onValueChange={updateSetting('notifications')}
+            variant="primary"
+          />
+        </HStack>
+
+        <HStack justify="space-between" align="center">
+          <VStack>
+            <Text variant="body">Dark Mode</Text>
+            <Text variant="caption" color="textSecondary">
+              Use dark theme
+            </Text>
+          </VStack>
+          <Switcher
+            value={settings.darkMode}
+            onValueChange={updateSetting('darkMode')}
+            variant="secondary"
+          />
+        </HStack>
+      </VStack>
+
+      <VStack spacing="md">
+        <Text variant="h3">Privacy & Security</Text>
+
+        <HStack justify="space-between" align="center">
+          <VStack>
+            <Text variant="body">Biometric Login</Text>
+            <Text variant="caption" color="textSecondary">
+              Use fingerprint or face unlock
+            </Text>
+          </VStack>
+          <Switcher
+            value={settings.biometric}
+            onValueChange={updateSetting('biometric')}
+            variant="success"
+          />
+        </HStack>
+
+        <HStack justify="space-between" align="center">
+          <VStack>
+            <Text variant="body">Analytics</Text>
+            <Text variant="caption" color="textSecondary">
+              Help improve the app
+            </Text>
+          </VStack>
+          <Switcher
+            value={settings.analytics}
+            onValueChange={updateSetting('analytics')}
+            variant="warning"
+            size="sm"
+          />
+        </HStack>
+      </VStack>
+    </VStack>
+  );
+};
+```
+
+### Size Variations
+
+```tsx
+<VStack spacing="lg" align="center" padding="xl">
+  <VStack spacing="md" align="center">
+    <Text variant="caption">Extra Small (xs)</Text>
+    <Switcher size="xs" value={true} onValueChange={() => {}} />
+  </VStack>
+
+  <VStack spacing="md" align="center">
+    <Text variant="caption">Small (sm)</Text>
+    <Switcher size="sm" value={true} onValueChange={() => {}} />
+  </VStack>
+
+  <VStack spacing="md" align="center">
+    <Text variant="caption">Medium (md) - Default</Text>
+    <Switcher size="md" value={true} onValueChange={() => {}} />
+  </VStack>
+
+  <VStack spacing="md" align="center">
+    <Text variant="caption">Large (lg)</Text>
+    <Switcher size="lg" value={true} onValueChange={() => {}} />
+  </VStack>
+
+  <VStack spacing="md" align="center">
+    <Text variant="caption">Extra Large (xl)</Text>
+    <Switcher size="xl" value={true} onValueChange={() => {}} />
+  </VStack>
+</VStack>
+```
+
+### Variant Showcase
+
+```tsx
+const VariantShowcase = () => {
+  const [states, setStates] = useState({
+    primary: true,
+    secondary: true,
+    success: true,
+    warning: false,
+    error: false,
+    info: true
+  });
+
+  return (
+    <VStack spacing="lg" padding="xl">
+      <Text variant="h3">Switch Variants</Text>
+
+      <VStack spacing="md">
+        {Object.entries(states).map(([variant, value]) => (
+          <HStack key={variant} justify="space-between" align="center">
+            <Text variant="body" style={{ textTransform: 'capitalize' }}>
+              {variant}
+            </Text>
+            <Switcher
+              variant={variant}
+              value={value}
+              onValueChange={(newValue) =>
+                setStates(prev => ({ ...prev, [variant]: newValue }))
+              }
+            />
+          </HStack>
+        ))}
+      </VStack>
+    </VStack>
+  );
+};
+```
+
+### Custom Styling
+
+```tsx
+const CustomSwitcher = () => {
+  const [customStates, setCustomStates] = useState({
+    gradient: true,
+    neon: false,
+    minimal: true
+  });
+
+  return (
+    <VStack spacing="lg" padding="xl">
+      {/* Gradient Style */}
+      <HStack justify="space-between" align="center">
+        <Text>Gradient Switch</Text>
+        <Switcher
+          value={customStates.gradient}
+          onValueChange={(value) =>
+            setCustomStates(prev => ({ ...prev, gradient: value }))
+          }
+          trackColor={{
+            false: '#E5E7EB',
+            true: '#3B82F6'
+          }}
+          thumbColor="#FFFFFF"
+        />
+      </HStack>
+
+      {/* Neon Style */}
+      <HStack justify="space-between" align="center">
+        <Text>Neon Switch</Text>
+        <Switcher
+          value={customStates.neon}
+          onValueChange={(value) =>
+            setCustomStates(prev => ({ ...prev, neon: value }))
+          }
+          trackColor={{
+            false: '#1F2937',
+            true: '#10B981'
+          }}
+          thumbColor="#F59E0B"
+          size="lg"
+        />
+      </HStack>
+
+      {/* Minimal Style */}
+      <HStack justify="space-between" align="center">
+        <Text>Minimal Switch</Text>
+        <Switcher
+          value={customStates.minimal}
+          onValueChange={(value) =>
+            setCustomStates(prev => ({ ...prev, minimal: value }))
+          }
+          trackColor={{
+            false: '#F3F4F6',
+            true: '#6B7280'
+          }}
+          thumbColor="#374151"
+          size="sm"
+        />
+      </HStack>
+    </VStack>
+  );
+};
+```
+
+### Form Integration
+
+```tsx
+const UserPreferencesForm = () => {
+  const [preferences, setPreferences] = useState({
+    emailNotifications: true,
+    smsNotifications: false,
+    marketingEmails: false,
+    weeklyDigest: true,
+    instantAlerts: true
+  });
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async () => {
+    setIsSubmitting(true);
+    try {
+      await saveUserPreferences(preferences);
+      // Show success message
+    } catch (error) {
+      // Handle error
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const updatePreference = (key: string) => (value: boolean) => {
+    setPreferences(prev => ({ ...prev, [key]: value }));
+  };
+
+  return (
+    <VStack spacing="xl" padding="xl">
+      <Text variant="h2">Notification Preferences</Text>
+
+      <VStack spacing="lg">
+        <VStack spacing="md">
+          <Text variant="h4">Email Settings</Text>
+
+          <HStack justify="space-between" align="center">
+            <SwitcherLabel position="left">
+              <VStack>
+                <Text variant="body">Email Notifications</Text>
+                <Text variant="caption" color="textSecondary">
+                  Receive important updates via email
+                </Text>
+              </VStack>
+            </SwitcherLabel>
+            <Switcher
+              value={preferences.emailNotifications}
+              onValueChange={updatePreference('emailNotifications')}
+              variant="primary"
+              disabled={isSubmitting}
+            />
+          </HStack>
+
+          <HStack justify="space-between" align="center">
+            <SwitcherLabel position="left">
+              <VStack>
+                <Text variant="body">Marketing Emails</Text>
+                <Text variant="caption" color="textSecondary">
+                  Promotional content and offers
+                </Text>
+              </VStack>
+            </SwitcherLabel>
+            <Switcher
+              value={preferences.marketingEmails}
+              onValueChange={updatePreference('marketingEmails')}
+              variant="secondary"
+              disabled={isSubmitting}
+            />
+          </HStack>
+        </VStack>
+
+        <VStack spacing="md">
+          <Text variant="h4">Mobile Settings</Text>
+
+          <HStack justify="space-between" align="center">
+            <SwitcherLabel position="left">
+              <Text variant="body">SMS Notifications</Text>
+            </SwitcherLabel>
+            <Switcher
+              value={preferences.smsNotifications}
+              onValueChange={updatePreference('smsNotifications')}
+              variant="info"
+              disabled={isSubmitting}
+            />
+          </HStack>
+
+          <HStack justify="space-between" align="center">
+            <SwitcherLabel position="left">
+              <Text variant="body">Instant Alerts</Text>
+            </SwitcherLabel>
+            <Switcher
+              value={preferences.instantAlerts}
+              onValueChange={updatePreference('instantAlerts')}
+              variant="warning"
+              disabled={isSubmitting}
+            />
+          </HStack>
+        </VStack>
+      </VStack>
+
+      <Button
+        fullWidth
+        variant="primary"
+        loading={isSubmitting}
+        onPress={handleSubmit}
+      >
+        <ButtonText>Save Preferences</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+### Advanced Usage
+
+```tsx
+const AdvancedSwitcherDemo = () => {
+  const [masterToggle, setMasterToggle] = useState(false);
+  const [childToggles, setChildToggles] = useState([false, false, false]);
+
+  // Update child toggles when master changes
+  useEffect(() => {
+    if (!masterToggle) {
+      setChildToggles([false, false, false]);
+    }
+  }, [masterToggle]);
+
+  const updateChildToggle = (index: number) => (value: boolean) => {
+    const newToggles = [...childToggles];
+    newToggles[index] = value;
+    setChildToggles(newToggles);
+
+    // Update master if all children are off
+    if (!value && newToggles.every(toggle => !toggle)) {
+      setMasterToggle(false);
+    }
+    // Enable master if any child is on
+    else if (value) {
+      setMasterToggle(true);
+    }
+  };
+
+  return (
+    <VStack spacing="lg" padding="xl">
+      <Text variant="h3">Hierarchical Toggles</Text>
+
+      {/* Master Toggle */}
+      <Card padding="md">
+        <HStack justify="space-between" align="center">
+          <VStack>
+            <Text variant="body" weight="bold">Master Control</Text>
+            <Text variant="caption" color="textSecondary">
+              Controls all sub-features
+            </Text>
+          </VStack>
+          <Switcher
+            value={masterToggle}
+            onValueChange={setMasterToggle}
+            variant="primary"
+            size="lg"
+          />
+        </HStack>
+      </Card>
+
+      {/* Child Toggles */}
+      <VStack spacing="md" style={{ paddingLeft: 16 }}>
+        {['Feature A', 'Feature B', 'Feature C'].map((feature, index) => (
+          <HStack key={feature} justify="space-between" align="center">
+            <Text
+              variant="body"
+              color={masterToggle ? 'text' : 'textSecondary'}
+            >
+              {feature}
+            </Text>
+            <Switcher
+              value={childToggles[index]}
+              onValueChange={updateChildToggle(index)}
+              variant="secondary"
+              disabled={!masterToggle}
+              size="sm"
+            />
+          </HStack>
+        ))}
+      </VStack>
+    </VStack>
+  );
+};
+```
+
+## Animation Customization
+
+<Tabs>
+  <TabItem label="Default Animation">
+    ```tsx
+    <Switcher
+      value={enabled}
+      onValueChange={setEnabled}
+      animated={true}  // Default spring animation
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="Disabled Animation">
+    ```tsx
+    <Switcher
+      value={enabled}
+      onValueChange={setEnabled}
+      animated={false}  // Instant state change
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Spring Config">
+    ```tsx
+    // Note: Spring config is internally set to:
+    // {
+    //   damping: 15,
+    //   stiffness: 150,
+    //   mass: 1
+    // }
+
+    <Switcher
+      value={enabled}
+      onValueChange={setEnabled}
+      animated={true}
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+## Accessibility
+
+The Switcher component includes built-in accessibility features:
+
+```tsx
+<Switcher
+  value={notifications}
+  onValueChange={setNotifications}
+  // Automatically includes:
+  // - accessible={true}
+  // - accessibilityRole="switch"
+  // - accessibilityState={{ checked: value }}
+  // - accessibilityLabel derived from SwitcherLabel
+/>
+```
+
+## Best Practices
+
+<Card title="Visual Hierarchy" icon="seti:plan">
+- Use consistent switch sizes within the same interface section
+- Group related switches with clear visual separation
+- Provide descriptive labels that clearly explain the toggle's purpose
+</Card>
+
+<Card title="User Experience" icon="figma">
+- Always provide immediate visual feedback when state changes
+- Use appropriate variants to indicate the importance or type of setting
+- Consider the impact of the toggle and use warning/error variants for potentially destructive actions
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use `React.memo` for switch lists that don't need frequent re-renders
+- Avoid creating new functions in render for `onValueChange` handlers
+- Consider debouncing for switches that trigger expensive operations
+</Card>
+
+<Aside type="tip">
+When using switches in forms, consider grouping related options and providing clear section headers to help users understand the scope of each toggle.
+</Aside>
+
+<Aside type="caution">
+Be mindful of switch placement on smaller screens. Ensure adequate touch targets and spacing to prevent accidental toggles, especially for important settings.
+</Aside>
+
+<Aside type="note">
+The component uses React Native Reanimated for smooth animations. Make sure your project has Reanimated properly configured for optimal performance.
+</Aside>

@@ -1,0 +1,310 @@
+---
+title: HStack
+description: Horizontal stack layout component for arranging child components in a row with flexible spacing and alignment options
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+
+HStack arranges child components horizontally in a row, providing flexible spacing, alignment, and wrapping options. It's perfect for creating navigation bars, button groups, and inline content layouts.
+
+## Import
+
+```tsx
+import { HStack } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Row">
+    ```tsx
+    <HStack spacing="md">
+      <Button title="First" />
+      <Button title="Second" />
+      <Button title="Third" />
+    </HStack>
+    ```
+  </TabItem>
+
+  <TabItem label="With Alignment">
+    ```tsx
+    <HStack
+      spacing="lg"
+      align="center"
+      justify="space-between"
+      padding="md"
+    >
+      <Text>Left Content</Text>
+      <Text>Right Content</Text>
+    </HStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Wrapping Content">
+    ```tsx
+    <HStack
+      spacing="sm"
+      wrap={true}
+      padding="md"
+    >
+      {tags.map(tag => (
+        <Chip key={tag.id} label={tag.name} />
+      ))}
+    </HStack>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### HStack-Specific Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `spacing` | `keyof Theme['spacing']` | `0` | Gap between child components |
+| `wrap` | `boolean` | `false` | Allow items to wrap to next line |
+
+### Inherited Props
+
+HStack inherits all [BaseLayoutProps](/components/layout/hstack/#baselayoutprops) for consistent styling and behavior.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `align` | `ViewStyle['alignItems']` | `'center'` | Cross-axis alignment (vertical) |
+| `justify` | `ViewStyle['justifyContent']` | `'flex-start'` | Main-axis alignment (horizontal) |
+
+### BaseLayoutProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Child components to render |
+| `style` | `StyleProp<ViewStyle>` | - | Additional style properties |
+| `padding` | `keyof Theme['spacing']` | - | Padding around content |
+| `margin` | `keyof Theme['spacing']` | - | Margin around component |
+| `backgroundColor` | `ViewStyle['backgroundColor']` | - | Background color |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | - | Border radius value |
+| `flex` | `number` | - | Flex grow/shrink value |
+| `width` | `DimensionValue` | - | Component width |
+| `height` | `DimensionValue` | - | Component height |
+| `themed` | `boolean` | `false` | Enable theme styles |
+| `align` | `ViewStyle['alignItems']` | - | Cross-axis alignment |
+| `justify` | `ViewStyle['justifyContent']` | - | Main-axis alignment |
+
+## Examples
+
+### Navigation Bar
+
+```tsx
+<HStack
+  justify="space-between"
+  align="center"
+  padding="md"
+  backgroundColor="#fff"
+  style={{ borderBottomWidth: 1, borderBottomColor: '#e0e0e0' }}
+>
+  <HStack spacing="sm" align="center">
+    <IconButton icon="menu" />
+    <Text style={{ fontSize: 18, fontWeight: 'bold' }}>App Name</Text>
+  </HStack>
+
+  <HStack spacing="sm">
+    <IconButton icon="search" />
+    <IconButton icon="notifications" />
+    <Avatar size={32} />
+  </HStack>
+</HStack>
+```
+
+### Button Group
+
+```tsx
+<HStack spacing="md" padding="lg">
+  <Button
+    title="Cancel"
+    variant="outline"
+    flex={1}
+  />
+  <Button
+    title="Save"
+    variant="primary"
+    flex={1}
+  />
+</HStack>
+```
+
+### Tag List with Wrapping
+
+```tsx
+<HStack
+  spacing="xs"
+  wrap={true}
+  padding="md"
+  style={{ maxWidth: 300 }}
+>
+  {categories.map(category => (
+    <Box
+      key={category.id}
+      padding="xs"
+      borderRadius="sm"
+      backgroundColor="#f0f0f0"
+    >
+      <Text style={{ fontSize: 12 }}>{category.name}</Text>
+    </Box>
+  ))}
+</HStack>
+```
+
+### Form Row
+
+```tsx
+<HStack spacing="md" align="center" padding="md">
+  <Text style={{ width: 100 }}>Email:</Text>
+  <TextInput
+    placeholder="Enter your email"
+    flex={1}
+    style={{
+      borderWidth: 1,
+      borderColor: '#ccc',
+      padding: 8,
+      borderRadius: 4
+    }}
+  />
+  <Button title="Verify" />
+</HStack>
+```
+
+## Alignment Options
+
+### Vertical Alignment (align)
+
+<Tabs>
+  <TabItem label="Center (Default)">
+    ```tsx
+    <HStack align="center" spacing="md" style={{ height: 60 }}>
+      <Text>Small</Text>
+      <Text style={{ fontSize: 24 }}>Large</Text>
+      <Text>Small</Text>
+    </HStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Flex Start">
+    ```tsx
+    <HStack align="flex-start" spacing="md" style={{ height: 60 }}>
+      <Text>Top</Text>
+      <Text style={{ fontSize: 24 }}>Aligned</Text>
+      <Text>Top</Text>
+    </HStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Flex End">
+    ```tsx
+    <HStack align="flex-end" spacing="md" style={{ height: 60 }}>
+      <Text>Bottom</Text>
+      <Text style={{ fontSize: 24 }}>Aligned</Text>
+      <Text>Bottom</Text>
+    </HStack>
+    ```
+  </TabItem>
+</Tabs>
+
+### Horizontal Distribution (justify)
+
+<Tabs>
+  <TabItem label="Space Between">
+    ```tsx
+    <HStack justify="space-between" padding="md">
+      <Text>Left</Text>
+      <Text>Center</Text>
+      <Text>Right</Text>
+    </HStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Space Around">
+    ```tsx
+    <HStack justify="space-around" padding="md">
+      <Button title="One" />
+      <Button title="Two" />
+      <Button title="Three" />
+    </HStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Center">
+    ```tsx
+    <HStack justify="center" spacing="md" padding="md">
+      <Button title="Action 1" />
+      <Button title="Action 2" />
+    </HStack>
+    ```
+  </TabItem>
+</Tabs>
+
+## Responsive Behavior
+
+### Auto-wrapping with Flex
+
+```tsx
+<HStack
+  wrap={true}
+  spacing="md"
+  padding="md"
+>
+  {items.map((item, index) => (
+    <Box
+      key={index}
+      style={{
+        minWidth: 120,
+        flexBasis: '30%'  // Responsive width
+      }}
+      padding="sm"
+      backgroundColor="#f5f5f5"
+      borderRadius="md"
+    >
+      <Text>{item.title}</Text>
+    </Box>
+  ))}
+</HStack>
+```
+
+### Conditional Layout
+
+```tsx
+const isTablet = useIsTablet();
+
+<HStack
+  spacing={isTablet ? "lg" : "md"}
+  wrap={!isTablet}
+  justify={isTablet ? "space-between" : "flex-start"}
+>
+  <Card flex={isTablet ? 1 : undefined}>Content 1</Card>
+  <Card flex={isTablet ? 1 : undefined}>Content 2</Card>
+</HStack>
+```
+
+## Best Practices
+
+<Card title="Spacing Guidelines" icon="substack">
+- Use consistent spacing values from your theme
+- Prefer `spacing` prop over manual margins between children
+- Consider `wrap={true}` for dynamic content that might overflow
+</Card>
+
+<Card title="Alignment Tips" icon="list-format">
+- Use `align="center"` for mixed-height content (default behavior)
+- Use `justify="space-between"` for navigation-style layouts
+- Combine with flex props for responsive behavior
+</Card>
+
+<Card title="Common Pitfalls" icon="warning">
+- Don't nest HStack inside HStack unnecessarily - use spacing instead
+- Remember that `wrap={true}` might break your intended layout on small screens
+- Avoid setting explicit heights unless necessary for alignment
+</Card>
+
+<Aside type="tip">
+When creating interactive HStack layouts, remember to provide appropriate accessibility roles and labels for screen readers.
+</Aside>

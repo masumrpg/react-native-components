@@ -61,7 +61,17 @@ export default defineConfig({
           collapsed: false,
           items: [
             { label: 'Demo', slug: 'components/demo' },
-            { label: 'Layout', slug: 'components/layout' },
+            {
+              label: 'Layout',
+              items: [
+                { label: 'HStack', slug: 'components/layout/hstack' },
+                { label: 'VStack', slug: 'components/layout/vstack' },
+                { label: 'ZStack', slug: 'components/layout/zstack' },
+                { label: 'Box', slug: 'components/layout/box' },
+                { label: 'Center', slug: 'components/layout/center' },
+                { label: 'Grid', slug: 'components/layout/grid' },
+              ],
+            },
             {
               label: 'Form',
               collapsed: false,
@@ -69,12 +79,11 @@ export default defineConfig({
                 {
                   label: 'Button',
                   slug: 'components/form/button',
-                  badge: { text: 'Stable', variant: 'success' },
                 },
                 { label: 'Input', slug: 'components/form/input' },
                 { label: 'Checkbox', slug: 'components/form/checkbox' },
                 { label: 'Radio', slug: 'components/form/radio' },
-                { label: 'Switch', slug: 'components/form/switch' },
+                { label: 'Switcher', slug: 'components/form/switcher' },
                 { label: 'Slider', slug: 'components/form/slider' },
                 { label: 'Form Control', slug: 'components/form/form-control' },
                 { label: 'Date Picker', slug: 'components/form/date-picker' },

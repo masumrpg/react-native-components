@@ -1,884 +1,824 @@
 ---
-title: Form Control
-description: A comprehensive form control system for building accessible and consistent form layouts with labels, helpers, and error states.
+title: FormControl
+description: Comprehensive form control component with validation states, accessibility features, and flexible styling options for React Native applications
 ---
 
-The Form Control component provides a structured way to build form fields with proper labeling, helper text, error handling, and accessibility features. It serves as a foundation for creating consistent form layouts.
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
 
-## Features
+FormControl provides a complete solution for form field management with built-in validation states, accessibility features, and contextual styling. It includes label, helper text, and error/success/warning message components with automatic state management.
 
-- **Structured Layout**: Organized form field structure with labels, inputs, helpers, and errors
-- **Accessibility**: Built-in accessibility features with proper ARIA attributes
-- **State Management**: Automatic state handling for different form field states
-- **Context-based**: Uses React Context for seamless component communication
-- **Flexible Composition**: Composable components for different form field needs
-- **Error Handling**: Integrated error display with icons and messaging
-- **Helper Text**: Support for descriptive helper text
-- **Required Fields**: Visual indicators for required form fields
-- **Size Variants**: Multiple size options for different use cases
+## Import
+
+```tsx
+import {
+  FormControl,
+  FormControlLabel,
+  FormControlLabelText,
+  FormControlHelper,
+  FormControlHelperText,
+  FormControlError,
+  FormControlErrorIcon,
+  FormControlErrorText,
+  FormControlSuccess,
+  FormControlSuccessIcon,
+  FormControlSuccessText,
+  FormControlWarning,
+  FormControlWarningIcon,
+  FormControlWarningText,
+  useFormControl,
+  useFormControlOptional,
+} from 'rnc-theme';
+```
 
 ## Basic Usage
 
-```tsx
-import {
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-  FormControlHelper,
-  FormControlHelperText,
-  FormControlError,
-  FormControlErrorIcon,
-  FormControlErrorText,
-} from '@rnc/theme';
-import { Input } from '@rnc/theme';
-import { View } from 'react-native';
+<Tabs>
+  <TabItem label="Simple Form Field">
+    ```tsx
+    <FormControl>
+      <FormControlLabel>
+        <FormControlLabelText>Email Address</FormControlLabelText>
+      </FormControlLabel>
+      <TextInput placeholder="Enter your email" />
+      <FormControlHelper>
+        <FormControlHelperText>We'll never share your email</FormControlHelperText>
+      </FormControlHelper>
+    </FormControl>
+    ```
+  </TabItem>
 
-export default function BasicFormControlExample() {
-  return (
-    <View style={{ padding: 20 }}>
-      <FormControl>
-        <FormControlLabel>
-          <FormControlLabelText>Email Address</FormControlLabelText>
-        </FormControlLabel>
+  <TabItem label="Required Field">
+    ```tsx
+    <FormControl required>
+      <FormControlLabel>
+        <FormControlLabelText>Full Name</FormControlLabelText>
+      </FormControlLabel>
+      <TextInput placeholder="Enter your full name" />
+    </FormControl>
+    ```
+  </TabItem>
 
-        <Input
-          placeholder="Enter your email"
-          keyboardType="email-address"
-        />
+  <TabItem label="Error State">
+    ```tsx
+    <FormControl state="error">
+      <FormControlLabel>
+        <FormControlLabelText>Password</FormControlLabelText>
+      </FormControlLabel>
+      <TextInput placeholder="Enter password" secureTextEntry />
+      <FormControlError>
+        <FormControlErrorIcon />
+        <FormControlErrorText>Password must be at least 8 characters</FormControlErrorText>
+      </FormControlError>
+    </FormControl>
+    ```
+  </TabItem>
 
-        <FormControlHelper>
-          <FormControlHelperText>
-            We'll never share your email with anyone else.
-          </FormControlHelperText>
-        </FormControlHelper>
-      </FormControl>
-    </View>
-  );
-}
-```
+  <TabItem label="Success State">
+    ```tsx
+    <FormControl state="success">
+      <FormControlLabel>
+        <FormControlLabelText>Username</FormControlLabelText>
+      </FormControlLabel>
+      <TextInput placeholder="Choose username" />
+      <FormControlSuccess>
+        <FormControlSuccessIcon />
+        <FormControlSuccessText>Username is available!</FormControlSuccessText>
+      </FormControlSuccess>
+    </FormControl>
+    ```
+  </TabItem>
+</Tabs>
 
-## Form States
+## Props
 
-The Form Control supports different states for various scenarios:
-
-```tsx
-import {
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-  FormControlHelper,
-  FormControlHelperText,
-  FormControlError,
-  FormControlErrorIcon,
-  FormControlErrorText,
-} from '@rnc/theme';
-import { Input } from '@rnc/theme';
-import { View } from 'react-native';
-
-export default function FormStatesExample() {
-  return (
-    <View style={{ gap: 20, padding: 20 }}>
-      {/* Default State */}
-      <FormControl state="default">
-        <FormControlLabel>
-          <FormControlLabelText>Default State</FormControlLabelText>
-        </FormControlLabel>
-        <Input placeholder="Enter text" />
-        <FormControlHelper>
-          <FormControlHelperText>This is a normal form field.</FormControlHelperText>
-        </FormControlHelper>
-      </FormControl>
-
-      {/* Success State */}
-      <FormControl state="success">
-        <FormControlLabel>
-          <FormControlLabelText>Success State</FormControlLabelText>
-        </FormControlLabel>
-        <Input placeholder="Enter text" variant="success" />
-        <FormControlHelper>
-          <FormControlHelperText>Great! This looks good.</FormControlHelperText>
-        </FormControlHelper>
-      </FormControl>
-
-      {/* Warning State */}
-      <FormControl state="warning">
-        <FormControlLabel>
-          <FormControlLabelText>Warning State</FormControlLabelText>
-        </FormControlLabel>
-        <Input placeholder="Enter text" variant="warning" />
-        <FormControlHelper>
-          <FormControlHelperText>Please double-check this value.</FormControlHelperText>
-        </FormControlHelper>
-      </FormControl>
-
-      {/* Error State */}
-      <FormControl state="error">
-        <FormControlLabel>
-          <FormControlLabelText>Error State</FormControlLabelText>
-        </FormControlLabel>
-        <Input placeholder="Enter text" variant="error" />
-        <FormControlError>
-          <FormControlErrorIcon />
-          <FormControlErrorText>
-            This field is required and cannot be empty.
-          </FormControlErrorText>
-        </FormControlError>
-      </FormControl>
-
-      {/* Disabled State */}
-      <FormControl state="disabled" disabled>
-        <FormControlLabel>
-          <FormControlLabelText>Disabled State</FormControlLabelText>
-        </FormControlLabel>
-        <Input placeholder="Enter text" disabled />
-        <FormControlHelper>
-          <FormControlHelperText>This field is currently disabled.</FormControlHelperText>
-        </FormControlHelper>
-      </FormControl>
-    </View>
-  );
-}
-```
-
-## Required Fields
-
-Mark fields as required with visual indicators:
-
-```tsx
-import {
-  FormField,
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-  FormControlHelper,
-  FormControlHelperText,
-  FormControlError,
-  FormControlErrorIcon,
-  FormControlErrorText,
-} from '@rnc/theme';
-import { Input } from '@rnc/theme';
-import { View } from 'react-native';
-
-export default function RequiredFieldsExample() {
-  return (
-    <View style={{ gap: 20, padding: 20 }}>
-      <FormField required>
-        <FormControl>
-          <FormControlLabel>
-            <FormControlLabelText>Full Name</FormControlLabelText>
-          </FormControlLabel>
-          <Input placeholder="Enter your full name" />
-          <FormControlHelper>
-            <FormControlHelperText>
-              Please enter your first and last name.
-            </FormControlHelperText>
-          </FormControlHelper>
-        </FormControl>
-      </FormField>
-
-      <FormField required>
-        <FormControl state="error">
-          <FormControlLabel>
-            <FormControlLabelText>Email Address</FormControlLabelText>
-          </FormControlLabel>
-          <Input placeholder="Enter your email" variant="error" />
-          <FormControlError>
-            <FormControlErrorIcon />
-            <FormControlErrorText>
-              Please enter a valid email address.
-            </FormControlErrorText>
-          </FormControlError>
-        </FormControl>
-      </FormField>
-
-      <FormField>
-        <FormControl>
-          <FormControlLabel>
-            <FormControlLabelText>Phone Number (Optional)</FormControlLabelText>
-          </FormControlLabel>
-          <Input placeholder="Enter your phone number" />
-          <FormControlHelper>
-            <FormControlHelperText>
-              We may use this to contact you about your order.
-            </FormControlHelperText>
-          </FormControlHelper>
-        </FormControl>
-      </FormField>
-    </View>
-  );
-}
-```
-
-## Size Variants
-
-Choose from different sizes for various use cases:
-
-```tsx
-import {
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-  FormControlHelper,
-  FormControlHelperText,
-} from '@rnc/theme';
-import { Input } from '@rnc/theme';
-import { View } from 'react-native';
-
-export default function FormSizesExample() {
-  return (
-    <View style={{ gap: 20, padding: 20 }}>
-      <FormControl size="sm">
-        <FormControlLabel>
-          <FormControlLabelText>Small Size</FormControlLabelText>
-        </FormControlLabel>
-        <Input size="sm" placeholder="Small input" />
-        <FormControlHelper>
-          <FormControlHelperText>Compact form field for tight spaces.</FormControlHelperText>
-        </FormControlHelper>
-      </FormControl>
-
-      <FormControl size="md">
-        <FormControlLabel>
-          <FormControlLabelText>Medium Size (Default)</FormControlLabelText>
-        </FormControlLabel>
-        <Input size="md" placeholder="Medium input" />
-        <FormControlHelper>
-          <FormControlHelperText>Standard form field size.</FormControlHelperText>
-        </FormControlHelper>
-      </FormControl>
-
-      <FormControl size="lg">
-        <FormControlLabel>
-          <FormControlLabelText>Large Size</FormControlLabelText>
-        </FormControlLabel>
-        <Input size="lg" placeholder="Large input" />
-        <FormControlHelper>
-          <FormControlHelperText>Larger form field for better accessibility.</FormControlHelperText>
-        </FormControlHelper>
-      </FormControl>
-    </View>
-  );
-}
-```
-
-## Custom Error Icons
-
-Customize error icons for different types of validation:
-
-```tsx
-import {
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-  FormControlError,
-  FormControlErrorIcon,
-  FormControlErrorText,
-} from '@rnc/theme';
-import { Input } from '@rnc/theme';
-import { View } from 'react-native';
-import { AlertTriangle, XCircle, Info } from 'lucide-react-native';
-
-export default function CustomErrorIconsExample() {
-  return (
-    <View style={{ gap: 20, padding: 20 }}>
-      <FormControl state="error">
-        <FormControlLabel>
-          <FormControlLabelText>Password</FormControlLabelText>
-        </FormControlLabel>
-        <Input
-          placeholder="Enter password"
-          secureTextEntry
-          variant="error"
-        />
-        <FormControlError>
-          <FormControlErrorIcon
-            icon={<AlertTriangle size={16} color="#EF4444" />}
-          />
-          <FormControlErrorText>
-            Password must be at least 8 characters long.
-          </FormControlErrorText>
-        </FormControlError>
-      </FormControl>
-
-      <FormControl state="error">
-        <FormControlLabel>
-          <FormControlLabelText>Username</FormControlLabelText>
-        </FormControlLabel>
-        <Input placeholder="Enter username" variant="error" />
-        <FormControlError>
-          <FormControlErrorIcon
-            icon={<XCircle size={16} color="#EF4444" />}
-          />
-          <FormControlErrorText>
-            This username is already taken.
-          </FormControlErrorText>
-        </FormControlError>
-      </FormControl>
-
-      <FormControl state="error">
-        <FormControlLabel>
-          <FormControlLabelText>Credit Card</FormControlLabelText>
-        </FormControlLabel>
-        <Input placeholder="Enter card number" variant="error" />
-        <FormControlError>
-          <FormControlErrorIcon
-            icon={<Info size={16} color="#EF4444" />}
-          />
-          <FormControlErrorText>
-            Please enter a valid credit card number.
-          </FormControlErrorText>
-        </FormControlError>
-      </FormControl>
-    </View>
-  );
-}
-```
-
-## Form Layout with FormContent
-
-Use FormContent for organizing multiple form fields:
-
-```tsx
-import {
-  FormContent,
-  FormField,
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-  FormControlHelper,
-  FormControlHelperText,
-  FormControlError,
-  FormControlErrorIcon,
-  FormControlErrorText,
-} from '@rnc/theme';
-import { Input, Button } from '@rnc/theme';
-import { View } from 'react-native';
-
-export default function FormLayoutExample() {
-  return (
-    <View style={{ padding: 20 }}>
-      <FormContent spacing="lg">
-        <FormField required>
-          <FormControl>
-            <FormControlLabel>
-              <FormControlLabelText>First Name</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Enter your first name" />
-          </FormControl>
-        </FormField>
-
-        <FormField required>
-          <FormControl>
-            <FormControlLabel>
-              <FormControlLabelText>Last Name</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Enter your last name" />
-          </FormControl>
-        </FormField>
-
-        <FormField required>
-          <FormControl state="error">
-            <FormControlLabel>
-              <FormControlLabelText>Email</FormControlLabelText>
-            </FormControlLabel>
-            <Input
-              placeholder="Enter your email"
-              keyboardType="email-address"
-              variant="error"
-            />
-            <FormControlError>
-              <FormControlErrorIcon />
-              <FormControlErrorText>
-                Please enter a valid email address.
-              </FormControlErrorText>
-            </FormControlError>
-          </FormControl>
-        </FormField>
-
-        <FormField>
-          <FormControl>
-            <FormControlLabel>
-              <FormControlLabelText>Phone Number</FormControlLabelText>
-            </FormControlLabel>
-            <Input
-              placeholder="Enter your phone number"
-              keyboardType="phone-pad"
-            />
-            <FormControlHelper>
-              <FormControlHelperText>
-                Optional. We'll only use this for order updates.
-              </FormControlHelperText>
-            </FormControlHelper>
-          </FormControl>
-        </FormField>
-
-        <Button variant="primary" size="lg">
-          Submit Form
-        </Button>
-      </FormContent>
-    </View>
-  );
-}
-```
-
-## Integration with Form Libraries
-
-Integrate with popular form libraries like `react-hook-form`:
-
-```tsx
-import { useForm, Controller } from 'react-hook-form';
-import {
-  FormContent,
-  FormField,
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-  FormControlHelper,
-  FormControlHelperText,
-  FormControlError,
-  FormControlErrorIcon,
-  FormControlErrorText,
-} from '@rnc/theme';
-import { Input, Button } from '@rnc/theme';
-import { View, Text } from 'react-native';
-
-interface FormData {
-  firstName: string;
-  lastName: string;
-  email: string;
-  phone?: string;
-}
-
-export default function FormLibraryIntegrationExample() {
-  const {
-    control,
-    handleSubmit,
-    formState: { errors },
-  } = useForm<FormData>({
-    defaultValues: {
-      firstName: '',
-      lastName: '',
-      email: '',
-      phone: '',
-    },
-  });
-
-  const onSubmit = (data: FormData) => {
-    console.log('Form submitted:', data);
-  };
-
-  return (
-    <View style={{ padding: 20 }}>
-      <FormContent spacing="lg">
-        <FormField required>
-          <Controller
-            control={control}
-            name="firstName"
-            rules={{ required: 'First name is required' }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <FormControl state={errors.firstName ? 'error' : 'default'}>
-                <FormControlLabel>
-                  <FormControlLabelText>First Name</FormControlLabelText>
-                </FormControlLabel>
-                <Input
-                  placeholder="Enter your first name"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  variant={errors.firstName ? 'error' : 'default'}
-                />
-                {errors.firstName && (
-                  <FormControlError>
-                    <FormControlErrorIcon />
-                    <FormControlErrorText>
-                      {errors.firstName.message}
-                    </FormControlErrorText>
-                  </FormControlError>
-                )}
-              </FormControl>
-            )}
-          />
-        </FormField>
-
-        <FormField required>
-          <Controller
-            control={control}
-            name="lastName"
-            rules={{ required: 'Last name is required' }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <FormControl state={errors.lastName ? 'error' : 'default'}>
-                <FormControlLabel>
-                  <FormControlLabelText>Last Name</FormControlLabelText>
-                </FormControlLabel>
-                <Input
-                  placeholder="Enter your last name"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  variant={errors.lastName ? 'error' : 'default'}
-                />
-                {errors.lastName && (
-                  <FormControlError>
-                    <FormControlErrorIcon />
-                    <FormControlErrorText>
-                      {errors.lastName.message}
-                    </FormControlErrorText>
-                  </FormControlError>
-                )}
-              </FormControl>
-            )}
-          />
-        </FormField>
-
-        <FormField required>
-          <Controller
-            control={control}
-            name="email"
-            rules={{
-              required: 'Email is required',
-              pattern: {
-                value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                message: 'Please enter a valid email address',
-              },
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <FormControl state={errors.email ? 'error' : 'default'}>
-                <FormControlLabel>
-                  <FormControlLabelText>Email Address</FormControlLabelText>
-                </FormControlLabel>
-                <Input
-                  placeholder="Enter your email"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  keyboardType="email-address"
-                  variant={errors.email ? 'error' : 'default'}
-                />
-                {errors.email && (
-                  <FormControlError>
-                    <FormControlErrorIcon />
-                    <FormControlErrorText>
-                      {errors.email.message}
-                    </FormControlErrorText>
-                  </FormControlError>
-                )}
-              </FormControl>
-            )}
-          />
-        </FormField>
-
-        <FormField>
-          <Controller
-            control={control}
-            name="phone"
-            render={({ field: { onChange, onBlur, value } }) => (
-              <FormControl>
-                <FormControlLabel>
-                  <FormControlLabelText>Phone Number</FormControlLabelText>
-                </FormControlLabel>
-                <Input
-                  placeholder="Enter your phone number"
-                  value={value}
-                  onChangeText={onChange}
-                  onBlur={onBlur}
-                  keyboardType="phone-pad"
-                />
-                <FormControlHelper>
-                  <FormControlHelperText>
-                    Optional. We'll only use this for order updates.
-                  </FormControlHelperText>
-                </FormControlHelper>
-              </FormControl>
-            )}
-          />
-        </FormField>
-
-        <Button
-          variant="primary"
-          size="lg"
-          onPress={handleSubmit(onSubmit)}
-        >
-          Submit Form
-        </Button>
-      </FormContent>
-    </View>
-  );
-}
-```
-
-## Custom Spacing
-
-Control spacing between form elements:
-
-```tsx
-import {
-  FormContent,
-  FormControl,
-  FormControlLabel,
-  FormControlLabelText,
-} from '@rnc/theme';
-import { Input } from '@rnc/theme';
-import { View, Text } from 'react-native';
-
-export default function CustomSpacingExample() {
-  return (
-    <View style={{ gap: 30, padding: 20 }}>
-      <View>
-        <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 10 }}>
-          Tight Spacing (xs)
-        </Text>
-        <FormContent spacing="xs">
-          <FormControl spacing="xs">
-            <FormControlLabel>
-              <FormControlLabelText>Field 1</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Enter text" />
-          </FormControl>
-          <FormControl spacing="xs">
-            <FormControlLabel>
-              <FormControlLabelText>Field 2</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Enter text" />
-          </FormControl>
-        </FormContent>
-      </View>
-
-      <View>
-        <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 10 }}>
-          Normal Spacing (md)
-        </Text>
-        <FormContent spacing="md">
-          <FormControl spacing="md">
-            <FormControlLabel>
-              <FormControlLabelText>Field 1</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Enter text" />
-          </FormControl>
-          <FormControl spacing="md">
-            <FormControlLabel>
-              <FormControlLabelText>Field 2</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Enter text" />
-          </FormControl>
-        </FormContent>
-      </View>
-
-      <View>
-        <Text style={{ fontSize: 18, fontWeight: '600', marginBottom: 10 }}>
-          Loose Spacing (xl)
-        </Text>
-        <FormContent spacing="xl">
-          <FormControl spacing="xl">
-            <FormControlLabel>
-              <FormControlLabelText>Field 1</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Enter text" />
-          </FormControl>
-          <FormControl spacing="xl">
-            <FormControlLabel>
-              <FormControlLabelText>Field 2</FormControlLabelText>
-            </FormControlLabel>
-            <Input placeholder="Enter text" />
-          </FormControl>
-        </FormContent>
-      </View>
-    </View>
-  );
-}
-```
-
-## API Reference
-
-### FormControl
+### FormControl Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `children` | `React.ReactNode` | - | Form control content |
-| `id` | `string` | - | Unique identifier for the form control |
-| `state` | `'default' \| 'error' \| 'success' \| 'warning' \| 'disabled'` | `'default'` | Form control state |
-| `size` | `'sm' \| 'md' \| 'lg'` | `'md'` | Form control size |
-| `disabled` | `boolean` | `false` | Whether the form control is disabled |
+| `id` | `string` | - | Unique identifier (auto-generated if not provided) |
+| `state` | `FormControlState` | `'default'` | Visual state (default, error, success, warning, disabled) |
+| `size` | `FormControlSize` | `'md'` | Size variant (sm, md, lg) |
+| `disabled` | `boolean` | `false` | Disable all form control elements |
+| `required` | `boolean` | `false` | Mark field as required |
+| `style` | `StyleProp<ViewStyle>` | - | Additional container styles |
 | `spacing` | `keyof Theme['spacing']` | `'sm'` | Spacing between child elements |
-| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
+| `onStateChange` | `(state: FormControlState) => void` | - | Callback when state changes |
 
-### FormField
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `React.ReactNode` | - | Form field content |
-| `required` | `boolean` | `false` | Whether the field is required |
-| `spacing` | `keyof Theme['spacing']` | `'sm'` | Spacing between child elements |
-| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
-
-### FormContent
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `React.ReactNode` | - | Form content |
-| `spacing` | `keyof Theme['spacing']` | `'md'` | Spacing between child elements |
-| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
-
-### FormControlLabel
+### FormControlLabel Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `children` | `React.ReactNode` | - | Label content |
-| `htmlFor` | `string` | - | Associated form control ID |
-| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
+| `style` | `StyleProp<ViewStyle>` | - | Additional label container styles |
 
-### FormControlLabelText
+### FormControlLabelText Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `children` | `React.ReactNode` | - | Label text content |
-| `variant` | `keyof Theme['typography']` | - | Typography variant |
 | `style` | `TextStyle` | - | Additional text styles |
+| `variant` | `keyof Theme['typography']` | - | Typography variant override |
 
-### FormControlHelper
+### FormControlHelper Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `children` | `React.ReactNode` | - | Helper content |
-| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
+| `style` | `StyleProp<ViewStyle>` | - | Additional helper container styles |
 
-### FormControlHelperText
+### FormControlHelperText Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
 | `children` | `React.ReactNode` | - | Helper text content |
-| `variant` | `keyof Theme['typography']` | - | Typography variant |
 | `style` | `TextStyle` | - | Additional text styles |
+| `variant` | `keyof Theme['typography']` | - | Typography variant override |
 
-### FormControlError
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `children` | `React.ReactNode` | - | Error content |
-| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
-
-### FormControlErrorIcon
+### State Message Props (Error/Success/Warning)
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `icon` | `React.ReactNode` | `<AlertCircle />` | Custom error icon |
-| `size` | `number` | `16` | Icon size |
-| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
+| `children` | `React.ReactNode` | - | Message content |
+| `style` | `StyleProp<ViewStyle>` | - | Additional container styles |
+| `showWhen` | `boolean` | - | Control visibility manually |
 
-### FormControlErrorText
+### State Icon Props (Error/Success/Warning)
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `children` | `React.ReactNode` | - | Error text content |
-| `variant` | `keyof Theme['typography']` | - | Typography variant |
+| `icon` | `React.ReactNode` | - | Custom icon component |
+| `style` | `StyleProp<ViewStyle>` | - | Additional icon container styles |
+| `size` | `number` | `16` | Icon size in pixels |
+
+### State Text Props (Error/Success/Warning)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Text content |
 | `style` | `TextStyle` | - | Additional text styles |
+| `variant` | `keyof Theme['typography']` | - | Typography variant override |
 
-## Hooks
+### FormControlState Types
 
-### useFormControl
+| State | Description | Use Case |
+|-------|-------------|----------|
+| `default` | Normal state | Standard form fields |
+| `error` | Error state | Validation failures |
+| `success` | Success state | Successful validation |
+| `warning` | Warning state | Caution messages |
+| `disabled` | Disabled state | Inactive form fields |
 
-Access form control context within child components:
+## Examples
+
+### Login Form
 
 ```tsx
-import { useFormControl } from '@rnc/theme';
+const LoginForm = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [passwordError, setPasswordError] = useState('');
 
-function CustomFormComponent() {
-  const {
-    id,
-    state,
-    size,
-    disabled,
-    hasError,
-    hasHelper,
-    labelId,
-    helperId,
-    errorId,
-  } = useFormControl();
+  const validateEmail = (value: string) => {
+    if (!value) {
+      setEmailError('Email is required');
+      return false;
+    }
+    if (!/\S+@\S+\.\S+/.test(value)) {
+      setEmailError('Please enter a valid email');
+      return false;
+    }
+    setEmailError('');
+    return true;
+  };
 
-  // Use context values...
-}
+  const validatePassword = (value: string) => {
+    if (!value) {
+      setPasswordError('Password is required');
+      return false;
+    }
+    if (value.length < 8) {
+      setPasswordError('Password must be at least 8 characters');
+      return false;
+    }
+    setPasswordError('');
+    return true;
+  };
+
+  return (
+    <VStack spacing="lg" padding="xl">
+      <FormControl
+        state={emailError ? 'error' : email ? 'success' : 'default'}
+        required
+      >
+        <FormControlLabel>
+          <FormControlLabelText>Email Address</FormControlLabelText>
+        </FormControlLabel>
+        <TextInput
+          placeholder="Enter your email"
+          value={email}
+          onChangeText={(value) => {
+            setEmail(value);
+            validateEmail(value);
+          }}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        {emailError ? (
+          <FormControlError>
+            <FormControlErrorIcon />
+            <FormControlErrorText>{emailError}</FormControlErrorText>
+          </FormControlError>
+        ) : email ? (
+          <FormControlSuccess>
+            <FormControlSuccessIcon />
+            <FormControlSuccessText>Valid email address</FormControlSuccessText>
+          </FormControlSuccess>
+        ) : (
+          <FormControlHelper>
+            <FormControlHelperText>We'll never share your email</FormControlHelperText>
+          </FormControlHelper>
+        )}
+      </FormControl>
+
+      <FormControl
+        state={passwordError ? 'error' : password.length >= 8 ? 'success' : 'default'}
+        required
+      >
+        <FormControlLabel>
+          <FormControlLabelText>Password</FormControlLabelText>
+        </FormControlLabel>
+        <TextInput
+          placeholder="Enter your password"
+          value={password}
+          onChangeText={(value) => {
+            setPassword(value);
+            validatePassword(value);
+          }}
+          secureTextEntry
+        />
+        {passwordError ? (
+          <FormControlError>
+            <FormControlErrorIcon />
+            <FormControlErrorText>{passwordError}</FormControlErrorText>
+          </FormControlError>
+        ) : password.length >= 8 ? (
+          <FormControlSuccess>
+            <FormControlSuccessIcon />
+            <FormControlSuccessText>Strong password</FormControlSuccessText>
+          </FormControlSuccess>
+        ) : (
+          <FormControlHelper>
+            <FormControlHelperText>Password must be at least 8 characters</FormControlHelperText>
+          </FormControlHelper>
+        )}
+      </FormControl>
+    </VStack>
+  );
+};
 ```
 
-### useFormControlOptional
-
-Optionally access form control context (returns null if not within FormControl):
+### Registration Form with Validation
 
 ```tsx
-import { useFormControlOptional } from '@rnc/theme';
+const RegistrationForm = () => {
+  const [formData, setFormData] = useState({
+    username: '',
+    email: '',
+    password: '',
+    confirmPassword: '',
+    terms: false,
+  });
+  const [validationState, setValidationState] = useState({});
 
-function OptionalFormComponent() {
-  const formControl = useFormControlOptional();
+  const validateField = (field: string, value: any) => {
+    let isValid = true;
+    let message = '';
 
-  if (formControl) {
-    // Use form control context
-  }
-}
+    switch (field) {
+      case 'username':
+        if (!value) {
+          isValid = false;
+          message = 'Username is required';
+        } else if (value.length < 3) {
+          isValid = false;
+          message = 'Username must be at least 3 characters';
+        } else if (!/^[a-zA-Z0-9_]+$/.test(value)) {
+          isValid = false;
+          message = 'Username can only contain letters, numbers, and underscores';
+        }
+        break;
+
+      case 'email':
+        if (!value) {
+          isValid = false;
+          message = 'Email is required';
+        } else if (!/\S+@\S+\.\S+/.test(value)) {
+          isValid = false;
+          message = 'Please enter a valid email address';
+        }
+        break;
+
+      case 'password':
+        if (!value) {
+          isValid = false;
+          message = 'Password is required';
+        } else if (value.length < 8) {
+          isValid = false;
+          message = 'Password must be at least 8 characters';
+        } else if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(value)) {
+          isValid = false;
+          message = 'Password must contain uppercase, lowercase, and number';
+        }
+        break;
+
+      case 'confirmPassword':
+        if (!value) {
+          isValid = false;
+          message = 'Please confirm your password';
+        } else if (value !== formData.password) {
+          isValid = false;
+          message = 'Passwords do not match';
+        }
+        break;
+    }
+
+    setValidationState(prev => ({
+      ...prev,
+      [field]: { isValid, message }
+    }));
+
+    return isValid;
+  };
+
+  const getFieldState = (field: string) => {
+    const validation = validationState[field];
+    if (!validation) return 'default';
+    if (!formData[field]) return 'default';
+    return validation.isValid ? 'success' : 'error';
+  };
+
+  return (
+    <VStack spacing="lg" padding="xl">
+      <FormControl
+        state={getFieldState('username')}
+        required
+        size="md"
+      >
+        <FormControlLabel>
+          <FormControlLabelText>Username</FormControlLabelText>
+        </FormControlLabel>
+        <TextInput
+          placeholder="Choose a username"
+          value={formData.username}
+          onChangeText={(value) => {
+            setFormData(prev => ({ ...prev, username: value }));
+            validateField('username', value);
+          }}
+          autoCapitalize="none"
+        />
+        {validationState.username?.message ? (
+          getFieldState('username') === 'error' ? (
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>{validationState.username.message}</FormControlErrorText>
+            </FormControlError>
+          ) : (
+            <FormControlSuccess>
+              <FormControlSuccessIcon />
+              <FormControlSuccessText>Username is available</FormControlSuccessText>
+            </FormControlSuccess>
+          )
+        ) : (
+          <FormControlHelper>
+            <FormControlHelperText>Choose a unique username (3+ characters)</FormControlHelperText>
+          </FormControlHelper>
+        )}
+      </FormControl>
+
+      <FormControl
+        state={getFieldState('email')}
+        required
+      >
+        <FormControlLabel>
+          <FormControlLabelText>Email Address</FormControlLabelText>
+        </FormControlLabel>
+        <TextInput
+          placeholder="Enter your email"
+          value={formData.email}
+          onChangeText={(value) => {
+            setFormData(prev => ({ ...prev, email: value }));
+            validateField('email', value);
+          }}
+          keyboardType="email-address"
+          autoCapitalize="none"
+        />
+        {validationState.email?.message && getFieldState('email') === 'error' && (
+          <FormControlError>
+            <FormControlErrorIcon />
+            <FormControlErrorText>{validationState.email.message}</FormControlErrorText>
+          </FormControlError>
+        )}
+      </FormControl>
+
+      <FormControl
+        state={getFieldState('password')}
+        required
+      >
+        <FormControlLabel>
+          <FormControlLabelText>Password</FormControlLabelText>
+        </FormControlLabel>
+        <TextInput
+          placeholder="Create a password"
+          value={formData.password}
+          onChangeText={(value) => {
+            setFormData(prev => ({ ...prev, password: value }));
+            validateField('password', value);
+            if (formData.confirmPassword) {
+              validateField('confirmPassword', formData.confirmPassword);
+            }
+          }}
+          secureTextEntry
+        />
+        {validationState.password?.message ? (
+          getFieldState('password') === 'error' ? (
+            <FormControlError>
+              <FormControlErrorIcon />
+              <FormControlErrorText>{validationState.password.message}</FormControlErrorText>
+            </FormControlError>
+          ) : (
+            <FormControlSuccess>
+              <FormControlSuccessIcon />
+              <FormControlSuccessText>Strong password</FormControlSuccessText>
+            </FormControlSuccess>
+          )
+        ) : (
+          <FormControlHelper>
+            <FormControlHelperText>
+              Include uppercase, lowercase, and numbers (8+ characters)
+            </FormControlHelperText>
+          </FormControlHelper>
+        )}
+      </FormControl>
+
+      <FormControl
+        state={getFieldState('confirmPassword')}
+        required
+      >
+        <FormControlLabel>
+          <FormControlLabelText>Confirm Password</FormControlLabelText>
+        </FormControlLabel>
+        <TextInput
+          placeholder="Confirm your password"
+          value={formData.confirmPassword}
+          onChangeText={(value) => {
+            setFormData(prev => ({ ...prev, confirmPassword: value }));
+            validateField('confirmPassword', value);
+          }}
+          secureTextEntry
+        />
+        {validationState.confirmPassword?.message && getFieldState('confirmPassword') === 'error' && (
+          <FormControlError>
+            <FormControlErrorIcon />
+            <FormControlErrorText>{validationState.confirmPassword.message}</FormControlErrorText>
+          </FormControlError>
+        )}
+      </FormControl>
+    </VStack>
+  );
+};
 ```
 
-### useFormField
-
-Access form field context:
+### Size Variations
 
 ```tsx
-import { useFormField } from '@rnc/theme';
+<VStack spacing="xl" padding="lg">
+  <FormControl size="sm">
+    <FormControlLabel>
+      <FormControlLabelText>Small Size</FormControlLabelText>
+    </FormControlLabel>
+    <TextInput placeholder="Small input" />
+    <FormControlHelper>
+      <FormControlHelperText>Small helper text</FormControlHelperText>
+    </FormControlHelper>
+  </FormControl>
 
-function CustomFieldComponent() {
-  const formField = useFormField();
-  const required = formField?.required || false;
+  <FormControl size="md">
+    <FormControlLabel>
+      <FormControlLabelText>Medium Size (Default)</FormControlLabelText>
+    </FormControlLabel>
+    <TextInput placeholder="Medium input" />
+    <FormControlHelper>
+      <FormControlHelperText>Medium helper text</FormControlHelperText>
+    </FormControlHelper>
+  </FormControl>
 
-  // Use field context...
-}
+  <FormControl size="lg">
+    <FormControlLabel>
+      <FormControlLabelText>Large Size</FormControlLabelText>
+    </FormControlLabel>
+    <TextInput placeholder="Large input" />
+    <FormControlHelper>
+      <FormControlHelperText>Large helper text</FormControlHelperText>
+    </FormControlHelper>
+  </FormControl>
+</VStack>
+```
+
+### Warning States
+
+```tsx
+const PasswordChangeForm = () => {
+  const [currentPassword, setCurrentPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+
+  const isWeakPassword = (password: string) => {
+    return password.length >= 6 && password.length < 8;
+  };
+
+  return (
+    <VStack spacing="lg">
+      <FormControl>
+        <FormControlLabel>
+          <FormControlLabelText>Current Password</FormControlLabelText>
+        </FormControlLabel>
+        <TextInput
+          placeholder="Enter current password"
+          value={currentPassword}
+          onChangeText={setCurrentPassword}
+          secureTextEntry
+        />
+      </FormControl>
+
+      <FormControl
+        state={
+          newPassword && isWeakPassword(newPassword) ? 'warning' :
+          newPassword && newPassword.length >= 8 ? 'success' :
+          'default'
+        }
+        required
+      >
+        <FormControlLabel>
+          <FormControlLabelText>New Password</FormControlLabelText>
+        </FormControlLabel>
+        <TextInput
+          placeholder="Enter new password"
+          value={newPassword}
+          onChangeText={setNewPassword}
+          secureTextEntry
+        />
+        {isWeakPassword(newPassword) ? (
+          <FormControlWarning>
+            <FormControlWarningIcon />
+            <FormControlWarningText>
+              Password is acceptable but could be stronger
+            </FormControlWarningText>
+          </FormControlWarning>
+        ) : newPassword.length >= 8 ? (
+          <FormControlSuccess>
+            <FormControlSuccessIcon />
+            <FormControlSuccessText>Strong password!</FormControlSuccessText>
+          </FormControlSuccess>
+        ) : (
+          <FormControlHelper>
+            <FormControlHelperText>
+              Minimum 8 characters recommended
+            </FormControlHelperText>
+          </FormControlHelper>
+        )}
+      </FormControl>
+
+      <FormControl
+        state={
+          confirmPassword && confirmPassword !== newPassword ? 'error' :
+          confirmPassword && confirmPassword === newPassword ? 'success' :
+          'default'
+        }
+        required
+      >
+        <FormControlLabel>
+          <FormControlLabelText>Confirm New Password</FormControlLabelText>
+        </FormControlLabel>
+        <TextInput
+          placeholder="Confirm new password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+        />
+        {confirmPassword && confirmPassword !== newPassword && (
+          <FormControlError>
+            <FormControlErrorIcon />
+            <FormControlErrorText>Passwords do not match</FormControlErrorText>
+          </FormControlError>
+        )}
+        {confirmPassword && confirmPassword === newPassword && (
+          <FormControlSuccess>
+            <FormControlSuccessIcon />
+            <FormControlSuccessText>Passwords match</FormControlSuccessText>
+          </FormControlSuccess>
+        )}
+      </FormControl>
+    </VStack>
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Form Control Hook
+
+```tsx
+const useFormValidation = (initialValues: Record<string, any>) => {
+  const [values, setValues] = useState(initialValues);
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [touched, setTouched] = useState<Record<string, boolean>>({});
+
+  const setValue = (field: string, value: any) => {
+    setValues(prev => ({ ...prev, [field]: value }));
+    if (touched[field]) {
+      validateField(field, value);
+    }
+  };
+
+  const setTouched = (field: string) => {
+    setTouched(prev => ({ ...prev, [field]: true }));
+    validateField(field, values[field]);
+  };
+
+  const validateField = (field: string, value: any) => {
+    // Add your validation logic here
+    // This is a simplified example
+    let error = '';
+
+    if (field === 'email' && value && !/\S+@\S+\.\S+/.test(value)) {
+      error = 'Invalid email format';
+    }
+
+    setErrors(prev => ({ ...prev, [field]: error }));
+    return !error;
+  };
+
+  const getFieldProps = (field: string) => ({
+    value: values[field] || '',
+    onChangeText: (value: string) => setValue(field, value),
+    onBlur: () => setTouched(field),
+  });
+
+  const getFormControlProps = (field: string) => ({
+    state: errors[field] ? 'error' as const :
+           values[field] && touched[field] ? 'success' as const :
+           'default' as const,
+  });
+
+  return {
+    values,
+    errors,
+    touched,
+    getFieldProps,
+    getFormControlProps,
+    validateField,
+    setTouched,
+  };
+};
+
+// Usage
+const MyForm = () => {
+  const { getFieldProps, getFormControlProps, errors } = useFormValidation({
+    email: '',
+    password: '',
+  });
+
+  return (
+    <VStack spacing="md">
+      <FormControl {...getFormControlProps('email')} required>
+        <FormControlLabel>
+          <FormControlLabelText>Email</FormControlLabelText>
+        </FormControlLabel>
+        <TextInput
+          placeholder="Enter email"
+          {...getFieldProps('email')}
+          keyboardType="email-address"
+        />
+        {errors.email && (
+          <FormControlError>
+            <FormControlErrorIcon />
+            <FormControlErrorText>{errors.email}</FormControlErrorText>
+          </FormControlError>
+        )}
+      </FormControl>
+
+      <FormControl {...getFormControlProps('password')} required>
+        <FormControlLabel>
+          <FormControlLabelText>Password</FormControlLabelText>
+        </FormControlLabel>
+        <TextInput
+          placeholder="Enter password"
+          {...getFieldProps('password')}
+          secureTextEntry
+        />
+        {errors.password && (
+          <FormControlError>
+            <FormControlErrorIcon />
+            <FormControlErrorText>{errors.password}</FormControlErrorText>
+          </FormControlError>
+        )}
+      </FormControl>
+    </VStack>
+  );
+};
+```
+
+### Dynamic State Management
+
+```tsx
+const DynamicFormControl = () => {
+  const [fieldState, setFieldState] = useState<FormControlState>('default');
+  const [inputValue, setInputValue] = useState('');
+
+  // Simulate real-time validation
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (!inputValue) {
+        setFieldState('default');
+      } else if (inputValue.length < 3) {
+        setFieldState('error');
+      } else if (inputValue.length < 6) {
+        setFieldState('warning');
+      } else {
+        setFieldState('success');
+      }
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [inputValue]);
+
+  return (
+    <FormControl
+      state={fieldState}
+      onStateChange={(newState) => {
+        console.log('State changed to:', newState);
+      }}
+    >
+      <FormControlLabel>
+        <FormControlLabelText>Dynamic Validation</FormControlLabelText>
+      </FormControlLabel>
+      <TextInput
+        placeholder="Type to see validation states"
+        value={inputValue}
+        onChangeText={setInputValue}
+      />
+
+      <FormControlError showWhen={fieldState === 'error'}>
+        <FormControlErrorIcon />
+        <FormControlErrorText>Too short (minimum 3 characters)</FormControlErrorText>
+      </FormControlError>
+
+      <FormControlWarning showWhen={fieldState === 'warning'}>
+        <FormControlWarningIcon />
+        <FormControlWarningText>Could be longer (6+ recommended)</FormControlWarningText>
+      </FormControlWarning>
+
+      <FormControlSuccess showWhen={fieldState === 'success'}>
+        <FormControlSuccessIcon />
+        <FormControlSuccessText>Perfect length!</FormControlSuccessText>
+      </FormControlSuccess>
+
+      <FormControlHelper>
+        <FormControlHelperText>
+          {fieldState === 'default' && 'Start typing to see validation'}
+        </FormControlHelperText>
+      </FormControlHelper>
+    </FormControl>
+  );
+};
 ```
 
 ## Best Practices
 
-### Do's
+<Card title="Validation Timing" icon="seti:clock">
+- Validate on blur for better UX, not on every keystroke
+- Show success states only after user interaction
+- Use warning states for non-critical issues
+</Card>
 
-- Use FormField for required field indicators
-- Provide clear, descriptive labels for all form controls
-- Use helper text to guide users on expected input format
-- Show specific error messages that help users fix issues
-- Group related form controls using FormContent
-- Use appropriate sizes based on the form's context
+<Card title="Message Hierarchy" icon="comment-alt">
+- Error messages take priority over success/warning
+- Helper text is hidden when status messages are shown
+- Keep messages concise and actionable
+</Card>
 
-### Don'ts
+<Card title="Performance" icon="rocket">
+- Use `useFormControlOptional` for optional form control context
+- Memoize validation functions to prevent unnecessary re-renders
+- Consider debouncing for real-time validation
+</Card>
 
-- Don't nest FormControl components
-- Don't use FormControl without proper labels
-- Avoid generic error messages like "Invalid input"
-- Don't show helper text and error text simultaneously for required fields
-- Don't use disabled state for readonly fields (use readonly inputs instead)
+<Aside type="tip">
+When building complex forms, create reusable form field components that wrap FormControl with your specific input components for consistency across your application.
+</Aside>
 
-### Accessibility
-
-- Form controls automatically generate proper ARIA attributes
-- Labels are properly associated with form inputs
-- Error messages are announced by screen readers
-- Required field indicators are accessible
-- Proper focus management is maintained
-
-## Troubleshooting
-
-### Common Issues
-
-**Form control context not available**
-- Ensure components are used within a FormControl wrapper
-- Check that you're using the correct hook (useFormControl vs useFormControlOptional)
-
-**Required indicator not showing**
-- Ensure the component is wrapped in FormField with required=true
-- Check that FormControlLabelText is used within the FormField context
-
-**Error state not displaying**
-- Verify that FormControl state is set to "error"
-- Ensure FormControlError components are used correctly
-- Check that error text is provided
-
-**Spacing issues**
-- Use the spacing prop on FormControl, FormField, or FormContent
-- Ensure consistent spacing values throughout your form
-- Consider using FormContent for better layout control
-
-**Accessibility warnings**
-- Ensure all form controls have proper labels
-- Verify that error messages are associated with their inputs
-- Test with screen readers to confirm proper announcements
+<Aside type="caution">
+Always provide clear, actionable error messages. Avoid technical jargon and focus on telling users exactly what they need to fix and how to fix it.
+</Aside>

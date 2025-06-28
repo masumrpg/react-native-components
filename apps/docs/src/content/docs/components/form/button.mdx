@@ -1,1099 +1,518 @@
 ---
 title: Button
-description: A versatile, themeable button component with animations, loading states, icons, and multiple variants for React Native applications.
-sidebar:
-  order: 1
+description: Versatile button component with animated interactions, multiple variants, and flexible styling options for React Native applications
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
-import { Tabs, TabItem } from '@astrojs/starlight/components';
-import { Code } from '@astrojs/starlight/components';
-import { Badge } from '@astrojs/starlight/components';
-import { Aside } from '@astrojs/starlight/components';
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
 
-# Button
+Button provides a comprehensive solution for interactive elements with built-in animations, loading states, and multiple styling variants. It supports both Pressable and TouchableOpacity components with customizable spring animations and visual feedback.
 
-A powerful, customizable button component that supports multiple variants, sizes, animations, loading states, and icons. Built with React Native Reanimated for smooth animations and full theme integration.
+## Import
 
-## Features
-
-<CardGrid>
-  <Card title="🎨 Multiple Variants" icon="palette">
-    Primary, secondary, outline, ghost, filled, success, error, and warning variants.
-  </Card>
-  <Card title="📏 Flexible Sizing" icon="setting">
-    Five size options (xs, sm, md, lg, xl) with consistent spacing and typography.
-  </Card>
-  <Card title="✨ Smooth Animations" icon="star">
-    Built-in press animations, custom animation types (bounce, pulse, shake).
-  </Card>
-  <Card title="⏳ Loading States" icon="rocket">
-    Integrated spinner with customizable loading behavior and accessibility.
-  </Card>
-  <Card title="🔧 Icon Support" icon="puzzle">
-    Left, right, or center icon positioning with proper spacing.
-  </Card>
-  <Card title="♿ Accessibility" icon="information">
-    Full accessibility support with proper roles, states, and screen reader compatibility.
-  </Card>
-</CardGrid>
+```tsx
+import { Button, ButtonText, ButtonIcon } from 'rnc-theme';
+```
 
 ## Basic Usage
 
-```tsx
-import { Button } from 'rnc-theme';
-
-function BasicExample() {
-  return (
-    <View style={styles.container}>
-      <Button onPress={() => console.log('Pressed!')}>
-        Click Me
-      </Button>
-    </View>
-  );
-}
-```
-
-## Variants
-
-The Button component supports multiple visual variants to match different use cases and design requirements.
-
 <Tabs>
-  <TabItem label="Primary & Secondary">
+  <TabItem label="Simple Button">
     ```tsx
-    import { Button } from 'rnc-theme';
-
-    function VariantExample() {
-      return (
-        <View style={styles.container}>
-          {/* Primary - Main call-to-action */}
-          <Button variant="primary" onPress={handlePrimary}>
-            Primary Action
-          </Button>
-
-          {/* Secondary - Secondary actions */}
-          <Button variant="secondary" onPress={handleSecondary}>
-            Secondary Action
-          </Button>
-
-          {/* Default - Neutral actions */}
-          <Button variant="default" onPress={handleDefault}>
-            Default Action
-          </Button>
-        </View>
-      );
-    }
+    <Button onPress={handlePress}>
+      <ButtonText>Click Me</ButtonText>
+    </Button>
     ```
   </TabItem>
 
-  <TabItem label="Outline & Ghost">
+  <TabItem label="With Icon">
     ```tsx
-    function OutlineGhostExample() {
-      return (
-        <View style={styles.container}>
-          {/* Outline - Bordered style */}
-          <Button variant="outline" onPress={handleOutline}>
-            Outline Button
-          </Button>
-
-          {/* Ghost - Minimal style */}
-          <Button variant="ghost" onPress={handleGhost}>
-            Ghost Button
-          </Button>
-
-          {/* Filled - Solid background */}
-          <Button variant="filled" onPress={handleFilled}>
-            Filled Button
-          </Button>
-        </View>
-      );
-    }
+    <Button variant="secondary" onPress={handleSubmit}>
+      <ButtonIcon icon={<CheckIcon />} position="left" />
+      <ButtonText>Submit Form</ButtonText>
+    </Button>
     ```
   </TabItem>
 
-  <TabItem label="Status Colors">
+  <TabItem label="Loading State">
     ```tsx
-    function StatusExample() {
-      return (
-        <View style={styles.container}>
-          {/* Success - Positive actions */}
-          <Button variant="success" onPress={handleSuccess}>
-            ✓ Success Action
-          </Button>
+    <Button loading={isSubmitting} onPress={handleSubmit}>
+      <ButtonText>Save Changes</ButtonText>
+    </Button>
+    ```
+  </TabItem>
 
-          {/* Error - Destructive actions */}
-          <Button variant="error" onPress={handleError}>
-            ✗ Delete Item
-          </Button>
-
-          {/* Warning - Caution required */}
-          <Button variant="warning" onPress={handleWarning}>
-            ⚠ Warning Action
-          </Button>
-
-          {/* Info - Informational */}
-          <Button variant="info" onPress={handleInfo}>
-            ℹ More Info
-          </Button>
-        </View>
-      );
-    }
+  <TabItem label="Disabled State">
+    ```tsx
+    <Button disabled={!isValid} variant="primary">
+      <ButtonText>Continue</ButtonText>
+    </Button>
     ```
   </TabItem>
 </Tabs>
 
-## Sizes
+## Props
 
-Choose from five different sizes to match your design hierarchy and space constraints.
-
-```tsx
-import { Button } from 'rnc-theme';
-
-function SizeExample() {
-  return (
-    <View style={styles.container}>
-      <Button size="xs" variant="primary">
-        Extra Small
-      </Button>
-
-      <Button size="sm" variant="primary">
-        Small
-      </Button>
-
-      <Button size="md" variant="primary">
-        Medium (Default)
-      </Button>
-
-      <Button size="lg" variant="primary">
-        Large
-      </Button>
-
-      <Button size="xl" variant="primary">
-        Extra Large
-      </Button>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    gap: 12,
-    padding: 16,
-  },
-});
-```
-
-## Loading States
-
-Show loading states with integrated spinners and proper accessibility feedback.
-
-<Tabs>
-  <TabItem label="Basic Loading">
-    ```tsx
-    import { Button } from 'rnc-theme';
-    import { useState } from 'react';
-
-    function LoadingExample() {
-      const [loading, setLoading] = useState(false);
-
-      const handleSubmit = async () => {
-        setLoading(true);
-        try {
-          await submitForm();
-        } finally {
-          setLoading(false);
-        }
-      };
-
-      return (
-        <Button
-          variant="primary"
-          loading={loading}
-          onPress={handleSubmit}
-        >
-          {loading ? 'Submitting...' : 'Submit Form'}
-        </Button>
-      );
-    }
-    ```
-  </TabItem>
-
-  <TabItem label="Custom Loading">
-    ```tsx
-    function CustomLoadingExample() {
-      const [states, setStates] = useState({
-        saving: false,
-        deleting: false,
-        uploading: false,
-      });
-
-      return (
-        <View style={styles.container}>
-          <Button
-            variant="primary"
-            loading={states.saving}
-            disabled={states.saving}
-            onPress={() => handleSave()}
-          >
-            {states.saving ? 'Saving...' : 'Save Changes'}
-          </Button>
-
-          <Button
-            variant="error"
-            loading={states.deleting}
-            disabled={states.deleting}
-            onPress={() => handleDelete()}
-          >
-            {states.deleting ? 'Deleting...' : 'Delete Item'}
-          </Button>
-
-          <Button
-            variant="secondary"
-            loading={states.uploading}
-            disabled={states.uploading}
-            onPress={() => handleUpload()}
-          >
-            {states.uploading ? 'Uploading...' : 'Upload File'}
-          </Button>
-        </View>
-      );
-    }
-    ```
-  </TabItem>
-
-  <TabItem label="Loading with Icons">
-    ```tsx
-    import { MaterialIcons } from '@expo/vector-icons';
-
-    function LoadingWithIconsExample() {
-      const [loading, setLoading] = useState(false);
-
-      return (
-        <View style={styles.container}>
-          <Button
-            variant="primary"
-            loading={loading}
-            icon={
-              loading ? undefined : (
-                <MaterialIcons name="cloud-upload" size={20} color="white" />
-              )
-            }
-            iconPosition="left"
-            onPress={() => setLoading(!loading)}
-          >
-            {loading ? 'Uploading...' : 'Upload to Cloud'}
-          </Button>
-
-          <Button
-            variant="success"
-            loading={loading}
-            icon={
-              loading ? undefined : (
-                <MaterialIcons name="save" size={20} color="white" />
-              )
-            }
-            iconPosition="left"
-            onPress={() => setLoading(!loading)}
-          >
-            {loading ? 'Saving...' : 'Save Document'}
-          </Button>
-        </View>
-      );
-    }
-    ```
-  </TabItem>
-</Tabs>
-
-## Icons
-
-Add icons to your buttons with flexible positioning and proper spacing.
-
-<Tabs>
-  <TabItem label="Icon Positions">
-    ```tsx
-    import { MaterialIcons } from '@expo/vector-icons';
-    import { Button } from 'rnc-theme';
-
-    function IconPositionExample() {
-      return (
-        <View style={styles.container}>
-          {/* Left icon */}
-          <Button
-            variant="primary"
-            icon={<MaterialIcons name="add" size={20} color="white" />}
-            iconPosition="left"
-            onPress={handleAdd}
-          >
-            Add Item
-          </Button>
-
-          {/* Right icon */}
-          <Button
-            variant="secondary"
-            icon={<MaterialIcons name="arrow-forward" size={20} color="#666" />}
-            iconPosition="right"
-            onPress={handleNext}
-          >
-            Next Step
-          </Button>
-
-          {/* Center icon (icon only) */}
-          <Button
-            variant="outline"
-            icon={<MaterialIcons name="favorite" size={24} color="red" />}
-            iconPosition="center"
-            onPress={handleFavorite}
-          />
-        </View>
-      );
-    }
-    ```
-  </TabItem>
-
-  <TabItem label="Custom Icons">
-    ```tsx
-    import { Image } from 'react-native';
-    import { Button } from 'rnc-theme';
-
-    function CustomIconExample() {
-      const CustomIcon = ({ color, size }) => (
-        <View style={{
-          width: size,
-          height: size,
-          backgroundColor: color,
-          borderRadius: size / 2,
-        }} />
-      );
-
-      return (
-        <View style={styles.container}>
-          {/* Custom component icon */}
-          <Button
-            variant="primary"
-            icon={<CustomIcon color="white" size={20} />}
-            iconPosition="left"
-            onPress={handleCustom}
-          >
-            Custom Icon
-          </Button>
-
-          {/* Image icon */}
-          <Button
-            variant="secondary"
-            icon={
-              <Image
-                source={{ uri: 'https://example.com/icon.png' }}
-                style={{ width: 20, height: 20 }}
-              />
-            }
-            iconPosition="left"
-            onPress={handleImage}
-          >
-            Image Icon
-          </Button>
-
-          {/* SVG icon */}
-          <Button
-            variant="outline"
-            icon={<YourSVGIcon width={20} height={20} />}
-            iconPosition="left"
-            onPress={handleSVG}
-          >
-            SVG Icon
-          </Button>
-        </View>
-      );
-    }
-    ```
-  </TabItem>
-
-  <TabItem label="Dynamic Icons">
-    ```tsx
-    function DynamicIconExample() {
-      const [isFavorited, setIsFavorited] = useState(false);
-      const [isPlaying, setIsPlaying] = useState(false);
-
-      return (
-        <View style={styles.container}>
-          {/* Toggle favorite */}
-          <Button
-            variant={isFavorited ? "error" : "outline"}
-            icon={
-              <MaterialIcons
-                name={isFavorited ? "favorite" : "favorite-border"}
-                size={20}
-                color={isFavorited ? "white" : "red"}
-              />
-            }
-            iconPosition="left"
-            onPress={() => setIsFavorited(!isFavorited)}
-          >
-            {isFavorited ? 'Favorited' : 'Add to Favorites'}
-          </Button>
-
-          {/* Play/Pause toggle */}
-          <Button
-            variant="primary"
-            icon={
-              <MaterialIcons
-                name={isPlaying ? "pause" : "play-arrow"}
-                size={20}
-                color="white"
-              />
-            }
-            iconPosition="left"
-            onPress={() => setIsPlaying(!isPlaying)}
-          >
-            {isPlaying ? 'Pause' : 'Play'}
-          </Button>
-        </View>
-      );
-    }
-    ```
-  </TabItem>
-</Tabs>
-
-## Animations
-
-The Button component includes smooth press animations and custom animation triggers.
-
-<Tabs>
-  <TabItem label="Press Animations">
-    ```tsx
-    import { Button } from 'rnc-theme';
-
-    function AnimationExample() {
-      return (
-        <View style={styles.container}>
-          {/* Default press animation */}
-          <Button
-            variant="primary"
-            animationEnabled={true}
-            onPress={handlePress}
-          >
-            Animated Button
-          </Button>
-
-          {/* Custom press scale */}
-          <Button
-            variant="secondary"
-            animationEnabled={true}
-            pressAnimationScale={0.92}
-            onPress={handlePress}
-          >
-            Custom Scale
-          </Button>
-
-          {/* Custom spring config */}
-          <Button
-            variant="outline"
-            animationEnabled={true}
-            springConfig={{
-              damping: 15,
-              stiffness: 150,
-              mass: 1,
-            }}
-            onPress={handlePress}
-          >
-            Custom Spring
-          </Button>
-
-          {/* Disabled animation */}
-          <Button
-            variant="ghost"
-            animationEnabled={false}
-            onPress={handlePress}
-          >
-            No Animation
-          </Button>
-        </View>
-      );
-    }
-    ```
-  </TabItem>
-
-  <TabItem label="Custom Animations">
-    ```tsx
-    import { useRef } from 'react';
-    import { Button } from 'rnc-theme';
-
-    function CustomAnimationExample() {
-      const bounceButtonRef = useRef(null);
-      const pulseButtonRef = useRef(null);
-      const shakeButtonRef = useRef(null);
-
-      const triggerBounce = () => {
-        bounceButtonRef.current?.animate('bounce');
-      };
-
-      const triggerPulse = () => {
-        pulseButtonRef.current?.animate('pulse');
-      };
-
-      const triggerShake = () => {
-        shakeButtonRef.current?.animate('shake');
-      };
-
-      return (
-        <View style={styles.container}>
-          <Button
-            ref={bounceButtonRef}
-            variant="primary"
-            onPress={triggerBounce}
-          >
-            Bounce Animation
-          </Button>
-
-          <Button
-            ref={pulseButtonRef}
-            variant="secondary"
-            onPress={triggerPulse}
-          >
-            Pulse Animation
-          </Button>
-
-          <Button
-            ref={shakeButtonRef}
-            variant="error"
-            onPress={triggerShake}
-          >
-            Shake Animation
-          </Button>
-        </View>
-      );
-    }
-    ```
-  </TabItem>
-
-  <TabItem label="Animation Sequences">
-    ```tsx
-    function AnimationSequenceExample() {
-      const buttonRef = useRef(null);
-      const [step, setStep] = useState(0);
-
-      const runSequence = async () => {
-        setStep(1);
-        buttonRef.current?.animate('pulse');
-
-        setTimeout(() => {
-          setStep(2);
-          buttonRef.current?.animate('bounce');
-        }, 500);
-
-        setTimeout(() => {
-          setStep(3);
-          buttonRef.current?.animate('shake');
-        }, 1000);
-
-        setTimeout(() => {
-          setStep(0);
-        }, 1500);
-      };
-
-      return (
-        <View style={styles.container}>
-          <Button
-            ref={buttonRef}
-            variant="primary"
-            onPress={runSequence}
-            disabled={step > 0}
-          >
-            {step === 0 && 'Start Animation Sequence'}
-            {step === 1 && 'Pulsing...'}
-            {step === 2 && 'Bouncing...'}
-            {step === 3 && 'Shaking...'}
-          </Button>
-        </View>
-      );
-    }
-    ```
-  </TabItem>
-</Tabs>
-
-## Layout Options
-
-### Full Width Buttons
-
-```tsx
-import { Button } from 'rnc-theme';
-
-function FullWidthExample() {
-  return (
-    <View style={styles.container}>
-      <Button
-        variant="primary"
-        fullWidth
-        onPress={handleSubmit}
-      >
-        Submit Form
-      </Button>
-
-      <Button
-        variant="outline"
-        fullWidth
-        onPress={handleCancel}
-      >
-        Cancel
-      </Button>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-    gap: 12,
-  },
-});
-```
-
-### Button Groups
-
-```tsx
-function ButtonGroupExample() {
-  const [selected, setSelected] = useState('option1');
-
-  return (
-    <View style={styles.buttonGroup}>
-      <Button
-        variant={selected === 'option1' ? 'primary' : 'outline'}
-        onPress={() => setSelected('option1')}
-        style={styles.groupButton}
-      >
-        Option 1
-      </Button>
-
-      <Button
-        variant={selected === 'option2' ? 'primary' : 'outline'}
-        onPress={() => setSelected('option2')}
-        style={styles.groupButton}
-      >
-        Option 2
-      </Button>
-
-      <Button
-        variant={selected === 'option3' ? 'primary' : 'outline'}
-        onPress={() => setSelected('option3')}
-        style={styles.groupButton}
-      >
-        Option 3
-      </Button>
-    </View>
-  );
-}
-
-const styles = StyleSheet.create({
-  buttonGroup: {
-    flexDirection: 'row',
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  groupButton: {
-    flex: 1,
-    borderRadius: 0,
-    borderRightWidth: 0,
-  },
-});
-```
-
-## Component Types
-
-Choose between different underlying components for optimal performance.
-
-<Tabs>
-  <TabItem label="Pressable (Default)">
-    ```tsx
-    import { Button } from 'rnc-theme';
-
-    function PressableExample() {
-      return (
-        <Button
-          component="pressable" // Default
-          variant="primary"
-          onPress={handlePress}
-          onPressIn={() => console.log('Press in')}
-          onPressOut={() => console.log('Press out')}
-          onLongPress={() => console.log('Long press')}
-          delayLongPress={500}
-        >
-          Pressable Button
-        </Button>
-      );
-    }
-    ```
-  </TabItem>
-
-  <TabItem label="TouchableOpacity">
-    ```tsx
-    function TouchableExample() {
-      return (
-        <Button
-          component="touchable"
-          variant="primary"
-          onPress={handlePress}
-          activeOpacity={0.7}
-          hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-        >
-          TouchableOpacity Button
-        </Button>
-      );
-    }
-    ```
-  </TabItem>
-</Tabs>
-
-## Advanced Usage
-
-### Custom Styling
-
-```tsx
-import { Button } from 'rnc-theme';
-import { useThemedStyles } from 'rnc-theme';
-
-function CustomStyledExample() {
-  const styles = useThemedStyles((theme) => ({
-    customButton: {
-      backgroundColor: theme.colors.primary,
-      borderRadius: 25,
-      paddingHorizontal: 24,
-      shadowColor: theme.colors.primary,
-      shadowOffset: { width: 0, height: 4 },
-      shadowOpacity: 0.3,
-      shadowRadius: 8,
-      elevation: 8,
-    },
-    gradientButton: {
-      background: `linear-gradient(45deg, ${theme.colors.primary}, ${theme.colors.secondary})`,
-    },
-  }));
-
-  return (
-    <View>
-      <Button
-        variant="primary"
-        style={styles.customButton}
-        onPress={handlePress}
-      >
-        Custom Styled
-      </Button>
-    </View>
-  );
-}
-```
-
-### Ref Usage
-
-```tsx
-import { useRef } from 'react';
-import { Button } from 'rnc-theme';
-
-function RefExample() {
-  const buttonRef = useRef(null);
-
-  const focusButton = () => {
-    buttonRef.current?.focus();
-  };
-
-  const animateButton = () => {
-    buttonRef.current?.animate('bounce');
-  };
-
-  return (
-    <View>
-      <Button
-        ref={buttonRef}
-        variant="primary"
-        onPress={handlePress}
-      >
-        Ref Button
-      </Button>
-
-      <Button onPress={focusButton}>
-        Focus Button
-      </Button>
-
-      <Button onPress={animateButton}>
-        Animate Button
-      </Button>
-    </View>
-  );
-}
-```
-
-## Accessibility
-
-The Button component includes comprehensive accessibility support.
-
-```tsx
-import { Button } from 'rnc-theme';
-
-function AccessibilityExample() {
-  const [loading, setLoading] = useState(false);
-
-  return (
-    <View>
-      <Button
-        variant="primary"
-        onPress={handleSubmit}
-        accessibilityLabel="Submit the form"
-        accessibilityHint="Double tap to submit your information"
-        accessibilityRole="button"
-        accessibilityState={{ disabled: loading }}
-      >
-        Submit
-      </Button>
-
-      <Button
-        variant="error"
-        onPress={handleDelete}
-        accessibilityLabel="Delete item"
-        accessibilityHint="This action cannot be undone"
-        accessibilityRole="button"
-      >
-        Delete
-      </Button>
-
-      <Button
-        variant="outline"
-        loading={loading}
-        onPress={() => setLoading(!loading)}
-        accessibilityLabel={loading ? "Loading" : "Start process"}
-        accessibilityState={{ busy: loading }}
-      >
-        {loading ? 'Loading...' : 'Start'}
-      </Button>
-    </View>
-  );
-}
-```
-
-## API Reference
-
-### Props
+### Button Props
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
-| `variant` | `ComponentVariant` | `'default'` | Visual style variant |
-| `size` | `ComponentSize` | `'md'` | Button size |
-| `loading` | `boolean` | `false` | Show loading spinner |
-| `disabled` | `boolean` | `false` | Disable button interaction |
-| `fullWidth` | `boolean` | `false` | Make button full width |
-| `icon` | `React.ReactNode` | - | Icon element |
-| `iconPosition` | `'left' \| 'right' \| 'center'` | `'left'` | Icon position |
-| `component` | `'pressable' \| 'touchable'` | `'pressable'` | Underlying component |
+| `variant` | `ComponentVariant` | `'primary'` | Visual style variant |
+| `size` | `ComponentSize` | `'md'` | Button size (xs, sm, md, lg, xl) |
+| `disabled` | `boolean` | `false` | Disable button interactions |
+| `loading` | `boolean` | `false` | Show loading state with spinner |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | `'md'` | Border radius value |
+| `fullWidth` | `boolean` | `false` | Make button full container width |
+| `component` | `'pressable' \| 'touchable'` | `'pressable'` | Underlying component type |
 | `animationEnabled` | `boolean` | `true` | Enable press animations |
-| `pressAnimationScale` | `number` | `0.95` | Scale factor for press animation |
-| `springConfig` | `SpringConfig` | - | Custom spring animation config |
-| `borderRadius` | `keyof Theme['components']['borderRadius']` | - | Custom border radius |
-| `onPress` | `() => void` | - | Press handler |
+| `pressAnimationScale` | `number` | `0.95` | Scale factor during press |
+| `springConfig` | `SpringConfig` | `DEFAULT_SPRING_CONFIG` | Animation spring configuration |
+
+### ButtonText Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Text content to display |
+| `showLoadingIndicator` | `boolean` | `true` | Show spinner when loading |
+| `style` | `StyleProp<TextStyle>` | - | Additional text styles |
+
+### ButtonIcon Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `icon` | `React.ReactNode` | - | Icon component to render |
+| `position` | `'left' \| 'right' \| 'center'` | `'left'` | Icon position relative to text |
+| `marginLeft` | `keyof Theme['spacing']` | - | Custom left margin |
+| `marginRight` | `keyof Theme['spacing']` | - | Custom right margin |
 
 ### Variants
 
-- `default` - Neutral button with surface background
-- `primary` - Main call-to-action button
-- `secondary` - Secondary action button
-- `outline` - Bordered button with transparent background
-- `filled` - Solid background button
-- `ghost` - Minimal button with no background or border
-- `success` - Success/positive action button
-- `error` - Error/destructive action button
-- `warning` - Warning/caution button
-- `info` - Informational button
+| Variant | Description | Use Case |
+|---------|-------------|----------|
+| `primary` | Primary action button | Main CTAs, submit buttons |
+| `secondary` | Secondary action button | Secondary actions |
+| `outline` | Outlined transparent button | Alternative actions |
+| `filled` | Filled surface button | Form inputs, neutral actions |
+| `ghost` | Transparent button | Subtle actions, navigation |
+| `success` | Success state button | Confirmation actions |
+| `error` | Error/danger button | Destructive actions |
+| `warning` | Warning state button | Caution actions |
+| `info` | Information button | Info actions |
+| `destructive` | Destructive action button | Delete, remove actions |
 
-### Sizes
+## Examples
 
-- `xs` - Extra small (28px height)
-- `sm` - Small (32px height)
-- `md` - Medium (40px height) - Default
-- `lg` - Large (48px height)
-- `xl` - Extra large (56px height)
+### Action Buttons
 
-### Ref Methods
+```tsx
+<VStack spacing="md" padding="lg">
+  <Button variant="primary" onPress={handleSave}>
+    <ButtonText>Save Changes</ButtonText>
+  </Button>
 
-| Method | Description |
-|--------|-------------|
-| `focus()` | Focus the button |
-| `blur()` | Remove focus from button |
-| `animate(type)` | Trigger custom animation |
+  <Button variant="outline" onPress={handleCancel}>
+    <ButtonText>Cancel</ButtonText>
+  </Button>
 
-### Animation Types
+  <Button variant="destructive" onPress={handleDelete}>
+    <ButtonIcon icon={<TrashIcon />} position="left" />
+    <ButtonText>Delete Item</ButtonText>
+  </Button>
+</VStack>
+```
 
-- `bounce` - Bounce scale animation
-- `pulse` - Pulse scale animation
-- `shake` - Horizontal shake animation
+### Size Variations
+
+```tsx
+<VStack spacing="md" align="center">
+  <Button size="xs" variant="primary">
+    <ButtonText>Extra Small</ButtonText>
+  </Button>
+
+  <Button size="sm" variant="primary">
+    <ButtonText>Small</ButtonText>
+  </Button>
+
+  <Button size="md" variant="primary">
+    <ButtonText>Medium</ButtonText>
+  </Button>
+
+  <Button size="lg" variant="primary">
+    <ButtonText>Large</ButtonText>
+  </Button>
+
+  <Button size="xl" variant="primary">
+    <ButtonText>Extra Large</ButtonText>
+  </Button>
+</VStack>
+```
+
+### Loading States
+
+```tsx
+const [loading, setLoading] = useState(false);
+
+const handleAsyncAction = async () => {
+  setLoading(true);
+  try {
+    await performAsyncOperation();
+  } finally {
+    setLoading(false);
+  }
+};
+
+<VStack spacing="md">
+  <Button loading={loading} onPress={handleAsyncAction}>
+    <ButtonText>Process Data</ButtonText>
+  </Button>
+
+  <Button
+    loading={loading}
+    variant="secondary"
+    onPress={handleAsyncAction}
+  >
+    <ButtonIcon icon={<UploadIcon />} position="left" />
+    <ButtonText>Upload File</ButtonText>
+  </Button>
+</VStack>
+```
+
+### Icon Combinations
+
+```tsx
+<VStack spacing="md">
+  {/* Left Icon */}
+  <Button variant="primary">
+    <ButtonIcon icon={<PlusIcon />} position="left" />
+    <ButtonText>Add Item</ButtonText>
+  </Button>
+
+  {/* Right Icon */}
+  <Button variant="outline">
+    <ButtonText>Next Step</ButtonText>
+    <ButtonIcon icon={<ArrowRightIcon />} position="right" />
+  </Button>
+
+  {/* Icon Only */}
+  <Button variant="ghost" size="sm">
+    <ButtonIcon icon={<HeartIcon />} position="center" />
+  </Button>
+
+  {/* Custom Spacing */}
+  <Button variant="secondary">
+    <ButtonIcon
+      icon={<DownloadIcon />}
+      position="left"
+      marginRight="md"
+    />
+    <ButtonText>Download Report</ButtonText>
+  </Button>
+</VStack>
+```
+
+### Form Integration
+
+```tsx
+const LoginForm = () => {
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const isValid = email.length > 0 && password.length > 6;
+
+  return (
+    <VStack spacing="lg" padding="xl">
+      <TextInput
+        placeholder="Email"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+      />
+
+      <TextInput
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+      />
+
+      <VStack spacing="md">
+        <Button
+          fullWidth
+          disabled={!isValid}
+          loading={loading}
+          onPress={handleLogin}
+        >
+          <ButtonText>Sign In</ButtonText>
+        </Button>
+
+        <Button
+          fullWidth
+          variant="outline"
+          onPress={handleForgotPassword}
+        >
+          <ButtonText>Forgot Password?</ButtonText>
+        </Button>
+      </VStack>
+
+      <HStack spacing="md" justify="center">
+        <Button variant="ghost" size="sm">
+          <ButtonIcon icon={<GoogleIcon />} position="left" />
+          <ButtonText>Google</ButtonText>
+        </Button>
+
+        <Button variant="ghost" size="sm">
+          <ButtonIcon icon={<FacebookIcon />} position="left" />
+          <ButtonText>Facebook</ButtonText>
+        </Button>
+      </HStack>
+    </VStack>
+  );
+};
+```
+
+### E-commerce Actions
+
+```tsx
+const ProductActions = ({ product, onAddToCart, onBuyNow }) => {
+  const [addingToCart, setAddingToCart] = useState(false);
+
+  return (
+    <VStack spacing="md" padding="lg">
+      {/* Quantity Selector */}
+      <HStack spacing="md" align="center" justify="center">
+        <Button size="sm" variant="outline">
+          <ButtonText>-</ButtonText>
+        </Button>
+        <Text style={{ minWidth: 40, textAlign: 'center' }}>1</Text>
+        <Button size="sm" variant="outline">
+          <ButtonText>+</ButtonText>
+        </Button>
+      </HStack>
+
+      {/* Main Actions */}
+      <VStack spacing="sm">
+        <Button
+          fullWidth
+          size="lg"
+          variant="primary"
+          onPress={onBuyNow}
+        >
+          <ButtonText>Buy Now - ${product.price}</ButtonText>
+        </Button>
+
+        <Button
+          fullWidth
+          size="lg"
+          variant="outline"
+          loading={addingToCart}
+          onPress={async () => {
+            setAddingToCart(true);
+            await onAddToCart(product);
+            setAddingToCart(false);
+          }}
+        >
+          <ButtonIcon icon={<CartIcon />} position="left" />
+          <ButtonText>Add to Cart</ButtonText>
+        </Button>
+      </VStack>
+
+      {/* Secondary Actions */}
+      <HStack spacing="md" justify="space-around">
+        <Button variant="ghost" size="sm">
+          <ButtonIcon icon={<HeartIcon />} position="center" />
+        </Button>
+
+        <Button variant="ghost" size="sm">
+          <ButtonIcon icon={<ShareIcon />} position="center" />
+        </Button>
+
+        <Button variant="ghost" size="sm">
+          <ButtonIcon icon={<CompareIcon />} position="center" />
+        </Button>
+      </HStack>
+    </VStack>
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Animations
+
+```tsx
+const CustomAnimatedButton = () => {
+  const buttonRef = useRef<ButtonRef>(null);
+
+  const handleSpecialAction = () => {
+    // Trigger custom animation
+    buttonRef.current?.animate('bounce');
+
+    // Perform action after animation
+    setTimeout(() => {
+      handleAction();
+    }, 600);
+  };
+
+  return (
+    <Button
+      ref={buttonRef}
+      variant="primary"
+      animationEnabled={true}
+      pressAnimationScale={0.9}
+      springConfig={{
+        damping: 15,
+        stiffness: 150,
+        mass: 1
+      }}
+      onPress={handleSpecialAction}
+    >
+      <ButtonText>Animated Action</ButtonText>
+    </Button>
+  );
+};
+```
+
+### Dynamic Button States
+
+```tsx
+const DynamicButton = ({ status, onRetry, onCancel }) => {
+  const getButtonConfig = () => {
+    switch (status) {
+      case 'idle':
+        return {
+          variant: 'primary',
+          text: 'Start Process',
+          disabled: false,
+          loading: false
+        };
+      case 'loading':
+        return {
+          variant: 'primary',
+          text: 'Processing...',
+          disabled: true,
+          loading: true
+        };
+      case 'success':
+        return {
+          variant: 'success',
+          text: 'Completed!',
+          disabled: false,
+          loading: false
+        };
+      case 'error':
+        return {
+          variant: 'error',
+          text: 'Retry',
+          disabled: false,
+          loading: false
+        };
+      default:
+        return {
+          variant: 'primary',
+          text: 'Unknown',
+          disabled: true,
+          loading: false
+        };
+    }
+  };
+
+  const config = getButtonConfig();
+
+  return (
+    <HStack spacing="md">
+      <Button
+        variant={config.variant}
+        disabled={config.disabled}
+        loading={config.loading}
+        onPress={status === 'error' ? onRetry : handleStart}
+        flex={1}
+      >
+        {status === 'success' && (
+          <ButtonIcon icon={<CheckIcon />} position="left" />
+        )}
+        {status === 'error' && (
+          <ButtonIcon icon={<RefreshIcon />} position="left" />
+        )}
+        <ButtonText>{config.text}</ButtonText>
+      </Button>
+
+      {(status === 'loading' || status === 'error') && (
+        <Button variant="outline" onPress={onCancel}>
+          <ButtonText>Cancel</ButtonText>
+        </Button>
+      )}
+    </HStack>
+  );
+};
+```
+
+## Animation Types
+
+<Tabs>
+  <TabItem label="Bounce">
+    ```tsx
+    const buttonRef = useRef<ButtonRef>(null);
+
+    <Button
+      ref={buttonRef}
+      onPress={() => buttonRef.current?.animate('bounce')}
+    >
+      <ButtonText>Bounce Animation</ButtonText>
+    </Button>
+    ```
+  </TabItem>
+
+  <TabItem label="Pulse">
+    ```tsx
+    const buttonRef = useRef<ButtonRef>(null);
+
+    <Button
+      ref={buttonRef}
+      onPress={() => buttonRef.current?.animate('pulse')}
+    >
+      <ButtonText>Pulse Animation</ButtonText>
+    </Button>
+    ```
+  </TabItem>
+
+  <TabItem label="Shake">
+    ```tsx
+    const buttonRef = useRef<ButtonRef>(null);
+
+    <Button
+      ref={buttonRef}
+      onPress={() => buttonRef.current?.animate('shake')}
+    >
+      <ButtonText>Shake Animation</ButtonText>
+    </Button>
+    ```
+  </TabItem>
+</Tabs>
 
 ## Best Practices
 
-<CardGrid>
-  <Card title="🎯 Clear Actions" icon="star">
-    Use descriptive text that clearly indicates what the button does.
-  </Card>
-  <Card title="🎨 Consistent Variants" icon="palette">
-    Use primary for main actions, secondary for supporting actions.
-  </Card>
-  <Card title="📱 Touch Targets" icon="setting">
-    Ensure buttons are at least 44px tall for good touch accessibility.
-  </Card>
-  <Card title="⏳ Loading States" icon="rocket">
-    Always provide loading feedback for async operations.
-  </Card>
-</CardGrid>
+<Card title="Visual Hierarchy" icon="seti:plan">
+- Use `primary` variant for main actions and `outline` for secondary actions
+- Limit primary buttons to one per screen section
+- Group related actions using consistent spacing and alignment
+</Card>
 
-### Do's and Don'ts
+<Card title="Loading States" icon="seti:clock">
+- Always provide loading feedback for async operations
+- Disable buttons during loading to prevent multiple submissions
+- Use descriptive loading text that indicates the current action
+</Card>
 
-<Tabs>
-  <TabItem label="✅ Do's">
-    ```tsx
-    // ✅ Use clear, action-oriented text
-    <Button variant="primary">Save Changes</Button>
-    <Button variant="error">Delete Account</Button>
+<Card title="Performance" icon="rocket">
+- Use `React.memo` for frequently re-rendered button lists
+- Avoid creating new functions in render for `onPress` handlers
+- Consider debouncing for buttons that trigger expensive operations
+</Card>
 
-    // ✅ Provide loading states
-    <Button loading={isSubmitting} disabled={isSubmitting}>
-      {isSubmitting ? 'Saving...' : 'Save'}
-    </Button>
-
-    // ✅ Use appropriate variants
-    <Button variant="primary">Continue</Button>
-    <Button variant="outline">Cancel</Button>
-
-    // ✅ Add accessibility labels
-    <Button accessibilityLabel="Close dialog">
-      ×
-    </Button>
-    ```
-  </TabItem>
-
-  <TabItem label="❌ Don'ts">
-    ```tsx
-    // ❌ Vague or unclear text
-    <Button>Click Here</Button>
-    <Button>OK</Button>
-
-    // ❌ No loading feedback
-    <Button onPress={asyncOperation}>
-      Submit
-    </Button>
-
-    // ❌ Too many primary buttons
-    <Button variant="primary">Save</Button>
-    <Button variant="primary">Cancel</Button>
-    <Button variant="primary">Delete</Button>
-
-    // ❌ Buttons too small for touch
-    <Button size="xs" style={{ height: 20 }}>
-      Tiny Button
-    </Button>
-    ```
-  </TabItem>
-</Tabs>
-
-<Aside type="tip" title="Performance Tip">
-  Use the `component="touchable"` prop for simple buttons without complex press handling to improve performance.
+<Aside type="tip">
+When using buttons in forms, consider providing visual feedback for validation states and use appropriate variants to guide user behavior through the form flow.
 </Aside>
 
-<Aside type="note" title="Theme Integration">
-  The Button component automatically adapts to your theme colors and responds to theme changes.
+<Aside type="caution">
+Be mindful of button placement on smaller screens. Ensure touch targets are at least 44px in height and have adequate spacing to prevent accidental taps.
 </Aside>
-
-## Troubleshooting
-
-### Common Issues
-
-<Tabs>
-  <TabItem label="Animation Issues">
-    **Problem:** Animations not working smoothly
-
-    **Solutions:**
-    ```tsx
-    // Ensure react-native-reanimated is properly configured
-    import 'react-native-reanimated/plugin';
-
-    // Adjust spring configuration
-    <Button
-      springConfig={{
-        damping: 15,
-        stiffness: 100,
-        mass: 1,
-      }}
-    >
-      Button
-    </Button>
-
-    // Disable animations if needed
-    <Button animationEnabled={false}>
-      Button
-    </Button>
-    ```
-  </TabItem>
-
-  <TabItem label="Styling Issues">
-    **Problem:** Custom styles not applying
-
-    **Solutions:**
-    ```tsx
-    // Use style prop for custom styling
-    <Button
-      style={{
-        backgroundColor: 'red',
-        borderRadius: 20,
-      }}
-    >
-      Custom Button
-    </Button>
-
-    // Use themed styles
-    const styles = useThemedStyles((theme) => ({
-      button: {
-        backgroundColor: theme.colors.primary,
-      },
-    }));
-    ```
-  </TabItem>
-
-  <TabItem label="Touch Issues">
-    **Problem:** Button not responding to touches
-
-    **Solutions:**
-    ```tsx
-    // Check if button is disabled
-    <Button disabled={false} onPress={handlePress}>
-      Button
-    </Button>
-
-    // Add hit slop for better touch area
-    <Button
-      component="touchable"
-      hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
-    >
-      Button
-    </Button>
-
-    // Ensure onPress is provided
-    <Button onPress={() => console.log('Pressed')}>
-      Button
-    </Button>
-    ```
-  </TabItem>
-</Tabs>
-
-## Next Steps
-
-<CardGrid>
-  <Card title="Input Component" icon="puzzle">
-    Learn about the Input component for form data collection.
-    [Input Guide →](/components/form/input)
-  </Card>
-  <Card title="Form Control" icon="setting">
-    Discover how to group form elements with Form Control.
-    [Form Control →](/components/form/form-control)
-  </Card>
-  <Card title="Theme Customization" icon="palette">
-    Customize button appearance with custom themes.
-    [Custom Themes →](/theming/custom-theme)
-  </Card>
-  <Card title="Animation Hooks" icon="star">
-    Learn about animation utilities and hooks.
-    [Hooks Reference →](/hooks/overview)
-  </Card>
-</CardGrid>

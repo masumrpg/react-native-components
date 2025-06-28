@@ -1,0 +1,436 @@
+---
+title: ZStack
+description: Layered stack layout component for overlapping child components with absolute positioning and flexible alignment options
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+ZStack layers child components on top of each other using relative positioning, allowing you to create overlays, badges, floating elements, and complex layered interfaces. Each child is positioned absolutely within the ZStack container.
+
+## Import
+
+```tsx
+import { ZStack } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Overlay">
+    ```tsx
+    <ZStack width={200} height={200}>
+      <Image
+        source={{ uri: 'profile-image.jpg' }}
+        style={{ width: '100%', height: '100%' }}
+      />
+      <Box
+        style={{
+          position: 'absolute',
+          bottom: 8,
+          right: 8,
+          width: 20,
+          height: 20,
+          borderRadius: 10,
+          backgroundColor: 'green'
+        }}
+      />
+    </ZStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Centered Content">
+    ```tsx
+    <ZStack
+      width={300}
+      height={200}
+      backgroundColor="#f0f0f0"
+      borderRadius="md"
+    >
+      <Text style={{ position: 'absolute', top: 16, left: 16 }}>
+        Background Content
+      </Text>
+      <Center>
+        <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+          Centered Overlay
+        </Text>
+      </Center>
+    </ZStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Multiple Layers">
+    ```tsx
+    <ZStack width={250} height={250}>
+      <Box
+        backgroundColor="#e3f2fd"
+        borderRadius="lg"
+        style={{ position: 'absolute', inset: 0 }}
+      />
+      <Image
+        source={{ uri: 'hero-image.jpg' }}
+        style={{
+          position: 'absolute',
+          top: 20,
+          left: 20,
+          right: 20,
+          bottom: 60
+        }}
+      />
+      <Box
+        style={{
+          position: 'absolute',
+          bottom: 16,
+          left: 16,
+          right: 16
+        }}
+        backgroundColor="rgba(0,0,0,0.7)"
+        padding="md"
+        borderRadius="sm"
+      >
+        <Text style={{ color: 'white', textAlign: 'center' }}>
+          Image Caption
+        </Text>
+      </Box>
+    </ZStack>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+ZStack uses [BaseLayoutProps](/components/layout/zstack/#baselayoutprops) for consistent styling and behavior.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `align` | `ViewStyle['alignItems']` | `'stretch'` | Default alignment for child positioning |
+| `justify` | `ViewStyle['justifyContent']` | `'flex-start'` | Default justification for child positioning |
+
+### BaseLayoutProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Child components to layer |
+| `style` | `StyleProp<ViewStyle>` | - | Additional style properties |
+| `padding` | `keyof Theme['spacing']` | - | Padding around content |
+| `margin` | `keyof Theme['spacing']` | - | Margin around component |
+| `backgroundColor` | `ViewStyle['backgroundColor']` | - | Background color |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | - | Border radius value |
+| `flex` | `number` | - | Flex grow/shrink value |
+| `width` | `DimensionValue` | - | Component width (required for proper layering) |
+| `height` | `DimensionValue` | - | Component height (required for proper layering) |
+| `themed` | `boolean` | `false` | Enable theme styles |
+
+## Examples
+
+### Profile Avatar with Badge
+
+```tsx
+<ZStack width={80} height={80}>
+  <Image
+    source={{ uri: 'user-avatar.jpg' }}
+    style={{
+      width: 80,
+      height: 80,
+      borderRadius: 40,
+      position: 'absolute'
+    }}
+  />
+  <Box
+    style={{
+      position: 'absolute',
+      top: -4,
+      right: -4,
+      width: 24,
+      height: 24,
+      borderRadius: 12,
+      backgroundColor: '#ff4444',
+      borderWidth: 2,
+      borderColor: 'white'
+    }}
+  >
+    <Center flex={1}>
+      <Text style={{ color: 'white', fontSize: 12, fontWeight: 'bold' }}>
+        3
+      </Text>
+    </Center>
+  </Box>
+</ZStack>
+```
+
+### Card with Floating Action
+
+```tsx
+<ZStack width="100%" height={300}>
+  <Box
+    backgroundColor="white"
+    borderRadius="lg"
+    padding="lg"
+    style={{
+      position: 'absolute',
+      inset: 0,
+      shadowColor: '#000',
+      shadowOffset: { width: 0, height: 2 },
+      shadowOpacity: 0.1,
+      shadowRadius: 8,
+      elevation: 4
+    }}
+  >
+    <VStack spacing="md">
+      <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+        Card Title
+      </Text>
+      <Text style={{ color: '#666' }}>
+        This is the main card content that sits behind the floating action button.
+      </Text>
+    </VStack>
+  </Box>
+
+  <Button
+    title="+"
+    style={{
+      position: 'absolute',
+      bottom: 16,
+      right: 16,
+      width: 56,
+      height: 56,
+      borderRadius: 28,
+      backgroundColor: '#2196f3'
+    }}
+  />
+</ZStack>
+```
+
+### Image with Gradient Overlay
+
+```tsx
+<ZStack width="100%" height={200}>
+  <Image
+    source={{ uri: 'hero-background.jpg' }}
+    style={{
+      position: 'absolute',
+      width: '100%',
+      height: '100%'
+    }}
+    resizeMode="cover"
+  />
+
+  <Box
+    style={{
+      position: 'absolute',
+      inset: 0,
+      backgroundColor: 'rgba(0,0,0,0.4)'
+    }}
+  />
+
+  <Center style={{ position: 'absolute', inset: 0 }}>
+    <VStack spacing="sm" align="center">
+      <Text style={{
+        color: 'white',
+        fontSize: 28,
+        fontWeight: 'bold',
+        textAlign: 'center'
+      }}>
+        Welcome to Our App
+      </Text>
+      <Text style={{
+        color: 'white',
+        fontSize: 16,
+        textAlign: 'center',
+        opacity: 0.9
+      }}>
+        Discover amazing features
+      </Text>
+    </VStack>
+  </Center>
+</ZStack>
+```
+
+### Loading Overlay
+
+```tsx
+const LoadingCard = ({ isLoading, children }) => (
+  <ZStack width="100%" height={150}>
+    <Box
+      backgroundColor="white"
+      borderRadius="md"
+      padding="md"
+      style={{ position: 'absolute', inset: 0 }}
+    >
+      {children}
+    </Box>
+
+    {isLoading && (
+      <Box
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundColor: 'rgba(255,255,255,0.8)'
+        }}
+      >
+        <Center flex={1}>
+          <ActivityIndicator size="large" color="#2196f3" />
+        </Center>
+      </Box>
+    )}
+  </ZStack>
+);
+```
+
+## Positioning Guidelines
+
+### Absolute Positioning
+
+<Tabs>
+  <TabItem label="Corner Positioning">
+    ```tsx
+    <ZStack width={200} height={200} backgroundColor="#f5f5f5">
+      {/* Top Left */}
+      <Box
+        style={{ position: 'absolute', top: 8, left: 8 }}
+        backgroundColor="red"
+        width={20}
+        height={20}
+        borderRadius="sm"
+      />
+
+      {/* Top Right */}
+      <Box
+        style={{ position: 'absolute', top: 8, right: 8 }}
+        backgroundColor="blue"
+        width={20}
+        height={20}
+        borderRadius="sm"
+      />
+
+      {/* Bottom Left */}
+      <Box
+        style={{ position: 'absolute', bottom: 8, left: 8 }}
+        backgroundColor="green"
+        width={20}
+        height={20}
+        borderRadius="sm"
+      />
+
+      {/* Bottom Right */}
+      <Box
+        style={{ position: 'absolute', bottom: 8, right: 8 }}
+        backgroundColor="orange"
+        width={20}
+        height={20}
+        borderRadius="sm"
+      />
+    </ZStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Edge Positioning">
+    ```tsx
+    <ZStack width="100%" height={100} backgroundColor="#f0f0f0">
+      {/* Top Edge */}
+      <Box
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 16,
+          right: 16,
+          height: 4,
+          backgroundColor: '#2196f3'
+        }}
+      />
+
+      {/* Center Content */}
+      <Center style={{ position: 'absolute', inset: 16 }}>
+        <Text>Centered Content</Text>
+      </Center>
+    </ZStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Inset Positioning">
+    ```tsx
+    <ZStack width={250} height={150}>
+      {/* Background */}
+      <Box
+        backgroundColor="#e1f5fe"
+        style={{ position: 'absolute', inset: 0 }}
+        borderRadius="lg"
+      />
+
+      {/* Content with margin */}
+      <Box
+        backgroundColor="white"
+        style={{ position: 'absolute', inset: 16 }}
+        borderRadius="md"
+        padding="md"
+      >
+        <Text>Content with 16px margin from all edges</Text>
+      </Box>
+    </ZStack>
+    ```
+  </TabItem>
+</Tabs>
+
+## Layer Management
+
+### Z-Index Control
+
+```tsx
+<ZStack width={200} height={200}>
+  {/* Bottom layer */}
+  <Box
+    backgroundColor="#ffcdd2"
+    style={{
+      position: 'absolute',
+      top: 20,
+      left: 20,
+      width: 100,
+      height: 100,
+      zIndex: 1
+    }}
+  />
+
+  {/* Middle layer */}
+  <Box
+    backgroundColor="#c8e6c9"
+    style={{
+      position: 'absolute',
+      top: 40,
+      left: 40,
+      width: 100,
+      height: 100,
+      zIndex: 2
+    }}
+  />
+
+  {/* Top layer */}
+  <Box
+    backgroundColor="#bbdefb"
+    style={{
+      position: 'absolute',
+      top: 60,
+      left: 60,
+      width: 100,
+      height: 100,
+      zIndex: 3
+    }}
+  />
+</ZStack>
+```
+
+## Best Practices
+
+<Card title="Sizing Guidelines" icon="substack">
+- Always provide explicit `width` and `height` for proper layering
+- Use percentage-based sizing for responsive overlays
+- Consider using `inset` for full-coverage overlays
+</Card>
+
+<Card title="Performance Tips" icon="rocket">
+- Minimize the number of layers to avoid rendering performance issues
+- Use `position: 'absolute'` on all child components for proper layering
+- Consider using `pointerEvents: 'none'` for decorative overlays
+</Card>
+
+<Aside type="tip">
+ZStack is perfect for creating floating UI elements, badges, loading states, and image overlays. Remember that all children should use absolute positioning for proper layering behavior.
+</Aside>

@@ -1,402 +1,642 @@
 ---
 title: Combobox
-description: A versatile dropdown component for selecting single or multiple options with search functionality.
+description: Advanced dropdown selection component with search, multi-select, and animated interactions for React Native applications
 ---
 
-# Combobox
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
 
-A powerful and flexible dropdown component that provides an intuitive interface for selecting options from a list. The Combobox supports single and multiple selection modes, search functionality, custom styling, and smooth animations.
+Combobox provides a comprehensive dropdown selection solution with built-in search functionality, multi-select support, animated interactions, and flexible positioning. It features smooth animations, keyboard support, and adaptive positioning for optimal user experience.
 
-## Features
+## Import
 
-- **Single & Multiple Selection**: Support for both single and multiple option selection
-- **Search Functionality**: Built-in search to filter options dynamically
-- **Smooth Animations**: Fluid open/close animations with spring physics
-- **Responsive Positioning**: Intelligent dropdown positioning that adapts to screen space
-- **Customizable Styling**: Extensive theming and style customization options
-- **Accessibility**: Full accessibility support with proper ARIA attributes
-- **Form Integration**: Seamless integration with form libraries like react-hook-form
-- **Clear Functionality**: Optional clear button to reset selections
-- **Disabled States**: Support for disabled component and individual options
-- **Portal Rendering**: Dropdown renders in a modal for proper z-index handling
+```tsx
+import { Combobox } from 'rnc-theme';
+import type { ComboboxProps, ComboboxOption } from 'rnc-theme';
+```
 
 ## Basic Usage
 
-```tsx
-import { Combobox } from '@your-org/react-native-components';
+<Tabs>
+  <TabItem label="Simple Selection">
+    ```tsx
+    const [value, setValue] = useState('');
 
-const options = [
-  { label: 'Apple', value: 'apple' },
-  { label: 'Banana', value: 'banana' },
-  { label: 'Orange', value: 'orange' },
-];
+    const options = [
+      { label: 'Apple', value: 'apple' },
+      { label: 'Banana', value: 'banana' },
+      { label: 'Orange', value: 'orange' },
+    ];
 
-function BasicExample() {
-  const [value, setValue] = useState('');
-
-  return (
     <Combobox
-      label="Select Fruit"
-      placeholder="Choose a fruit..."
       options={options}
       value={value}
       onValueChange={setValue}
+      placeholder="Select a fruit..."
     />
-  );
-}
-```
+    ```
+  </TabItem>
 
-## Searchable Combobox
+  <TabItem label="With Search">
+    ```tsx
+    const [value, setValue] = useState('');
+    const [searchText, setSearchText] = useState('');
 
-```tsx
-function SearchableExample() {
-  const [value, setValue] = useState('');
-  const [searchText, setSearchText] = useState('');
-
-  return (
     <Combobox
-      label="Search Countries"
-      placeholder="Type to search..."
-      options={countryOptions}
+      options={options}
       value={value}
       onValueChange={setValue}
       searchable
       onSearchChange={setSearchText}
+      placeholder="Search and select..."
     />
-  );
-}
-```
+    ```
+  </TabItem>
 
-## Multiple Selection
+  <TabItem label="Multi-Select">
+    ```tsx
+    const [selectedValues, setSelectedValues] = useState<string[]>([]);
 
-```tsx
-function MultipleSelectionExample() {
-  const [values, setValues] = useState<string[]>([]);
-
-  return (
     <Combobox
-      label="Select Technologies"
-      placeholder="Choose technologies..."
-      options={techOptions}
-      value={values}
-      onValueChange={setValues}
+      options={options}
+      value={selectedValues}
+      onValueChange={setSelectedValues}
       multiple
-      clearable
-      closeOnSelect={false}
+      placeholder="Select multiple items..."
     />
-  );
+    ```
+  </TabItem>
+
+  <TabItem label="With Label & Validation">
+    ```tsx
+    <Combobox
+      label="Preferred Language"
+      options={languageOptions}
+      value={language}
+      onValueChange={setLanguage}
+      required
+      state={isValid ? 'default' : 'error'}
+      errorText="Please select a language"
+      helperText="Choose your primary programming language"
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Combobox Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | - | Optional label text above the combobox |
+| `placeholder` | `string` | `'Select an option...'` | Placeholder text when no option is selected |
+| `variant` | `ComponentVariant` | `'default'` | Visual style variant |
+| `size` | `ComponentSize` | `'md'` | Component size (xs, sm, md, lg, xl) |
+| `state` | `ComponentState` | `'default'` | Visual state (default, error, success) |
+| `helperText` | `string` | - | Helper text below the combobox |
+| `errorText` | `string` | - | Error text (shown when state is 'error') |
+| `required` | `boolean` | `false` | Show required indicator (*) |
+| `disabled` | `boolean` | `false` | Disable the combobox |
+| `searchable` | `boolean` | `false` | Enable search functionality |
+| `clearable` | `boolean` | `false` | Show clear button when value is selected |
+| `multiple` | `boolean` | `false` | Enable multi-selection |
+| `options` | `ComboboxOption[]` | `[]` | Array of selectable options |
+| `value` | `string \| string[]` | - | Selected value(s) |
+| `onValueChange` | `(value: string \| string[]) => void` | - | Callback when selection changes |
+| `onSearchChange` | `(search: string) => void` | - | Callback when search text changes |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | `'md'` | Border radius value |
+| `animationEnabled` | `boolean` | `true` | Enable animations |
+| `maxDropdownHeight` | `number` | `250` | Maximum height of dropdown |
+| `closeOnSelect` | `boolean` | `true` | Close dropdown after selection (single-select) |
+| `backgroundColor` | `string` | - | Custom background color |
+| `elevation` | `number` | `3` | Android elevation |
+| `shadowOpacity` | `number` | `0.1` | iOS shadow opacity |
+
+### ComboboxOption Interface
+
+```tsx
+interface ComboboxOption {
+  label: string;       // Display text
+  value: string;       // Unique value identifier
+  disabled?: boolean;  // Option disabled state
 }
 ```
 
-## Size Variants
+### Styling Props
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `style` | `StyleProp<ViewStyle>` | Container styles |
+| `inputStyle` | `TextStyle` | Trigger input styles |
+| `labelStyle` | `TextStyle` | Label text styles |
+| `helperTextStyle` | `TextStyle` | Helper text styles |
+| `dropdownStyle` | `StyleProp<ViewStyle>` | Dropdown container styles |
+| `optionStyle` | `StyleProp<ViewStyle>` | Individual option styles |
+
+## Examples
+
+### Form Integration
 
 ```tsx
-function SizeVariants() {
+const UserProfileForm = () => {
+  const [country, setCountry] = useState('');
+  const [languages, setLanguages] = useState<string[]>([]);
+  const [role, setRole] = useState('');
+
+  const countryOptions = [
+    { label: 'United States', value: 'us' },
+    { label: 'United Kingdom', value: 'uk' },
+    { label: 'Canada', value: 'ca' },
+    { label: 'Australia', value: 'au' },
+    { label: 'Germany', value: 'de' },
+  ];
+
+  const languageOptions = [
+    { label: 'English', value: 'en' },
+    { label: 'Spanish', value: 'es' },
+    { label: 'French', value: 'fr' },
+    { label: 'German', value: 'de' },
+    { label: 'Chinese', value: 'zh' },
+  ];
+
+  const roleOptions = [
+    { label: 'Frontend Developer', value: 'frontend' },
+    { label: 'Backend Developer', value: 'backend' },
+    { label: 'Full Stack Developer', value: 'fullstack' },
+    { label: 'DevOps Engineer', value: 'devops' },
+    { label: 'UI/UX Designer', value: 'designer' },
+  ];
+
   return (
-    <View style={{ gap: 16 }}>
-      <Combobox size="xs" placeholder="Extra Small" options={options} />
-      <Combobox size="sm" placeholder="Small" options={options} />
-      <Combobox size="md" placeholder="Medium (Default)" options={options} />
-      <Combobox size="lg" placeholder="Large" options={options} />
-      <Combobox size="xl" placeholder="Extra Large" options={options} />
-    </View>
+    <VStack spacing="lg" padding="xl">
+      <Combobox
+        label="Country"
+        options={countryOptions}
+        value={country}
+        onValueChange={setCountry}
+        searchable
+        required
+        placeholder="Select your country..."
+        helperText="Choose your primary residence"
+      />
+
+      <Combobox
+        label="Languages"
+        options={languageOptions}
+        value={languages}
+        onValueChange={setLanguages}
+        multiple
+        searchable
+        clearable
+        placeholder="Select languages you speak..."
+        helperText="Select all languages you're fluent in"
+      />
+
+      <Combobox
+        label="Role"
+        options={roleOptions}
+        value={role}
+        onValueChange={setRole}
+        required
+        placeholder="Select your role..."
+        state={role ? 'success' : 'default'}
+      />
+    </VStack>
   );
-}
+};
 ```
 
-## Variants and States
+### Dynamic Options with Loading
 
 ```tsx
-function VariantsAndStates() {
-  return (
-    <View style={{ gap: 16 }}>
-      {/* Variants */}
-      <Combobox variant="default" placeholder="Default" options={options} />
-      <Combobox variant="outline" placeholder="Outline" options={options} />
-      <Combobox variant="filled" placeholder="Filled" options={options} />
-      <Combobox variant="ghost" placeholder="Ghost" options={options} />
+const DynamicCombobox = () => {
+  const [selectedCity, setSelectedCity] = useState('');
+  const [cities, setCities] = useState<ComboboxOption[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
 
-      {/* States */}
-      <Combobox
-        state="error"
-        placeholder="Error State"
-        options={options}
-        errorText="Please select an option"
-      />
-      <Combobox
-        state="success"
-        placeholder="Success State"
-        options={options}
-        helperText="Great choice!"
-      />
-      <Combobox
-        disabled
-        placeholder="Disabled"
-        options={options}
-      />
-    </View>
-  );
-}
-```
+  const searchCities = async (query: string) => {
+    if (query.length < 2) {
+      setCities([]);
+      return;
+    }
 
-## Disabled Options
+    setLoading(true);
+    try {
+      const response = await fetch(`/api/cities?search=${query}`);
+      const data = await response.json();
+      setCities(data.map(city => ({
+        label: `${city.name}, ${city.country}`,
+        value: city.id
+      })));
+    } catch (error) {
+      console.error('Failed to fetch cities:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
-```tsx
-const optionsWithDisabled = [
-  { label: 'Available Option', value: 'available' },
-  { label: 'Disabled Option', value: 'disabled', disabled: true },
-  { label: 'Another Available', value: 'available2' },
-];
+  const handleSearchChange = (text: string) => {
+    setSearchQuery(text);
+    searchCities(text);
+  };
 
-function DisabledOptionsExample() {
   return (
     <Combobox
-      label="Options with Disabled Items"
-      options={optionsWithDisabled}
-      placeholder="Select an option..."
+      label="City"
+      options={cities}
+      value={selectedCity}
+      onValueChange={setSelectedCity}
+      searchable
+      onSearchChange={handleSearchChange}
+      placeholder="Type to search cities..."
+      helperText={loading ? 'Searching...' : 'Start typing to find cities'}
     />
   );
-}
+};
 ```
 
-## Custom Styling
+### Advanced Multi-Select with Categories
 
 ```tsx
-function CustomStyledExample() {
+const CategoryMultiSelect = () => {
+  const [selectedSkills, setSelectedSkills] = useState<string[]>([]);
+
+  const skillOptions = [
+    // Frontend
+    { label: 'React', value: 'react' },
+    { label: 'Vue.js', value: 'vue' },
+    { label: 'Angular', value: 'angular' },
+    { label: 'TypeScript', value: 'typescript' },
+
+    // Backend
+    { label: 'Node.js', value: 'nodejs' },
+    { label: 'Python', value: 'python' },
+    { label: 'Java', value: 'java' },
+    { label: 'Go', value: 'go' },
+
+    // Mobile
+    { label: 'React Native', value: 'react-native' },
+    { label: 'Flutter', value: 'flutter' },
+    { label: 'Swift', value: 'swift' },
+    { label: 'Kotlin', value: 'kotlin' },
+  ];
+
+  const handleSkillsChange = (skills: string | string[]) => {
+    setSelectedSkills(skills as string[]);
+  };
+
+  return (
+    <VStack spacing="md">
+      <Combobox
+        label="Technical Skills"
+        options={skillOptions}
+        value={selectedSkills}
+        onValueChange={handleSkillsChange}
+        multiple
+        searchable
+        clearable
+        placeholder="Select your skills..."
+        helperText={`${selectedSkills.length} skills selected`}
+        maxDropdownHeight={300}
+      />
+
+      {selectedSkills.length > 0 && (
+        <Card>
+          <Text style={{ fontWeight: 'bold', marginBottom: 8 }}>
+            Selected Skills:
+          </Text>
+          <HStack spacing="xs" wrap>
+            {selectedSkills.map(skillValue => {
+              const skill = skillOptions.find(s => s.value === skillValue);
+              return (
+                <Badge key={skillValue} variant="primary">
+                  {skill?.label}
+                </Badge>
+              );
+            })}
+          </HStack>
+        </Card>
+      )}
+    </VStack>
+  );
+};
+```
+
+### Size Variations
+
+```tsx
+<VStack spacing="lg" padding="lg">
+  <Combobox
+    size="xs"
+    options={options}
+    value={value}
+    onValueChange={setValue}
+    placeholder="Extra Small"
+  />
+
+  <Combobox
+    size="sm"
+    options={options}
+    value={value}
+    onValueChange={setValue}
+    placeholder="Small"
+  />
+
+  <Combobox
+    size="md"
+    options={options}
+    value={value}
+    onValueChange={setValue}
+    placeholder="Medium (Default)"
+  />
+
+  <Combobox
+    size="lg"
+    options={options}
+    value={value}
+    onValueChange={setValue}
+    placeholder="Large"
+  />
+
+  <Combobox
+    size="xl"
+    options={options}
+    value={value}
+    onValueChange={setValue}
+    placeholder="Extra Large"
+  />
+</VStack>
+```
+
+### Custom Styling
+
+```tsx
+const StyledCombobox = () => {
   return (
     <Combobox
       label="Custom Styled"
       options={options}
+      value={value}
+      onValueChange={setValue}
+      searchable
+      clearable
       borderRadius="xl"
-      backgroundColor="#f8f9fa"
-      style={{ marginVertical: 8 }}
-      inputStyle={{
+      backgroundColor="#f8f9ff"
+      style={{
         borderWidth: 2,
-        borderColor: '#007bff'
+        borderColor: '#e0e7ff',
       }}
       labelStyle={{
-        fontSize: 18,
+        color: '#4338ca',
+        fontSize: 16,
         fontWeight: 'bold',
-        color: '#007bff'
       }}
       dropdownStyle={{
-        borderRadius: 12,
-        elevation: 8
+        borderRadius: 16,
+        borderWidth: 2,
+        borderColor: '#e0e7ff',
       }}
       optionStyle={{
-        paddingVertical: 16
+        paddingVertical: 16,
       }}
+      elevation={6}
+      shadowOpacity={0.15}
     />
   );
-}
+};
 ```
 
-## Form Integration
+### Validation States
 
 ```tsx
-import { useForm, Controller } from 'react-hook-form';
+const ValidationExample = () => {
+  const [value, setValue] = useState('');
+  const [touched, setTouched] = useState(false);
 
-interface FormData {
-  category: string;
-  tags: string[];
-}
-
-function FormIntegrationExample() {
-  const { control, handleSubmit, formState: { errors } } = useForm<FormData>();
-
-  const onSubmit = (data: FormData) => {
-    console.log('Form data:', data);
-  };
+  const isValid = value.length > 0;
+  const showError = touched && !isValid;
 
   return (
-    <View>
-      <Controller
-        control={control}
-        name="category"
-        rules={{ required: 'Category is required' }}
-        render={({ field: { onChange, value } }) => (
-          <Combobox
-            label="Category"
-            placeholder="Select category..."
-            options={categoryOptions}
-            value={value}
-            onValueChange={onChange}
-            state={errors.category ? 'error' : 'default'}
-            errorText={errors.category?.message}
-            required
-          />
-        )}
+    <VStack spacing="lg">
+      <Combobox
+        label="Required Field"
+        options={options}
+        value={value}
+        onValueChange={(newValue) => {
+          setValue(newValue as string);
+          setTouched(true);
+        }}
+        required
+        state={showError ? 'error' : isValid ? 'success' : 'default'}
+        errorText={showError ? 'Please select an option' : undefined}
+        helperText={!showError ? 'This field is required' : undefined}
+        placeholder="Select an option..."
       />
 
-      <Controller
-        control={control}
-        name="tags"
-        render={({ field: { onChange, value } }) => (
-          <Combobox
-            label="Tags"
-            placeholder="Select tags..."
-            options={tagOptions}
-            value={value || []}
-            onValueChange={onChange}
-            multiple
-            searchable
-            clearable
-          />
-        )}
+      <Combobox
+        label="Success State"
+        options={options}
+        value="success-value"
+        onValueChange={() => {}}
+        state="success"
+        helperText="Great choice!"
+        disabled
       />
 
-      <Button onPress={handleSubmit(onSubmit)} title="Submit" />
-    </View>
+      <Combobox
+        label="Error State"
+        options={options}
+        value=""
+        onValueChange={() => {}}
+        state="error"
+        errorText="Invalid selection"
+        placeholder="Error example..."
+      />
+    </VStack>
   );
-}
+};
 ```
 
 ## Advanced Usage
 
+### Custom Option Rendering
+
 ```tsx
-function AdvancedExample() {
-  const [value, setValue] = useState('');
-  const [isLoading, setIsLoading] = useState(false);
-  const [options, setOptions] = useState([]);
+const CustomOptionCombobox = () => {
+  const userOptions = [
+    {
+      label: 'John Doe',
+      value: 'john',
+      avatar: 'https://avatar.url/john.jpg',
+      role: 'Admin'
+    },
+    {
+      label: 'Jane Smith',
+      value: 'jane',
+      avatar: 'https://avatar.url/jane.jpg',
+      role: 'User'
+    },
+  ];
 
-  const handleSearch = async (searchText: string) => {
-    if (searchText.length < 2) return;
+  // Note: This would require extending the component
+  // to support custom option rendering
+  return (
+    <Combobox
+      label="Assign User"
+      options={userOptions.map(user => ({
+        label: `${user.label} (${user.role})`,
+        value: user.value
+      }))}
+      value={selectedUser}
+      onValueChange={setSelectedUser}
+      searchable
+      placeholder="Search users..."
+    />
+  );
+};
+```
 
-    setIsLoading(true);
-    try {
-      // Simulate API call
-      const results = await searchAPI(searchText);
-      setOptions(results);
-    } catch (error) {
-      console.error('Search failed:', error);
-    } finally {
-      setIsLoading(false);
-    }
+### Async Search with Debouncing
+
+```tsx
+const AsyncSearchCombobox = () => {
+  const [options, setOptions] = useState<ComboboxOption[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [searchValue, setSearchValue] = useState('');
+
+  // Debounced search function
+  const debouncedSearch = useCallback(
+    debounce(async (query: string) => {
+      if (query.length < 2) {
+        setOptions([]);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const results = await searchAPI(query);
+        setOptions(results.map(item => ({
+          label: item.name,
+          value: item.id,
+          disabled: !item.available
+        })));
+      } catch (error) {
+        console.error('Search failed:', error);
+        setOptions([]);
+      } finally {
+        setLoading(false);
+      }
+    }, 300),
+    []
+  );
+
+  const handleSearchChange = (text: string) => {
+    setSearchValue(text);
+    debouncedSearch(text);
   };
 
   return (
     <Combobox
-      label="Dynamic Search"
-      placeholder="Type to search..."
+      label="Search Products"
       options={options}
-      value={value}
-      onValueChange={setValue}
+      value={selectedProduct}
+      onValueChange={setSelectedProduct}
       searchable
-      onSearchChange={handleSearch}
-      maxDropdownHeight={300}
-      animationEnabled
-      closeOnSelect
-      helperText={isLoading ? 'Searching...' : 'Type at least 2 characters'}
+      onSearchChange={handleSearchChange}
+      placeholder="Type to search products..."
+      helperText={loading ? 'Searching...' : `${options.length} results`}
+      maxDropdownHeight={400}
     />
   );
-}
+};
 ```
 
-## API Reference
+### Grouped Options Pattern
 
-### ComboboxProps
+```tsx
+const GroupedOptionsCombobox = () => {
+  // Simulate grouped options by using separators
+  const groupedOptions = [
+    // Fruits group
+    { label: '--- Fruits ---', value: 'fruits-header', disabled: true },
+    { label: 'Apple', value: 'apple' },
+    { label: 'Banana', value: 'banana' },
+    { label: 'Orange', value: 'orange' },
 
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `label` | `string` | - | Label text displayed above the combobox |
-| `placeholder` | `string` | `'Select an option...'` | Placeholder text when no option is selected |
-| `variant` | `ComponentVariant` | `'default'` | Visual variant of the combobox |
-| `size` | `ComponentSize` | `'md'` | Size of the combobox |
-| `state` | `ComponentState` | `'default'` | Current state (default, error, success) |
-| `helperText` | `string` | - | Helper text displayed below the combobox |
-| `errorText` | `string` | - | Error text displayed when state is 'error' |
-| `required` | `boolean` | `false` | Whether the field is required |
-| `disabled` | `boolean` | `false` | Whether the combobox is disabled |
-| `searchable` | `boolean` | `false` | Enable search functionality |
-| `clearable` | `boolean` | `false` | Show clear button when options are selected |
-| `multiple` | `boolean` | `false` | Allow multiple option selection |
-| `options` | `ComboboxOption[]` | `[]` | Array of available options |
-| `value` | `string \| string[]` | - | Current selected value(s) |
-| `onValueChange` | `(value: string \| string[]) => void` | - | Callback when selection changes |
-| `onSearchChange` | `(search: string) => void` | - | Callback when search text changes |
-| `borderRadius` | `keyof Theme['components']['borderRadius']` | `'md'` | Border radius from theme |
-| `style` | `StyleProp<ViewStyle>` | - | Custom container styles |
-| `inputStyle` | `TextStyle` | - | Custom input styles |
-| `labelStyle` | `TextStyle` | - | Custom label styles |
-| `helperTextStyle` | `TextStyle` | - | Custom helper text styles |
-| `dropdownStyle` | `StyleProp<ViewStyle>` | - | Custom dropdown styles |
-| `optionStyle` | `StyleProp<ViewStyle>` | - | Custom option styles |
-| `animationEnabled` | `boolean` | `true` | Enable open/close animations |
-| `maxDropdownHeight` | `number` | `250` | Maximum height of dropdown |
-| `closeOnSelect` | `boolean` | `true` | Close dropdown after selection (single mode) |
-| `backgroundColor` | `string` | - | Custom background color |
-| `padding` | `keyof Theme['spacing']` | - | Padding from theme |
-| `elevation` | `number` | `3` | Android elevation |
-| `shadowOpacity` | `number` | `0.1` | iOS shadow opacity |
+    // Vegetables group
+    { label: '--- Vegetables ---', value: 'vegetables-header', disabled: true },
+    { label: 'Carrot', value: 'carrot' },
+    { label: 'Broccoli', value: 'broccoli' },
+    { label: 'Spinach', value: 'spinach' },
+  ];
 
-### ComboboxOption
+  return (
+    <Combobox
+      label="Food Items"
+      options={groupedOptions}
+      value={selectedFood}
+      onValueChange={setSelectedFood}
+      searchable
+      placeholder="Select food item..."
+      maxDropdownHeight={300}
+    />
+  );
+};
+```
 
-| Property | Type | Description |
-|----------|------|-------------|
-| `label` | `string` | Display text for the option |
-| `value` | `string` | Unique value for the option |
-| `disabled` | `boolean` | Whether the option is disabled |
+## Animation Configuration
+
+The Combobox component includes sophisticated animations that can be customized:
+
+```tsx
+// Animation is enabled by default, but can be disabled
+<Combobox
+  animationEnabled={false}  // Disable all animations
+  options={options}
+  value={value}
+  onValueChange={setValue}
+/>
+
+// Animations include:
+// - Smooth dropdown open/close with spring physics
+// - Chevron rotation indicator
+// - Scale feedback on trigger press
+// - Opacity transitions for modal overlay
+// - Adaptive positioning based on available screen space
+```
 
 ## Best Practices
 
-### Do's
+<Card title="Performance" icon="rocket">
+- Use `React.memo` for option lists that don't change frequently
+- Implement debouncing for search functionality to reduce API calls
+- Consider virtualizing very long option lists (100+ items)
+- Avoid creating new option arrays on every render
+</Card>
 
-- Use clear, descriptive labels for options
-- Provide helpful placeholder text
-- Use search functionality for lists with many options
-- Implement proper error handling and validation
-- Use appropriate size variants for your design
-- Provide helper text for complex selections
-- Use multiple selection sparingly and with clear indication
+<Card title="UX Guidelines" icon="figma">
+- Use single-select for mutually exclusive choices
+- Use multi-select when users need to pick multiple related items
+- Provide clear feedback for loading and error states
+- Keep option lists focused and relevant to the context
+</Card>
 
-### Don'ts
+<Card title="Search Optimization" icon="magnifier">
+- Implement fuzzy search for better user experience
+- Show "no results" state with helpful suggestions
+- Consider highlighting matching text in search results
+- Provide search hints or examples for complex queries
+</Card>
 
-- Don't use extremely long option labels
-- Don't disable the entire component without explanation
-- Don't use too many options without search functionality
-- Don't forget to handle loading states for dynamic options
-- Don't use multiple selection for simple yes/no choices
+<Aside type="tip">
+When using searchable comboboxes, consider implementing server-side search for large datasets to improve performance and reduce memory usage.
+</Aside>
 
-### Accessibility
+<Aside type="caution">
+Be mindful of dropdown positioning on smaller screens. The component automatically adjusts position, but test thoroughly on various screen sizes and orientations.
+</Aside>
 
-- Always provide descriptive labels
-- Use proper error messages for validation
-- Ensure sufficient color contrast
-- Test with screen readers
-- Provide keyboard navigation support
-- Use semantic HTML structure
-
-## Troubleshooting
-
-### Common Issues
-
-**Dropdown not opening**
-- Check if the component is disabled
-- Verify that options array is not empty
-- Ensure proper event handling setup
-
-**Search not working**
-- Verify `searchable` prop is set to `true`
-- Check `onSearchChange` callback implementation
-- Ensure options are properly filtered
-
-**Animation issues**
-- Try disabling animations with `animationEnabled={false}`
-- Check for conflicting styles or transforms
-- Verify React Native Reanimated setup
-
-**Dropdown positioning problems**
-- Check screen dimensions and available space
-- Verify modal rendering permissions
-- Test on different screen sizes
-
-**Performance issues with large lists**
-- Implement virtualization for very large lists
-- Use search functionality to reduce visible options
-- Consider pagination for dynamic data
-- Optimize option rendering with `React.memo`
-
-**Multiple selection not working**
-- Ensure `multiple` prop is set to `true`
-- Verify value is an array when using multiple selection
-- Check `onValueChange` handles array values correctly
+<Aside type="note">
+The component uses React Native's Modal for dropdown rendering, which ensures proper z-index stacking and platform-appropriate behavior on both iOS and Android.
+</Aside>

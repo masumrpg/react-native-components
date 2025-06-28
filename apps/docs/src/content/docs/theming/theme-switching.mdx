@@ -360,6 +360,34 @@ function ThemeManagerComponent() {
 }
 ```
 
+#### Preset Theme
+
+Using preset builtin, `import { presetThemes } from 'rnc-theme'`
+```tsx
+import { presetThemes } from 'rnc-theme'
+
+export default function Component() {
+  const handleThemeApplied = (theme: string) => {
+    console.log(`Theme applied: ${theme}`);
+  };
+
+  const handleThemePreview = (theme: string) => {
+    console.log(`Theme previewed: ${theme}`);
+  };
+
+  return (
+    <ThemeManager
+      themePresets={presetThemes}
+      initialTheme="default"
+      onThemeApplied={handleThemeApplied}
+      onThemePreview={handleThemePreview}
+    >
+      {/* children */}
+    </ThemeManager>
+  )
+}
+```
+
 ## API Reference
 
 <Card title="Need more details?" icon="open-book">

@@ -1,0 +1,484 @@
+---
+title: Center
+description: Perfect centering component for aligning content both horizontally and vertically with ease
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+
+Center is a specialized layout component that perfectly centers its children both horizontally and vertically. It's ideal for creating splash screens, empty states, loading indicators, and any content that needs perfect centering.
+
+## Import
+
+```tsx
+import { Center } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Centering">
+    ```tsx
+    <Center style={{ height: 200 }}>
+      <Text>Perfectly centered content</Text>
+    </Center>
+    ```
+  </TabItem>
+
+  <TabItem label="Loading Screen">
+    ```tsx
+    <Center flex={1} backgroundColor="#f9f9f9">
+      <VStack spacing="md" align="center">
+        <ActivityIndicator size="large" />
+        <Text>Loading...</Text>
+      </VStack>
+    </Center>
+    ```
+  </TabItem>
+
+  <TabItem label="Empty State">
+    ```tsx
+    <Center flex={1} padding="xl">
+      <VStack spacing="lg" align="center">
+        <Text style={{ fontSize: 48 }}>📭</Text>
+        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+          No Messages
+        </Text>
+        <Text style={{ textAlign: 'center', color: '#666' }}>
+          When you receive messages, they'll appear here
+        </Text>
+        <Button title="Refresh" />
+      </VStack>
+    </Center>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+Center inherits all [BaseLayoutProps](/components/layout/center/#baselayoutprops) with centering as default behavior.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `align` | `ViewStyle['alignItems']` | `'center'` | Cross-axis alignment |
+| `justify` | `ViewStyle['justifyContent']` | `'center'` | Main-axis alignment |
+
+### BaseLayoutProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Child components to render |
+| `style` | `StyleProp<ViewStyle>` | - | Additional style properties |
+| `padding` | `keyof Theme['spacing']` | - | Padding around content |
+| `margin` | `keyof Theme['spacing']` | - | Margin around component |
+| `backgroundColor` | `ViewStyle['backgroundColor']` | - | Background color |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | - | Border radius value |
+| `flex` | `number` | - | Flex grow/shrink value |
+| `width` | `DimensionValue` | - | Component width |
+| `height` | `DimensionValue` | - | Component height |
+| `themed` | `boolean` | `false` | Enable theme styles |
+| `align` | `ViewStyle['alignItems']` | - | Cross-axis alignment |
+| `justify` | `ViewStyle['justifyContent']` | - | Main-axis alignment |
+
+## Examples
+
+### Splash Screen
+
+```tsx
+<Center
+  flex={1}
+  backgroundColor="#007AFF"
+  themed={false}
+>
+  <VStack spacing="xl" align="center">
+    <Image
+      source={require('./logo.png')}
+      style={{ width: 120, height: 120 }}
+    />
+    <VStack spacing="sm" align="center">
+      <Text style={{
+        fontSize: 28,
+        fontWeight: 'bold',
+        color: 'white'
+      }}>
+        Welcome to MyApp
+      </Text>
+      <Text style={{
+        fontSize: 16,
+        color: 'rgba(255,255,255,0.8)',
+        textAlign: 'center'
+      }}>
+        The best way to manage your tasks
+      </Text>
+    </VStack>
+    <ActivityIndicator size="large" color="white" />
+  </VStack>
+</Center>
+```
+
+### Error State
+
+```tsx
+<Center flex={1} padding="xl">
+  <VStack spacing="lg" align="center" style={{ maxWidth: 280 }}>
+    <Text style={{ fontSize: 64 }}>😵</Text>
+
+    <VStack spacing="sm" align="center">
+      <Text style={{
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center'
+      }}>
+        Oops! Something went wrong
+      </Text>
+      <Text style={{
+        fontSize: 14,
+        color: '#666',
+        textAlign: 'center',
+        lineHeight: 20
+      }}>
+        We're having trouble loading this page.
+        Please check your connection and try again.
+      </Text>
+    </VStack>
+
+    <VStack spacing="sm" style={{ width: '100%' }}>
+      <Button title="Try Again" />
+      <Button title="Go Back" variant="outline" />
+    </VStack>
+  </VStack>
+</Center>
+```
+
+### Onboarding Step
+
+```tsx
+<Center flex={1} padding="xl">
+  <VStack spacing="xl" align="center" style={{ maxWidth: 320 }}>
+    <Box
+      style={{
+        width: 200,
+        height: 200,
+        borderRadius: 100,
+        backgroundColor: '#F0F8FF',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      <Text style={{ fontSize: 80 }}>🚀</Text>
+    </Box>
+
+    <VStack spacing="md" align="center">
+      <Text style={{
+        fontSize: 24,
+        fontWeight: 'bold',
+        textAlign: 'center'
+      }}>
+        Get Started Fast
+      </Text>
+      <Text style={{
+        fontSize: 16,
+        color: '#666',
+        textAlign: 'center',
+        lineHeight: 24
+      }}>
+        Set up your account in just a few minutes and
+        start organizing your life better.
+      </Text>
+    </VStack>
+
+    <HStack spacing="sm" style={{ width: '100%' }}>
+      <Button title="Skip" variant="outline" flex={1} />
+      <Button title="Continue" flex={2} />
+    </HStack>
+  </VStack>
+</Center>
+```
+
+### Authentication Form
+
+```tsx
+<Center flex={1} padding="xl" backgroundColor="#fff">
+  <VStack spacing="xl" style={{ width: '100%', maxWidth: 400 }}>
+    <VStack spacing="md" align="center">
+      <Image
+        source={require('./logo.png')}
+        style={{ width: 80, height: 80 }}
+      />
+      <Text style={{ fontSize: 24, fontWeight: 'bold' }}>
+        Sign In
+      </Text>
+      <Text style={{ fontSize: 14, color: '#666' }}>
+        Welcome back! Please enter your details.
+      </Text>
+    </VStack>
+
+    <VStack spacing="md">
+      <TextInput
+        placeholder="Email"
+        keyboardType="email-address"
+        style={{
+          borderWidth: 1,
+          borderColor: '#E0E0E0',
+          padding: 12,
+          borderRadius: 8
+        }}
+      />
+      <TextInput
+        placeholder="Password"
+        secureTextEntry
+        style={{
+          borderWidth: 1,
+          borderColor: '#E0E0E0',
+          padding: 12,
+          borderRadius: 8
+        }}
+      />
+    </VStack>
+
+    <VStack spacing="sm">
+      <Button title="Sign In" />
+      <HStack justify="center" spacing="xs">
+        <Text style={{ color: '#666' }}>Don't have an account?</Text>
+        <Text style={{ color: '#007AFF', fontWeight: '600' }}>
+          Sign up
+        </Text>
+      </HStack>
+    </VStack>
+  </VStack>
+</Center>
+```
+
+### Modal Content
+
+```tsx
+<Center
+  flex={1}
+  backgroundColor="rgba(0,0,0,0.5)"
+  onPress={onBackdropPress}
+>
+  <Box
+    variant="card"
+    style={{
+      width: '90%',
+      maxWidth: 400,
+      maxHeight: '80%'
+    }}
+    onPress={(e) => e.stopPropagation()}
+  >
+    <VStack spacing="lg">
+      <HStack justify="space-between" align="center">
+        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+          Confirm Action
+        </Text>
+        <Button
+          title="✕"
+          variant="ghost"
+          onPress={onClose}
+          style={{ width: 32, height: 32 }}
+        />
+      </HStack>
+
+      <Text style={{ fontSize: 14, lineHeight: 20 }}>
+        Are you sure you want to delete this item?
+        This action cannot be undone.
+      </Text>
+
+      <HStack spacing="md">
+        <Button
+          title="Cancel"
+          variant="outline"
+          flex={1}
+          onPress={onClose}
+        />
+        <Button
+          title="Delete"
+          variant="destructive"
+          flex={1}
+          onPress={onConfirm}
+        />
+      </HStack>
+    </VStack>
+  </Box>
+</Center>
+```
+
+### Search Empty State
+
+```tsx
+<Center flex={1} padding="xl">
+  <VStack spacing="lg" align="center" style={{ maxWidth: 280 }}>
+    <Box
+      style={{
+        width: 120,
+        height: 120,
+        borderRadius: 60,
+        backgroundColor: '#F5F5F5',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}
+    >
+      <Text style={{ fontSize: 48, opacity: 0.5 }}>🔍</Text>
+    </Box>
+
+    <VStack spacing="sm" align="center">
+      <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+        No Results Found
+      </Text>
+      <Text style={{
+        fontSize: 14,
+        color: '#666',
+        textAlign: 'center'
+      }}>
+        We couldn't find any items matching "{searchQuery}".
+        Try adjusting your search terms.
+      </Text>
+    </VStack>
+
+    <Button
+      title="Clear Search"
+      variant="outline"
+      onPress={() => setSearchQuery('')}
+    />
+  </VStack>
+</Center>
+```
+
+## Layout Variations
+
+### Off-Center Alignment
+
+```tsx
+<Center
+  flex={1}
+  align="center"
+  justify="flex-start"
+  padding="xl"
+>
+  <VStack spacing="md" align="center" style={{ marginTop: 100 }}>
+    <Text style={{ fontSize: 20, fontWeight: 'bold' }}>
+      Top-Centered Content
+    </Text>
+    <Text>Content positioned towards the top</Text>
+  </VStack>
+</Center>
+```
+
+### Horizontal Center Only
+
+```tsx
+<Center
+  align="center"
+  justify="flex-start"
+  padding="md"
+  style={{ minHeight: 200 }}
+>
+  <VStack spacing="sm" align="center">
+    <Text>Horizontally centered</Text>
+    <Text>But aligned to top</Text>
+  </VStack>
+</Center>
+```
+
+### Full Screen Overlay
+
+```tsx
+<Center
+  style={{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(255,255,255,0.95)',
+    zIndex: 999
+  }}
+>
+  <VStack spacing="lg" align="center">
+    <ActivityIndicator size="large" />
+    <Text style={{ fontSize: 16, fontWeight: '500' }}>
+      Processing...
+    </Text>
+    <Text style={{ fontSize: 12, color: '#666' }}>
+      This may take a few moments
+    </Text>
+  </VStack>
+</Center>
+```
+
+## Responsive Patterns
+
+### Adaptive Content Size
+
+```tsx
+const { width, height } = useWindowDimensions();
+const isSmallScreen = width < 400;
+
+<Center flex={1} padding={isSmallScreen ? "md" : "xl"}>
+  <VStack
+    spacing={isSmallScreen ? "md" : "lg"}
+    align="center"
+    style={{
+      width: '100%',
+      maxWidth: isSmallScreen ? 280 : 400
+    }}
+  >
+    <Text style={{
+      fontSize: isSmallScreen ? 20 : 24,
+      fontWeight: 'bold'
+    }}>
+      Responsive Title
+    </Text>
+    <Text style={{
+      fontSize: isSmallScreen ? 14 : 16,
+      textAlign: 'center'
+    }}>
+      Content that adapts to screen size
+    </Text>
+  </VStack>
+</Center>
+```
+
+### Safe Area Consideration
+
+```tsx
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+const insets = useSafeAreaInsets();
+
+<Center
+  flex={1}
+  style={{
+    paddingTop: insets.top,
+    paddingBottom: insets.bottom
+  }}
+>
+  <VStack spacing="lg" align="center">
+    <Text>Safe area aware content</Text>
+  </VStack>
+</Center>
+```
+
+## Best Practices
+
+<Card title="Content Guidelines" icon="seti:image">
+- Keep centered content concise and focused
+- Use appropriate spacing between elements
+- Consider the visual weight of centered elements
+</Card>
+
+<Card title="UX Considerations" icon="laptop">
+- Provide clear actions for empty states
+- Use loading indicators for time-consuming operations
+- Make error messages helpful and actionable
+</Card>
+
+<Card title="Layout Tips" icon="warning">
+- Always provide a specific height or use flex={1}
+- Test centering on different screen sizes
+- Be mindful of keyboard behavior with centered forms
+</Card>
+
+<Aside type="tip">
+When using Center for critical states like errors or loading, ensure proper accessibility roles and labels are provided so screen readers can announce the current state to users.
+</Aside>

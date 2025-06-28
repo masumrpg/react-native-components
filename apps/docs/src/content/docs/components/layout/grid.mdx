@@ -1,0 +1,473 @@
+---
+title: Grid
+description: Responsive grid layout component for arranging child components in columns with automatic wrapping and flexible spacing options
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Grid arranges child components in a responsive grid layout with automatic wrapping. It's perfect for creating image galleries, card layouts, dashboard widgets, and any content that needs to be displayed in columns.
+
+## Import
+
+```tsx
+import { Grid } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Grid">
+    ```tsx
+    <Grid columns={2} spacing="md">
+      <Card>Item 1</Card>
+      <Card>Item 2</Card>
+      <Card>Item 3</Card>
+      <Card>Item 4</Card>
+    </Grid>
+    ```
+  </TabItem>
+
+  <TabItem label="Three Column Grid">
+    ```tsx
+    <Grid columns={3} spacing="lg" padding="md">
+      {products.map(product => (
+        <Box key={product.id} padding="sm" backgroundColor="white" borderRadius="md">
+          <Image source={{ uri: product.image }} style={{ width: '100%', height: 120 }} />
+          <Text style={{ marginTop: 8, fontWeight: 'bold' }}>{product.name}</Text>
+          <Text style={{ color: '#666' }}>${product.price}</Text>
+        </Box>
+      ))}
+    </Grid>
+    ```
+  </TabItem>
+
+  <TabItem label="Responsive Grid">
+    ```tsx
+    const screenWidth = useWindowDimensions().width;
+    const columns = screenWidth > 768 ? 4 : screenWidth > 480 ? 3 : 2;
+
+    <Grid
+      columns={columns}
+      spacing="md"
+      padding="lg"
+    >
+      {images.map((image, index) => (
+        <Box key={index} borderRadius="lg" overflow="hidden">
+          <Image
+            source={{ uri: image.url }}
+            style={{ width: '100%', aspectRatio: 1 }}
+            resizeMode="cover"
+          />
+        </Box>
+      ))}
+    </Grid>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Grid-Specific Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `columns` | `number` | `2` | Number of columns in the grid |
+| `spacing` | `keyof Theme['spacing']` | `0` | Gap between grid items |
+
+### Inherited Props
+
+Grid inherits all [BaseLayoutProps](/components/layout/grid/#baselayoutprops) for consistent styling and behavior.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `align` | `ViewStyle['alignItems']` | `'stretch'` | Cross-axis alignment of grid items |
+| `justify` | `ViewStyle['justifyContent']` | `'flex-start'` | Main-axis alignment of grid container |
+
+### BaseLayoutProps
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Child components to arrange in grid |
+| `style` | `StyleProp<ViewStyle>` | - | Additional style properties |
+| `padding` | `keyof Theme['spacing']` | - | Padding around grid container |
+| `margin` | `keyof Theme['spacing']` | - | Margin around component |
+| `backgroundColor` | `ViewStyle['backgroundColor']` | - | Background color |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | - | Border radius value |
+| `flex` | `number` | - | Flex grow/shrink value |
+| `width` | `DimensionValue` | - | Component width |
+| `height` | `DimensionValue` | - | Component height |
+| `themed` | `boolean` | `false` | Enable theme styles |
+
+## Examples
+
+### Photo Gallery
+
+```tsx
+<Grid columns={3} spacing="xs" padding="md">
+  {photos.map((photo, index) => (
+    <TouchableOpacity
+      key={index}
+      onPress={() => openPhotoViewer(photo)}
+    >
+      <Box borderRadius="sm" overflow="hidden">
+        <Image
+          source={{ uri: photo.thumbnail }}
+          style={{
+            width: '100%',
+            aspectRatio: 1
+          }}
+          resizeMode="cover"
+        />
+      </Box>
+    </TouchableOpacity>
+  ))}
+</Grid>
+```
+
+### Dashboard Cards
+
+```tsx
+<Grid columns={2} spacing="lg" padding="lg">
+  <Box variant="card">
+    <VStack spacing="sm">
+      <HStack justify="space-between" align="center">
+        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Total Sales</Text>
+        <Icon name="trending-up" size={20} color="#4caf50" />
+      </HStack>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#4caf50' }}>
+        $12,345
+      </Text>
+      <Text style={{ fontSize: 12, color: '#666' }}>
+        +12% from last month
+      </Text>
+    </VStack>
+  </Box>
+
+  <Box variant="card">
+    <VStack spacing="sm">
+      <HStack justify="space-between" align="center">
+        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>New Users</Text>
+        <Icon name="users" size={20} color="#2196f3" />
+      </HStack>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#2196f3' }}>
+        1,234
+      </Text>
+      <Text style={{ fontSize: 12, color: '#666' }}>
+        +5% from last week
+      </Text>
+    </VStack>
+  </Box>
+
+  <Box variant="card">
+    <VStack spacing="sm">
+      <HStack justify="space-between" align="center">
+        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Orders</Text>
+        <Icon name="shopping-bag" size={20} color="#ff9800" />
+      </HStack>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#ff9800' }}>
+        567
+      </Text>
+      <Text style={{ fontSize: 12, color: '#666' }}>
+        +8% from yesterday
+      </Text>
+    </VStack>
+  </Box>
+
+  <Box variant="card">
+    <VStack spacing="sm">
+      <HStack justify="space-between" align="center">
+        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>Revenue</Text>
+        <Icon name="dollar-sign" size={20} color="#9c27b0" />
+      </HStack>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', color: '#9c27b0' }}>
+        $8,901
+      </Text>
+      <Text style={{ fontSize: 12, color: '#666' }}>
+        +15% from last month
+      </Text>
+    </VStack>
+  </Box>
+</Grid>
+```
+
+### Product Catalog
+
+```tsx
+<Grid columns={2} spacing="md" padding="md">
+  {products.map(product => (
+    <TouchableOpacity
+      key={product.id}
+      onPress={() => navigateToProduct(product.id)}
+    >
+      <Box
+        backgroundColor="white"
+        borderRadius="lg"
+        style={{
+          shadowColor: '#000',
+          shadowOffset: { width: 0, height: 2 },
+          shadowOpacity: 0.1,
+          shadowRadius: 4,
+          elevation: 3
+        }}
+      >
+        <Image
+          source={{ uri: product.image }}
+          style={{
+            width: '100%',
+            height: 150,
+            borderTopLeftRadius: 8,
+            borderTopRightRadius: 8
+          }}
+          resizeMode="cover"
+        />
+
+        <VStack padding="md" spacing="xs">
+          <Text style={{ fontSize: 16, fontWeight: 'bold' }} numberOfLines={2}>
+            {product.name}
+          </Text>
+          <Text style={{ fontSize: 14, color: '#666' }} numberOfLines={2}>
+            {product.description}
+          </Text>
+          <HStack justify="space-between" align="center" style={{ marginTop: 8 }}>
+            <Text style={{ fontSize: 18, fontWeight: 'bold', color: '#2196f3' }}>
+              ${product.price}
+            </Text>
+            <HStack spacing="xs" align="center">
+              <Icon name="star" size={14} color="#ffc107" />
+              <Text style={{ fontSize: 12, color: '#666' }}>
+                {product.rating}
+              </Text>
+            </HStack>
+          </HStack>
+        </VStack>
+      </Box>
+    </TouchableOpacity>
+  ))}
+</Grid>
+```
+
+### Feature Grid
+
+```tsx
+<Grid columns={3} spacing="lg" padding="xl">
+  {features.map((feature, index) => (
+    <Center key={index}>
+      <VStack spacing="md" align="center" style={{ maxWidth: 200 }}>
+        <Box
+          width={60}
+          height={60}
+          borderRadius="xl"
+          backgroundColor={feature.color}
+        >
+          <Center flex={1}>
+            <Icon name={feature.icon} size={24} color="white" />
+          </Center>
+        </Box>
+
+        <Text style={{
+          fontSize: 16,
+          fontWeight: 'bold',
+          textAlign: 'center'
+        }}>
+          {feature.title}
+        </Text>
+
+        <Text style={{
+          fontSize: 14,
+          color: '#666',
+          textAlign: 'center',
+          lineHeight: 20
+        }}>
+          {feature.description}
+        </Text>
+      </VStack>
+    </Center>
+  ))}
+</Grid>
+```
+
+## Responsive Behavior
+
+### Adaptive Columns
+
+<Tabs>
+  <TabItem label="Breakpoint-based">
+    ```tsx
+    const useResponsiveColumns = () => {
+      const { width } = useWindowDimensions();
+
+      if (width >= 1024) return 4;  // Desktop
+      if (width >= 768) return 3;   // Tablet
+      if (width >= 480) return 2;   // Large mobile
+      return 1;                     // Small mobile
+    };
+
+    const ResponsiveGrid = ({ children }) => {
+      const columns = useResponsiveColumns();
+
+      return (
+        <Grid
+          columns={columns}
+          spacing="md"
+          padding="md"
+        >
+          {children}
+        </Grid>
+      );
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Dynamic Sizing">
+    ```tsx
+    const DynamicGrid = ({ itemMinWidth = 150, children }) => {
+      const { width } = useWindowDimensions();
+      const padding = 32; // Total horizontal padding
+      const spacing = 16; // Space between items
+
+      const availableWidth = width - padding;
+      const itemsPerRow = Math.floor(
+        (availableWidth + spacing) / (itemMinWidth + spacing)
+      );
+      const columns = Math.max(1, itemsPerRow);
+
+      return (
+        <Grid
+          columns={columns}
+          spacing="md"
+          padding="md"
+        >
+          {children}
+        </Grid>
+      );
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Orientation-aware">
+    ```tsx
+    const OrientationGrid = ({ children }) => {
+      const orientation = useDeviceOrientation();
+      const isLandscape = orientation?.landscape;
+
+      const columns = isLandscape ? 4 : 2;
+
+      return (
+        <Grid
+          columns={columns}
+          spacing={isLandscape ? "sm" : "md"}
+          padding="md"
+        >
+          {children}
+        </Grid>
+      );
+    };
+    ```
+  </TabItem>
+</Tabs>
+
+### Equal Height Items
+
+```tsx
+<Grid columns={2} spacing="lg" padding="md">
+  {cards.map((card, index) => (
+    <Box
+      key={index}
+      backgroundColor="white"
+      borderRadius="lg"
+      padding="md"
+      style={{
+        minHeight: 200,  // Ensure consistent height
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 3
+      }}
+    >
+      <VStack spacing="sm" flex={1}>
+        <Text style={{ fontSize: 16, fontWeight: 'bold' }}>
+          {card.title}
+        </Text>
+        <Text style={{ fontSize: 14, color: '#666', flex: 1 }}>
+          {card.description}
+        </Text>
+        <Button
+          title="Learn More"
+          variant="outline"
+          onPress={() => handleCardPress(card.id)}
+        />
+      </VStack>
+    </Box>
+  ))}
+</Grid>
+```
+
+## Performance Optimization
+
+### Virtualized Grid (for large datasets)
+
+```tsx
+import { FlatList } from 'react-native';
+
+const VirtualizedGrid = ({ data, columns = 2, renderItem }) => {
+  const numColumns = columns;
+
+  const renderGridItem = ({ item, index }) => {
+    // Handle empty cells for incomplete rows
+    if (!item) {
+      return <Box style={{ flex: 1 }} />;
+    }
+
+    return (
+      <Box style={{ flex: 1, margin: 4 }}>
+        {renderItem({ item, index })}
+      </Box>
+    );
+  };
+
+  // Pad data to fill complete rows
+  const paddedData = [...data];
+  const remainder = data.length % numColumns;
+  if (remainder !== 0) {
+    const padding = numColumns - remainder;
+    for (let i = 0; i < padding; i++) {
+      paddedData.push(null);
+    }
+  }
+
+  return (
+    <FlatList
+      data={paddedData}
+      renderItem={renderGridItem}
+      numColumns={numColumns}
+      key={numColumns} // Force re-render when columns change
+      contentContainerStyle={{ padding: 8 }}
+    />
+  );
+};
+```
+
+## Best Practices
+
+<Card title="Layout Guidelines" icon="substack">
+- Use consistent spacing values from your theme
+- Consider item aspect ratios for visual harmony
+- Provide minimum heights for text-heavy content to maintain grid alignment
+</Card>
+
+<Card title="Responsive Design" icon="list-format">
+- Test grid layouts across different screen sizes
+- Use adaptive column counts for better mobile experience
+- Consider orientation changes in your column calculations
+</Card>
+
+<Card title="Performance Tips" icon="warning">
+- Use FlatList with numColumns for large datasets instead of Grid
+- Optimize images with appropriate sizes and compression
+- Consider lazy loading for grids with many items
+</Card>
+
+<Aside type="tip">
+Grid automatically handles spacing and wrapping, making it perfect for responsive layouts. For very large datasets, consider using FlatList with numColumns instead for better performance through virtualization.
+</Aside>

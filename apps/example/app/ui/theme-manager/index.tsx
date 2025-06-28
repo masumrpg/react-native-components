@@ -16,6 +16,7 @@ import {
   VScroll,
   Heading,
   Box,
+  presetThemes,
 } from 'rnc-theme';
 
 const ThemeManagerScreen: React.FC = () => {
@@ -1187,6 +1188,14 @@ const ThemeManagerScreen: React.FC = () => {
             </CardContent>
           </Card>
         </ThemeManager>
+
+        {/* Preset builtin */}
+        <ThemeManager
+          themePresets={presetThemes}
+          initialTheme="default"
+          onThemeApplied={handleThemeApplied}
+          onThemePreview={handleThemePreview}
+        />
       </Box>
     </VScroll>
   );
