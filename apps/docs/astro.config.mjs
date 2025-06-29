@@ -106,6 +106,17 @@ export default defineConfig({
                 },
               ],
             },
+            {
+              label: 'Feedback',
+              collapsed: false,
+              items: [
+                { label: 'Spinner', slug: 'components/feedback/spinner' },
+                { label: 'Skeleton', slug: 'components/feedback/skeleton' },
+                { label: 'Progress', slug: 'components/feedback/progress' },
+                { label: 'Toast', slug: 'components/feedback/toast' },
+                { label: 'Tooltip', slug: 'components/feedback/tooltip' },
+              ],
+            },
           ],
         },
         {

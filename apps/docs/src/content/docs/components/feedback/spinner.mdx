@@ -1,0 +1,575 @@
+---
+title: Spinner
+description: Elegant animated loading indicator component with customizable variants, sizes, and visual styling options for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Spinner provides a smooth, animated loading indicator with gradient visual effects and comprehensive customization options. Built with React Native Reanimated for optimal performance and fluid animations across all platforms.
+
+## Import
+
+```tsx
+import { Spinner } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Spinner">
+    ```tsx
+    <Spinner />
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Size">
+    ```tsx
+    <Spinner size="lg" />
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Color">
+    ```tsx
+    <Spinner variant="success" />
+    ```
+  </TabItem>
+
+  <TabItem label="Conditional Display">
+    ```tsx
+    <Spinner animating={isLoading} />
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Spinner Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `size` | `ComponentSize \| number` | `'md'` | Spinner size (xs, sm, md, lg, xl) or custom pixel value |
+| `variant` | `ComponentVariant` | `'default'` | Visual style variant |
+| `color` | `keyof Theme['colors']` | - | Custom color from theme colors |
+| `style` | `StyleProp<ViewStyle>` | - | Additional container styles |
+| `thickness` | `number` | `2` | Border thickness in pixels |
+| `duration` | `number` | `1000` | Animation duration in milliseconds |
+| `animating` | `boolean` | `true` | Whether spinner should be visible and animating |
+
+### Size Options
+
+| Size | Pixels | Use Case |
+|------|--------|----------|
+| `xs` | 12px | Small inline indicators |
+| `sm` | 16px | Button loading states |
+| `md` | 24px | Standard loading indicator |
+| `lg` | 32px | Card or section loading |
+| `xl` | 40px | Full screen loading |
+| `number` | Custom | Precise sizing control |
+
+### Variants
+
+| Variant | Description | Use Case |
+|---------|-------------|----------|
+| `default` | Primary theme color | General loading states |
+| `primary` | Primary brand color | Main action loading |
+| `secondary` | Secondary theme color | Secondary action loading |
+| `success` | Success state color | Success confirmation loading |
+| `error` | Error/danger color | Error state loading |
+| `warning` | Warning state color | Warning action loading |
+| `info` | Information color | Info action loading |
+| `destructive` | Destructive action color | Delete/remove loading |
+| `outline` | Border theme color | Subtle loading indicator |
+| `filled` | Filled surface color | Form loading states |
+| `ghost` | Transparent primary color | Overlay loading states |
+
+## Examples
+
+### Loading States
+
+```tsx
+const LoadingExample = () => {
+  const [loading, setLoading] = useState(false);
+
+  const handleAction = async () => {
+    setLoading(true);
+    try {
+      await performAsyncOperation();
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <VStack spacing="lg" align="center">
+      <Button onPress={handleAction} disabled={loading}>
+        <ButtonText>Start Process</ButtonText>
+      </Button>
+
+      <Spinner animating={loading} variant="primary" size="lg" />
+
+      {loading && (
+        <Text>Processing your request...</Text>
+      )}
+    </VStack>
+  );
+};
+```
+
+### Size Variations
+
+```tsx
+<VStack spacing="md" align="center" padding="lg">
+  <HStack spacing="lg" align="center">
+    <VStack align="center" spacing="sm">
+      <Spinner size="xs" variant="primary" />
+      <Text size="sm">Extra Small</Text>
+    </VStack>
+
+    <VStack align="center" spacing="sm">
+      <Spinner size="sm" variant="primary" />
+      <Text size="sm">Small</Text>
+    </VStack>
+
+    <VStack align="center" spacing="sm">
+      <Spinner size="md" variant="primary" />
+      <Text size="sm">Medium</Text>
+    </VStack>
+
+    <VStack align="center" spacing="sm">
+      <Spinner size="lg" variant="primary" />
+      <Text size="sm">Large</Text>
+    </VStack>
+
+    <VStack align="center" spacing="sm">
+      <Spinner size="xl" variant="primary" />
+      <Text size="sm">Extra Large</Text>
+    </VStack>
+  </HStack>
+
+  {/* Custom Size */}
+  <VStack align="center" spacing="sm">
+    <Spinner size={48} variant="primary" />
+    <Text size="sm">Custom 48px</Text>
+  </VStack>
+</VStack>
+```
+
+### Variant Showcase
+
+```tsx
+<VStack spacing="md" padding="lg">
+  <Text variant="h3">Spinner Variants</Text>
+
+  <HStack spacing="md" wrap>
+    <VStack align="center" spacing="xs">
+      <Spinner variant="primary" />
+      <Text size="xs">Primary</Text>
+    </VStack>
+
+    <VStack align="center" spacing="xs">
+      <Spinner variant="secondary" />
+      <Text size="xs">Secondary</Text>
+    </VStack>
+
+    <VStack align="center" spacing="xs">
+      <Spinner variant="success" />
+      <Text size="xs">Success</Text>
+    </VStack>
+
+    <VStack align="center" spacing="xs">
+      <Spinner variant="error" />
+      <Text size="xs">Error</Text>
+    </VStack>
+
+    <VStack align="center" spacing="xs">
+      <Spinner variant="warning" />
+      <Text size="xs">Warning</Text>
+    </VStack>
+
+    <VStack align="center" spacing="xs">
+      <Spinner variant="info" />
+      <Text size="xs">Info</Text>
+    </VStack>
+
+    <VStack align="center" spacing="xs">
+      <Spinner variant="outline" />
+      <Text size="xs">Outline</Text>
+    </VStack>
+
+    <VStack align="center" spacing="xs">
+      <Spinner variant="ghost" />
+      <Text size="xs">Ghost</Text>
+    </VStack>
+  </HStack>
+</VStack>
+```
+
+### Button Integration
+
+```tsx
+const ButtonWithSpinner = ({ loading, onPress, children }) => {
+  return (
+    <Button onPress={onPress} disabled={loading}>
+      <HStack spacing="sm" align="center">
+        {loading && <Spinner size="sm" color="background" />}
+        <ButtonText>{children}</ButtonText>
+      </HStack>
+    </Button>
+  );
+};
+
+// Usage
+<VStack spacing="md">
+  <ButtonWithSpinner loading={isSubmitting} onPress={handleSubmit}>
+    Submit Form
+  </ButtonWithSpinner>
+
+  <ButtonWithSpinner loading={isUploading} onPress={handleUpload}>
+    Upload File
+  </ButtonWithSpinner>
+
+  <ButtonWithSpinner loading={isDeleting} onPress={handleDelete}>
+    Delete Item
+  </ButtonWithSpinner>
+</VStack>
+```
+
+### Loading Overlays
+
+```tsx
+const LoadingOverlay = ({ visible, message }) => {
+  if (!visible) return null;
+
+  return (
+    <View style={StyleSheet.absoluteFillObject}>
+      <BlurView intensity={50} style={styles.overlay}>
+        <VStack spacing="lg" align="center">
+          <Spinner size="xl" variant="primary" />
+          {message && (
+            <Text color="primary" weight="medium">
+              {message}
+            </Text>
+          )}
+        </VStack>
+      </BlurView>
+    </View>
+  );
+};
+
+// Usage
+const DataScreen = () => {
+  const [loading, setLoading] = useState(false);
+
+  return (
+    <View style={{ flex: 1 }}>
+      {/* Main content */}
+      <ScrollView>
+        {/* Your content here */}
+      </ScrollView>
+
+      <LoadingOverlay
+        visible={loading}
+        message="Loading data..."
+      />
+    </View>
+  );
+};
+```
+
+### Custom Styling
+
+```tsx
+<VStack spacing="lg" padding="lg">
+  {/* Custom Colors */}
+  <Spinner
+    color="accent"
+    size="lg"
+    thickness={3}
+  />
+
+  {/* Custom Duration */}
+  <Spinner
+    variant="success"
+    duration={2000}
+    size="lg"
+  />
+
+  {/* Custom Container Style */}
+  <Spinner
+    variant="primary"
+    size="lg"
+    style={{
+      backgroundColor: 'rgba(0,0,0,0.1)',
+      borderRadius: 8,
+      padding: 16
+    }}
+  />
+
+  {/* Ultra Thin Spinner */}
+  <Spinner
+    variant="outline"
+    size={60}
+    thickness={1}
+    duration={3000}
+  />
+</VStack>
+```
+
+## Advanced Usage
+
+### Conditional Rendering with Fade
+
+```tsx
+const FadeSpinner = ({ visible, ...props }) => {
+  const opacity = useSharedValue(visible ? 1 : 0);
+
+  useEffect(() => {
+    opacity.value = withTiming(visible ? 1 : 0, {
+      duration: 200
+    });
+  }, [visible, opacity]);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    opacity: opacity.value
+  }));
+
+  return (
+    <Animated.View style={animatedStyle}>
+      <Spinner animating={visible} {...props} />
+    </Animated.View>
+  );
+};
+```
+
+### Data Loading States
+
+```tsx
+const DataList = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+
+  const loadData = async (refresh = false) => {
+    if (refresh) {
+      setRefreshing(true);
+    } else {
+      setLoading(true);
+    }
+
+    try {
+      const newData = await fetchData();
+      setData(refresh ? newData : [...data, ...newData]);
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const loadMore = async () => {
+    setLoadingMore(true);
+    try {
+      const moreData = await fetchMoreData();
+      setData([...data, ...moreData]);
+    } finally {
+      setLoadingMore(false);
+    }
+  };
+
+  if (loading && data.length === 0) {
+    return (
+      <VStack flex={1} justify="center" align="center">
+        <Spinner size="xl" variant="primary" />
+        <Text color="muted">Loading data...</Text>
+      </VStack>
+    );
+  }
+
+  return (
+    <FlatList
+      data={data}
+      onRefresh={() => loadData(true)}
+      refreshing={refreshing}
+      onEndReached={loadMore}
+      renderItem={({ item }) => <DataItem item={item} />}
+      ListFooterComponent={
+        loadingMore ? (
+          <VStack padding="lg" align="center">
+            <Spinner size="md" variant="secondary" />
+          </VStack>
+        ) : null
+      }
+    />
+  );
+};
+```
+
+### Form Validation Loading
+
+```tsx
+const ValidatedInput = ({ onValidate, ...props }) => {
+  const [validating, setValidating] = useState(false);
+  const [isValid, setIsValid] = useState(null);
+
+  const handleValidation = async (value) => {
+    setValidating(true);
+    try {
+      const result = await onValidate(value);
+      setIsValid(result);
+    } finally {
+      setValidating(false);
+    }
+  };
+
+  return (
+    <VStack spacing="xs">
+      <HStack spacing="sm" align="center">
+        <TextInput
+          {...props}
+          onChangeText={handleValidation}
+          style={{ flex: 1 }}
+        />
+
+        {validating && (
+          <Spinner size="sm" variant="info" />
+        )}
+
+        {!validating && isValid === true && (
+          <CheckIcon color="success" size={16} />
+        )}
+
+        {!validating && isValid === false && (
+          <XIcon color="error" size={16} />
+        )}
+      </HStack>
+    </VStack>
+  );
+};
+```
+
+## Performance Optimization
+
+### Memoized Spinner
+
+```tsx
+const MemoizedSpinner = React.memo(Spinner, (prevProps, nextProps) => {
+  return (
+    prevProps.animating === nextProps.animating &&
+    prevProps.variant === nextProps.variant &&
+    prevProps.size === nextProps.size
+  );
+});
+```
+
+### Efficient List Loading
+
+```tsx
+const SpinnerListItem = ({ loading, variant = 'primary' }) => {
+  if (!loading) return null;
+
+  return (
+    <View style={styles.listItemSpinner}>
+      <Spinner size="sm" variant={variant} />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  listItemSpinner: {
+    position: 'absolute',
+    right: 16,
+    top: '50%',
+    transform: [{ translateY: -8 }]
+  }
+});
+```
+
+## Animation Control
+
+<Tabs>
+  <TabItem label="Start/Stop Animation">
+    ```tsx
+    const [isAnimating, setIsAnimating] = useState(false);
+
+    <VStack spacing="md" align="center">
+      <Spinner animating={isAnimating} size="lg" />
+
+      <Button onPress={() => setIsAnimating(!isAnimating)}>
+        <ButtonText>
+          {isAnimating ? 'Stop' : 'Start'} Animation
+        </ButtonText>
+      </Button>
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Speed Control">
+    ```tsx
+    const [speed, setSpeed] = useState(1000);
+
+    <VStack spacing="md" align="center">
+      <Spinner duration={speed} size="lg" />
+
+      <HStack spacing="sm">
+        <Button onPress={() => setSpeed(500)}>
+          <ButtonText>Fast</ButtonText>
+        </Button>
+        <Button onPress={() => setSpeed(1000)}>
+          <ButtonText>Normal</ButtonText>
+        </Button>
+        <Button onPress={() => setSpeed(2000)}>
+          <ButtonText>Slow</ButtonText>
+        </Button>
+      </HStack>
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Thickness Control">
+    ```tsx
+    const [thickness, setThickness] = useState(2);
+
+    <VStack spacing="md" align="center">
+      <Spinner thickness={thickness} size="lg" />
+
+      <HStack spacing="sm">
+        <Button onPress={() => setThickness(1)}>
+          <ButtonText>Thin</ButtonText>
+        </Button>
+        <Button onPress={() => setThickness(2)}>
+          <ButtonText>Normal</ButtonText>
+        </Button>
+        <Button onPress={() => setThickness(4)}>
+          <ButtonText>Thick</ButtonText>
+        </Button>
+      </HStack>
+    </VStack>
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="Performance" icon="rocket">
+- Use `animating={false}` to hide spinners instead of conditional rendering
+- Avoid creating spinners inside frequently re-rendered components
+- Consider using `React.memo` for spinners with stable props
+</Card>
+
+<Card title="User Experience" icon="seti:plan">
+- Provide context with loading messages when appropriate
+- Use appropriate sizes for different UI contexts
+- Match spinner variants to the action being performed
+</Card>
+
+<Aside type="tip">
+When using spinners in buttons, use smaller sizes (xs/sm) and colors that contrast well with the button background. Consider using the button's text color or a contrasting theme color.
+</Aside>
+
+<Aside type="caution">
+Avoid using multiple large spinners simultaneously as they can be visually overwhelming and impact performance. Instead, use a single loading overlay or strategically placed smaller indicators.
+</Aside>
+
+<Aside type="note">
+The spinner automatically stops rendering when `animating={false}`, which helps with performance. The gradient effect creates a more visually appealing loading animation compared to solid colors.
+</Aside>

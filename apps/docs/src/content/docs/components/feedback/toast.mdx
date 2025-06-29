@@ -1,0 +1,875 @@
+---
+title: Toast
+description: A powerful React hook for managing toast notifications with async operations, loading states, and flexible configuration options
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+useToast provides a comprehensive solution for managing toast notifications in React Native applications. It supports async operations with automatic loading states, manual toast management, and flexible configuration options with smooth animations.
+
+## Import
+
+```tsx
+import { useToast } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Toast">
+    ```tsx
+    const { toast } = useToast();
+
+    const showToast = () => {
+      toast({
+        title: "Success!",
+        description: "Your changes have been saved.",
+        variant: "success"
+      });
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="With Action">
+    ```tsx
+    const { toast } = useToast();
+
+    const showActionToast = () => {
+      toast({
+        title: "File deleted",
+        description: "Your file has been moved to trash.",
+        variant: "info",
+        action: {
+          label: "Undo",
+          onPress: () => handleUndo()
+        }
+      });
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Async Operations">
+    ```tsx
+    const { toastAsync } = useToast();
+
+    const handleAsyncOperation = async () => {
+      try {
+        await toastAsync(
+          {
+            title: "Processing",
+            loadingText: "Uploading file...",
+          },
+          () => uploadFile()
+        );
+      } catch (error) {
+        // Error is automatically handled
+      }
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Manual Management">
+    ```tsx
+    const { toast, updateToast, dismiss } = useToast();
+
+    const handleManualToast = () => {
+      const id = toast({
+        title: "Processing...",
+        variant: "loading",
+        isLoading: true,
+        duration: 0
+      });
+
+      setTimeout(() => {
+        updateToast(id, {
+          title: "Completed!",
+          variant: "success",
+          isLoading: false,
+          duration: 3000
+        });
+      }, 2000);
+    };
+    ```
+  </TabItem>
+</Tabs>
+
+## Hook Methods
+
+### toast(data)
+
+Show a new toast notification and returns the toast ID.
+
+```tsx
+const id = toast({
+  title: "Notification Title",
+  description: "Optional description text",
+  variant: "success",
+  duration: 4000,
+  action: {
+    label: "Action",
+    onPress: () => handleAction()
+  },
+  icon: <CustomIcon />,
+  isLoading: false,
+  loadingText: "Loading..."
+});
+```
+
+**Parameters:**
+- `data: Omit<ToastData, 'id'>` - Toast configuration object
+
+**Returns:**
+- `string` - Unique toast ID for further manipulation
+
+### toastAsync(data, asyncFn)
+
+Handle async operations with automatic loading/success/error states.
+
+```tsx
+const result = await toastAsync(
+  {
+    title: "Operation Title",
+    loadingText: "Processing...",
+    // Optional success/error overrides
+    description: "Custom success message"
+  },
+  async () => {
+    return await performAsyncOperation();
+  }
+);
+```
+
+**Parameters:**
+- `data: Omit<ToastData, 'id'>` - Initial toast configuration
+- `asyncFn: () => Promise<T>` - Async function to execute
+
+**Returns:**
+- `Promise<T>` - Result of the async function
+
+**Behavior:**
+- Shows loading toast immediately
+- Updates to success on resolution
+- Updates to error on rejection
+- Auto-dismisses after completion
+
+### dismiss(id)
+
+Dismiss a specific toast by ID.
+
+```tsx
+const { dismiss } = useToast();
+
+dismiss(toastId);
+```
+
+**Parameters:**
+- `id: string` - Toast ID to dismiss
+
+### dismissAll()
+
+Dismiss all currently visible toasts.
+
+```tsx
+const { dismissAll } = useToast();
+
+dismissAll();
+```
+
+### updateToast(id, data)
+
+Update an existing toast with new data.
+
+```tsx
+const { updateToast } = useToast();
+
+updateToast(toastId, {
+  title: "Updated Title",
+  variant: "success",
+  isLoading: false
+});
+```
+
+**Parameters:**
+- `id: string` - Toast ID to update
+- `data: Partial<ToastData>` - Partial data to merge
+
+### registerDismissCallback(id, callback)
+
+Register a custom dismiss callback for animations.
+
+```tsx
+const { registerDismissCallback } = useToast();
+
+registerDismissCallback(toastId, () => {
+  // Custom dismiss animation
+  performCustomAnimation();
+});
+```
+
+### unregisterDismissCallback(id)
+
+Remove a registered dismiss callback.
+
+```tsx
+const { unregisterDismissCallback } = useToast();
+
+unregisterDismissCallback(toastId);
+```
+
+## Toast Data Properties
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `title` | `string` | - | Toast title text |
+| `description` | `string` | - | Toast description text |
+| `variant` | `ToastVariant` | `'default'` | Visual style variant |
+| `duration` | `number` | `4000` | Auto-dismiss duration (ms), 0 = no auto-dismiss |
+| `action` | `ToastAction` | - | Action button configuration |
+| `icon` | `React.ReactNode` | - | Custom icon component |
+| `isLoading` | `boolean` | `false` | Show loading state |
+| `loadingText` | `string` | - | Loading state text |
+
+### Toast Variants
+
+| Variant | Description | Auto Icon | Use Case |
+|---------|-------------|-----------|----------|
+| `default` | Default notification | None | General messages |
+| `success` | Success state | CheckCircle | Completed actions |
+| `error` | Error state | AlertCircle | Failed operations |
+| `warning` | Warning state | AlertTriangle | Caution messages |
+| `info` | Information state | Info | Informational content |
+| `loading` | Loading state | ActivityIndicator | Async operations |
+| `custom` | Custom styling | Custom | Branded notifications |
+
+### Toast Action
+
+```tsx
+interface ToastAction {
+  label: string;
+  onPress: () => void;
+}
+```
+
+## Examples
+
+### Form Validation
+
+```tsx
+const FormComponent = () => {
+  const { toast } = useToast();
+  const [email, setEmail] = useState('');
+  const [loading, setLoading] = useState(false);
+
+  const validateAndSubmit = async () => {
+    // Validation
+    if (!email) {
+      toast({
+        title: "Validation Error",
+        description: "Email is required",
+        variant: "error",
+        duration: 3000
+      });
+      return;
+    }
+
+    if (!email.includes('@')) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address",
+        variant: "warning"
+      });
+      return;
+    }
+
+    // Submit with loading
+    setLoading(true);
+    try {
+      await submitForm({ email });
+
+      toast({
+        title: "Form Submitted",
+        description: "Thank you for your submission!",
+        variant: "success"
+      });
+    } catch (error) {
+      toast({
+        title: "Submission Failed",
+        description: "Please try again later",
+        variant: "error",
+        action: {
+          label: "Retry",
+          onPress: () => validateAndSubmit()
+        }
+      });
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <VStack spacing="md">
+      <TextInput
+        value={email}
+        onChangeText={setEmail}
+        placeholder="Enter email"
+      />
+
+      <Button
+        loading={loading}
+        onPress={validateAndSubmit}
+      >
+        <ButtonText>Submit</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+### File Operations with Progress
+
+```tsx
+const FileUploader = () => {
+  const { toast, updateToast, toastAsync } = useToast();
+
+  const uploadWithProgress = async (file) => {
+    const toastId = toast({
+      title: "Uploading File",
+      loadingText: `Starting upload of ${file.name}...`,
+      variant: "loading",
+      isLoading: true,
+      duration: 0
+    });
+
+    try {
+      // Simulate progress updates
+      updateToast(toastId, {
+        loadingText: "Uploading... 25%"
+      });
+
+      await delay(1000);
+
+      updateToast(toastId, {
+        loadingText: "Uploading... 50%"
+      });
+
+      await delay(1000);
+
+      updateToast(toastId, {
+        loadingText: "Uploading... 75%"
+      });
+
+      await delay(1000);
+
+      updateToast(toastId, {
+        loadingText: "Processing..."
+      });
+
+      const result = await uploadFile(file);
+
+      // Success
+      updateToast(toastId, {
+        title: "Upload Complete",
+        description: `${file.name} uploaded successfully`,
+        variant: "success",
+        isLoading: false,
+        duration: 3000,
+        action: {
+          label: "View",
+          onPress: () => viewFile(result.id)
+        }
+      });
+
+      return result;
+    } catch (error) {
+      updateToast(toastId, {
+        title: "Upload Failed",
+        description: error.message || "Failed to upload file",
+        variant: "error",
+        isLoading: false,
+        duration: 5000,
+        action: {
+          label: "Retry",
+          onPress: () => uploadWithProgress(file)
+        }
+      });
+
+      throw error;
+    }
+  };
+
+  const simpleUpload = async (file) => {
+    try {
+      const result = await toastAsync(
+        {
+          title: "Uploading",
+          loadingText: `Uploading ${file.name}...`,
+        },
+        () => uploadFile(file)
+      );
+
+      console.log('Upload result:', result);
+    } catch (error) {
+      console.error('Upload failed:', error);
+    }
+  };
+
+  return (
+    <VStack spacing="md">
+      <Button onPress={() => uploadWithProgress(selectedFile)}>
+        <ButtonText>Upload with Progress</ButtonText>
+      </Button>
+
+      <Button onPress={() => simpleUpload(selectedFile)}>
+        <ButtonText>Simple Upload</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+### Network Operations
+
+```tsx
+const DataSyncComponent = () => {
+  const { toast, toastAsync, updateToast } = useToast();
+
+  const syncData = async () => {
+    try {
+      await toastAsync(
+        {
+          title: "Syncing Data",
+          loadingText: "Connecting to server...",
+        },
+        async () => {
+          await syncUserData();
+          await syncAppSettings();
+          await syncOfflineActions();
+        }
+      );
+    } catch (error) {
+      // Error handling is automatic
+    }
+  };
+
+  const syncWithDetailedProgress = async () => {
+    const toastId = toast({
+      title: "Data Sync",
+      loadingText: "Initializing...",
+      variant: "loading",
+      isLoading: true,
+      duration: 0
+    });
+
+    try {
+      updateToast(toastId, {
+        loadingText: "Syncing user data..."
+      });
+      await syncUserData();
+
+      updateToast(toastId, {
+        loadingText: "Syncing settings..."
+      });
+      await syncAppSettings();
+
+      updateToast(toastId, {
+        loadingText: "Syncing offline actions..."
+      });
+      await syncOfflineActions();
+
+      updateToast(toastId, {
+        title: "Sync Complete",
+        description: "All data synchronized successfully",
+        variant: "success",
+        isLoading: false,
+        duration: 3000
+      });
+
+    } catch (error) {
+      updateToast(toastId, {
+        title: "Sync Failed",
+        description: "Check your internet connection",
+        variant: "error",
+        isLoading: false,
+        action: {
+          label: "Retry",
+          onPress: () => syncWithDetailedProgress()
+        },
+        duration: 5000
+      });
+    }
+  };
+
+  const handleOfflineActions = () => {
+    toast({
+      title: "You're Offline",
+      description: "Changes will sync when connection is restored",
+      variant: "warning",
+      action: {
+        label: "Retry Now",
+        onPress: () => syncData()
+      },
+      duration: 6000
+    });
+  };
+
+  return (
+    <VStack spacing="md">
+      <Button onPress={syncData}>
+        <ButtonText>Quick Sync</ButtonText>
+      </Button>
+
+      <Button onPress={syncWithDetailedProgress}>
+        <ButtonText>Detailed Sync</ButtonText>
+      </Button>
+
+      <Button onPress={handleOfflineActions}>
+        <ButtonText>Simulate Offline</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+### Shopping Cart Actions
+
+```tsx
+const ShoppingCartActions = () => {
+  const { toast, toastAsync } = useToast();
+
+  const addToCart = (product) => {
+    toast({
+      title: "Added to Cart",
+      description: `${product.name} (${product.price})`,
+      variant: "success",
+      action: {
+        label: "View Cart",
+        onPress: () => navigateToCart()
+      },
+      duration: 4000
+    });
+  };
+
+  const removeFromCart = (product) => {
+    toast({
+      title: "Item Removed",
+      description: `${product.name} removed from cart`,
+      variant: "info",
+      action: {
+        label: "Undo",
+        onPress: () => addToCart(product)
+      },
+      duration: 6000
+    });
+  };
+
+  const processCheckout = async (cartItems) => {
+    try {
+      const order = await toastAsync(
+        {
+          title: "Processing Order",
+          loadingText: "Validating payment information...",
+        },
+        async () => {
+          const validated = await validatePayment();
+          const processed = await processPayment(cartItems);
+          const confirmed = await confirmOrder(processed);
+          return confirmed;
+        }
+      );
+
+      // Navigate to success page
+      navigateToOrderSuccess(order);
+    } catch (error) {
+      // Payment errors are handled automatically
+      // Additional error handling if needed
+      if (error.code === 'PAYMENT_DECLINED') {
+        toast({
+          title: "Payment Declined",
+          description: "Please try a different payment method",
+          variant: "error",
+          action: {
+            label: "Update Payment",
+            onPress: () => navigateToPayment()
+          },
+          duration: 8000
+        });
+      }
+    }
+  };
+
+  const applyPromoCode = async (code) => {
+    try {
+      const result = await toastAsync(
+        {
+          title: "Applying Promo Code",
+          loadingText: "Validating code...",
+        },
+        () => validatePromoCode(code)
+      );
+
+      toast({
+        title: "Promo Applied!",
+        description: `You saved $${result.discount}`,
+        variant: "success",
+        duration: 5000
+      });
+    } catch (error) {
+      // Error handled automatically by toastAsync
+    }
+  };
+
+  return (
+    <VStack spacing="md">
+      <Button onPress={() => addToCart(selectedProduct)}>
+        <ButtonText>Add to Cart</ButtonText>
+      </Button>
+
+      <Button
+        variant="outline"
+        onPress={() => removeFromCart(selectedProduct)}
+      >
+        <ButtonText>Remove Item</ButtonText>
+      </Button>
+
+      <Button
+        variant="primary"
+        onPress={() => processCheckout(cartItems)}
+      >
+        <ButtonText>Checkout</ButtonText>
+      </Button>
+
+      <Button
+        variant="secondary"
+        onPress={() => applyPromoCode(promoCode)}
+      >
+        <ButtonText>Apply Promo Code</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+### Custom Toast Manager
+
+```tsx
+const useCustomToast = () => {
+  const { toast, toastAsync, updateToast, dismiss } = useToast();
+
+  const success = (message: string, options?: Partial<ToastData>) => {
+    return toast({
+      title: "Success",
+      description: message,
+      variant: "success",
+      duration: 3000,
+      ...options
+    });
+  };
+
+  const error = (message: string, options?: Partial<ToastData>) => {
+    return toast({
+      title: "Error",
+      description: message,
+      variant: "error",
+      duration: 5000,
+      ...options
+    });
+  };
+
+  const loading = (message: string) => {
+    return toast({
+      title: "Loading",
+      loadingText: message,
+      variant: "loading",
+      isLoading: true,
+      duration: 0
+    });
+  };
+
+  const promise = async <T,>(
+    promise: Promise<T>,
+    messages: {
+      loading: string;
+      success: string;
+      error: string;
+    }
+  ): Promise<T> => {
+    return toastAsync(
+      {
+        title: "Processing",
+        loadingText: messages.loading,
+      },
+      () => promise
+    );
+  };
+
+  const undoable = (
+    message: string,
+    undoAction: () => void,
+    options?: Partial<ToastData>
+  ) => {
+    return toast({
+      title: "Action Completed",
+      description: message,
+      variant: "info",
+      action: {
+        label: "Undo",
+        onPress: undoAction
+      },
+      duration: 6000,
+      ...options
+    });
+  };
+
+  return {
+    success,
+    error,
+    loading,
+    promise,
+    undoable,
+    // Original methods
+    toast,
+    toastAsync,
+    updateToast,
+    dismiss
+  };
+};
+
+// Usage
+const MyComponent = () => {
+  const toast = useCustomToast();
+
+  const handleSave = async () => {
+    try {
+      await toast.promise(
+        saveData(),
+        {
+          loading: "Saving data...",
+          success: "Data saved successfully",
+          error: "Failed to save data"
+        }
+      );
+    } catch (error) {
+      // Error handled automatically
+    }
+  };
+
+  const handleDelete = () => {
+    toast.undoable(
+      "Item deleted",
+      () => restoreItem(),
+      { variant: "warning" }
+    );
+  };
+
+  return (
+    <VStack spacing="md">
+      <Button onPress={handleSave}>
+        <ButtonText>Save</ButtonText>
+      </Button>
+
+      <Button onPress={handleDelete}>
+        <ButtonText>Delete</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+## Advanced Patterns
+
+### Sequential Toast Updates
+
+```tsx
+const useSequentialToast = () => {
+  const { toast, updateToast } = useToast();
+
+  const showSequential = async (steps: string[]) => {
+    const toastId = toast({
+      title: "Multi-step Process",
+      loadingText: steps[0],
+      variant: "loading",
+      isLoading: true,
+      duration: 0
+    });
+
+    for (let i = 1; i < steps.length; i++) {
+      await delay(1000);
+      updateToast(toastId, {
+        loadingText: steps[i]
+      });
+    }
+
+    updateToast(toastId, {
+      title: "Process Complete",
+      description: "All steps finished successfully",
+      variant: "success",
+      isLoading: false,
+      duration: 3000
+    });
+  };
+
+  return { showSequential };
+};
+```
+
+### Toast Queue Management
+
+```tsx
+const useToastQueue = () => {
+  const { toast, dismiss, toasts } = useToast();
+  const [queue, setQueue] = useState<ToastData[]>([]);
+
+  const addToQueue = (toastData: Omit<ToastData, 'id'>) => {
+    if (toasts.length >= 3) {
+      setQueue(prev => [...prev, { ...toastData, id: generateId() }]);
+    } else {
+      toast(toastData);
+    }
+  };
+
+  const processQueue = useCallback(() => {
+    if (queue.length > 0 && toasts.length < 3) {
+      const next = queue[0];
+      setQueue(prev => prev.slice(1));
+      toast(next);
+    }
+  }, [queue, toasts.length, toast]);
+
+  useEffect(() => {
+    processQueue();
+  }, [processQueue]);
+
+  return { addToQueue, queueLength: queue.length };
+};
+```
+
+## Best Practices
+
+<Card title="User Experience" icon="figma">
+- Use appropriate variants to convey the right message tone
+- Provide actionable feedback with action buttons when relevant
+- Keep toast messages concise and scannable
+- Use loading states for operations that take more than 1 second
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Avoid creating new functions in render for `onPress` handlers
+- Use `toastAsync` for simple async operations instead of manual management
+- Consider debouncing frequent toast triggers
+- Clean up toasts when navigating between major app sections
+</Card>
+
+<Card title="Error Handling" icon="error">
+- Always provide retry actions for failed operations
+- Use appropriate durations (longer for errors, shorter for success)
+- Include helpful error messages that guide user action
+- Consider progressive disclosure for complex error scenarios
+</Card>
+
+<Aside type="tip">
+For complex async operations with multiple steps, use manual `updateToast` to provide detailed progress feedback rather than relying solely on `toastAsync`.
+</Aside>
+
+<Aside type="caution">
+Be mindful of toast frequency in production apps. Too many notifications can overwhelm users. Consider batching similar notifications or using priority-based queuing systems.
+</Aside>

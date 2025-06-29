@@ -1,0 +1,642 @@
+---
+title: Progress
+description: Animated progress indicator component with customizable styling, smooth animations, and multiple variants for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Progress provides a comprehensive solution for displaying progress indicators with smooth animations, multiple variants, and flexible styling options. It supports both static and animated progress tracking with customizable colors and sizes.
+
+## Import
+
+```tsx
+import { Progress, ProgressFilledTrack } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Progress">
+    ```tsx
+    <Progress value={65}>
+      <ProgressFilledTrack />
+    </Progress>
+    ```
+  </TabItem>
+
+  <TabItem label="With Custom Colors">
+    ```tsx
+    <Progress value={45} trackColor="secondary" variant="success">
+      <ProgressFilledTrack />
+    </Progress>
+    ```
+  </TabItem>
+
+  <TabItem label="Different Sizes">
+    ```tsx
+    <Progress value={30} size="lg">
+      <ProgressFilledTrack />
+    </Progress>
+    ```
+  </TabItem>
+
+  <TabItem label="Without Animation">
+    ```tsx
+    <Progress value={80} animated={false}>
+      <ProgressFilledTrack />
+    </Progress>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Progress Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `number` | `0` | Current progress value (0-100) |
+| `max` | `number` | `100` | Maximum progress value |
+| `size` | `ComponentSize` | `'md'` | Progress bar size (xs, sm, md, lg, xl) |
+| `variant` | `ComponentVariant` | `'default'` | Visual style variant |
+| `trackColor` | `keyof Theme['colors']` | `theme.colors.border` | Background track color |
+| `animated` | `boolean` | `true` | Enable smooth progress animations |
+| `style` | `StyleProp<ViewStyle>` | - | Additional container styles |
+| `children` | `React.ReactNode` | - | ProgressFilledTrack components |
+
+### ProgressFilledTrack Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `color` | `keyof Theme['colors']` | - | Custom fill color (overrides variant) |
+| `style` | `StyleProp<ViewStyle>` | - | Additional track styles |
+
+### Variants
+
+| Variant | Description | Use Case |
+|---------|-------------|----------|
+| `default` | Default progress style | General progress indicators |
+| `primary` | Primary theme color | Main progress tracking |
+| `secondary` | Secondary theme color | Alternative progress |
+| `success` | Success/completion color | Success states, completion |
+| `error` | Error/danger color | Error states, failed operations |
+| `warning` | Warning color | Warning states, caution |
+| `info` | Information color | Info states, neutral progress |
+| `destructive` | Destructive action color | Destructive operations |
+
+### Sizes
+
+| Size | Height | Use Case |
+|------|--------|----------|
+| `xs` | 2px | Minimal progress indicators |
+| `sm` | 4px | Compact UI elements |
+| `md` | 8px | Standard progress bars |
+| `lg` | 12px | Prominent progress display |
+| `xl` | 16px | Large, highly visible progress |
+
+## Examples
+
+### File Upload Progress
+
+```tsx
+const FileUploader = () => {
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [isUploading, setIsUploading] = useState(false);
+
+  const handleUpload = async (file) => {
+    setIsUploading(true);
+    setUploadProgress(0);
+
+    // Simulate upload with progress updates
+    const interval = setInterval(() => {
+      setUploadProgress(prev => {
+        if (prev >= 100) {
+          clearInterval(interval);
+          setIsUploading(false);
+          return 100;
+        }
+        return prev + Math.random() * 15;
+      });
+    }, 200);
+  };
+
+  return (
+    <VStack spacing="md" padding="lg">
+      <Text>Upload Progress: {Math.round(uploadProgress)}%</Text>
+
+      <Progress
+        value={uploadProgress}
+        variant="primary"
+        size="md"
+      >
+        <ProgressFilledTrack />
+      </Progress>
+
+      <HStack spacing="md" justify="space-between">
+        <Button
+          onPress={handleUpload}
+          disabled={isUploading}
+          variant="primary"
+        >
+          <ButtonText>
+            {isUploading ? 'Uploading...' : 'Start Upload'}
+          </ButtonText>
+        </Button>
+
+        {isUploading && (
+          <Text style={{ fontSize: 12, color: theme.colors.muted }}>
+            {uploadProgress < 100 ? 'Uploading file...' : 'Upload complete!'}
+          </Text>
+        )}
+      </HStack>
+    </VStack>
+  );
+};
+```
+
+### Multi-Step Form Progress
+
+```tsx
+const MultiStepForm = () => {
+  const [currentStep, setCurrentStep] = useState(1);
+  const totalSteps = 4;
+  const progress = (currentStep / totalSteps) * 100;
+
+  const steps = [
+    'Personal Info',
+    'Contact Details',
+    'Preferences',
+    'Review & Submit'
+  ];
+
+  return (
+    <VStack spacing="lg" padding="xl">
+      {/* Progress Header */}
+      <VStack spacing="sm">
+        <HStack justify="space-between">
+          <Text style={{ fontWeight: 'bold' }}>
+            Step {currentStep} of {totalSteps}
+          </Text>
+          <Text style={{ color: theme.colors.muted }}>
+            {Math.round(progress)}% Complete
+          </Text>
+        </HStack>
+
+        <Progress value={progress} variant="primary" size="sm">
+          <ProgressFilledTrack />
+        </Progress>
+
+        <Text style={{ color: theme.colors.muted }}>
+          {steps[currentStep - 1]}
+        </Text>
+      </VStack>
+
+      {/* Form Content */}
+      <Card padding="lg">
+        {/* Step content would go here */}
+        <Text>Form content for {steps[currentStep - 1]}</Text>
+      </Card>
+
+      {/* Navigation */}
+      <HStack spacing="md" justify="space-between">
+        <Button
+          variant="outline"
+          disabled={currentStep === 1}
+          onPress={() => setCurrentStep(prev => Math.max(1, prev - 1))}
+        >
+          <ButtonText>Previous</ButtonText>
+        </Button>
+
+        <Button
+          variant="primary"
+          onPress={() => setCurrentStep(prev => Math.min(totalSteps, prev + 1))}
+        >
+          <ButtonText>
+            {currentStep === totalSteps ? 'Submit' : 'Next'}
+          </ButtonText>
+        </Button>
+      </HStack>
+    </VStack>
+  );
+};
+```
+
+### Loading States & Data Processing
+
+```tsx
+const DataProcessor = () => {
+  const [processes, setProcesses] = useState([
+    { id: 1, name: 'Data Validation', progress: 100, status: 'complete' },
+    { id: 2, name: 'Data Processing', progress: 65, status: 'running' },
+    { id: 3, name: 'Report Generation', progress: 0, status: 'pending' },
+    { id: 4, name: 'Email Notification', progress: 0, status: 'pending' }
+  ]);
+
+  const getVariantForStatus = (status) => {
+    switch (status) {
+      case 'complete': return 'success';
+      case 'running': return 'primary';
+      case 'error': return 'error';
+      case 'pending': return 'default';
+      default: return 'default';
+    }
+  };
+
+  const getStatusIcon = (status) => {
+    switch (status) {
+      case 'complete': return <CheckIcon size={16} />;
+      case 'running': return <ClockIcon size={16} />;
+      case 'error': return <XIcon size={16} />;
+      case 'pending': return <CircleIcon size={16} />;
+      default: return null;
+    }
+  };
+
+  return (
+    <VStack spacing="lg" padding="lg">
+      <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+        Processing Pipeline
+      </Text>
+
+      {processes.map((process) => (
+        <Card key={process.id} padding="md">
+          <VStack spacing="sm">
+            <HStack justify="space-between" align="center">
+              <HStack spacing="sm" align="center">
+                {getStatusIcon(process.status)}
+                <Text style={{ fontWeight: '500' }}>
+                  {process.name}
+                </Text>
+              </HStack>
+
+              <Text style={{
+                fontSize: 12,
+                color: theme.colors.muted
+              }}>
+                {process.progress}%
+              </Text>
+            </HStack>
+
+            <Progress
+              value={process.progress}
+              variant={getVariantForStatus(process.status)}
+              size="sm"
+            >
+              <ProgressFilledTrack />
+            </Progress>
+          </VStack>
+        </Card>
+      ))}
+
+      <HStack spacing="md" justify="center">
+        <Button variant="outline" size="sm">
+          <ButtonText>Pause All</ButtonText>
+        </Button>
+        <Button variant="primary" size="sm">
+          <ButtonText>Resume</ButtonText>
+        </Button>
+      </HStack>
+    </VStack>
+  );
+};
+```
+
+### Skill & Profile Completion
+
+```tsx
+const ProfileCompletion = () => {
+  const profileSections = [
+    { name: 'Basic Info', completed: 100, color: 'success' },
+    { name: 'Profile Photo', completed: 100, color: 'success' },
+    { name: 'Work Experience', completed: 75, color: 'primary' },
+    { name: 'Skills & Endorsements', completed: 40, color: 'warning' },
+    { name: 'Education', completed: 0, color: 'default' }
+  ];
+
+  const overallCompletion = profileSections.reduce(
+    (acc, section) => acc + section.completed, 0
+  ) / profileSections.length;
+
+  return (
+    <VStack spacing="lg" padding="lg">
+      {/* Overall Progress */}
+      <Card padding="lg">
+        <VStack spacing="md">
+          <HStack justify="space-between" align="center">
+            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+              Profile Completion
+            </Text>
+            <Text style={{
+              fontSize: 16,
+              fontWeight: '600',
+              color: theme.colors.primary
+            }}>
+              {Math.round(overallCompletion)}%
+            </Text>
+          </HStack>
+
+          <Progress
+            value={overallCompletion}
+            variant="primary"
+            size="lg"
+          >
+            <ProgressFilledTrack />
+          </Progress>
+
+          <Text style={{
+            fontSize: 12,
+            color: theme.colors.muted,
+            textAlign: 'center'
+          }}>
+            Complete your profile to increase visibility
+          </Text>
+        </VStack>
+      </Card>
+
+      {/* Individual Sections */}
+      <VStack spacing="md">
+        <Text style={{ fontSize: 16, fontWeight: '600' }}>
+          Section Details
+        </Text>
+
+        {profileSections.map((section, index) => (
+          <HStack key={index} spacing="md" align="center">
+            <VStack spacing="xs" style={{ flex: 1 }}>
+              <HStack justify="space-between">
+                <Text style={{ fontSize: 14 }}>
+                  {section.name}
+                </Text>
+                <Text style={{
+                  fontSize: 12,
+                  color: theme.colors.muted
+                }}>
+                  {section.completed}%
+                </Text>
+              </HStack>
+
+              <Progress
+                value={section.completed}
+                variant={section.color}
+                size="xs"
+              >
+                <ProgressFilledTrack />
+              </Progress>
+            </VStack>
+
+            {section.completed < 100 && (
+              <Button variant="ghost" size="sm">
+                <ButtonIcon icon={<PlusIcon />} position="center" />
+              </Button>
+            )}
+          </HStack>
+        ))}
+      </VStack>
+    </VStack>
+  );
+};
+```
+
+### Custom Styled Progress
+
+```tsx
+const CustomProgress = () => {
+  const [progress, setProgress] = useState(45);
+
+  return (
+    <VStack spacing="lg" padding="lg">
+      {/* Gradient Progress */}
+      <VStack spacing="sm">
+        <Text>Gradient Progress</Text>
+        <Progress
+          value={progress}
+          size="md"
+          trackColor="background"
+          style={{
+            backgroundColor: theme.colors.muted,
+            borderRadius: 8
+          }}
+        >
+          <ProgressFilledTrack
+            style={{
+              background: 'linear-gradient(90deg, #FF6B6B, #4ECDC4)',
+              borderRadius: 8
+            }}
+          />
+        </Progress>
+      </VStack>
+
+      {/* Striped Progress */}
+      <VStack spacing="sm">
+        <Text>Striped Progress</Text>
+        <Progress value={progress} variant="primary" size="lg">
+          <ProgressFilledTrack
+            style={{
+              backgroundImage: `repeating-linear-gradient(
+                45deg,
+                ${theme.colors.primary},
+                ${theme.colors.primary} 10px,
+                rgba(255,255,255,0.2) 10px,
+                rgba(255,255,255,0.2) 20px
+              )`,
+              backgroundSize: '20px 20px'
+            }}
+          />
+        </Progress>
+      </VStack>
+
+      {/* Multi-Color Segments */}
+      <VStack spacing="sm">
+        <Text>Multi-Segment Progress</Text>
+        <View style={{
+          flexDirection: 'row',
+          height: 8,
+          borderRadius: 4,
+          backgroundColor: theme.colors.border,
+          overflow: 'hidden'
+        }}>
+          <View style={{
+            width: '30%',
+            backgroundColor: theme.colors.success,
+          }} />
+          <View style={{
+            width: '25%',
+            backgroundColor: theme.colors.warning,
+          }} />
+          <View style={{
+            width: '20%',
+            backgroundColor: theme.colors.error,
+          }} />
+        </View>
+      </VStack>
+
+      {/* Control Buttons */}
+      <HStack spacing="md" justify="center">
+        <Button
+          variant="outline"
+          size="sm"
+          onPress={() => setProgress(Math.max(0, progress - 10))}
+        >
+          <ButtonText>-10%</ButtonText>
+        </Button>
+
+        <Button
+          variant="outline"
+          size="sm"
+          onPress={() => setProgress(Math.min(100, progress + 10))}
+        >
+          <ButtonText>+10%</ButtonText>
+        </Button>
+
+        <Button
+          variant="ghost"
+          size="sm"
+          onPress={() => setProgress(0)}
+        >
+          <ButtonText>Reset</ButtonText>
+        </Button>
+      </HStack>
+    </VStack>
+  );
+};
+```
+
+## Advanced Usage
+
+### Progress with Labels
+
+```tsx
+const LabeledProgress = ({ label, value, showPercentage = true }) => (
+  <VStack spacing="xs">
+    <HStack justify="space-between" align="center">
+      <Text style={{ fontSize: 14, fontWeight: '500' }}>
+        {label}
+      </Text>
+      {showPercentage && (
+        <Text style={{
+          fontSize: 12,
+          color: theme.colors.muted
+        }}>
+          {value}%
+        </Text>
+      )}
+    </HStack>
+
+    <Progress value={value} variant="primary" size="sm">
+      <ProgressFilledTrack />
+    </Progress>
+  </VStack>
+);
+
+// Usage
+<VStack spacing="md">
+  <LabeledProgress label="JavaScript" value={85} />
+  <LabeledProgress label="React Native" value={78} />
+  <LabeledProgress label="TypeScript" value={65} />
+</VStack>
+```
+
+### Animated Progress Hook
+
+```tsx
+const useAnimatedProgress = (targetValue, duration = 1000) => {
+  const [currentValue, setCurrentValue] = useState(0);
+
+  useEffect(() => {
+    const startTime = Date.now();
+    const startValue = currentValue;
+    const difference = targetValue - startValue;
+
+    const animateProgress = () => {
+      const elapsed = Date.now() - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      // Easing function (ease-out)
+      const easedProgress = 1 - Math.pow(1 - progress, 3);
+      const newValue = startValue + (difference * easedProgress);
+
+      setCurrentValue(newValue);
+
+      if (progress < 1) {
+        requestAnimationFrame(animateProgress);
+      }
+    };
+
+    requestAnimationFrame(animateProgress);
+  }, [targetValue, duration]);
+
+  return currentValue;
+};
+
+// Usage
+const AnimatedProgressDemo = () => {
+  const [target, setTarget] = useState(0);
+  const animatedValue = useAnimatedProgress(target, 2000);
+
+  return (
+    <VStack spacing="md">
+      <Progress value={animatedValue} variant="primary" size="md">
+        <ProgressFilledTrack />
+      </Progress>
+
+      <Button onPress={() => setTarget(Math.random() * 100)}>
+        <ButtonText>Random Progress</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+## Animation Configuration
+
+<Tabs>
+  <TabItem label="Default Animation">
+    ```tsx
+    <Progress value={75} animated={true}>
+      <ProgressFilledTrack />
+    </Progress>
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Timing">
+    ```tsx
+    // Note: Custom timing would need to be implemented in the component
+    <Progress
+      value={75}
+      animated={true}
+      animationDuration={1000} // Custom prop
+    >
+      <ProgressFilledTrack />
+    </Progress>
+    ```
+  </TabItem>
+
+  <TabItem label="No Animation">
+    ```tsx
+    <Progress value={75} animated={false}>
+      <ProgressFilledTrack />
+    </Progress>
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="Visual Feedback" icon="seti:plan">
+- Use appropriate variants to convey meaning (success for completion, error for failures)
+- Consider showing percentage values for precise progress tracking
+- Provide contextual labels to explain what progress represents
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use `animated={false}` for frequently updating progress bars
+- Throttle progress updates in high-frequency scenarios
+- Consider using `React.memo` for lists of progress components
+</Card>
+
+<Aside type="tip">
+For long-running operations, consider combining progress indicators with estimated time remaining or current operation status to provide better user feedback.
+</Aside>
+
+<Aside type="caution">
+Avoid updating progress too frequently (more than 30fps) as it can impact performance. Consider throttling updates for smooth animations without excessive re-renders.
+</Aside>

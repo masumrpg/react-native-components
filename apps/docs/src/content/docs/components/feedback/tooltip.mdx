@@ -1,0 +1,612 @@
+---
+title: Tooltip
+description: Interactive tooltip component with flexible positioning, smart boundary detection, and customizable trigger behaviors for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Tooltip provides contextual information overlay that appears on user interaction. It features intelligent positioning, automatic boundary detection, and supports both press and long press triggers with customizable delays and animations.
+
+## Import
+
+```tsx
+import { Tooltip } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Tooltip">
+    ```tsx
+    <Tooltip content="This is a helpful tooltip">
+      <Button>
+        <ButtonText>Hover me</ButtonText>
+      </Button>
+    </Tooltip>
+    ```
+  </TabItem>
+
+  <TabItem label="With Custom Position">
+    ```tsx
+    <Tooltip
+      content="Tooltip appears below"
+      position="bottom"
+      offset={12}
+    >
+      <View style={{ padding: 10, backgroundColor: '#f0f0f0' }}>
+        <Text>Press and hold</Text>
+      </View>
+    </Tooltip>
+    ```
+  </TabItem>
+
+  <TabItem label="Controlled Visibility">
+    ```tsx
+    const [visible, setVisible] = useState(false);
+
+    <Tooltip
+      content="Controlled tooltip"
+      visible={visible}
+      onVisibilityChange={setVisible}
+    >
+      <TouchableOpacity onPress={() => setVisible(!visible)}>
+        <Text>Toggle Tooltip</Text>
+      </TouchableOpacity>
+    </Tooltip>
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Content">
+    ```tsx
+    <Tooltip
+      content={
+        <View style={{ alignItems: 'center' }}>
+          <Text style={{ color: 'white', fontWeight: 'bold' }}>
+            Custom Content
+          </Text>
+          <Text style={{ color: 'white', fontSize: 12 }}>
+            With multiple lines
+          </Text>
+        </View>
+      }
+      position="right"
+    >
+      <Icon name="info" size={24} />
+    </Tooltip>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Tooltip Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Element that triggers the tooltip |
+| `content` | `React.ReactNode` | - | Content to display in tooltip |
+| `position` | `'top' \| 'bottom' \| 'left' \| 'right'` | `'top'` | Preferred tooltip position |
+| `visible` | `boolean` | - | Controlled visibility state |
+| `onVisibilityChange` | `(visible: boolean) => void` | - | Callback when visibility changes |
+| `delay` | `number` | `500` | Delay in ms before showing tooltip |
+| `offset` | `number` | `8` | Distance from target element |
+| `disabled` | `boolean` | `false` | Disable tooltip interactions |
+| `hostName` | `string` | - | Portal host name for rendering |
+
+### Position Options
+
+| Position | Description | Use Case |
+|----------|-------------|----------|
+| `top` | Above the target element | Default positioning for most cases |
+| `bottom` | Below the target element | When space above is limited |
+| `left` | To the left of target | For right-aligned elements |
+| `right` | To the right of target | For left-aligned elements |
+
+## Examples
+
+### Form Field Tooltips
+
+```tsx
+const FormWithTooltips = () => {
+  return (
+    <VStack spacing="lg" padding="xl">
+      <VStack spacing="sm">
+        <HStack align="center" spacing="sm">
+          <Text>Password</Text>
+          <Tooltip
+            content="Password must be at least 8 characters long and contain both letters and numbers"
+            position="right"
+            delay={300}
+          >
+            <Icon name="info-circle" size={16} color="#666" />
+          </Tooltip>
+        </HStack>
+        <TextInput
+          placeholder="Enter password"
+          secureTextEntry
+        />
+      </VStack>
+
+      <VStack spacing="sm">
+        <HStack align="center" spacing="sm">
+          <Text>Email Notifications</Text>
+          <Tooltip
+            content="We'll send you updates about your account and important announcements"
+            position="top"
+          >
+            <Icon name="bell" size={16} color="#666" />
+          </Tooltip>
+        </HStack>
+        <Switch />
+      </VStack>
+    </VStack>
+  );
+};
+```
+
+### Interactive Help System
+
+```tsx
+const HelpTooltips = () => {
+  const [activeTooltip, setActiveTooltip] = useState<string | null>(null);
+
+  const toggleTooltip = (id: string) => {
+    setActiveTooltip(activeTooltip === id ? null : id);
+  };
+
+  return (
+    <View style={{ padding: 20 }}>
+      <HStack spacing="md" align="center">
+        <Tooltip
+          content="Create a new document"
+          visible={activeTooltip === 'new'}
+          onVisibilityChange={(visible) =>
+            setActiveTooltip(visible ? 'new' : null)
+          }
+        >
+          <Button
+            variant="ghost"
+            onPress={() => toggleTooltip('new')}
+          >
+            <ButtonIcon icon={<PlusIcon />} position="center" />
+          </Button>
+        </Tooltip>
+
+        <Tooltip
+          content="Save your current work"
+          visible={activeTooltip === 'save'}
+          onVisibilityChange={(visible) =>
+            setActiveTooltip(visible ? 'save' : null)
+          }
+        >
+          <Button
+            variant="ghost"
+            onPress={() => toggleTooltip('save')}
+          >
+            <ButtonIcon icon={<SaveIcon />} position="center" />
+          </Button>
+        </Tooltip>
+
+        <Tooltip
+          content="Share with others"
+          visible={activeTooltip === 'share'}
+          onVisibilityChange={(visible) =>
+            setActiveTooltip(visible ? 'share' : null)
+          }
+        >
+          <Button
+            variant="ghost"
+            onPress={() => toggleTooltip('share')}
+          >
+            <ButtonIcon icon={<ShareIcon />} position="center" />
+          </Button>
+        </Tooltip>
+      </HStack>
+    </View>
+  );
+};
+```
+
+### Status Indicators with Tooltips
+
+```tsx
+const StatusIndicators = () => {
+  const getStatusInfo = (status: string) => {
+    switch (status) {
+      case 'online':
+        return {
+          color: '#22c55e',
+          tooltip: 'User is currently online and active'
+        };
+      case 'away':
+        return {
+          color: '#f59e0b',
+          tooltip: 'User is away from keyboard'
+        };
+      case 'busy':
+        return {
+          color: '#ef4444',
+          tooltip: 'User is busy and may not respond immediately'
+        };
+      case 'offline':
+        return {
+          color: '#6b7280',
+          tooltip: 'User is offline - last seen 2 hours ago'
+        };
+      default:
+        return {
+          color: '#6b7280',
+          tooltip: 'Unknown status'
+        };
+    }
+  };
+
+  return (
+    <VStack spacing="md">
+      {['online', 'away', 'busy', 'offline'].map((status) => {
+        const info = getStatusInfo(status);
+        return (
+          <HStack key={status} align="center" spacing="md">
+            <Tooltip
+              content={info.tooltip}
+              position="right"
+              delay={200}
+            >
+              <View
+                style={{
+                  width: 12,
+                  height: 12,
+                  borderRadius: 6,
+                  backgroundColor: info.color
+                }}
+              />
+            </Tooltip>
+            <Text style={{ textTransform: 'capitalize' }}>
+              {status}
+            </Text>
+          </HStack>
+        );
+      })}
+    </VStack>
+  );
+};
+```
+
+### Data Visualization Tooltips
+
+```tsx
+const ChartTooltips = () => {
+  const chartData = [
+    { label: 'Jan', value: 45, trend: '+5%' },
+    { label: 'Feb', value: 52, trend: '+15%' },
+    { label: 'Mar', value: 48, trend: '-8%' },
+    { label: 'Apr', value: 61, trend: '+27%' }
+  ];
+
+  return (
+    <HStack spacing="lg" justify="space-around" padding="xl">
+      {chartData.map((data, index) => (
+        <Tooltip
+          key={data.label}
+          content={
+            <VStack align="center" spacing="xs">
+              <Text style={{ color: 'white', fontWeight: 'bold' }}>
+                {data.label} 2024
+              </Text>
+              <Text style={{ color: 'white' }}>
+                Value: {data.value}
+              </Text>
+              <Text style={{
+                color: data.trend.startsWith('+') ? '#22c55e' : '#ef4444'
+              }}>
+                {data.trend} from last month
+              </Text>
+            </VStack>
+          }
+          position={index < 2 ? 'top' : 'bottom'}
+          delay={100}
+        >
+          <VStack align="center" spacing="xs">
+            <View
+              style={{
+                width: 40,
+                height: data.value * 2,
+                backgroundColor: '#3b82f6',
+                borderRadius: 4
+              }}
+            />
+            <Text style={{ fontSize: 12 }}>
+              {data.label}
+            </Text>
+          </VStack>
+        </Tooltip>
+      ))}
+    </HStack>
+  );
+};
+```
+
+### Onboarding Tour
+
+```tsx
+const OnboardingTour = () => {
+  const [currentStep, setCurrentStep] = useState(0);
+  const [showTour, setShowTour] = useState(true);
+
+  const tourSteps = [
+    {
+      target: 'search',
+      content: 'Use the search bar to find anything quickly',
+      position: 'bottom' as const
+    },
+    {
+      target: 'menu',
+      content: 'Access all features from the main menu',
+      position: 'right' as const
+    },
+    {
+      target: 'profile',
+      content: 'Manage your account settings here',
+      position: 'left' as const
+    }
+  ];
+
+  const nextStep = () => {
+    if (currentStep < tourSteps.length - 1) {
+      setCurrentStep(currentStep + 1);
+    } else {
+      setShowTour(false);
+    }
+  };
+
+  return (
+    <View style={{ flex: 1 }}>
+      {/* Header */}
+      <HStack justify="space-between" align="center" padding="md">
+        <Tooltip
+          content={
+            <VStack spacing="sm">
+              <Text style={{ color: 'white' }}>
+                {tourSteps[0].content}
+              </Text>
+              <Button size="sm" onPress={nextStep}>
+                <ButtonText>Next</ButtonText>
+              </Button>
+            </VStack>
+          }
+          visible={showTour && currentStep === 0}
+          position={tourSteps[0].position}
+        >
+          <TextInput placeholder="Search..." />
+        </Tooltip>
+
+        <Tooltip
+          content={
+            <VStack spacing="sm">
+              <Text style={{ color: 'white' }}>
+                {tourSteps[1].content}
+              </Text>
+              <Button size="sm" onPress={nextStep}>
+                <ButtonText>Next</ButtonText>
+              </Button>
+            </VStack>
+          }
+          visible={showTour && currentStep === 1}
+          position={tourSteps[1].position}
+        >
+          <Button variant="ghost">
+            <ButtonIcon icon={<MenuIcon />} position="center" />
+          </Button>
+        </Tooltip>
+
+        <Tooltip
+          content={
+            <VStack spacing="sm">
+              <Text style={{ color: 'white' }}>
+                {tourSteps[2].content}
+              </Text>
+              <Button size="sm" onPress={nextStep}>
+                <ButtonText>Finish Tour</ButtonText>
+              </Button>
+            </VStack>
+          }
+          visible={showTour && currentStep === 2}
+          position={tourSteps[2].position}
+        >
+          <Button variant="ghost">
+            <ButtonIcon icon={<UserIcon />} position="center" />
+          </Button>
+        </Tooltip>
+      </HStack>
+
+      {/* Content */}
+      <View style={{ flex: 1, padding: 20 }}>
+        <Text>Main content area</Text>
+        {!showTour && (
+          <Button onPress={() => setShowTour(true)}>
+            <ButtonText>Restart Tour</ButtonText>
+          </Button>
+        )}
+      </View>
+    </View>
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Portal Integration
+
+```tsx
+const CustomPortalTooltip = () => {
+  return (
+    <Portal.Host name="custom-tooltips">
+      <View style={{ flex: 1 }}>
+        <Tooltip
+          content="This tooltip renders in a custom portal"
+          hostName="custom-tooltips"
+          position="top"
+        >
+          <Button>
+            <ButtonText>Custom Portal Tooltip</ButtonText>
+          </Button>
+        </Tooltip>
+      </View>
+    </Portal.Host>
+  );
+};
+```
+
+### Performance Optimized Tooltips
+
+```tsx
+const OptimizedTooltipList = React.memo(({ items }) => {
+  const [visibleTooltip, setVisibleTooltip] = useState<string | null>(null);
+
+  const handleTooltipChange = useCallback((id: string, visible: boolean) => {
+    setVisibleTooltip(visible ? id : null);
+  }, []);
+
+  return (
+    <FlatList
+      data={items}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <Tooltip
+          content={item.description}
+          visible={visibleTooltip === item.id}
+          onVisibilityChange={(visible) =>
+            handleTooltipChange(item.id, visible)
+          }
+          delay={300}
+        >
+          <View style={{ padding: 10 }}>
+            <Text>{item.title}</Text>
+          </View>
+        </Tooltip>
+      )}
+    />
+  );
+});
+```
+
+### Conditional Tooltips
+
+```tsx
+const ConditionalTooltip = ({
+  children,
+  showTooltip,
+  tooltipContent,
+  fallbackContent
+}) => {
+  if (!showTooltip) {
+    return children;
+  }
+
+  return (
+    <Tooltip
+      content={tooltipContent || fallbackContent}
+      position="top"
+      delay={200}
+    >
+      {children}
+    </Tooltip>
+  );
+};
+
+// Usage
+<ConditionalTooltip
+  showTooltip={user.isNewUser}
+  tooltipContent="Welcome! Click here to get started"
+  fallbackContent="Standard action button"
+>
+  <Button>
+    <ButtonText>Get Started</ButtonText>
+  </Button>
+</ConditionalTooltip>
+```
+
+## Trigger Behaviors
+
+<Tabs>
+  <TabItem label="Press & Hold">
+    ```tsx
+    <Tooltip
+      content="Long press to see tooltip"
+      delay={500}
+    >
+      <Button>
+        <ButtonText>Long Press Me</ButtonText>
+      </Button>
+    </Tooltip>
+    ```
+  </TabItem>
+
+  <TabItem label="Quick Press">
+    ```tsx
+    <Tooltip
+      content="Quick press tooltip"
+      delay={100}
+    >
+      <TouchableOpacity>
+        <Text>Quick Press</Text>
+      </TouchableOpacity>
+    </Tooltip>
+    ```
+  </TabItem>
+
+  <TabItem label="Hover Simulation">
+    ```tsx
+    <Tooltip
+      content="Hover-like behavior"
+      delay={0}
+    >
+      <Pressable>
+        <Text>Instant Tooltip</Text>
+      </Pressable>
+    </Tooltip>
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="Content Guidelines" icon="seti:image">
+- Keep tooltip content concise and informative
+- Use sentence case for tooltip text
+- Avoid duplicating visible information
+- Provide actionable context when possible
+</Card>
+
+<Card title="Positioning Strategy" icon="sourcehut">
+- Choose positions that don't obscure important content
+- Consider screen boundaries and device orientation
+- Use consistent positioning for similar elements
+- Test tooltips on different screen sizes
+</Card>
+
+<Card title="Interaction Design" icon="seti:clock">
+- Set appropriate delays based on content urgency
+- Use shorter delays for critical information
+- Implement proper cleanup to prevent memory leaks
+- Consider accessibility for users with different interaction patterns
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use controlled visibility for frequently updated tooltips
+- Implement proper memoization for tooltip-heavy lists
+- Clean up timeouts and references appropriately
+- Consider portal hosts for complex layouts
+</Card>
+
+<Aside type="tip">
+Tooltips work best when they provide contextual help without interrupting the user's workflow. Consider the user's intent and provide just enough information to help them proceed confidently.
+</Aside>
+
+<Aside type="caution">
+Be mindful of tooltip placement on touch devices. Ensure tooltips don't interfere with navigation gestures and provide adequate spacing from screen edges.
+</Aside>
+
+<Aside type="note">
+The component automatically handles boundary detection and will adjust positioning to keep tooltips visible within the screen bounds.
+</Aside>

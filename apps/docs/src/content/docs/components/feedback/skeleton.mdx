@@ -1,0 +1,533 @@
+---
+title: Skeleton
+description: Flexible skeleton loading components with animated placeholders for React Native applications to improve perceived performance during content loading
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Skeleton provides a comprehensive loading placeholder solution with smooth animations and multiple variants. It includes basic skeleton shapes, multi-line text skeletons, and circular avatars to match your content structure while data is being fetched.
+
+## Import
+
+```tsx
+import { Skeleton, SkeletonText, SkeletonCircle } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Skeleton">
+    ```tsx
+    <Skeleton width="100%" height={20} />
+    ```
+  </TabItem>
+
+  <TabItem label="Text Lines">
+    ```tsx
+    <SkeletonText lines={3} lineHeight={16} />
+    ```
+  </TabItem>
+
+  <TabItem label="Avatar Placeholder">
+    ```tsx
+    <SkeletonCircle diameter={60} />
+    ```
+  </TabItem>
+
+  <TabItem label="Static Skeleton">
+    ```tsx
+    <Skeleton width="80%" height={24} animated={false} />
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Skeleton Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `width` | `DimensionValue` | `'100%'` | Width of the skeleton element |
+| `height` | `DimensionValue` | `20` | Height of the skeleton element |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | `'md'` | Border radius value |
+| `animated` | `boolean` | `true` | Enable pulsing animation |
+| `size` | `ComponentSize` | `'md'` | Size variant (xs, sm, md, lg, xl) |
+| `disabled` | `boolean` | `false` | Disable animations and reduce opacity |
+| `style` | `StyleProp<ViewStyle>` | - | Additional view styles |
+
+### SkeletonText Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `lines` | `number` | `3` | Number of text lines to display |
+| `lineHeight` | `number` | `20` | Height of each text line |
+| `lastLineWidth` | `DimensionValue` | `'60%'` | Width of the last line (shorter for natural look) |
+| `animated` | `boolean` | `true` | Enable pulsing animation |
+| `size` | `ComponentSize` | `'md'` | Size variant affecting line height |
+| `disabled` | `boolean` | `false` | Disable animations and reduce opacity |
+| `style` | `StyleProp<ViewStyle>` | - | Additional container styles |
+
+### SkeletonCircle Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `diameter` | `number` | `40` | Diameter of the circular skeleton |
+| `animated` | `boolean` | `true` | Enable pulsing animation |
+| `size` | `ComponentSize` | `'md'` | Size variant (affects default diameter) |
+| `disabled` | `boolean` | `false` | Disable animations and reduce opacity |
+| `style` | `StyleProp<ViewStyle>` | - | Additional view styles |
+
+### Size Variants
+
+| Size | Height (Skeleton) | Line Height (SkeletonText) | Diameter (SkeletonCircle) |
+|------|-------------------|----------------------------|---------------------------|
+| `xs` | `12px` | `12px` | `24px` |
+| `sm` | `16px` | `16px` | `32px` |
+| `md` | `20px` | `20px` | `40px` |
+| `lg` | `24px` | `24px` | `48px` |
+| `xl` | `32px` | `32px` | `64px` |
+
+## Examples
+
+### Content Placeholders
+
+```tsx
+<VStack spacing="lg" padding="lg">
+  {/* Header Skeleton */}
+  <Skeleton width="70%" height={28} borderRadius="sm" />
+
+  {/* Paragraph Skeleton */}
+  <SkeletonText lines={4} lineHeight={16} lastLineWidth="45%" />
+
+  {/* Button Skeleton */}
+  <Skeleton width={120} height={40} borderRadius="md" />
+</VStack>
+```
+
+### User Profile Card
+
+```tsx
+<HStack spacing="md" padding="lg" align="center">
+  {/* Avatar */}
+  <SkeletonCircle diameter={60} />
+
+  <VStack spacing="sm" flex={1}>
+    {/* Name */}
+    <Skeleton width="60%" height={20} />
+
+    {/* Username */}
+    <Skeleton width="40%" height={16} size="sm" />
+
+    {/* Bio */}
+    <SkeletonText lines={2} lineHeight={14} lastLineWidth="80%" />
+  </VStack>
+</HStack>
+```
+
+### Product Card Layout
+
+```tsx
+<VStack spacing="md" padding="md" borderRadius="lg" backgroundColor="surface">
+  {/* Product Image */}
+  <Skeleton width="100%" height={200} borderRadius="md" />
+
+  <VStack spacing="sm">
+    {/* Product Title */}
+    <Skeleton width="85%" height={18} />
+
+    {/* Price */}
+    <Skeleton width="30%" height={24} />
+
+    {/* Description */}
+    <SkeletonText lines={3} lineHeight={14} lastLineWidth="60%" />
+
+    {/* Action Buttons */}
+    <HStack spacing="sm">
+      <Skeleton width={100} height={36} borderRadius="md" />
+      <Skeleton width={36} height={36} borderRadius="md" />
+    </HStack>
+  </VStack>
+</VStack>
+```
+
+### List Items
+
+```tsx
+<VStack spacing="md">
+  {Array.from({ length: 5 }).map((_, index) => (
+    <HStack key={index} spacing="md" padding="sm" align="center">
+      <SkeletonCircle diameter={40} />
+
+      <VStack spacing="xs" flex={1}>
+        <Skeleton width="70%" height={16} />
+        <Skeleton width="50%" height={12} size="sm" />
+      </VStack>
+
+      <Skeleton width={24} height={24} borderRadius="sm" />
+    </HStack>
+  ))}
+</VStack>
+```
+
+### Article Layout
+
+```tsx
+<ScrollView padding="lg">
+  <VStack spacing="lg">
+    {/* Article Header */}
+    <VStack spacing="md">
+      <Skeleton width="95%" height={32} borderRadius="sm" />
+      <Skeleton width="40%" height={16} size="sm" />
+    </VStack>
+
+    {/* Featured Image */}
+    <Skeleton width="100%" height={240} borderRadius="lg" />
+
+    {/* Article Content */}
+    <VStack spacing="md">
+      <SkeletonText lines={6} lineHeight={18} lastLineWidth="70%" />
+
+      <Skeleton width="100%" height={180} borderRadius="md" />
+
+      <SkeletonText lines={8} lineHeight={18} lastLineWidth="55%" />
+    </VStack>
+
+    {/* Author Info */}
+    <HStack spacing="sm" padding="md" align="center">
+      <SkeletonCircle diameter={32} />
+      <VStack spacing="xs" flex={1}>
+        <Skeleton width="40%" height={14} size="sm" />
+        <Skeleton width="30%" height={12} size="xs" />
+      </VStack>
+    </HStack>
+  </VStack>
+</ScrollView>
+```
+
+### Dashboard Cards
+
+```tsx
+<VStack spacing="lg" padding="lg">
+  {/* Stats Cards */}
+  <HStack spacing="md">
+    {Array.from({ length: 3 }).map((_, index) => (
+      <VStack
+        key={index}
+        spacing="sm"
+        padding="md"
+        flex={1}
+        borderRadius="lg"
+        backgroundColor="surface"
+      >
+        <Skeleton width="60%" height={16} size="sm" />
+        <Skeleton width="40%" height={28} />
+        <Skeleton width="80%" height={12} size="xs" />
+      </VStack>
+    ))}
+  </HStack>
+
+  {/* Chart Placeholder */}
+  <VStack spacing="md" padding="md" borderRadius="lg" backgroundColor="surface">
+    <Skeleton width="50%" height={20} />
+    <Skeleton width="100%" height={300} borderRadius="md" />
+  </VStack>
+
+  {/* Recent Activity */}
+  <VStack spacing="md" padding="md" borderRadius="lg" backgroundColor="surface">
+    <Skeleton width="40%" height={20} />
+
+    {Array.from({ length: 4 }).map((_, index) => (
+      <HStack key={index} spacing="sm" align="center">
+        <SkeletonCircle diameter={24} />
+        <VStack spacing="xs" flex={1}>
+          <Skeleton width="80%" height={14} size="sm" />
+          <Skeleton width="50%" height={12} size="xs" />
+        </VStack>
+        <Skeleton width="60px" height={12} size="xs" />
+      </HStack>
+    ))}
+  </VStack>
+</VStack>
+```
+
+## Advanced Usage
+
+### Custom Animation Timing
+
+```tsx
+const CustomSkeletonCard = () => {
+  return (
+    <VStack spacing="md" padding="lg">
+      {/* Fast animation for quick content */}
+      <Skeleton
+        width="100%"
+        height={20}
+        animated={true}
+        // Animation controlled by the component internally
+      />
+
+      {/* Static skeleton for already loaded sections */}
+      <SkeletonText
+        lines={3}
+        animated={false}
+        style={{ opacity: 0.3 }}
+      />
+    </VStack>
+  );
+};
+```
+
+### Conditional Skeleton Loading
+
+```tsx
+const ConditionalSkeletonCard = ({ data, loading }) => {
+  if (loading) {
+    return (
+      <VStack spacing="md" padding="lg">
+        <HStack spacing="md" align="center">
+          <SkeletonCircle diameter={50} />
+          <VStack spacing="sm" flex={1}>
+            <Skeleton width="70%" height={18} />
+            <Skeleton width="50%" height={14} size="sm" />
+          </VStack>
+        </HStack>
+
+        <SkeletonText lines={4} lineHeight={16} />
+
+        <HStack spacing="sm">
+          <Skeleton width={80} height={32} borderRadius="md" />
+          <Skeleton width={100} height={32} borderRadius="md" />
+        </HStack>
+      </VStack>
+    );
+  }
+
+  return (
+    <VStack spacing="md" padding="lg">
+      <HStack spacing="md" align="center">
+        <Image source={{ uri: data.avatar }} style={{ width: 50, height: 50 }} />
+        <VStack spacing="xs" flex={1}>
+          <Text variant="h6">{data.name}</Text>
+          <Text variant="body2" color="textSecondary">{data.email}</Text>
+        </VStack>
+      </HStack>
+
+      <Text variant="body1">{data.description}</Text>
+
+      <HStack spacing="sm">
+        <Button variant="primary" size="sm">
+          <ButtonText>Follow</ButtonText>
+        </Button>
+        <Button variant="outline" size="sm">
+          <ButtonText>Message</ButtonText>
+        </Button>
+      </HStack>
+    </VStack>
+  );
+};
+```
+
+### Progressive Loading
+
+```tsx
+const ProgressiveSkeletonList = ({ items, loading, error }) => {
+  if (error) {
+    return <ErrorMessage message="Failed to load content" />;
+  }
+
+  return (
+    <VStack spacing="md">
+      {items.map((item, index) => (
+        <HStack key={item.id || index} spacing="md" padding="sm" align="center">
+          {item.avatar ? (
+            <Image source={{ uri: item.avatar }} style={{ width: 40, height: 40 }} />
+          ) : (
+            <SkeletonCircle diameter={40} />
+          )}
+
+          <VStack spacing="xs" flex={1}>
+            {item.title ? (
+              <Text variant="subtitle1">{item.title}</Text>
+            ) : (
+              <Skeleton width="70%" height={16} />
+            )}
+
+            {item.subtitle ? (
+              <Text variant="body2" color="textSecondary">{item.subtitle}</Text>
+            ) : (
+              <Skeleton width="50%" height={12} size="sm" />
+            )}
+          </VStack>
+
+          {item.action ? (
+            <Button variant="ghost" size="sm">
+              <ButtonText>{item.action}</ButtonText>
+            </Button>
+          ) : (
+            <Skeleton width={60} height={28} borderRadius="md" />
+          )}
+        </HStack>
+      ))}
+
+      {loading && (
+        <HStack spacing="md" padding="sm" align="center">
+          <SkeletonCircle diameter={40} />
+          <VStack spacing="xs" flex={1}>
+            <Skeleton width="70%" height={16} />
+            <Skeleton width="50%" height={12} size="sm" />
+          </VStack>
+          <Skeleton width={60} height={28} borderRadius="md" />
+        </HStack>
+      )}
+    </VStack>
+  );
+};
+```
+
+## Animation Patterns
+
+<Tabs>
+  <TabItem label="Staggered Loading">
+    ```tsx
+    const StaggeredSkeletons = () => {
+      return (
+        <VStack spacing="md">
+          {Array.from({ length: 5 }).map((_, index) => (
+            <Skeleton
+              key={index}
+              width="100%"
+              height={20}
+              animated={true}
+              style={{
+                animationDelay: `${index * 100}ms` // Staggered effect
+              }}
+            />
+          ))}
+        </VStack>
+      );
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Shimmer Effect">
+    ```tsx
+    const ShimmerSkeleton = () => {
+      return (
+        <VStack spacing="md">
+          <Skeleton
+            width="100%"
+            height={200}
+            borderRadius="lg"
+            animated={true}
+          />
+          <SkeletonText
+            lines={3}
+            animated={true}
+            lineHeight={18}
+          />
+        </VStack>
+      );
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Wave Loading">
+    ```tsx
+    const WaveSkeletons = () => {
+      return (
+        <HStack spacing="sm" align="center">
+          {Array.from({ length: 4 }).map((_, index) => (
+            <SkeletonCircle
+              key={index}
+              diameter={12 + (index * 4)}
+              animated={true}
+            />
+          ))}
+        </HStack>
+      );
+    };
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="Content Structure" icon="seti:plan">
+- Match skeleton shapes to actual content dimensions
+- Use realistic proportions for text lines and images
+- Maintain consistent spacing between skeleton elements
+</Card>
+
+<Card title="Loading States" icon="seti:clock">
+- Show skeletons immediately when loading starts
+- Use progressive loading for better perceived performance
+- Replace skeletons with actual content smoothly
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use `animated={false}` for static placeholders
+- Limit the number of animated skeletons on screen
+- Consider disabling animations on low-end devices
+</Card>
+
+<Aside type="tip">
+For better user experience, make skeleton shapes closely match your actual content. Users should be able to predict what content will appear based on the skeleton layout.
+</Aside>
+
+<Aside type="caution">
+Avoid overusing animated skeletons as they can be distracting. Use them strategically for primary content areas and keep secondary elements static.
+</Aside>
+
+## Integration Examples
+
+### With React Query
+
+```tsx
+const useUserProfile = (userId) => {
+  return useQuery({
+    queryKey: ['user', userId],
+    queryFn: () => fetchUserProfile(userId),
+    staleTime: 5 * 60 * 1000, // 5 minutes
+  });
+};
+
+const UserProfileCard = ({ userId }) => {
+  const { data: user, isLoading, error } = useUserProfile(userId);
+
+  if (error) {
+    return <ErrorMessage message="Failed to load user profile" />;
+  }
+
+  if (isLoading) {
+    return (
+      <VStack spacing="md" padding="lg">
+        <HStack spacing="md" align="center">
+          <SkeletonCircle diameter={80} />
+          <VStack spacing="sm" flex={1}>
+            <Skeleton width="70%" height={24} />
+            <Skeleton width="50%" height={16} size="sm" />
+            <Skeleton width="60%" height={14} size="sm" />
+          </VStack>
+        </HStack>
+
+        <SkeletonText lines={3} lineHeight={16} lastLineWidth="40%" />
+      </VStack>
+    );
+  }
+
+  return (
+    <VStack spacing="md" padding="lg">
+      <HStack spacing="md" align="center">
+        <Image source={{ uri: user.avatar }} style={{ width: 80, height: 80 }} />
+        <VStack spacing="xs" flex={1}>
+          <Text variant="h5">{user.name}</Text>
+          <Text variant="body2" color="textSecondary">{user.email}</Text>
+          <Text variant="caption">{user.location}</Text>
+        </VStack>
+      </HStack>
+
+      <Text variant="body1">{user.bio}</Text>
+    </VStack>
+  );
+};
+```
