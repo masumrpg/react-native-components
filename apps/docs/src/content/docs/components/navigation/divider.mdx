@@ -1,0 +1,453 @@
+---
+title: Divider
+description: Flexible divider component for creating visual separations in React Native applications with customizable orientation, styling, and spacing options
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Divider provides a simple yet flexible way to create visual separations between content sections. It supports both horizontal and vertical orientations with customizable thickness, color, length, and spacing options.
+
+## Import
+
+```tsx
+import { Divider, HDivider, VDivider } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Horizontal Divider">
+    ```tsx
+    <VStack spacing="lg">
+      <Text>Content above</Text>
+      <Divider />
+      <Text>Content below</Text>
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Vertical Divider">
+    ```tsx
+    <HStack spacing="lg" align="center">
+      <Text>Left content</Text>
+      <Divider orientation="vertical" length={40} />
+      <Text>Right content</Text>
+    </HStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Shortcut Components">
+    ```tsx
+    <VStack spacing="lg">
+      <Text>Section 1</Text>
+      <HDivider />
+      <Text>Section 2</Text>
+    </VStack>
+
+    <HStack spacing="lg" align="center">
+      <Text>Left</Text>
+      <VDivider />
+      <Text>Right</Text>
+    </HStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Styling">
+    ```tsx
+    <Divider
+      color="#FF6B6B"
+      thickness={2}
+      marginVertical="lg"
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Divider Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Divider orientation |
+| `thickness` | `number` | `1` | Thickness of the divider line in pixels |
+| `color` | `string` | `theme.colors.border` | Custom color for the divider |
+| `length` | `DimensionValue` | `'100%'` (horizontal) / `'100%'` (vertical) | Length of the divider |
+| `margin` | `keyof Theme['spacing']` | - | Apply margin to all sides |
+| `marginHorizontal` | `keyof Theme['spacing']` | `'md'` (default for horizontal) | Horizontal margin |
+| `marginVertical` | `keyof Theme['spacing']` | `'md'` (default for vertical) | Vertical margin |
+| `marginLeft` | `keyof Theme['spacing']` | - | Left margin only |
+| `marginRight` | `keyof Theme['spacing']` | - | Right margin only |
+| `marginTop` | `keyof Theme['spacing']` | - | Top margin only |
+| `marginBottom` | `keyof Theme['spacing']` | - | Bottom margin only |
+| `style` | `StyleProp<ViewStyle>` | - | Additional custom styles |
+
+### Shortcut Components
+
+| Component | Description | Default Props |
+|-----------|-------------|---------------|
+| `HDivider` | Horizontal divider with optimized spacing | `orientation="horizontal"`, `marginVertical="sm"` |
+| `VDivider` | Vertical divider with optimized spacing | `orientation="vertical"`, `marginHorizontal="sm"` |
+
+## Examples
+
+### Content Sections
+
+```tsx
+<VStack spacing="none">
+  <Box padding="lg">
+    <Text variant="h3">Profile Information</Text>
+    <Text>User details and settings</Text>
+  </Box>
+
+  <HDivider />
+
+  <Box padding="lg">
+    <Text variant="h3">Account Settings</Text>
+    <Text>Privacy and security options</Text>
+  </Box>
+
+  <HDivider />
+
+  <Box padding="lg">
+    <Text variant="h3">Notifications</Text>
+    <Text>Manage your notification preferences</Text>
+  </Box>
+</VStack>
+```
+
+### List Items
+
+```tsx
+const UserList = ({ users }) => (
+  <VStack spacing="none">
+    {users.map((user, index) => (
+      <React.Fragment key={user.id}>
+        <HStack padding="md" spacing="md" align="center">
+          <Avatar source={{ uri: user.avatar }} size="sm" />
+          <VStack flex={1}>
+            <Text variant="body1" weight="medium">{user.name}</Text>
+            <Text variant="caption" color="muted">{user.email}</Text>
+          </VStack>
+          <Button variant="ghost" size="xs">
+            <ButtonText>Follow</ButtonText>
+          </Button>
+        </HStack>
+
+        {index < users.length - 1 && (
+          <HDivider marginVertical="none" marginHorizontal="md" />
+        )}
+      </React.Fragment>
+    ))}
+  </VStack>
+);
+```
+
+### Sidebar Layout
+
+```tsx
+const SidebarLayout = () => (
+  <HStack flex={1}>
+    <VStack width={250} padding="lg" spacing="md">
+      <Text variant="h4">Navigation</Text>
+      <Button variant="ghost">
+        <ButtonText>Dashboard</ButtonText>
+      </Button>
+      <Button variant="ghost">
+        <ButtonText>Analytics</ButtonText>
+      </Button>
+      <Button variant="ghost">
+        <ButtonText>Settings</ButtonText>
+      </Button>
+    </VStack>
+
+    <VDivider />
+
+    <VStack flex={1} padding="lg">
+      <Text variant="h2">Main Content</Text>
+      <Text>Your main application content goes here</Text>
+    </VStack>
+  </HStack>
+);
+```
+
+### Form Sections
+
+```tsx
+const ProfileForm = () => (
+  <VStack spacing="lg" padding="lg">
+    <Text variant="h3">Personal Information</Text>
+
+    <VStack spacing="md">
+      <TextInput label="First Name" placeholder="Enter first name" />
+      <TextInput label="Last Name" placeholder="Enter last name" />
+      <TextInput label="Email" placeholder="Enter email address" />
+    </VStack>
+
+    <Divider
+      color={theme.colors.primary}
+      thickness={2}
+      marginVertical="xl"
+    />
+
+    <Text variant="h3">Address Information</Text>
+
+    <VStack spacing="md">
+      <TextInput label="Street Address" placeholder="Enter street address" />
+      <HStack spacing="md">
+        <TextInput label="City" placeholder="City" flex={1} />
+        <TextInput label="ZIP" placeholder="ZIP" width={100} />
+      </HStack>
+    </VStack>
+  </VStack>
+);
+```
+
+### Card Separators
+
+```tsx
+const StatsCard = ({ stats }) => (
+  <Card padding="lg">
+    <Text variant="h4" textAlign="center" marginBottom="lg">
+      Performance Stats
+    </Text>
+
+    <HStack justify="space-around" align="center">
+      {stats.map((stat, index) => (
+        <React.Fragment key={stat.label}>
+          <VStack align="center" spacing="xs">
+            <Text variant="h2" color="primary">
+              {stat.value}
+            </Text>
+            <Text variant="caption" color="muted">
+              {stat.label}
+            </Text>
+          </VStack>
+
+          {index < stats.length - 1 && (
+            <VDivider length={60} color={theme.colors.muted} />
+          )}
+        </React.Fragment>
+      ))}
+    </HStack>
+  </Card>
+);
+```
+
+### Custom Divider Styles
+
+```tsx
+const CustomDividers = () => (
+  <VStack spacing="xl" padding="lg">
+    {/* Thick accent divider */}
+    <Divider
+      thickness={4}
+      color={theme.colors.accent}
+      marginVertical="lg"
+    />
+
+    {/* Dotted divider using custom style */}
+    <Divider
+      thickness={2}
+      color={theme.colors.border}
+      style={{
+        borderStyle: 'dotted',
+        borderWidth: 0,
+        borderTopWidth: 2,
+        backgroundColor: 'transparent',
+      }}
+    />
+
+    {/* Gradient divider */}
+    <View style={{ height: 2, marginVertical: theme.spacing.lg }}>
+      <LinearGradient
+        colors={['transparent', theme.colors.primary, 'transparent']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 1, y: 0 }}
+        style={{ flex: 1 }}
+      />
+    </View>
+
+    {/* Short centered divider */}
+    <View style={{ alignItems: 'center' }}>
+      <Divider
+        length={60}
+        thickness={3}
+        color={theme.colors.primary}
+        marginVertical="md"
+      />
+    </View>
+  </VStack>
+);
+```
+
+## Advanced Usage
+
+### Responsive Dividers
+
+```tsx
+const ResponsiveDivider = () => {
+  const { width } = useWindowDimensions();
+  const isTablet = width > 768;
+
+  return (
+    <Divider
+      orientation={isTablet ? 'vertical' : 'horizontal'}
+      length={isTablet ? 100 : undefined}
+      marginHorizontal={isTablet ? 'lg' : 'none'}
+      marginVertical={isTablet ? 'none' : 'md'}
+    />
+  );
+};
+```
+
+### Dynamic Color Dividers
+
+```tsx
+const ThemedDivider = ({ variant = 'default' }) => {
+  const { theme } = useTheme();
+
+  const getColor = () => {
+    switch (variant) {
+      case 'success':
+        return theme.colors.success;
+      case 'warning':
+        return theme.colors.warning;
+      case 'error':
+        return theme.colors.error;
+      case 'primary':
+        return theme.colors.primary;
+      default:
+        return theme.colors.border;
+    }
+  };
+
+  return (
+    <Divider
+      color={getColor()}
+      thickness={variant === 'default' ? 1 : 2}
+      marginVertical="md"
+    />
+  );
+};
+```
+
+### Animated Dividers
+
+```tsx
+const AnimatedDivider = () => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+  const scaleAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    const animation = Animated.parallel([
+      Animated.timing(fadeAnim, {
+        toValue: 1,
+        duration: 600,
+        useNativeDriver: true,
+      }),
+      Animated.spring(scaleAnim, {
+        toValue: 1,
+        tension: 100,
+        friction: 8,
+        useNativeDriver: true,
+      }),
+    ]);
+
+    animation.start();
+  }, []);
+
+  return (
+    <Animated.View
+      style={{
+        opacity: fadeAnim,
+        transform: [{ scaleX: scaleAnim }],
+      }}
+    >
+      <Divider
+        thickness={2}
+        color={theme.colors.primary}
+        marginVertical="lg"
+      />
+    </Animated.View>
+  );
+};
+```
+
+## Layout Patterns
+
+<Tabs>
+  <TabItem label="Menu Separators">
+    ```tsx
+    <VStack spacing="none">
+      <MenuItem title="Home" icon={<HomeIcon />} />
+      <HDivider marginHorizontal="lg" />
+      <MenuItem title="Profile" icon={<UserIcon />} />
+      <HDivider marginHorizontal="lg" />
+      <MenuItem title="Settings" icon={<SettingsIcon />} />
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Toolbar Separators">
+    ```tsx
+    <HStack align="center" padding="sm" spacing="sm">
+      <IconButton icon={<UndoIcon />} />
+      <IconButton icon={<RedoIcon />} />
+
+      <VDivider length={24} />
+
+      <IconButton icon={<BoldIcon />} />
+      <IconButton icon={<ItalicIcon />} />
+      <IconButton icon={<UnderlineIcon />} />
+
+      <VDivider length={24} />
+
+      <IconButton icon={<LinkIcon />} />
+      <IconButton icon={<ImageIcon />} />
+    </HStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Content Blocks">
+    ```tsx
+    <ScrollView>
+      <ContentBlock title="Introduction" />
+      <HDivider thickness={2} color="primary" />
+
+      <ContentBlock title="Main Content" />
+      <HDivider />
+
+      <ContentBlock title="Conclusion" />
+    </ScrollView>
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="Visual Hierarchy" icon="seti:plan">
+- Use thicker dividers (2-3px) for major section breaks
+- Use standard thickness (1px) for minor separations
+- Consider color contrast for accessibility
+</Card>
+
+<Card title="Spacing" icon="seti:config">
+- Use `HDivider` and `VDivider` shortcuts for consistent spacing
+- Adjust margins based on content density
+- Maintain consistent spacing patterns throughout your app
+</Card>
+
+<Card title="Responsive Design" icon="random">
+- Consider orientation changes for tablet layouts
+- Adjust divider properties based on screen size
+- Test dividers on different device orientations
+</Card>
+
+<Aside type="tip">
+When using dividers in lists, place them between items but not after the last item to avoid visual imbalance.
+</Aside>
+
+<Aside type="caution">
+Avoid overusing dividers as they can make interfaces feel cluttered. Use whitespace and other visual cues when appropriate.
+</Aside>

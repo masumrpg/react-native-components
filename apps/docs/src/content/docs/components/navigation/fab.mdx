@@ -1,0 +1,718 @@
+---
+title: FAB (Floating Action Button)
+description: Animated floating action button component with multiple variants and smooth interactions for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+FAB provides a comprehensive floating action button solution with multiple variants including clustered, dotted, extended, single, and stacked layouts. Each variant features smooth animations, customizable icons, and flexible positioning options.
+
+## Import
+
+```tsx
+import { Fab } from 'rnc-theme';
+import type {
+  FabVariant,
+  FabClusteredProps,
+  FabDotedProps,
+  FabExtendedProps,
+  FabSingleProps,
+  FabStackedProps
+} from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Single FAB">
+    ```tsx
+    import { Plus } from 'lucide-react-native';
+
+    <Fab variant="single" onPress={handleAddAction}>
+      <Plus size={24} color="white" />
+    </Fab>
+    ```
+  </TabItem>
+
+  <TabItem label="Clustered FAB">
+    ```tsx
+    import { Mail, Phone, MessageCircle } from 'lucide-react-native';
+
+    <Fab
+      variant="clustered"
+      items={[
+        {
+          icon: <Mail size={24} color="white" />,
+          label: "Email",
+          onPress: () => console.log("Email pressed")
+        },
+        {
+          icon: <Phone size={24} color="white" />,
+          label: "Call",
+          onPress: () => console.log("Call pressed")
+        },
+        {
+          icon: <MessageCircle size={24} color="white" />,
+          label: "Message",
+          onPress: () => console.log("Message pressed")
+        }
+      ]}
+      isOpen={(isOpen) => console.log("FAB is open:", isOpen)}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="Extended FAB">
+    ```tsx
+    import { Settings, User, Bell } from 'lucide-react-native';
+
+    <Fab
+      variant="extended"
+      items={[
+        {
+          icon: <Settings size={20} color="white" />,
+          label: "Settings",
+          onPress: () => navigation.navigate('Settings')
+        },
+        {
+          icon: <User size={20} color="white" />,
+          label: "Profile",
+          onPress: () => navigation.navigate('Profile')
+        },
+        {
+          icon: <Bell size={20} color="white" />,
+          label: "Notifications",
+          onPress: () => navigation.navigate('Notifications')
+        }
+      ]}
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+## Variants
+
+### Single Variant
+
+The simplest FAB variant for single actions.
+
+```tsx
+<Fab
+  variant="single"
+  icon={<Plus size={24} color="white" />}
+  onPress={handleCreateNew}
+  style={{ backgroundColor: '#007AFF' }}
+/>
+```
+
+### Clustered Variant
+
+Displays items horizontally with labels when expanded.
+
+```tsx
+<Fab
+  variant="clustered"
+  items={[
+    {
+      icon: <Camera size={24} color="white" />,
+      label: "Take Photo",
+      onPress: handleTakePhoto
+    },
+    {
+      icon: <Image size={24} color="white" />,
+      label: "Gallery",
+      onPress: handleOpenGallery
+    },
+    {
+      icon: <FileText size={24} color="white" />,
+      label: "Document",
+      onPress: handleAddDocument
+    }
+  ]}
+  plusIcon={<Plus size={35} color="white" strokeWidth={2} />}
+  isOpen={(isOpen) => setFabOpen(isOpen)}
+/>
+```
+
+### Dotted Variant
+
+Expands items in a dotted pattern around the main FAB.
+
+```tsx
+<Fab
+  variant="doted"
+  items={[
+    {
+      icon: <Share size={24} color="white" />,
+      onPress: handleShare
+    },
+    {
+      icon: <Heart size={24} color="white" />,
+      onPress: handleLike
+    },
+    {
+      icon: <Bookmark size={24} color="white" />,
+      onPress: handleBookmark
+    }
+  ]}
+  containerStyle={{ zIndex: 1000 }}
+/>
+```
+
+### Extended Variant
+
+Expands vertically to show a list of labeled actions.
+
+```tsx
+<Fab
+  variant="extended"
+  items={[
+    {
+      icon: <Download size={20} color="white" />,
+      label: "Download",
+      onPress: handleDownload
+    },
+    {
+      icon: <Upload size={20} color="white" />,
+      label: "Upload",
+      onPress: handleUpload
+    },
+    {
+      icon: <Share size={20} color="white" />,
+      label: "Share",
+      onPress: handleShare
+    }
+  ]}
+  style={{ backgroundColor: '#34C759' }}
+/>
+```
+
+### Stacked Variant
+
+Stacks items vertically above the main FAB.
+
+```tsx
+<Fab
+  variant="stacked"
+  items={[
+    {
+      icon: <Edit size={24} color="white" />,
+      onPress: handleEdit
+    },
+    {
+      icon: <Copy size={24} color="white" />,
+      onPress: handleCopy
+    },
+    {
+      icon: <Trash size={24} color="white" />,
+      onPress: handleDelete
+    }
+  ]}
+  isOpen={(isOpen) => {
+    if (isOpen) {
+      setShowOverlay(true);
+    } else {
+      setShowOverlay(false);
+    }
+  }}
+/>
+```
+
+## Props
+
+### Common Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `FabVariant` | - | FAB variant type |
+| `style` | `StyleProp<ViewStyle>` | - | Custom styles for the FAB button |
+| `containerStyle` | `StyleProp<ViewStyle>` | - | Custom styles for the FAB container |
+| `isOpen` | `(isOpen: boolean) => void` | - | Callback for FAB open/close state |
+| `plusIcon` | `React.ReactNode` | `<Plus />` | Custom plus icon component |
+
+### Single Variant Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `icon` | `React.ReactNode` | `<Plus />` | Icon component to display |
+| `onPress` | `() => void` | - | Callback when FAB is pressed |
+
+### Multi-Item Variant Props (Clustered, Dotted, Extended, Stacked)
+
+| Prop | Type | Description |
+|------|------|-------------|
+| `items` | `Array<ItemType>` | Array of 1-3 FAB items |
+
+### Item Types
+
+#### FabClusteredItem & FabExtendedItem
+
+```tsx
+type FabClusteredItem = {
+  icon: React.ReactNode;
+  onPress: () => void;
+  label: string;
+}
+```
+
+#### FabDotedItem & FabStackedItem
+
+```tsx
+type FabDotedItem = {
+  icon: React.ReactNode;
+  onPress: () => void;
+}
+```
+
+## Examples
+
+### Social Media Actions
+
+```tsx
+import { Heart, MessageCircle, Share, Bookmark } from 'lucide-react-native';
+
+const SocialFab = () => {
+  return (
+    <Fab
+      variant="clustered"
+      items={[
+        {
+          icon: <Heart size={24} color="white" />,
+          label: "Like",
+          onPress: () => handleLike()
+        },
+        {
+          icon: <MessageCircle size={24} color="white" />,
+          label: "Comment",
+          onPress: () => handleComment()
+        },
+        {
+          icon: <Share size={24} color="white" />,
+          label: "Share",
+          onPress: () => handleShare()
+        }
+      ]}
+      style={{ backgroundColor: '#E91E63' }}
+      isOpen={(isOpen) => {
+        // Blur background when FAB is open
+        setBackgroundBlur(isOpen);
+      }}
+    />
+  );
+};
+```
+
+### Content Creation
+
+```tsx
+import { Camera, Video, Mic, FileText } from 'lucide-react-native';
+
+const CreateContentFab = () => {
+  const [isRecording, setIsRecording] = useState(false);
+
+  return (
+    <Fab
+      variant="extended"
+      items={[
+        {
+          icon: <Camera size={20} color="white" />,
+          label: "Take Photo",
+          onPress: async () => {
+            const permission = await requestCameraPermission();
+            if (permission) openCamera();
+          }
+        },
+        {
+          icon: <Video size={20} color="white" />,
+          label: "Record Video",
+          onPress: () => {
+            setIsRecording(true);
+            startVideoRecording();
+          }
+        },
+        {
+          icon: <Mic size={20} color="white" />,
+          label: "Voice Note",
+          onPress: () => startAudioRecording()
+        },
+        {
+          icon: <FileText size={20} color="white" />,
+          label: "Text Note",
+          onPress: () => navigation.navigate('CreateNote')
+        }
+      ]}
+      style={{ backgroundColor: '#FF6B35' }}
+    />
+  );
+};
+```
+
+### Navigation Actions
+
+```tsx
+import { Home, Search, User, Settings } from 'lucide-react-native';
+
+const NavigationFab = () => {
+  return (
+    <Fab
+      variant="doted"
+      items={[
+        {
+          icon: <Home size={24} color="white" />,
+          onPress: () => navigation.navigate('Home')
+        },
+        {
+          icon: <Search size={24} color="white" />,
+          onPress: () => navigation.navigate('Search')
+        },
+        {
+          icon: <User size={24} color="white" />,
+          onPress: () => navigation.navigate('Profile')
+        }
+      ]}
+      plusIcon={<Settings size={35} color="white" strokeWidth={2} />}
+      containerStyle={{ bottom: 100 }}
+    />
+  );
+};
+```
+
+### Quick Actions
+
+```tsx
+import { Phone, Mail, MessageSquare, Calendar } from 'lucide-react-native';
+
+const QuickActionsFab = () => {
+  const handleQuickCall = () => {
+    Linking.openURL('tel:+1234567890');
+  };
+
+  const handleQuickEmail = () => {
+    Linking.openURL('mailto:contact@example.com');
+  };
+
+  return (
+    <Fab
+      variant="stacked"
+      items={[
+        {
+          icon: <Phone size={24} color="white" />,
+          onPress: handleQuickCall
+        },
+        {
+          icon: <Mail size={24} color="white" />,
+          onPress: handleQuickEmail
+        },
+        {
+          icon: <MessageSquare size={24} color="white" />,
+          onPress: () => navigation.navigate('Messages')
+        }
+      ]}
+      style={{ backgroundColor: '#007AFF' }}
+      isOpen={(isOpen) => {
+        // Track analytics
+        Analytics.track('fab_interaction', { isOpen });
+      }}
+    />
+  );
+};
+```
+
+### E-commerce Actions
+
+```tsx
+import { ShoppingCart, Heart, Share2, Eye } from 'lucide-react-native';
+
+const ProductFab = ({ product }) => {
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
+  return (
+    <Fab
+      variant="clustered"
+      items={[
+        {
+          icon: <ShoppingCart size={24} color="white" />,
+          label: "Add to Cart",
+          onPress: () => addToCart(product)
+        },
+        {
+          icon: (
+            <Heart
+              size={24}
+              color="white"
+              fill={isWishlisted ? "white" : "transparent"}
+            />
+          ),
+          label: isWishlisted ? "Wishlisted" : "Wishlist",
+          onPress: () => {
+            setIsWishlisted(!isWishlisted);
+            toggleWishlist(product);
+          }
+        },
+        {
+          icon: <Share2 size={24} color="white" />,
+          label: "Share",
+          onPress: () => shareProduct(product)
+        }
+      ]}
+      style={{ backgroundColor: '#FF9500' }}
+    />
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Animations
+
+```tsx
+import { useRef } from 'react';
+import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
+
+const CustomAnimatedFab = () => {
+  const rotation = useSharedValue(0);
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [
+      { rotate: `${rotation.value}deg` },
+      { scale: scale.value }
+    ]
+  }));
+
+  const handlePress = () => {
+    rotation.value = withSpring(rotation.value + 360);
+    scale.value = withSpring(1.2, {}, () => {
+      scale.value = withSpring(1);
+    });
+  };
+
+  return (
+    <Animated.View style={animatedStyle}>
+      <Fab
+        variant="single"
+        onPress={handlePress}
+        icon={<Plus size={24} color="white" />}
+      />
+    </Animated.View>
+  );
+};
+```
+
+### Context-Aware FAB
+
+```tsx
+const ContextAwareFab = () => {
+  const route = useRoute();
+  const [fabConfig, setFabConfig] = useState(null);
+
+  useEffect(() => {
+    switch (route.name) {
+      case 'Chat':
+        setFabConfig({
+          variant: 'single',
+          icon: <MessageCircle size={24} color="white" />,
+          onPress: () => navigation.navigate('NewChat'),
+          style: { backgroundColor: '#25D366' }
+        });
+        break;
+
+      case 'Photos':
+        setFabConfig({
+          variant: 'clustered',
+          items: [
+            {
+              icon: <Camera size={24} color="white" />,
+              label: "Camera",
+              onPress: () => openCamera()
+            },
+            {
+              icon: <Image size={24} color="white" />,
+              label: "Gallery",
+              onPress: () => openGallery()
+            }
+          ]
+        });
+        break;
+
+      case 'Documents':
+        setFabConfig({
+          variant: 'extended',
+          items: [
+            {
+              icon: <FileText size={20} color="white" />,
+              label: "New Document",
+              onPress: () => createDocument()
+            },
+            {
+              icon: <FolderPlus size={20} color="white" />,
+              label: "New Folder",
+              onPress: () => createFolder()
+            }
+          ]
+        });
+        break;
+
+      default:
+        setFabConfig(null);
+    }
+  }, [route.name]);
+
+  if (!fabConfig) return null;
+
+  return <Fab {...fabConfig} />;
+};
+```
+
+### Permission Handling
+
+```tsx
+const PermissionAwareFab = () => {
+  const [permissions, setPermissions] = useState({
+    camera: false,
+    microphone: false,
+    storage: false
+  });
+
+  useEffect(() => {
+    checkPermissions();
+  }, []);
+
+  const checkPermissions = async () => {
+    const cameraStatus = await request(PERMISSIONS.ANDROID.CAMERA);
+    const microphoneStatus = await request(PERMISSIONS.ANDROID.RECORD_AUDIO);
+    const storageStatus = await request(PERMISSIONS.ANDROID.WRITE_EXTERNAL_STORAGE);
+
+    setPermissions({
+      camera: cameraStatus === 'granted',
+      microphone: microphoneStatus === 'granted',
+      storage: storageStatus === 'granted'
+    });
+  };
+
+  const items = [
+    permissions.camera && {
+      icon: <Camera size={24} color="white" />,
+      label: "Camera",
+      onPress: () => openCamera()
+    },
+    permissions.microphone && {
+      icon: <Mic size={24} color="white" />,
+      label: "Record",
+      onPress: () => startRecording()
+    },
+    permissions.storage && {
+      icon: <FolderOpen size={24} color="white" />,
+      label: "Files",
+      onPress: () => openFilePicker()
+    }
+  ].filter(Boolean);
+
+  if (items.length === 0) return null;
+
+  return (
+    <Fab
+      variant="clustered"
+      items={items}
+      style={{ backgroundColor: '#6366F1' }}
+    />
+  );
+};
+```
+
+## Styling
+
+### Theme Integration
+
+```tsx
+// Custom theme colors
+const customTheme = {
+  colors: {
+    primary: '#6366F1',
+    secondary: '#10B981',
+    danger: '#EF4444',
+    warning: '#F59E0B'
+  }
+};
+
+<Fab
+  variant="clustered"
+  items={actionItems}
+  style={{
+    backgroundColor: customTheme.colors.primary,
+    shadowColor: customTheme.colors.primary,
+    shadowOpacity: 0.3
+  }}
+  containerStyle={{
+    bottom: 20,
+    right: 20
+  }}
+/>
+```
+
+### Responsive Positioning
+
+```tsx
+import { Dimensions } from 'react-native';
+
+const ResponsiveFab = () => {
+  const { width, height } = Dimensions.get('window');
+  const isTablet = width > 768;
+
+  const fabStyle = {
+    bottom: isTablet ? 40 : 20,
+    right: isTablet ? 40 : 20,
+    transform: [{ scale: isTablet ? 1.2 : 1 }]
+  };
+
+  return (
+    <Fab
+      variant="single"
+      containerStyle={fabStyle}
+      onPress={handleAction}
+    />
+  );
+};
+```
+
+## Best Practices
+
+<Card title="Positioning" icon="seti:config">
+- Position FAB 16-24dp from screen edges
+- Avoid overlapping with other interactive elements
+- Consider navigation bars and tab bars when positioning
+- Use consistent positioning across similar screens
+</Card>
+
+<Card title="Animation Performance" icon="rocket">
+- Use native driver for animations when possible
+- Avoid complex animations on older devices
+- Test animations on various screen sizes
+- Consider reducing motion for accessibility preferences
+</Card>
+
+<Card title="User Experience" icon="seti:plan">
+- Limit items to 3-4 per FAB to avoid overwhelming users
+- Use meaningful icons that clearly represent actions
+- Provide haptic feedback for better interaction feel
+- Consider contextual actions based on current screen
+</Card>
+
+<Aside type="tip">
+For better user experience, consider showing a brief tooltip or hint when the FAB is first displayed to help users understand its functionality.
+</Aside>
+
+<Aside type="caution">
+Be mindful of FAB placement on screens with bottom sheets or modals. The FAB should not interfere with other interactive elements or be hidden behind overlays.
+</Aside>
+
+## Animation Timing
+
+The FAB component uses carefully tuned animation timings:
+
+- **Expansion**: 500ms with bouncy easing
+- **Collapse**: 100-200ms for quick dismissal
+- **Item stagger**: 50-200ms delays for smooth cascading
+- **Icon rotation**: Synchronized with expansion state
+
+These timings can be customized by modifying the animation configuration in each variant's implementation.

@@ -117,6 +117,13 @@ export default defineConfig({
                 { label: 'Tooltip', slug: 'components/feedback/tooltip' },
               ],
             },
+            {
+              label: 'Navigation',
+              items: [
+                { label: 'Fab', slug: 'components/navigation/fab' },
+                { label: 'Divider', slug: 'components/navigation/divider' },
+              ],
+            },
           ],
         },
         {
