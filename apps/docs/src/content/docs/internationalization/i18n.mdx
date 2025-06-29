@@ -1,0 +1,645 @@
+---
+title: Internationalization (i18n)
+description: Internationalization (i18n) hook for accessing language context in React Native applications with automatic locale detection, persistent language settings, and TypeScript support
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+LanguageProvider offers a comprehensive internationalization solution for React Native applications. It provides automatic locale detection, persistent language settings using AsyncStorage, and a flexible configuration system with TypeScript support.
+
+**Note**: The `LanguageProvider` is already integrated within the `RNCProvider`, so you only need to configure it through the `i18nConfig` prop and use the `useLanguage` hook to access language functionality.
+
+## Import
+
+```tsx
+import { RNCProvider, useLanguage, I18nConfig } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Setup">
+    ```tsx
+    import { RNCProvider } from 'rnc-theme';
+
+    export default function App() {
+      return (
+        <RNCProvider>
+          <YourApp />
+        </RNCProvider>
+      );
+    }
+    ```
+  </TabItem>
+
+  <TabItem label="Using the Hook">
+    ```tsx
+    import { useLanguage } from 'rnc-theme';
+
+    const MyComponent = () => {
+      const { locale, setLocale, i18n } = useLanguage();
+
+      return (
+        <View>
+          <Text>{i18n.t('welcome')}</Text>
+          <Button
+            title="Switch to Indonesian"
+            onPress={() => setLocale('id')}
+          />
+        </View>
+      );
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Configuration">
+    ```tsx
+    const i18nConfig = {
+      translations: {
+        en: {
+          welcome: 'Welcome',
+          goodbye: 'Goodbye'
+        },
+        id: {
+          welcome: 'Selamat datang',
+          goodbye: 'Selamat tinggal'
+        }
+      },
+      supportedLocales: ['en', 'id'],
+      defaultLocale: 'en',
+      autoDetectLocale: true
+    };
+
+    <RNCProvider i18nConfig={i18nConfig}>
+      <App />
+    </RNCProvider>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### RNCProvider Props (I18n Related)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `i18nConfig` | `I18nConfig` | `defaultConfig` | Configuration object for i18n setup |
+
+### I18nConfig Interface
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `translations` | `Record<string, any>` | `defaultTranslations` | Translation dictionaries for each locale |
+| `supportedLocales` | `string[]` | `['en', 'id']` | Array of supported language codes |
+| `defaultLocale` | `string` | `'en'` | Default fallback locale |
+| `autoDetectLocale` | `boolean` | `true` | Auto-detect device locale on initialization |
+
+### useLanguage Hook Returns
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `locale` | `string` | Current active locale |
+| `setLocale` | `(locale: string) => Promise<void>` | Function to change active locale |
+| `i18n` | `I18n` | i18n-js instance for translations |
+
+## Examples
+
+### Language Switcher Component
+
+```tsx
+import React from 'react';
+import { View, TouchableOpacity, Text } from 'react-native';
+import { useLanguage } from 'rnc-theme';
+
+const LanguageSwitcher = () => {
+  const { locale, setLocale, i18n } = useLanguage();
+
+  const languages = [
+    { code: 'en', name: 'English', flag: '🇺🇸' },
+    { code: 'id', name: 'Indonesia', flag: '🇮🇩' },
+    { code: 'es', name: 'Español', flag: '🇪🇸' },
+  ];
+
+  return (
+    <View style={{ flexDirection: 'row', gap: 12 }}>
+      {languages.map((lang) => (
+        <TouchableOpacity
+          key={lang.code}
+          onPress={() => setLocale(lang.code)}
+          style={{
+            padding: 12,
+            borderRadius: 8,
+            backgroundColor: locale === lang.code ? '#007AFF' : '#F0F0F0',
+            flexDirection: 'row',
+            alignItems: 'center',
+            gap: 8,
+          }}
+        >
+          <Text style={{ fontSize: 16 }}>{lang.flag}</Text>
+          <Text
+            style={{
+              color: locale === lang.code ? 'white' : 'black',
+              fontWeight: locale === lang.code ? 'bold' : 'normal'
+            }}
+          >
+            {lang.name}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </View>
+  );
+};
+```
+
+### Settings Screen Integration
+
+```tsx
+import React from 'react';
+import { View, Text, StyleSheet } from 'react-native';
+import { useLanguage } from 'rnc-theme';
+
+const SettingsScreen = () => {
+  const { locale, setLocale, i18n } = useLanguage();
+
+  const handleLanguageChange = async (newLocale: string) => {
+    try {
+      await setLocale(newLocale);
+      // Show success message
+      console.log(`Language changed to ${newLocale}`);
+    } catch (error) {
+      console.error('Failed to change language:', error);
+    }
+  };
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>
+        {i18n.t('settings.title', { defaultValue: 'Settings' })}
+      </Text>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>
+          {i18n.t('settings.language', { defaultValue: 'Language' })}
+        </Text>
+
+        <Text style={styles.currentLanguage}>
+          {i18n.t('settings.currentLanguage', {
+            defaultValue: 'Current: {{locale}}',
+            locale: locale.toUpperCase()
+          })}
+        </Text>
+
+        <LanguageSwitcher />
+      </View>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 20,
+    backgroundColor: '#fff',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 24,
+  },
+  section: {
+    marginBottom: 24,
+  },
+  sectionTitle: {
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 12,
+  },
+  currentLanguage: {
+    fontSize: 14,
+    color: '#666',
+    marginBottom: 16,
+  },
+});
+```
+
+### Multi-Language Form
+
+```tsx
+import React, { useState } from 'react';
+import { View, TextInput, Text, TouchableOpacity } from 'react-native';
+import { useLanguage } from 'rnc-theme';
+
+const ContactForm = () => {
+  const { i18n } = useLanguage();
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+
+  const handleSubmit = () => {
+    console.log('Form submitted:', formData);
+  };
+
+  return (
+    <View style={{ padding: 20 }}>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
+        {i18n.t('contact.title', { defaultValue: 'Contact Us' })}
+      </Text>
+
+      <View style={{ marginBottom: 16 }}>
+        <Text style={{ fontSize: 16, marginBottom: 8 }}>
+          {i18n.t('contact.name', { defaultValue: 'Name' })}
+        </Text>
+        <TextInput
+          style={{
+            borderWidth: 1,
+            borderColor: '#ddd',
+            borderRadius: 8,
+            padding: 12,
+            fontSize: 16
+          }}
+          placeholder={i18n.t('contact.namePlaceholder', {
+            defaultValue: 'Enter your name'
+          })}
+          value={formData.name}
+          onChangeText={(text) => setFormData({ ...formData, name: text })}
+        />
+      </View>
+
+      <View style={{ marginBottom: 16 }}>
+        <Text style={{ fontSize: 16, marginBottom: 8 }}>
+          {i18n.t('contact.email', { defaultValue: 'Email' })}
+        </Text>
+        <TextInput
+          style={{
+            borderWidth: 1,
+            borderColor: '#ddd',
+            borderRadius: 8,
+            padding: 12,
+            fontSize: 16
+          }}
+          placeholder={i18n.t('contact.emailPlaceholder', {
+            defaultValue: 'Enter your email'
+          })}
+          value={formData.email}
+          onChangeText={(text) => setFormData({ ...formData, email: text })}
+          keyboardType="email-address"
+        />
+      </View>
+
+      <View style={{ marginBottom: 24 }}>
+        <Text style={{ fontSize: 16, marginBottom: 8 }}>
+          {i18n.t('contact.message', { defaultValue: 'Message' })}
+        </Text>
+        <TextInput
+          style={{
+            borderWidth: 1,
+            borderColor: '#ddd',
+            borderRadius: 8,
+            padding: 12,
+            fontSize: 16,
+            height: 100,
+            textAlignVertical: 'top'
+          }}
+          placeholder={i18n.t('contact.messagePlaceholder', {
+            defaultValue: 'Enter your message'
+          })}
+          value={formData.message}
+          onChangeText={(text) => setFormData({ ...formData, message: text })}
+          multiline
+          numberOfLines={4}
+        />
+      </View>
+
+      <TouchableOpacity
+        style={{
+          backgroundColor: '#007AFF',
+          borderRadius: 8,
+          padding: 16,
+          alignItems: 'center'
+        }}
+        onPress={handleSubmit}
+      >
+        <Text style={{ color: 'white', fontSize: 16, fontWeight: 'bold' }}>
+          {i18n.t('contact.submit', { defaultValue: 'Send Message' })}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+};
+```
+
+### Advanced Configuration
+
+```tsx
+import React from 'react';
+import { LanguageProvider, I18nConfig } from 'rnc-theme';
+
+const advancedI18nConfig: I18nConfig = {
+  translations: {
+    en: {
+      common: {
+        welcome: 'Welcome',
+        save: 'Save',
+        cancel: 'Cancel',
+        loading: 'Loading...',
+      },
+      navigation: {
+        home: 'Home',
+        profile: 'Profile',
+        settings: 'Settings',
+      },
+      errors: {
+        networkError: 'Network connection failed',
+        invalidInput: 'Please check your input',
+        unauthorized: 'Access denied',
+      },
+      // Pluralization support
+      items: {
+        zero: 'No items',
+        one: '{{count}} item',
+        other: '{{count}} items',
+      },
+    },
+    id: {
+      common: {
+        welcome: 'Selamat datang',
+        save: 'Simpan',
+        cancel: 'Batal',
+        loading: 'Memuat...',
+      },
+      navigation: {
+        home: 'Beranda',
+        profile: 'Profil',
+        settings: 'Pengaturan',
+      },
+      errors: {
+        networkError: 'Koneksi jaringan gagal',
+        invalidInput: 'Silakan periksa input Anda',
+        unauthorized: 'Akses ditolak',
+      },
+      items: {
+        zero: 'Tidak ada item',
+        one: '{{count}} item',
+        other: '{{count}} item',
+      },
+    },
+    es: {
+      common: {
+        welcome: 'Bienvenido',
+        save: 'Guardar',
+        cancel: 'Cancelar',
+        loading: 'Cargando...',
+      },
+      navigation: {
+        home: 'Inicio',
+        profile: 'Perfil',
+        settings: 'Configuración',
+      },
+      errors: {
+        networkError: 'Falló la conexión de red',
+        invalidInput: 'Por favor verifica tu entrada',
+        unauthorized: 'Acceso denegado',
+      },
+      items: {
+        zero: 'Sin elementos',
+        one: '{{count}} elemento',
+        other: '{{count}} elementos',
+      },
+    },
+  },
+  supportedLocales: ['en', 'id', 'es'],
+  defaultLocale: 'en',
+  autoDetectLocale: true,
+};
+
+export const App = () => {
+  return (
+    <RNCProvider i18nConfig={advancedI18nConfig}>
+      <AppNavigator />
+    </RNCProvider>
+  );
+};
+```
+
+### Translation Helper Hook
+
+```tsx
+import { useLanguage } from 'rnc-theme';
+
+export const useTranslation = () => {
+  const { i18n, locale } = useLanguage();
+
+  const t = (key: string, options?: any) => {
+    return i18n.t(key, {
+      defaultValue: key,
+      ...options
+    });
+  };
+
+  const tCount = (key: string, count: number, options?: any) => {
+    return i18n.t(key, {
+      count,
+      defaultValue: `${count} items`,
+      ...options
+    });
+  };
+
+  const isRTL = () => {
+    const rtlLocales = ['ar', 'he', 'fa', 'ur'];
+    return rtlLocales.includes(locale);
+  };
+
+  return {
+    t,
+    tCount,
+    locale,
+    isRTL,
+  };
+};
+
+// Usage in component
+const MyComponent = () => {
+  const { t, tCount, isRTL } = useTranslation();
+
+  return (
+    <View style={{
+      flexDirection: isRTL() ? 'row-reverse' : 'row'
+    }}>
+      <Text>{t('common.welcome')}</Text>
+      <Text>{tCount('items', 5)}</Text>
+    </View>
+  );
+};
+```
+
+## Advanced Usage
+
+### Lazy Loading Translations
+
+```tsx
+import { useState, useEffect } from 'react';
+import { RNCProvider, I18nConfig } from 'rnc-theme';
+
+const LazyLanguageProvider = ({ children }) => {
+  const [i18nConfig, setI18nConfig] = useState<I18nConfig | undefined>();
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadTranslations = async () => {
+      try {
+        // Load translations from API or local files
+        const [enTranslations, idTranslations] = await Promise.all([
+          import('./translations/en.json'),
+          import('./translations/id.json'),
+        ]);
+
+        setI18nConfig({
+          translations: {
+            en: enTranslations.default,
+            id: idTranslations.default,
+          },
+          supportedLocales: ['en', 'id'],
+          defaultLocale: 'en',
+          autoDetectLocale: true,
+        });
+      } catch (error) {
+        console.error('Failed to load translations:', error);
+        // Fallback to default config
+        setI18nConfig({
+          supportedLocales: ['en'],
+          defaultLocale: 'en',
+        });
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadTranslations();
+  }, []);
+
+  if (loading) {
+    return <LoadingScreen />;
+  }
+
+  return (
+    <RNCProvider i18nConfig={i18nConfig}>
+      {children}
+    </RNCProvider>
+  );
+};
+```
+
+### Dynamic Locale Updates
+
+```tsx
+import { useLanguage } from 'rnc-theme';
+import { useEffect } from 'react';
+
+const LocaleUpdater = () => {
+  const { locale, setLocale } = useLanguage();
+
+  useEffect(() => {
+    // Update app-wide configurations when locale changes
+    const updateAppLocale = async () => {
+      // Update date/time formatting
+      if (typeof Intl !== 'undefined') {
+        // Configure date formatting for current locale
+      }
+
+      // Update navigation titles
+      // NavigationService.updateLocale(locale);
+
+      // Update push notification locale
+      // PushNotificationService.setLocale(locale);
+
+      // Update analytics locale
+      // Analytics.setUserProperty('locale', locale);
+    };
+
+    updateAppLocale();
+  }, [locale]);
+
+  return null; // This is a utility component
+};
+
+// Add to your app root
+const App = () => {
+  return (
+    <RNCProvider>
+      <LocaleUpdater />
+      <AppContent />
+    </RNCProvider>
+  );
+};
+```
+
+## Features
+
+<Tabs>
+  <TabItem label="Automatic Detection">
+    ```tsx
+    // Automatically detects device locale
+    const config = {
+      autoDetectLocale: true,
+      supportedLocales: ['en', 'id', 'es'],
+      defaultLocale: 'en'
+    };
+
+    // Falls back to defaultLocale if device locale unsupported
+    <RNCProvider i18nConfig={config}>
+      <App />
+    </RNCProvider>
+    ```
+  </TabItem>
+
+  <TabItem label="Persistent Storage">
+    ```tsx
+    // Language preference automatically saved to AsyncStorage
+    const { setLocale } = useLanguage();
+
+    // This will persist across app restarts
+    await setLocale('id');
+    ```
+  </TabItem>
+
+  <TabItem label="Pluralization">
+    ```tsx
+    const { i18n } = useLanguage();
+
+    // Supports pluralization rules
+    const itemCount = i18n.t('items', { count: 0 }); // "No items"
+    const itemCount = i18n.t('items', { count: 1 }); // "1 item"
+    const itemCount = i18n.t('items', { count: 5 }); // "5 items"
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="Translation Organization" icon="seti:folder">
+- Organize translations by feature/screen for better maintainability
+- Use nested objects to group related translations
+- Provide meaningful keys that describe the content context
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use lazy loading for large translation files
+- Consider splitting translations by screen/feature
+- Implement translation caching for frequently accessed strings
+</Card>
+
+<Card title="User Experience" icon="heart">
+- Always provide fallbacks for missing translations
+- Test your app with longer text languages (German, Russian)
+- Consider right-to-left (RTL) languages if supporting Arabic/Hebrew
+</Card>
+
+<Aside type="tip">
+Use interpolation for dynamic content like user names, dates, and counts. This makes translations more natural and contextually appropriate.
+</Aside>
+
+<Aside type="caution">
+Be careful with automatic locale detection in production. Some users may prefer different languages than their device locale, so always provide manual language selection options.
+</Aside>

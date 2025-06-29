@@ -35,6 +35,7 @@ export default defineConfig({
         },
         {
           label: 'Theming',
+          collapsed: true,
           items: [
             { label: 'Overview', slug: 'theming/overview' },
             { label: 'Theme Provider', slug: 'theming/theme-provider' },
@@ -49,6 +50,7 @@ export default defineConfig({
         },
         {
           label: 'Hooks',
+          collapsed: true,
           items: [
             // { label: 'Overview', slug: 'hooks/overview' },
             { label: 'useTheme', slug: 'hooks/use-theme' },
@@ -58,11 +60,12 @@ export default defineConfig({
         },
         {
           label: 'Components',
-          collapsed: false,
+          collapsed: true,
           items: [
             { label: 'Demo', slug: 'components/demo' },
             {
               label: 'Layout',
+              collapsed: true,
               items: [
                 { label: 'HStack', slug: 'components/layout/hstack' },
                 { label: 'VStack', slug: 'components/layout/vstack' },
@@ -74,7 +77,7 @@ export default defineConfig({
             },
             {
               label: 'Form',
-              collapsed: false,
+              collapsed: true,
               items: [
                 {
                   label: 'Button',
@@ -92,7 +95,7 @@ export default defineConfig({
             },
             {
               label: 'Data Display',
-              collapsed: false,
+              collapsed: true,
               items: [
                 { label: 'Avatar', slug: 'components/data-display/avatar' },
                 { label: 'Badge', slug: 'components/data-display/badge' },
@@ -108,7 +111,7 @@ export default defineConfig({
             },
             {
               label: 'Feedback',
-              collapsed: false,
+              collapsed: true,
               items: [
                 { label: 'Spinner', slug: 'components/feedback/spinner' },
                 { label: 'Skeleton', slug: 'components/feedback/skeleton' },
@@ -119,6 +122,7 @@ export default defineConfig({
             },
             {
               label: 'Navigation',
+              collapsed: true,
               items: [
                 { label: 'Fab', slug: 'components/navigation/fab' },
                 { label: 'Divider', slug: 'components/navigation/divider' },
@@ -126,7 +130,7 @@ export default defineConfig({
             },
             {
               label: 'Overlay',
-              collapsed: false,
+              collapsed: true,
               items: [
                 {
                   label: 'Modal',
@@ -148,7 +152,7 @@ export default defineConfig({
             },
             {
               label: 'Media',
-              collapsed: false,
+              collapsed: true,
               items: [
                 {
                   label: 'Image Carousel',
@@ -162,7 +166,7 @@ export default defineConfig({
             },
             {
               label: 'Disclosure',
-              collapsed: false,
+              collapsed: true,
               items: [
                 {
                   label: 'Accordion',
@@ -177,6 +181,16 @@ export default defineConfig({
           ],
         },
         {
+          label: 'Internationalization',
+          collapsed: true,
+          items: [
+            {
+              label: 'I18n',
+              slug: 'internationalization/i18n',
+            },
+          ],
+        },
+        {
           label: 'API Reference',
           items: [
             { label: 'Provider', slug: 'api/provider' },
@@ -185,18 +199,6 @@ export default defineConfig({
             { label: 'Theme Switcher', slug: 'api/theme-switcher' },
           ],
         },
-        // {
-        //   label: 'Data Display',
-        //   items: [
-        //     { label: 'Avatar', slug: 'data-display/avatar' },
-        //     { label: 'Badge', slug: 'data-display/badge' },
-        //     { label: 'Card', slug: 'data-display/card' },
-        //     { label: 'Table', slug: 'data-display/table' },
-        //     { label: 'List', slug: 'data-display/list' },
-        //     { label: 'Rating', slug: 'data-display/rating' },
-        //     { label: 'Typography', slug: 'data-display/typography' },
-        //   ],
-        // },
       ],
     }),
   ],
