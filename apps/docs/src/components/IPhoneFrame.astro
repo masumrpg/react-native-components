@@ -1,0 +1,157 @@
+---
+// IPhoneFrame.astro (Pure CSS Version)
+export interface Props {
+  src: string;
+  title?: string;
+  width?: string;
+  height?: string;
+  className?: string;
+}
+
+const {
+  src,
+  title = "iPhone Demo",
+  width = "100%",
+  height = "auto",
+  className = ""
+} = Astro.props;
+---
+
+<div class={`iphone-frame-container ${className}`} style={`width: ${width}; height: ${height};`}>
+  <div class="iphone-frame">
+    <!-- Physical buttons -->
+    <div class="silent-switch"></div>
+    <div class="volume-buttons">
+      <div class="volume-up"></div>
+      <div class="volume-down"></div>
+    </div>
+    <div class="power-button"></div>
+
+    <div class="iphone-screen">
+      <!-- Notch -->
+      <div class="notch"></div>
+
+      <!-- Content iframe -->
+      <iframe
+        class="content-iframe"
+        src={src}
+        title={title}
+        allowfullscreen
+        loading="lazy"
+      ></iframe>
+
+      <!-- Home indicator -->
+      <div class="home-indicator"></div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .iphone-frame-container {
+    max-width: 375px;
+    margin: 0 auto;
+    position: relative;
+    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15));
+  }
+
+  .iphone-frame {
+    width: 100%;
+    aspect-ratio: 375 / 812;
+    background: linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 100%);
+    border-radius: 40px;
+    padding: 8px;
+    position: relative;
+    box-shadow:
+      inset 0 0 0 2px #333,
+      inset 0 0 0 7px #111,
+      0 0 0 1px rgba(255,255,255,0.1);
+  }
+
+  .iphone-screen {
+    width: 100%;
+    height: 100%;
+    background: #000;
+    border-radius: 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  /* Home indicator */
+  .home-indicator {
+    position: absolute;
+    bottom: 8px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 134px;
+    height: 5px;
+    background: rgba(255,255,255,0.3);
+    border-radius: 3px;
+    z-index: 10;
+  }
+
+  /* Physical buttons */
+  .volume-buttons {
+    position: absolute;
+    left: -3px;
+    top: 120px;
+  }
+
+  .volume-up, .volume-down {
+    width: 3px;
+    height: 30px;
+    background: linear-gradient(90deg, #666, #333);
+    margin-bottom: 10px;
+    border-radius: 2px;
+  }
+
+  .volume-down {
+    height: 50px;
+  }
+
+  .silent-switch {
+    position: absolute;
+    left: -3px;
+    top: 80px;
+    width: 3px;
+    height: 20px;
+    background: linear-gradient(90deg, #666, #333);
+    border-radius: 2px;
+  }
+
+  .power-button {
+    position: absolute;
+    right: -3px;
+    top: 140px;
+    width: 3px;
+    height: 60px;
+    background: linear-gradient(90deg, #333, #666);
+    border-radius: 2px;
+  }
+
+  /* Iframe styling */
+  .content-iframe {
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: 32px;
+    margin-top: 0px;
+    background: #fff;
+    position: relative;
+    z-index: 5;
+  }
+
+  /* Responsive adjustments */
+  @media (max-width: 480px) {
+    .iphone-frame-container {
+      max-width: 280px;
+      transform: scale(0.85);
+    }
+  }
+
+  @media (max-width: 360px) {
+    .iphone-frame-container {
+      max-width: 250px;
+      transform: scale(0.75);
+    }
+  }
+</style>
