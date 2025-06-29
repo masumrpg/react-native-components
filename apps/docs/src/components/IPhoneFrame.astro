@@ -1,5 +1,5 @@
 ---
-// IPhoneFrame.astro (Pure CSS Version)
+// IPhoneFrame.astro (Tailwind CSS Version)
 export interface Props {
   src: string;
   title?: string;
@@ -17,23 +17,31 @@ const {
 } = Astro.props;
 ---
 
-<div class={`iphone-frame-container ${className}`} style={`width: ${width}; height: ${height};`}>
-  <div class="iphone-frame">
-    <!-- Physical buttons -->
-    <div class="silent-switch"></div>
-    <div class="volume-buttons">
-      <div class="volume-up"></div>
-      <div class="volume-down"></div>
-    </div>
-    <div class="power-button"></div>
+<div
+  class={`max-w-sm mx-auto relative ${className}`}
+  style={`width: ${width}; height: ${height}; filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15));`}
+>
+  <div class="w-full bg-gradient-to-br from-gray-800 to-black dark:from-green-600 dark:to-green-800 rounded-[40px] p-2 relative shadow-2xl border-2 border-gray-600 dark:border-green-400" style="aspect-ratio: 375 / 812;">
 
-    <div class="iphone-screen">
-      <!-- Notch -->
-      <div class="notch"></div>
+    <!-- Physical buttons -->
+    <div class="absolute -left-1 top-20 w-1 h-5 bg-gradient-to-r from-gray-500 to-gray-700 dark:from-green-400 dark:to-green-600 rounded-sm"></div>
+
+    <div class="absolute -left-1 top-[120px]">
+      <div class="w-1 h-8 bg-gradient-to-r from-gray-500 to-gray-700 dark:from-green-400 dark:to-green-600 rounded-sm mb-2"></div>
+      <div class="w-1 h-12 bg-gradient-to-r from-gray-500 to-gray-700 dark:from-green-400 dark:to-green-600 rounded-sm"></div>
+    </div>
+
+    <div class="absolute -right-1 top-[140px] w-1 h-16 bg-gradient-to-l from-gray-500 to-gray-700 dark:from-green-400 dark:to-green-600 rounded-sm"></div>
+
+    <!-- iPhone Screen -->
+    <div class="w-full h-full bg-black dark:bg-zinc-900 rounded-[32px] relative overflow-hidden border dark:border-green-300">
+
+      <!-- Notch (optional - uncomment if needed) -->
+      <!-- <div class="absolute top-0 left-1/2 transform -translate-x-1/2 w-32 h-6 bg-black dark:bg-white rounded-b-2xl z-20"></div> -->
 
       <!-- Content iframe -->
       <iframe
-        class="content-iframe"
+        class="w-full h-full border-none rounded-[32px] bg-white relative z-10"
         src={src}
         title={title}
         allowfullscreen
@@ -41,116 +49,21 @@ const {
       ></iframe>
 
       <!-- Home indicator -->
-      <div class="home-indicator"></div>
+      <div class="absolute bottom-2 left-1/2 transform -translate-x-1/2 w-32 h-1 bg-white/30 dark:bg-green-300/60 rounded-full z-20"></div>
     </div>
   </div>
 </div>
 
 <style>
-  .iphone-frame-container {
-    max-width: 375px;
-    margin: 0 auto;
-    position: relative;
-    filter: drop-shadow(0 20px 40px rgba(0,0,0,0.15));
-  }
-
-  .iphone-frame {
-    width: 100%;
-    aspect-ratio: 375 / 812;
-    background: linear-gradient(145deg, #1a1a1a 0%, #0a0a0a 100%);
-    border-radius: 40px;
-    padding: 8px;
-    position: relative;
-    box-shadow:
-      inset 0 0 0 2px #333,
-      inset 0 0 0 7px #111,
-      0 0 0 1px rgba(255,255,255,0.1);
-  }
-
-  .iphone-screen {
-    width: 100%;
-    height: 100%;
-    background: #000;
-    border-radius: 32px;
-    position: relative;
-    overflow: hidden;
-  }
-
-  /* Home indicator */
-  .home-indicator {
-    position: absolute;
-    bottom: 8px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 134px;
-    height: 5px;
-    background: rgba(255,255,255,0.3);
-    border-radius: 3px;
-    z-index: 10;
-  }
-
-  /* Physical buttons */
-  .volume-buttons {
-    position: absolute;
-    left: -3px;
-    top: 120px;
-  }
-
-  .volume-up, .volume-down {
-    width: 3px;
-    height: 30px;
-    background: linear-gradient(90deg, #666, #333);
-    margin-bottom: 10px;
-    border-radius: 2px;
-  }
-
-  .volume-down {
-    height: 50px;
-  }
-
-  .silent-switch {
-    position: absolute;
-    left: -3px;
-    top: 80px;
-    width: 3px;
-    height: 20px;
-    background: linear-gradient(90deg, #666, #333);
-    border-radius: 2px;
-  }
-
-  .power-button {
-    position: absolute;
-    right: -3px;
-    top: 140px;
-    width: 3px;
-    height: 60px;
-    background: linear-gradient(90deg, #333, #666);
-    border-radius: 2px;
-  }
-
-  /* Iframe styling */
-  .content-iframe {
-    width: 100%;
-    height: 100%;
-    border: none;
-    border-radius: 32px;
-    margin-top: 0px;
-    background: #fff;
-    position: relative;
-    z-index: 5;
-  }
-
-  /* Responsive adjustments */
+  /* Custom responsive scaling untuk mobile devices */
   @media (max-width: 480px) {
-    .iphone-frame-container {
-      max-width: 280px;
+    .max-w-sm {
       transform: scale(0.85);
     }
   }
 
   @media (max-width: 360px) {
-    .iphone-frame-container {
-      max-width: 250px;
+    .max-w-sm {
       transform: scale(0.75);
     }
   }
