@@ -99,6 +99,11 @@ export default defineConfig({
                 { label: 'Card', slug: 'components/data-display/card' },
                 { label: 'Table', slug: 'components/data-display/table' },
                 { label: 'List', slug: 'components/data-display/list' },
+                { label: 'Rating', slug: 'components/data-display/rating' },
+                {
+                  label: 'Typography',
+                  slug: 'components/data-display/typography',
+                },
               ],
             },
           ],

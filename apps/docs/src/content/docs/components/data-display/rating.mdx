@@ -1,0 +1,628 @@
+---
+title: Rating
+description: Comprehensive rating component with interactive stars, custom icons, swipe gestures, and dynamic visual feedback for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Rating provides a complete solution for collecting and displaying user ratings with support for traditional tap-based ratings and swipe-based gestures. Features include custom icons, dynamic colors, rating summaries, and smooth animations with haptic feedback.
+
+## Import
+
+```tsx
+import { Rating, SwipeRating } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Rating">
+    ```tsx
+    <Rating
+      count={5}
+      defaultRating={3}
+      onRatingChange={(rating) => console.log('Rating:', rating)}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="With Reviews">
+    ```tsx
+    <Rating
+      count={5}
+      defaultRating={4}
+      showRating={true}
+      reviews={['Poor', 'Fair', 'Good', 'Very Good', 'Excellent']}
+      onRatingChange={handleRatingChange}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="Swipe Rating">
+    ```tsx
+    <SwipeRating
+      type="star"
+      count={5}
+      defaultRating={3.5}
+      showRating={true}
+      onFinishRating={handleSwipeRating}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Icon">
+    ```tsx
+    <Rating
+      count={5}
+      defaultRating={2}
+      customIcon={Heart}
+      selectedColor="#e91e63"
+      unSelectedColor="#fce4ec"
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Rating Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `count` | `number` | `5` | Number of rating items to display |
+| `defaultRating` | `number` | `3` | Initial rating value |
+| `onRatingChange` | `(rating: number) => void` | - | Callback when rating changes |
+| `readonly` | `boolean` | `false` | Disable user interaction |
+| `showRating` | `boolean` | `false` | Show rating text below stars |
+| `size` | `ComponentSize` | `'md'` | Size of rating items (xs, sm, md, lg, xl) |
+| `selectedColor` | `string` | `'#f1c40f'` | Color for selected rating items |
+| `unSelectedColor` | `string` | `'#BDC3C7'` | Color for unselected rating items |
+| `reviews` | `string[]` | `['Terrible', 'Bad', 'Okay', 'Good', 'Great']` | Text labels for each rating |
+| `reviewColor` | `string` | `'#f1c40f'` | Color of review text |
+| `reviewSize` | `number` | `25` | Font size of review text |
+| `customIcon` | `React.ComponentType` | `Star` | Custom icon component |
+| `enableDynamicColors` | `boolean` | `false` | Use different colors per rating level |
+| `customColors` | `string[]` | `['#e74c3c', '#f39c12', '#f1c40f', '#2ecc71', '#27ae60']` | Colors for dynamic coloring |
+| `showRatingSummary` | `boolean` | `false` | Show rating summary with statistics |
+| `totalRating` | `number` | - | Average rating for summary |
+| `totalReviewers` | `number` | - | Total number of reviewers |
+| `ratingLabel` | `string` | `'Rating'` | Label for rating value in summary |
+| `reviewersLabel` | `string` | `'reviews'` | Label for reviewers count |
+| `starGap` | `number` | `4` | Spacing between rating items |
+
+### SwipeRating Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `type` | `'star' \| 'heart' \| 'rocket' \| 'bell' \| 'custom'` | `'star'` | Type of rating icon |
+| `count` | `number` | `5` | Number of rating items |
+| `defaultRating` | `number` | `2.5` | Initial rating value (supports decimals) |
+| `ratingColor` | `string` | `'#f1c40f'` | Color for active rating |
+| `ratingBackgroundColor` | `string` | `'#c8c7c8'` | Background color for inactive rating |
+| `imageSize` | `number` | `50` | Size of rating icons |
+| `readonly` | `boolean` | `false` | Disable swipe interaction |
+| `showRating` | `boolean` | `false` | Show numeric rating value |
+| `startingValue` | `number` | - | Override for initial rating |
+| `fractions` | `number` | `2` | Decimal precision for rating |
+| `minValue` | `number` | `0` | Minimum allowed rating |
+| `jumpValue` | `number` | `0` | Step value for rating increments |
+| `onStartRating` | `(rating: number) => void` | - | Called when swipe starts |
+| `onSwipeRating` | `(rating: number) => void` | - | Called during swipe |
+| `onFinishRating` | `(rating: number) => void` | - | Called when swipe ends |
+
+### Available Icon Types
+
+| Type | Icon | Use Case |
+|------|------|----------|
+| `star` | ⭐ | General ratings, reviews |
+| `heart` | ❤️ | Favorites, likes, preferences |
+| `rocket` | 🚀 | Performance, speed ratings |
+| `bell` | 🔔 | Notifications, alerts priority |
+| `custom` | Custom | Any custom icon component |
+
+## Examples
+
+### Product Rating
+
+```tsx
+const ProductRating = ({ product }) => {
+  const [userRating, setUserRating] = useState(0);
+
+  return (
+    <VStack spacing="lg" padding="md">
+      {/* Overall Rating Summary */}
+      <Rating
+        count={5}
+        defaultRating={product.averageRating}
+        readonly={true}
+        showRatingSummary={true}
+        totalRating={product.averageRating}
+        totalReviewers={product.reviewCount}
+        selectedColor="#ff6b35"
+        unSelectedColor="#f5f5f5"
+      />
+
+      {/* User Rating Input */}
+      <VStack spacing="sm">
+        <Text style={{ fontSize: 16, fontWeight: '600' }}>
+          Rate this product:
+        </Text>
+        <Rating
+          count={5}
+          defaultRating={userRating}
+          showRating={true}
+          reviews={['Hate it', 'Dislike', 'OK', 'Like it', 'Love it']}
+          onRatingChange={setUserRating}
+          selectedColor="#ff6b35"
+          size="lg"
+        />
+      </VStack>
+    </VStack>
+  );
+};
+```
+
+### Size Variations
+
+```tsx
+<VStack spacing="lg" align="center" padding="xl">
+  <VStack spacing="sm" align="center">
+    <Text>Extra Small</Text>
+    <Rating size="xs" defaultRating={4} />
+  </VStack>
+
+  <VStack spacing="sm" align="center">
+    <Text>Small</Text>
+    <Rating size="sm" defaultRating={4} />
+  </VStack>
+
+  <VStack spacing="sm" align="center">
+    <Text>Medium</Text>
+    <Rating size="md" defaultRating={4} />
+  </VStack>
+
+  <VStack spacing="sm" align="center">
+    <Text>Large</Text>
+    <Rating size="lg" defaultRating={4} />
+  </VStack>
+
+  <VStack spacing="sm" align="center">
+    <Text>Extra Large</Text>
+    <Rating size="xl" defaultRating={4} />
+  </VStack>
+</VStack>
+```
+
+### Custom Icons and Colors
+
+```tsx
+<VStack spacing="xl" padding="lg">
+  {/* Heart Rating */}
+  <VStack spacing="sm" align="center">
+    <Text style={{ fontSize: 18, fontWeight: '600' }}>
+      How much do you love this?
+    </Text>
+    <Rating
+      count={5}
+      defaultRating={3}
+      customIcon={Heart}
+      selectedColor="#e91e63"
+      unSelectedColor="#fce4ec"
+      showRating={true}
+      reviews={['Hate', 'Dislike', 'Neutral', 'Like', 'Love']}
+    />
+  </VStack>
+
+  {/* Rocket Performance Rating */}
+  <VStack spacing="sm" align="center">
+    <Text style={{ fontSize: 18, fontWeight: '600' }}>
+      Performance Rating
+    </Text>
+    <Rating
+      count={5}
+      defaultRating={4}
+      customIcon={Rocket}
+      selectedColor="#4caf50"
+      unSelectedColor="#e8f5e8"
+      showRating={true}
+      reviews={['Slow', 'Below Average', 'Average', 'Fast', 'Lightning']}
+    />
+  </VStack>
+
+  {/* Bell Priority Rating */}
+  <VStack spacing="sm" align="center">
+    <Text style={{ fontSize: 18, fontWeight: '600' }}>
+      Priority Level
+    </Text>
+    <Rating
+      count={4}
+      defaultRating={2}
+      customIcon={Bell}
+      selectedColor="#ff9800"
+      unSelectedColor="#fff3e0"
+      showRating={true}
+      reviews={['Low', 'Medium', 'High', 'Critical']}
+    />
+  </VStack>
+</VStack>
+```
+
+### Dynamic Colors
+
+```tsx
+<VStack spacing="xl" padding="lg">
+  <VStack spacing="sm" align="center">
+    <Text style={{ fontSize: 18, fontWeight: '600' }}>
+      Satisfaction Rating
+    </Text>
+    <Rating
+      count={5}
+      defaultRating={3}
+      enableDynamicColors={true}
+      customColors={[
+        '#f44336', // Red - Very Poor
+        '#ff5722', // Deep Orange - Poor
+        '#ff9800', // Orange - Average
+        '#4caf50', // Green - Good
+        '#2196f3', // Blue - Excellent
+      ]}
+      showRating={true}
+      reviews={['Very Poor', 'Poor', 'Average', 'Good', 'Excellent']}
+      reviewSize={18}
+    />
+  </VStack>
+
+  <VStack spacing="sm" align="center">
+    <Text style={{ fontSize: 18, fontWeight: '600' }}>
+      Difficulty Level
+    </Text>
+    <Rating
+      count={5}
+      defaultRating={2}
+      enableDynamicColors={true}
+      customColors={[
+        '#4caf50', // Green - Very Easy
+        '#8bc34a', // Light Green - Easy
+        '#ffeb3b', // Yellow - Moderate
+        '#ff9800', // Orange - Hard
+        '#f44336', // Red - Very Hard
+      ]}
+      showRating={true}
+      reviews={['Very Easy', 'Easy', 'Moderate', 'Hard', 'Very Hard']}
+    />
+  </VStack>
+</VStack>
+```
+
+### Swipe Rating Examples
+
+```tsx
+<VStack spacing="xl" padding="lg">
+  {/* Basic Swipe Rating */}
+  <VStack spacing="sm" align="center">
+    <Text style={{ fontSize: 18, fontWeight: '600' }}>
+      Swipe to Rate
+    </Text>
+    <SwipeRating
+      type="star"
+      count={5}
+      defaultRating={2.5}
+      showRating={true}
+      ratingColor="#ffc107"
+      fractions={1}
+      onFinishRating={(rating) => console.log('Final rating:', rating)}
+    />
+  </VStack>
+
+  {/* Heart Swipe Rating */}
+  <VStack spacing="sm" align="center">
+    <Text style={{ fontSize: 18, fontWeight: '600' }}>
+      Love Level
+    </Text>
+    <SwipeRating
+      type="heart"
+      count={5}
+      defaultRating={3.0}
+      showRating={true}
+      ratingColor="#e91e63"
+      ratingBackgroundColor="#fce4ec"
+      imageSize={40}
+      fractions={0} // Whole numbers only
+    />
+  </VStack>
+
+  {/* Performance Rating with Callbacks */}
+  <VStack spacing="sm" align="center">
+    <Text style={{ fontSize: 18, fontWeight: '600' }}>
+      Performance Score
+    </Text>
+    <SwipeRating
+      type="rocket"
+      count={10}
+      defaultRating={7.5}
+      showRating={true}
+      ratingColor="#4caf50"
+      imageSize={35}
+      fractions={1}
+      minValue={1}
+      onStartRating={() => console.log('Started rating')}
+      onSwipeRating={(rating) => console.log('Swiping:', rating)}
+      onFinishRating={(rating) => console.log('Finished:', rating)}
+    />
+  </VStack>
+</VStack>
+```
+
+### Review System Integration
+
+```tsx
+const ReviewSystem = ({ productId }) => {
+  const [userRating, setUserRating] = useState(0);
+  const [reviewText, setReviewText] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+
+  const handleSubmitReview = async () => {
+    if (userRating === 0) {
+      Alert.alert('Error', 'Please provide a rating');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      await submitReview({
+        productId,
+        rating: userRating,
+        comment: reviewText,
+      });
+
+      // Reset form
+      setUserRating(0);
+      setReviewText('');
+      Alert.alert('Success', 'Review submitted successfully!');
+    } catch (error) {
+      Alert.alert('Error', 'Failed to submit review');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <VStack spacing="lg" padding="lg">
+      <VStack spacing="sm">
+        <Text style={{ fontSize: 18, fontWeight: '600' }}>
+          Rate this product
+        </Text>
+        <Rating
+          count={5}
+          defaultRating={userRating}
+          showRating={true}
+          reviews={['Poor', 'Fair', 'Good', 'Very Good', 'Excellent']}
+          onRatingChange={setUserRating}
+          selectedColor="#ff6b35"
+          size="lg"
+          starGap={8}
+        />
+      </VStack>
+
+      <VStack spacing="sm">
+        <Text style={{ fontSize: 16, fontWeight: '500' }}>
+          Write a review (optional)
+        </Text>
+        <TextInput
+          multiline
+          numberOfLines={4}
+          placeholder="Share your experience with this product..."
+          value={reviewText}
+          onChangeText={setReviewText}
+          style={{
+            borderWidth: 1,
+            borderColor: '#e0e0e0',
+            borderRadius: 8,
+            padding: 12,
+            textAlignVertical: 'top',
+          }}
+        />
+      </VStack>
+
+      <Button
+        variant="primary"
+        loading={submitting}
+        disabled={userRating === 0}
+        onPress={handleSubmitReview}
+      >
+        <ButtonText>Submit Review</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+### Feedback Collection
+
+```tsx
+const FeedbackForm = () => {
+  const [ratings, setRatings] = useState({
+    overall: 0,
+    quality: 0,
+    service: 0,
+    value: 0,
+  });
+
+  const updateRating = (category: keyof typeof ratings, value: number) => {
+    setRatings(prev => ({ ...prev, [category]: value }));
+  };
+
+  const categories = [
+    {
+      key: 'overall',
+      title: 'Overall Experience',
+      icon: Star,
+      color: '#2196f3',
+    },
+    {
+      key: 'quality',
+      title: 'Product Quality',
+      icon: CheckCircle,
+      color: '#4caf50',
+    },
+    {
+      key: 'service',
+      title: 'Customer Service',
+      icon: MessageCircle,
+      color: '#ff9800',
+    },
+    {
+      key: 'value',
+      title: 'Value for Money',
+      icon: DollarSign,
+      color: '#9c27b0',
+    },
+  ];
+
+  return (
+    <VStack spacing="xl" padding="lg">
+      <Text style={{ fontSize: 24, fontWeight: 'bold', textAlign: 'center' }}>
+        How was your experience?
+      </Text>
+
+      {categories.map((category) => (
+        <VStack key={category.key} spacing="sm">
+          <HStack spacing="sm" align="center">
+            <category.icon size={20} color={category.color} />
+            <Text style={{ fontSize: 16, fontWeight: '500' }}>
+              {category.title}
+            </Text>
+          </HStack>
+
+          <Rating
+            count={5}
+            defaultRating={ratings[category.key]}
+            selectedColor={category.color}
+            unSelectedColor="#f5f5f5"
+            showRating={true}
+            onRatingChange={(value) => updateRating(category.key, value)}
+            size="md"
+          />
+        </VStack>
+      ))}
+
+      <Button
+        variant="primary"
+        fullWidth
+        size="lg"
+        disabled={Object.values(ratings).every(r => r === 0)}
+      >
+        <ButtonText>Submit Feedback</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Animation Configuration
+
+```tsx
+const CustomAnimatedRating = () => {
+  const [rating, setRating] = useState(0);
+
+  return (
+    <Rating
+      count={5}
+      defaultRating={rating}
+      onRatingChange={setRating}
+      // Custom spring animation config
+      springConfig={{
+        damping: 10,
+        stiffness: 100,
+        mass: 0.5,
+      }}
+      // Custom press animation scale
+      pressAnimationScale={0.85}
+      selectedColor="#e91e63"
+      size="lg"
+    />
+  );
+};
+```
+
+### Controlled Rating with Validation
+
+```tsx
+const ControlledRating = () => {
+  const [rating, setRating] = useState(0);
+  const [hasError, setHasError] = useState(false);
+
+  const handleRatingChange = (newRating: number) => {
+    setRating(newRating);
+    if (hasError && newRating > 0) {
+      setHasError(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    if (rating === 0) {
+      setHasError(true);
+      return;
+    }
+    // Submit rating
+    console.log('Submitting rating:', rating);
+  };
+
+  return (
+    <VStack spacing="md" padding="lg">
+      <Text style={{ fontSize: 18, fontWeight: '600' }}>
+        Rate this item *
+      </Text>
+
+      <Rating
+        count={5}
+        defaultRating={rating}
+        onRatingChange={handleRatingChange}
+        selectedColor={hasError ? '#f44336' : '#4caf50'}
+        unSelectedColor={hasError ? '#ffebee' : '#f5f5f5'}
+        showRating={true}
+      />
+
+      {hasError && (
+        <Text style={{ color: '#f44336', fontSize: 14 }}>
+          Please provide a rating before submitting.
+        </Text>
+      )}
+
+      <Button variant="primary" onPress={handleSubmit}>
+        <ButtonText>Submit Rating</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+## Best Practices
+
+<Card title="User Experience" icon="seti:plan">
+- Use appropriate icon types that match your content context (stars for general ratings, hearts for favorites)
+- Provide clear labels and feedback text to guide users
+- Consider using swipe ratings for more precise decimal ratings
+</Card>
+
+<Card title="Visual Design" icon="figma">
+- Maintain consistent color schemes across your rating components
+- Use dynamic colors to provide immediate visual feedback about rating levels
+- Ensure sufficient contrast between selected and unselected states
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use `React.memo` for rating components in lists
+- Debounce rating changes if triggering API calls
+- Consider using `readonly` mode for display-only ratings
+</Card>
+
+<Aside type="tip">
+When implementing rating systems, consider storing both the individual user rating and the aggregate statistics separately for better performance and more detailed analytics.
+</Aside>
+
+<Aside type="caution">
+For swipe ratings, be mindful of gesture conflicts with scrollable containers. Test thoroughly on different devices to ensure smooth interaction.
+</Aside>

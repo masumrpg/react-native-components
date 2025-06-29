@@ -1,0 +1,612 @@
+---
+title: Typography
+description: Comprehensive typography system with multiple variants, semantic colors, and flexible styling options for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Typography provides a complete text rendering solution with predefined variants, semantic color options, and consistent styling across your React Native application. It includes specialized components for different text hierarchies and use cases.
+
+## Import
+
+```tsx
+import {
+  Typography,
+  H1, H2, H3, H4, H5, H6,
+  P, Heading, Title, Subtitle, Body, Small,
+  Display, Lead, Caption, Overline, Label, Code, Quote,
+  TextPrimary, TextSecondary, TextError, TextSuccess, TextWarning, TextInfo
+} from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Basic Text">
+    ```tsx
+    <Typography variant="body">
+      This is basic body text with default styling.
+    </Typography>
+    ```
+  </TabItem>
+
+  <TabItem label="Heading Hierarchy">
+    ```tsx
+    <VStack spacing="md">
+      <H1>Main Page Title</H1>
+      <H2>Section Heading</H2>
+      <H3>Subsection Title</H3>
+      <P>Body paragraph text content.</P>
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Semantic Colors">
+    ```tsx
+    <VStack spacing="sm">
+      <TextPrimary variant="title">Primary Text</TextPrimary>
+      <TextSecondary variant="body">Secondary information</TextSecondary>
+      <TextError variant="small">Error message</TextError>
+      <TextSuccess variant="small">Success notification</TextSuccess>
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Styling">
+    ```tsx
+    <Typography
+      variant="body"
+      weight="600"
+      color="#007AFF"
+      align="center"
+      numberOfLines={2}
+      ellipsizeMode="tail"
+    >
+      Custom styled text with truncation
+    </Typography>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Typography Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `variant` | `TypographyVariant` | `'body'` | Text style variant |
+| `weight` | `TypographyWeight` | - | Font weight override |
+| `color` | `string` | `theme.colors.text` | Text color |
+| `align` | `TypographyAlign` | `'left'` | Text alignment |
+| `numberOfLines` | `number` | - | Maximum lines to display |
+| `ellipsizeMode` | `'head' \| 'middle' \| 'tail' \| 'clip'` | - | Text truncation mode |
+| `selectable` | `boolean` | `false` | Allow text selection |
+| `onPress` | `() => void` | - | Press handler function |
+| `style` | `StyleProp<TextStyle>` | - | Additional text styles |
+
+### Typography Variants
+
+| Variant | Font Size | Line Height | Weight | Use Case |
+|---------|-----------|-------------|---------|----------|
+| `display` | 48px | 56px | 800 | Hero titles, marketing headers |
+| `h1` | 32px | 40px | 700 | Page titles, main headings |
+| `h2` | 28px | 36px | 700 | Section headings |
+| `h3` | 24px | 32px | 600 | Subsection titles |
+| `h4` | 20px | 28px | 600 | Component titles |
+| `h5` | 18px | 24px | 500 | Card headers, labels |
+| `h6` | 16px | 22px | 500 | Small headings |
+| `heading` | Theme-based | Theme-based | 700 | Generic heading |
+| `title` | Theme-based | Theme-based | 600 | Content titles |
+| `subtitle` | Theme-based | Theme-based | 500 | Content subtitles |
+| `lead` | 20px | 30px | 400 | Lead paragraphs, introductions |
+| `body` | Theme-based | Theme-based | 400 | Regular body text |
+| `small` | Theme-based | Theme-based | 400 | Small text, metadata |
+| `caption` | 12px | 16px | 400 | Image captions, footnotes |
+| `overline` | 10px | 14px | 600 | Category labels, tags |
+| `button` | 14px | 20px | 600 | Button text |
+| `label` | 12px | 16px | 500 | Form labels |
+| `code` | 14px | 20px | 400 | Code snippets, monospace |
+| `quote` | 18px | 28px | 400 | Blockquotes, testimonials |
+
+### Typography Alignment
+
+| Value | Description |
+|-------|-------------|
+| `left` | Left-aligned text (default) |
+| `center` | Center-aligned text |
+| `right` | Right-aligned text |
+| `justify` | Justified text alignment |
+
+## Component Variants
+
+### Heading Components
+
+```tsx
+<VStack spacing="lg">
+  <Display>Hero Display Text</Display>
+
+  <H1>Page Title</H1>
+  <H2>Section Heading</H2>
+  <H3>Subsection Title</H3>
+  <H4>Component Header</H4>
+  <H5>Card Title</H5>
+  <H6>Small Heading</H6>
+
+  <Heading>Generic Heading</Heading>
+  <Title>Content Title</Title>
+  <Subtitle>Content Subtitle</Subtitle>
+</VStack>
+```
+
+### Content Components
+
+```tsx
+<VStack spacing="md">
+  <Lead>
+    This is a lead paragraph that introduces the main content
+    with larger, more prominent text styling.
+  </Lead>
+
+  <P>
+    Regular paragraph text for body content. This component
+    uses the body variant by default and is perfect for
+    main content areas.
+  </P>
+
+  <Small>
+    Small text for metadata, timestamps, or secondary information
+    that should be less prominent than body text.
+  </Small>
+
+  <Caption>Image caption or footnote text</Caption>
+</VStack>
+```
+
+### Specialized Components
+
+```tsx
+<VStack spacing="md">
+  <Overline>CATEGORY LABEL</Overline>
+
+  <Label>Form Field Label</Label>
+
+  <Code>const greeting = 'Hello World';</Code>
+
+  <Quote>
+    "This is a beautifully styled quote that stands out
+    from regular body text with italic styling."
+  </Quote>
+</VStack>
+```
+
+### Semantic Color Components
+
+```tsx
+<VStack spacing="sm">
+  <TextPrimary variant="h3">Primary Heading</TextPrimary>
+  <TextSecondary variant="body">Secondary information text</TextSecondary>
+
+  <TextSuccess variant="small">✓ Operation completed successfully</TextSuccess>
+  <TextError variant="small">✗ An error occurred</TextError>
+  <TextWarning variant="small">⚠ Warning message</TextWarning>
+  <TextInfo variant="small">ℹ Information notice</TextInfo>
+</VStack>
+```
+
+## Examples
+
+### Article Layout
+
+```tsx
+const ArticleContent = ({ article }) => {
+  return (
+    <ScrollView padding="xl">
+      <VStack spacing="lg">
+        {/* Article Header */}
+        <VStack spacing="md">
+          <Overline>{article.category.toUpperCase()}</Overline>
+          <H1>{article.title}</H1>
+          <TextSecondary variant="body">
+            By {article.author} • {article.publishDate}
+          </TextSecondary>
+        </VStack>
+
+        {/* Lead Paragraph */}
+        <Lead>{article.excerpt}</Lead>
+
+        {/* Article Content */}
+        <VStack spacing="md">
+          {article.sections.map((section, index) => (
+            <VStack key={index} spacing="sm">
+              <H2>{section.title}</H2>
+              {section.paragraphs.map((paragraph, pIndex) => (
+                <P key={pIndex}>{paragraph}</P>
+              ))}
+            </VStack>
+          ))}
+        </VStack>
+
+        {/* Quote */}
+        {article.quote && (
+          <Quote>"{article.quote.text}"</Quote>
+        )}
+
+        {/* Article Footer */}
+        <VStack spacing="sm">
+          <Small>Last updated: {article.lastUpdated}</Small>
+          <TextSecondary variant="caption">
+            #{article.tags.join(' #')}
+          </TextSecondary>
+        </VStack>
+      </VStack>
+    </ScrollView>
+  );
+};
+```
+
+### Profile Card
+
+```tsx
+const ProfileCard = ({ user }) => {
+  return (
+    <Card padding="lg">
+      <VStack spacing="md" align="center">
+        <Avatar size="xl" source={{ uri: user.avatar }} />
+
+        <VStack spacing="sm" align="center">
+          <H3>{user.name}</H3>
+          <TextSecondary variant="body">{user.title}</TextSecondary>
+          <Caption>{user.location}</Caption>
+        </VStack>
+
+        <HStack spacing="xl" justify="center">
+          <VStack align="center">
+            <H4>{user.followers}</H4>
+            <Label>Followers</Label>
+          </VStack>
+          <VStack align="center">
+            <H4>{user.following}</H4>
+            <Label>Following</Label>
+          </VStack>
+          <VStack align="center">
+            <H4>{user.posts}</H4>
+            <Label>Posts</Label>
+          </VStack>
+        </HStack>
+
+        <P align="center" numberOfLines={3}>
+          {user.bio}
+        </P>
+      </VStack>
+    </Card>
+  );
+};
+```
+
+### Form Example
+
+```tsx
+const ContactForm = () => {
+  const [form, setForm] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+
+  return (
+    <VStack spacing="lg" padding="xl">
+      <VStack spacing="sm">
+        <H2>Contact Us</H2>
+        <TextSecondary variant="body">
+          We'd love to hear from you. Send us a message and we'll respond as soon as possible.
+        </TextSecondary>
+      </VStack>
+
+      <VStack spacing="md">
+        <VStack spacing="xs">
+          <Label>Full Name</Label>
+          <TextInput
+            value={form.name}
+            onChangeText={(text) => setForm(prev => ({ ...prev, name: text }))}
+            placeholder="Enter your full name"
+          />
+        </VStack>
+
+        <VStack spacing="xs">
+          <Label>Email Address</Label>
+          <TextInput
+            value={form.email}
+            onChangeText={(text) => setForm(prev => ({ ...prev, email: text }))}
+            placeholder="Enter your email"
+            keyboardType="email-address"
+          />
+        </VStack>
+
+        <VStack spacing="xs">
+          <Label>Message</Label>
+          <TextInput
+            value={form.message}
+            onChangeText={(text) => setForm(prev => ({ ...prev, message: text }))}
+            placeholder="Enter your message"
+            multiline
+            numberOfLines={4}
+          />
+          <Caption>Minimum 10 characters required</Caption>
+        </VStack>
+      </VStack>
+
+      <Button variant="primary" fullWidth>
+        <ButtonText>Send Message</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+### Code Documentation
+
+```tsx
+const CodeExample = () => {
+  return (
+    <VStack spacing="md" padding="lg">
+      <H3>API Usage Example</H3>
+
+      <P>
+        Here's how to implement the authentication hook in your component:
+      </P>
+
+      <Card padding="md" backgroundColor="codeBackground">
+        <Code>
+{`import { useAuth } from './hooks/useAuth';
+
+const LoginScreen = () => {
+  const { login, loading, error } = useAuth();
+
+  return (
+    <View>
+      {/* Login form implementation */}
+    </View>
+  );
+};`}
+        </Code>
+      </Card>
+
+      <VStack spacing="sm">
+        <H4>Parameters</H4>
+        <P>The hook accepts the following configuration:</P>
+
+        <VStack spacing="xs">
+          <HStack>
+            <Code>redirectUrl</Code>
+            <Small> - Optional redirect after login</Small>
+          </HStack>
+          <HStack>
+            <Code>persistToken</Code>
+            <Small> - Whether to persist authentication</Small>
+          </HStack>
+        </VStack>
+      </VStack>
+    </VStack>
+  );
+};
+```
+
+### Dashboard Stats
+
+```tsx
+const StatCard = ({ title, value, change, trend }) => {
+  return (
+    <Card padding="lg">
+      <VStack spacing="sm">
+        <Label>{title.toUpperCase()}</Label>
+        <H2>{value}</H2>
+
+        <HStack spacing="xs" align="center">
+          {trend === 'up' ? (
+            <TextSuccess variant="small">↑ {change}%</TextSuccess>
+          ) : (
+            <TextError variant="small">↓ {change}%</TextError>
+          )}
+          <Small>vs last month</Small>
+        </HStack>
+      </VStack>
+    </Card>
+  );
+};
+
+const Dashboard = ({ stats }) => {
+  return (
+    <VStack spacing="xl" padding="xl">
+      <VStack spacing="sm">
+        <H1>Dashboard</H1>
+        <TextSecondary variant="body">
+          Welcome back! Here's what's happening with your account.
+        </TextSecondary>
+      </VStack>
+
+      <Grid columns={2} spacing="md">
+        {stats.map((stat, index) => (
+          <StatCard key={index} {...stat} />
+        ))}
+      </Grid>
+    </VStack>
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Font Weights
+
+```tsx
+const CustomTypography = () => {
+  return (
+    <VStack spacing="md">
+      <Typography variant="h2" weight="300">Light Heading</Typography>
+      <Typography variant="h2" weight="400">Regular Heading</Typography>
+      <Typography variant="h2" weight="500">Medium Heading</Typography>
+      <Typography variant="h2" weight="600">Semibold Heading</Typography>
+      <Typography variant="h2" weight="700">Bold Heading</Typography>
+      <Typography variant="h2" weight="800">Extra Bold Heading</Typography>
+    </VStack>
+  );
+};
+```
+
+### Text Truncation
+
+```tsx
+const TruncatedText = ({ longText }) => {
+  return (
+    <VStack spacing="md" padding="lg">
+      <Typography
+        variant="body"
+        numberOfLines={1}
+        ellipsizeMode="tail"
+      >
+        {longText}
+      </Typography>
+
+      <Typography
+        variant="body"
+        numberOfLines={2}
+        ellipsizeMode="middle"
+      >
+        {longText}
+      </Typography>
+
+      <Typography
+        variant="body"
+        numberOfLines={3}
+        ellipsizeMode="head"
+      >
+        {longText}
+      </Typography>
+    </VStack>
+  );
+};
+```
+
+### Interactive Text
+
+```tsx
+const InteractiveText = () => {
+  const handlePress = () => {
+    console.log('Text pressed!');
+  };
+
+  return (
+    <VStack spacing="md">
+      <Typography
+        variant="body"
+        color="#007AFF"
+        onPress={handlePress}
+        selectable={false}
+      >
+        Tap this text to trigger an action
+      </Typography>
+
+      <Typography
+        variant="body"
+        selectable={true}
+      >
+        This text can be selected and copied
+      </Typography>
+    </VStack>
+  );
+};
+```
+
+## Text Combinations
+
+<Tabs>
+  <TabItem label="Hero Section">
+    ```tsx
+    <VStack spacing="lg" align="center" padding="xl">
+      <Display align="center">
+        Build Amazing Apps
+      </Display>
+
+      <Lead align="center">
+        Create beautiful, performant React Native applications
+        with our comprehensive design system.
+      </Lead>
+
+      <Button variant="primary" size="lg">
+        <ButtonText>Get Started</ButtonText>
+      </Button>
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Feature List">
+    ```tsx
+    <VStack spacing="lg">
+      {features.map((feature, index) => (
+        <HStack key={index} spacing="md" align="start">
+          <Icon name={feature.icon} size="md" color="primary" />
+          <VStack spacing="xs" flex={1}>
+            <H4>{feature.title}</H4>
+            <P>{feature.description}</P>
+            <Small>{feature.detail}</Small>
+          </VStack>
+        </HStack>
+      ))}
+    </VStack>
+    ```
+  </TabItem>
+
+  <TabItem label="Testimonial">
+    ```tsx
+    <Card padding="xl">
+      <VStack spacing="lg" align="center">
+        <Quote align="center">
+          This design system has completely transformed how we build
+          our mobile applications. The typography system alone saved
+          us weeks of development time.
+        </Quote>
+
+        <VStack spacing="xs" align="center">
+          <Avatar size="md" source={{ uri: testimonial.avatar }} />
+          <H5>{testimonial.name}</H5>
+          <TextSecondary variant="small">
+            {testimonial.title}, {testimonial.company}
+          </TextSecondary>
+        </VStack>
+      </VStack>
+    </Card>
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="Hierarchy & Contrast" icon="seti:plan">
+- Use heading variants (H1-H6) to establish clear visual hierarchy
+- Ensure sufficient color contrast between text and background
+- Limit the number of different text sizes on a single screen
+</Card>
+
+<Card title="Readability" icon="seti:ignored">
+- Use appropriate line heights for better readability
+- Consider text truncation for dynamic content that may overflow
+- Test text rendering across different device sizes and orientations
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use React.memo for frequently updated text components
+- Avoid inline styles that create new objects on each render
+- Consider using numberOfLines for long content that might cause performance issues
+</Card>
+
+<Aside type="tip">
+When building content hierarchies, start with semantic HTML-like structure (H1, H2, H3, P) and then use specialized variants (Display, Lead, Caption) for enhanced visual appeal.
+</Aside>
+
+<Aside type="caution">
+Be mindful of text overflow on smaller screens. Always test long content with numberOfLines and ellipsizeMode props to ensure graceful degradation.
+</Aside>
+
+<Aside type="note">
+The Typography component respects your theme configuration for base variants (small, body, subtitle, title, heading) while providing fixed sizes for H1-H6 and specialized variants for consistency across different themes.
+</Aside>
