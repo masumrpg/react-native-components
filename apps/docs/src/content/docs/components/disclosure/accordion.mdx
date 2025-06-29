@@ -1,0 +1,663 @@
+---
+title: Accordion
+description: Collapsible content component with smooth animations, multiple variants, and flexible configuration options for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Accordion provides an elegant solution for organizing content in collapsible sections with smooth animations, multiple styling variants, and support for both single and multiple item expansion modes.
+
+## Import
+
+```tsx
+import {
+  Accordion,
+  AccordionItem,
+  AccordionTrigger,
+  AccordionContent
+} from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Accordion">
+    ```tsx
+    <Accordion>
+      <AccordionItem value="item-1">
+        <AccordionTrigger>What is React Native?</AccordionTrigger>
+        <AccordionContent>
+          React Native is a framework for building mobile applications using React and JavaScript.
+        </AccordionContent>
+      </AccordionItem>
+
+      <AccordionItem value="item-2">
+        <AccordionTrigger>How does it work?</AccordionTrigger>
+        <AccordionContent>
+          React Native compiles to native app components, allowing you to build mobile apps that feel truly native.
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+    ```
+  </TabItem>
+
+  <TabItem label="Multiple Selection">
+    ```tsx
+    <Accordion type="multiple">
+      <AccordionItem value="features">
+        <AccordionTrigger>Features</AccordionTrigger>
+        <AccordionContent>
+          Cross-platform development, hot reloading, native performance, and more.
+        </AccordionContent>
+      </AccordionItem>
+
+      <AccordionItem value="benefits">
+        <AccordionTrigger>Benefits</AccordionTrigger>
+        <AccordionContent>
+          Faster development, code reusability, and native user experience.
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+    ```
+  </TabItem>
+
+  <TabItem label="Controlled State">
+    ```tsx
+    const [value, setValue] = useState('item-1');
+
+    <Accordion value={value} onValueChange={setValue}>
+      <AccordionItem value="item-1">
+        <AccordionTrigger>Getting Started</AccordionTrigger>
+        <AccordionContent>
+          Follow our quick start guide to set up your first React Native project.
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Styling">
+    ```tsx
+    <Accordion>
+      <AccordionItem value="styled" variant="primary" size="lg">
+        <AccordionTrigger showIcon={false}>
+          Custom Styled Item
+        </AccordionTrigger>
+        <AccordionContent padding="lg">
+          This accordion item has custom styling with primary variant and large size.
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Accordion Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `type` | `'single' \| 'multiple'` | `'single'` | Selection mode - single or multiple items |
+| `value` | `string \| string[]` | - | Controlled value(s) for expanded items |
+| `onValueChange` | `(value: string \| string[]) => void` | - | Callback when expanded items change |
+| `disabled` | `boolean` | `false` | Disable all accordion interactions |
+| `collapsible` | `boolean` | `true` | Allow collapsing the last expanded item |
+| `style` | `StyleProp<ViewStyle>` | - | Additional container styles |
+
+### AccordionItem Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `value` | `string` | - | Unique identifier for the accordion item |
+| `variant` | `ComponentVariant` | `'default'` | Visual style variant |
+| `size` | `ComponentSize` | `'md'` | Item size (xs, sm, md, lg, xl) |
+| `disabled` | `boolean` | `false` | Disable this specific item |
+| `style` | `StyleProp<ViewStyle>` | - | Additional item styles |
+
+### AccordionTrigger Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `showIcon` | `boolean` | `true` | Show expand/collapse icon |
+| `icon` | `React.ReactNode` | - | Custom icon component |
+| `style` | `StyleProp<ViewStyle>` | - | Additional trigger styles |
+| `textStyle` | `TextStyle` | - | Text styling for trigger content |
+
+### AccordionContent Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `padding` | `ComponentSize` | `'md'` | Content padding size |
+| `style` | `StyleProp<ViewStyle>` | - | Additional content styles |
+
+### Variants
+
+| Variant | Description | Use Case |
+|---------|-------------|----------|
+| `default` | Standard accordion styling | General content organization |
+| `primary` | Primary brand color accent | Important sections |
+| `secondary` | Secondary color accent | Supporting content |
+| `outline` | Bordered transparent style | Subtle content grouping |
+| `filled` | Filled background style | Content separation |
+| `ghost` | Minimal transparent style | Clean, minimal layouts |
+| `success` | Success state styling | Positive information |
+| `error` | Error state styling | Error messages, warnings |
+| `warning` | Warning state styling | Caution information |
+| `info` | Information state styling | Help content, tips |
+| `destructive` | Destructive action styling | Dangerous actions |
+
+## Examples
+
+### FAQ Section
+
+```tsx
+const FAQSection = () => {
+  const [openItems, setOpenItems] = useState(['faq-1']);
+
+  const faqs = [
+    {
+      id: 'faq-1',
+      question: 'What is your refund policy?',
+      answer: 'We offer a 30-day money-back guarantee for all purchases. Contact our support team to initiate a refund.'
+    },
+    {
+      id: 'faq-2',
+      question: 'How do I track my order?',
+      answer: 'You can track your order using the tracking number sent to your email after purchase.'
+    },
+    {
+      id: 'faq-3',
+      question: 'Do you offer international shipping?',
+      answer: 'Yes, we ship worldwide. Shipping costs and delivery times vary by location.'
+    }
+  ];
+
+  return (
+    <Accordion
+      type="multiple"
+      value={openItems}
+      onValueChange={setOpenItems}
+    >
+      {faqs.map((faq) => (
+        <AccordionItem key={faq.id} value={faq.id} variant="outline">
+          <AccordionTrigger>
+            {faq.question}
+          </AccordionTrigger>
+          <AccordionContent padding="lg">
+            <Text>{faq.answer}</Text>
+          </AccordionContent>
+        </AccordionItem>
+      ))}
+    </Accordion>
+  );
+};
+```
+
+### Settings Panel
+
+```tsx
+const SettingsPanel = () => {
+  return (
+    <Accordion type="single" collapsible={false}>
+      <AccordionItem value="account" variant="primary" size="lg">
+        <AccordionTrigger>
+          <HStack spacing="md" align="center">
+            <UserIcon size={20} />
+            <Text>Account Settings</Text>
+          </HStack>
+        </AccordionTrigger>
+        <AccordionContent padding="xl">
+          <VStack spacing="md">
+            <Input placeholder="Full Name" />
+            <Input placeholder="Email Address" />
+            <Input placeholder="Phone Number" />
+            <Button variant="primary">
+              <ButtonText>Save Changes</ButtonText>
+            </Button>
+          </VStack>
+        </AccordionContent>
+      </AccordionItem>
+
+      <AccordionItem value="privacy" variant="secondary" size="lg">
+        <AccordionTrigger>
+          <HStack spacing="md" align="center">
+            <ShieldIcon size={20} />
+            <Text>Privacy & Security</Text>
+          </HStack>
+        </AccordionTrigger>
+        <AccordionContent padding="xl">
+          <VStack spacing="lg">
+            <HStack justify="space-between" align="center">
+              <Text>Two-Factor Authentication</Text>
+              <Switch value={true} />
+            </HStack>
+            <HStack justify="space-between" align="center">
+              <Text>Email Notifications</Text>
+              <Switch value={false} />
+            </HStack>
+            <Button variant="outline">
+              <ButtonText>Change Password</ButtonText>
+            </Button>
+          </VStack>
+        </AccordionContent>
+      </AccordionItem>
+
+      <AccordionItem value="notifications" variant="info" size="lg">
+        <AccordionTrigger>
+          <HStack spacing="md" align="center">
+            <BellIcon size={20} />
+            <Text>Notifications</Text>
+          </HStack>
+        </AccordionTrigger>
+        <AccordionContent padding="xl">
+          <VStack spacing="md">
+            <CheckboxGroup>
+              <Checkbox value="email">Email Updates</Checkbox>
+              <Checkbox value="push">Push Notifications</Checkbox>
+              <Checkbox value="sms">SMS Alerts</Checkbox>
+            </CheckboxGroup>
+          </VStack>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+};
+```
+
+### Product Information
+
+```tsx
+const ProductDetails = ({ product }) => {
+  return (
+    <VStack spacing="lg">
+      <Accordion type="multiple">
+        <AccordionItem value="description" variant="filled">
+          <AccordionTrigger>
+            Product Description
+          </AccordionTrigger>
+          <AccordionContent>
+            <Text>{product.description}</Text>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="specifications" variant="filled">
+          <AccordionTrigger>
+            Specifications
+          </AccordionTrigger>
+          <AccordionContent>
+            <VStack spacing="sm">
+              {product.specifications.map((spec) => (
+                <HStack key={spec.name} justify="space-between">
+                  <Text style={{ fontWeight: '600' }}>{spec.name}</Text>
+                  <Text>{spec.value}</Text>
+                </HStack>
+              ))}
+            </VStack>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="reviews" variant="filled">
+          <AccordionTrigger>
+            <HStack spacing="sm" align="center">
+              <Text>Customer Reviews</Text>
+              <Badge variant="success">{product.rating}</Badge>
+            </HStack>
+          </AccordionTrigger>
+          <AccordionContent>
+            <VStack spacing="md">
+              {product.reviews.map((review) => (
+                <Card key={review.id} padding="md">
+                  <VStack spacing="sm">
+                    <HStack justify="space-between">
+                      <Text style={{ fontWeight: '600' }}>{review.author}</Text>
+                      <StarRating rating={review.rating} />
+                    </HStack>
+                    <Text>{review.comment}</Text>
+                  </VStack>
+                </Card>
+              ))}
+            </VStack>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="shipping" variant="success">
+          <AccordionTrigger>
+            Shipping & Returns
+          </AccordionTrigger>
+          <AccordionContent>
+            <VStack spacing="md">
+              <HStack spacing="md">
+                <TruckIcon size={20} />
+                <VStack>
+                  <Text style={{ fontWeight: '600' }}>Free Shipping</Text>
+                  <Text>On orders over $50</Text>
+                </VStack>
+              </HStack>
+              <HStack spacing="md">
+                <RefreshIcon size={20} />
+                <VStack>
+                  <Text style={{ fontWeight: '600' }}>Easy Returns</Text>
+                  <Text>30-day return policy</Text>
+                </VStack>
+              </HStack>
+            </VStack>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </VStack>
+  );
+};
+```
+
+### Form Sections
+
+```tsx
+const RegistrationForm = () => {
+  const [formData, setFormData] = useState({
+    personal: {},
+    contact: {},
+    preferences: {}
+  });
+
+  return (
+    <ScrollView>
+      <Accordion type="single" collapsible={false}>
+        <AccordionItem value="personal" variant="primary" size="lg">
+          <AccordionTrigger>
+            <HStack spacing="md" align="center">
+              <Text>Personal Information</Text>
+              {formData.personal.isComplete && (
+                <CheckIcon size={16} color="green" />
+              )}
+            </HStack>
+          </AccordionTrigger>
+          <AccordionContent padding="lg">
+            <VStack spacing="md">
+              <Input
+                label="First Name"
+                placeholder="Enter your first name"
+                value={formData.personal.firstName}
+                onChangeText={(text) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    personal: { ...prev.personal, firstName: text }
+                  }))
+                }
+              />
+              <Input
+                label="Last Name"
+                placeholder="Enter your last name"
+                value={formData.personal.lastName}
+                onChangeText={(text) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    personal: { ...prev.personal, lastName: text }
+                  }))
+                }
+              />
+              <DatePicker
+                label="Date of Birth"
+                value={formData.personal.dateOfBirth}
+                onChange={(date) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    personal: { ...prev.personal, dateOfBirth: date }
+                  }))
+                }
+              />
+            </VStack>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="contact" variant="secondary" size="lg">
+          <AccordionTrigger>
+            <HStack spacing="md" align="center">
+              <Text>Contact Information</Text>
+              {formData.contact.isComplete && (
+                <CheckIcon size={16} color="green" />
+              )}
+            </HStack>
+          </AccordionTrigger>
+          <AccordionContent padding="lg">
+            <VStack spacing="md">
+              <Input
+                label="Email"
+                placeholder="Enter your email"
+                keyboardType="email-address"
+                value={formData.contact.email}
+                onChangeText={(text) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    contact: { ...prev.contact, email: text }
+                  }))
+                }
+              />
+              <Input
+                label="Phone"
+                placeholder="Enter your phone number"
+                keyboardType="phone-pad"
+                value={formData.contact.phone}
+                onChangeText={(text) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    contact: { ...prev.contact, phone: text }
+                  }))
+                }
+              />
+              <Input
+                label="Address"
+                placeholder="Enter your address"
+                multiline
+                value={formData.contact.address}
+                onChangeText={(text) =>
+                  setFormData(prev => ({
+                    ...prev,
+                    contact: { ...prev.contact, address: text }
+                  }))
+                }
+              />
+            </VStack>
+          </AccordionContent>
+        </AccordionItem>
+
+        <AccordionItem value="preferences" variant="info" size="lg">
+          <AccordionTrigger>
+            <HStack spacing="md" align="center">
+              <Text>Preferences</Text>
+              {formData.preferences.isComplete && (
+                <CheckIcon size={16} color="green" />
+              )}
+            </HStack>
+          </AccordionTrigger>
+          <AccordionContent padding="lg">
+            <VStack spacing="lg">
+              <VStack spacing="md">
+                <Text style={{ fontWeight: '600' }}>Communication</Text>
+                <CheckboxGroup>
+                  <Checkbox value="email">Email notifications</Checkbox>
+                  <Checkbox value="sms">SMS notifications</Checkbox>
+                  <Checkbox value="push">Push notifications</Checkbox>
+                </CheckboxGroup>
+              </VStack>
+
+              <VStack spacing="md">
+                <Text style={{ fontWeight: '600' }}>Interests</Text>
+                <CheckboxGroup>
+                  <Checkbox value="tech">Technology</Checkbox>
+                  <Checkbox value="sports">Sports</Checkbox>
+                  <Checkbox value="music">Music</Checkbox>
+                  <Checkbox value="travel">Travel</Checkbox>
+                </CheckboxGroup>
+              </VStack>
+            </VStack>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+
+      <Button
+        fullWidth
+        variant="primary"
+        style={{ marginTop: 24 }}
+        onPress={handleSubmit}
+      >
+        <ButtonText>Complete Registration</ButtonText>
+      </Button>
+    </ScrollView>
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Icons and Animations
+
+```tsx
+const CustomAccordion = () => {
+  const [expandedItems, setExpandedItems] = useState(['custom-1']);
+
+  const customIcon = (isExpanded: boolean) => (
+    <Animated.View
+      style={{
+        transform: [{ rotate: isExpanded ? '90deg' : '0deg' }]
+      }}
+    >
+      <ChevronRightIcon size={20} />
+    </Animated.View>
+  );
+
+  return (
+    <Accordion
+      type="multiple"
+      value={expandedItems}
+      onValueChange={setExpandedItems}
+    >
+      <AccordionItem value="custom-1" variant="ghost">
+        <AccordionTrigger
+          icon={customIcon(expandedItems.includes('custom-1'))}
+          textStyle={{ fontSize: 18, fontWeight: '700' }}
+        >
+          Custom Styled Section
+        </AccordionTrigger>
+        <AccordionContent padding="xl">
+          <Card padding="lg" variant="primary">
+            <Text>This content has custom styling and animations.</Text>
+          </Card>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+};
+```
+
+### Nested Accordions
+
+```tsx
+const NestedAccordions = () => {
+  return (
+    <Accordion type="single">
+      <AccordionItem value="parent-1" variant="primary">
+        <AccordionTrigger>Main Category</AccordionTrigger>
+        <AccordionContent padding="sm">
+          <Accordion type="multiple">
+            <AccordionItem value="child-1" variant="secondary" size="sm">
+              <AccordionTrigger>Subcategory 1</AccordionTrigger>
+              <AccordionContent padding="md">
+                <Text>Nested content for subcategory 1</Text>
+              </AccordionContent>
+            </AccordionItem>
+
+            <AccordionItem value="child-2" variant="secondary" size="sm">
+              <AccordionTrigger>Subcategory 2</AccordionTrigger>
+              <AccordionContent padding="md">
+                <Text>Nested content for subcategory 2</Text>
+              </AccordionContent>
+            </AccordionItem>
+          </Accordion>
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+};
+```
+
+### Dynamic Content Loading
+
+```tsx
+const DynamicAccordion = () => {
+  const [loadingStates, setLoadingStates] = useState<Record<string, boolean>>({});
+  const [contentData, setContentData] = useState<Record<string, any>>({});
+
+  const handleExpand = async (itemValue: string) => {
+    if (!contentData[itemValue] && !loadingStates[itemValue]) {
+      setLoadingStates(prev => ({ ...prev, [itemValue]: true }));
+
+      try {
+        const data = await fetchContentForItem(itemValue);
+        setContentData(prev => ({ ...prev, [itemValue]: data }));
+      } catch (error) {
+        console.error('Failed to load content:', error);
+      } finally {
+        setLoadingStates(prev => ({ ...prev, [itemValue]: false }));
+      }
+    }
+  };
+
+  return (
+    <Accordion onValueChange={handleExpand}>
+      <AccordionItem value="dynamic-1">
+        <AccordionTrigger>Load Content Dynamically</AccordionTrigger>
+        <AccordionContent>
+          {loadingStates['dynamic-1'] ? (
+            <ActivityIndicator size="small" />
+          ) : contentData['dynamic-1'] ? (
+            <Text>{contentData['dynamic-1'].content}</Text>
+          ) : (
+            <Text>Click to load content...</Text>
+          )}
+        </AccordionContent>
+      </AccordionItem>
+    </Accordion>
+  );
+};
+```
+
+## Animation Configuration
+
+The Accordion component uses React Native Reanimated for smooth animations. You can observe the animation behavior:
+
+- **Expand/Collapse**: Content height animates with spring physics
+- **Icon Rotation**: Chevron rotates smoothly when expanding/collapsing
+- **Opacity**: Content fades in/out during transitions
+
+## Best Practices
+
+<Card title="Content Organization" icon="seti:folder">
+- Group related content logically within accordion items
+- Use descriptive trigger text that clearly indicates content
+- Keep content concise and scannable for better UX
+</Card>
+
+<Card title="Visual Hierarchy" icon="seti:plan">
+- Use variants to create visual distinction between content types
+- Combine with proper spacing and typography for readability
+- Consider using icons in triggers to enhance visual communication
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Implement lazy loading for heavy content using dynamic loading pattern
+- Use `React.memo` for complex accordion items that re-render frequently
+- Consider virtualization for accordions with many items
+</Card>
+
+<Aside type="tip">
+For forms with multiple sections, consider using the non-collapsible single mode to guide users through a step-by-step process while maintaining context of their progress.
+</Aside>
+
+<Aside type="caution">
+When nesting accordions, be mindful of the visual hierarchy and ensure users can easily distinguish between different levels of content organization.
+</Aside>
+
+<Aside type="note">
+The accordion automatically measures content height for smooth animations. For optimal performance with dynamic content, consider implementing skeleton loading states during content fetch operations.
+</Aside>

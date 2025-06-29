@@ -1,0 +1,510 @@
+---
+title: Bottom Sheet
+description: Custom hook for managing bottom sheet state and interactions with support for both ScrollView and FlatList variants
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+The `useBottomSheet` hook provides a comprehensive interface for controlling bottom sheet behavior, including content management, state control, and support for both scroll and list variants.
+
+## Import
+
+```tsx
+import { useBottomSheet } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Content">
+    ```tsx
+    const MyComponent = () => {
+      const bottomSheet = useBottomSheet();
+
+      const handleOpenSheet = () => {
+        bottomSheet.setContent(
+          <View>
+            <Text>Hello Bottom Sheet!</Text>
+          </View>
+        );
+        bottomSheet.expand();
+      };
+
+      return (
+        <Button onPress={handleOpenSheet}>
+          <ButtonText>Open Sheet</ButtonText>
+        </Button>
+      );
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="With Title">
+    ```tsx
+    const MyComponent = () => {
+      const bottomSheet = useBottomSheet();
+
+      const showUserProfile = () => {
+        bottomSheet.setSheetTitle('User Profile');
+        bottomSheet.setContent(
+          <UserProfileContent />
+        );
+        bottomSheet.expand('80%');
+      };
+
+      return (
+        <Button onPress={showUserProfile}>
+          <ButtonText>Show Profile</ButtonText>
+        </Button>
+      );
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="FlatList Variant">
+    ```tsx
+    const MyComponent = () => {
+      const bottomSheet = useBottomSheet<User>();
+
+      const showUserList = () => {
+        bottomSheet.setVariant('flatlist');
+        bottomSheet.setSheetTitle('Users');
+        bottomSheet.setListData(users);
+        bottomSheet.setRenderItem(({ item }) => (
+          <UserListItem user={item} />
+        ));
+        bottomSheet.expand('90%');
+      };
+
+      return (
+        <Button onPress={showUserList}>
+          <ButtonText>Show Users</ButtonText>
+        </Button>
+      );
+    };
+    ```
+  </TabItem>
+</Tabs>
+
+## Hook Interface
+
+```tsx
+interface BottomSheetContextType<T = any> {
+  isOpen: boolean;
+  isLoading: boolean;
+  expand: (snapToValue?: '10%' | '20%' | '30%' | '40%' | '50%' | '60%' | '70%' | '80%' | '90%') => void;
+  close: () => void;
+  toggle: (snapToValue?: string) => void;
+  setContent: (content: ReactNode) => void;
+  setSheetTitle: (title: ReactNode) => void;
+  setMaxTo: (value: string) => void;
+  variant?: 'scroll' | 'flatlist';
+  setVariant: (variant: 'scroll' | 'flatlist') => void;
+  setListData: (data: T[]) => void;
+  setRenderItem: (renderer: ListRenderItem<T>) => void;
+}
+```
+
+## Properties & Methods
+
+### State Properties
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `isOpen` | `boolean` | Current open/closed state of the bottom sheet |
+| `isLoading` | `boolean` | Loading state indicator |
+| `variant` | `'scroll' \| 'flatlist'` | Current bottom sheet variant |
+
+### Control Methods
+
+| Method | Parameters | Description |
+|--------|------------|-------------|
+| `expand` | `snapToValue?: string` | Opens the bottom sheet to specified height |
+| `close` | - | Closes the bottom sheet |
+| `toggle` | `snapToValue?: string` | Toggles open/closed state |
+
+### Content Methods
+
+| Method | Parameters | Description |
+|--------|------------|-------------|
+| `setContent` | `content: ReactNode` | Sets content for scroll variant |
+| `setSheetTitle` | `title: ReactNode` | Sets the sheet title |
+| `setMaxTo` | `value: string` | Sets maximum snap height |
+
+### List Methods
+
+| Method | Parameters | Description |
+|--------|------------|-------------|
+| `setVariant` | `variant: 'scroll' \| 'flatlist'` | Switches between scroll and list variants |
+| `setListData` | `data: T[]` | Sets data array for FlatList variant |
+| `setRenderItem` | `renderer: ListRenderItem<T>` | Sets item render function for FlatList |
+
+## Examples
+
+### Content Management
+
+```tsx
+const ContentSheet = () => {
+  const bottomSheet = useBottomSheet();
+
+  const showSettings = () => {
+    bottomSheet.setSheetTitle('Settings');
+    bottomSheet.setContent(
+      <VStack spacing="lg">
+        <SettingsItem title="Notifications" />
+        <SettingsItem title="Privacy" />
+        <SettingsItem title="Account" />
+      </VStack>
+    );
+    bottomSheet.expand('70%');
+  };
+
+  const showHelp = () => {
+    bottomSheet.setSheetTitle('Help & Support');
+    bottomSheet.setContent(
+      <VStack spacing="md">
+        <Text>Frequently Asked Questions</Text>
+        <HelpContent />
+      </VStack>
+    );
+    bottomSheet.expand('80%');
+  };
+
+  return (
+    <VStack spacing="md">
+      <Button onPress={showSettings}>
+        <ButtonText>Open Settings</ButtonText>
+      </Button>
+      <Button onPress={showHelp}>
+        <ButtonText>Get Help</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+### Dynamic Height Control
+
+```tsx
+const DynamicHeightSheet = () => {
+  const bottomSheet = useBottomSheet();
+
+  const showCompactView = () => {
+    bottomSheet.setContent(<CompactContent />);
+    bottomSheet.expand('30%');
+  };
+
+  const showFullView = () => {
+    bottomSheet.setContent(<FullContent />);
+    bottomSheet.setMaxTo('95%');
+    bottomSheet.expand('80%');
+  };
+
+  const expandToMax = () => {
+    bottomSheet.expand('95%');
+  };
+
+  return (
+    <HStack spacing="md">
+      <Button onPress={showCompactView}>
+        <ButtonText>Compact</ButtonText>
+      </Button>
+      <Button onPress={showFullView}>
+        <ButtonText>Full View</ButtonText>
+      </Button>
+      <Button onPress={expandToMax} disabled={!bottomSheet.isOpen}>
+        <ButtonText>Maximize</ButtonText>
+      </Button>
+    </HStack>
+  );
+};
+```
+
+### List Data Management
+
+```tsx
+interface Product {
+  id: string;
+  name: string;
+  price: number;
+  category: string;
+}
+
+const ProductListSheet = () => {
+  const bottomSheet = useBottomSheet<Product>();
+  const [products, setProducts] = useState<Product[]>([]);
+
+  const showProductList = async (category: string) => {
+    bottomSheet.setVariant('flatlist');
+    bottomSheet.setSheetTitle(`${category} Products`);
+
+    // Set loading state
+    bottomSheet.setListData([]);
+    bottomSheet.expand('80%'); // Open immediately
+
+    // Fetch and set data
+    const categoryProducts = await fetchProductsByCategory(category);
+    bottomSheet.setListData(categoryProducts);
+
+    bottomSheet.setRenderItem(({ item }) => (
+      <ProductListItem
+        product={item}
+        onPress={() => handleProductSelect(item)}
+      />
+    ));
+  };
+
+  const handleProductSelect = (product: Product) => {
+    // Switch to scroll variant with product details
+    bottomSheet.setVariant('scroll');
+    bottomSheet.setSheetTitle(product.name);
+    bottomSheet.setContent(
+      <ProductDetails product={product} />
+    );
+  };
+
+  return (
+    <VStack spacing="md">
+      <Button onPress={() => showProductList('Electronics')}>
+        <ButtonText>Electronics</ButtonText>
+      </Button>
+      <Button onPress={() => showProductList('Clothing')}>
+        <ButtonText>Clothing</ButtonText>
+      </Button>
+      <Button onPress={() => showProductList('Books')}>
+        <ButtonText>Books</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+### State-Based UI
+
+```tsx
+const StateAwareComponent = () => {
+  const bottomSheet = useBottomSheet();
+
+  const handleAction = () => {
+    if (bottomSheet.isOpen) {
+      bottomSheet.close();
+    } else {
+      bottomSheet.setContent(<ActionContent />);
+      bottomSheet.expand();
+    }
+  };
+
+  return (
+    <VStack spacing="md">
+      <Button
+        variant={bottomSheet.isOpen ? 'outline' : 'primary'}
+        onPress={handleAction}
+      >
+        <ButtonText>
+          {bottomSheet.isOpen ? 'Close Sheet' : 'Open Sheet'}
+        </ButtonText>
+      </Button>
+
+      {bottomSheet.isOpen && (
+        <Text style={{ color: '#666' }}>
+          Sheet is currently open
+        </Text>
+      )}
+
+      <Button
+        disabled={!bottomSheet.isOpen}
+        onPress={() => bottomSheet.expand('90%')}
+      >
+        <ButtonText>Expand to 90%</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+### Form Integration
+
+```tsx
+const FormSheet = () => {
+  const bottomSheet = useBottomSheet();
+  const [formData, setFormData] = useState({});
+
+  const showCreateForm = () => {
+    bottomSheet.setSheetTitle('Create New Item');
+    bottomSheet.setContent(
+      <CreateItemForm
+        onSubmit={handleFormSubmit}
+        onCancel={bottomSheet.close}
+      />
+    );
+    bottomSheet.expand('85%');
+  };
+
+  const showEditForm = (item: any) => {
+    bottomSheet.setSheetTitle('Edit Item');
+    bottomSheet.setContent(
+      <EditItemForm
+        initialData={item}
+        onSubmit={(data) => handleFormSubmit(data, item.id)}
+        onCancel={bottomSheet.close}
+      />
+    );
+    bottomSheet.expand('85%');
+  };
+
+  const handleFormSubmit = async (data: any, itemId?: string) => {
+    try {
+      if (itemId) {
+        await updateItem(itemId, data);
+      } else {
+        await createItem(data);
+      }
+      bottomSheet.close();
+      // Refresh data or show success message
+    } catch (error) {
+      // Handle error
+    }
+  };
+
+  return (
+    <VStack spacing="md">
+      <Button onPress={showCreateForm}>
+        <ButtonIcon icon={<PlusIcon />} position="left" />
+        <ButtonText>Create New</ButtonText>
+      </Button>
+    </VStack>
+  );
+};
+```
+
+### Advanced Variant Switching
+
+```tsx
+const AdvancedVariantSheet = () => {
+  const bottomSheet = useBottomSheet<any>();
+
+  const showSearchResults = async (query: string) => {
+    // Start with scroll variant showing loading
+    bottomSheet.setVariant('scroll');
+    bottomSheet.setSheetTitle('Search Results');
+    bottomSheet.setContent(
+      <VStack align="center" padding="xl">
+        <ActivityIndicator />
+        <Text>Searching...</Text>
+      </VStack>
+    );
+    bottomSheet.expand('60%');
+
+    try {
+      const results = await searchAPI(query);
+
+      if (results.length === 0) {
+        // Show empty state in scroll variant
+        bottomSheet.setContent(
+          <EmptyState message="No results found" />
+        );
+      } else {
+        // Switch to list variant for results
+        bottomSheet.setVariant('flatlist');
+        bottomSheet.setListData(results);
+        bottomSheet.setRenderItem(({ item }) => (
+          <SearchResultItem
+            item={item}
+            onPress={() => showItemDetails(item)}
+          />
+        ));
+        bottomSheet.expand('80%');
+      }
+    } catch (error) {
+      // Show error in scroll variant
+      bottomSheet.setVariant('scroll');
+      bottomSheet.setContent(
+        <ErrorState
+          error={error}
+          onRetry={() => showSearchResults(query)}
+        />
+      );
+    }
+  };
+
+  const showItemDetails = (item: any) => {
+    bottomSheet.setVariant('scroll');
+    bottomSheet.setSheetTitle(item.title);
+    bottomSheet.setContent(
+      <ItemDetailsContent item={item} />
+    );
+    bottomSheet.setMaxTo('95%');
+    bottomSheet.expand('90%');
+  };
+
+  return (
+    <SearchInput
+      onSearch={showSearchResults}
+      placeholder="Search items..."
+    />
+  );
+};
+```
+
+## Best Practices
+
+<Card title="Performance" icon="rocket">
+- Use TypeScript generics for type-safe list data: `useBottomSheet<YourDataType>()`
+- Avoid setting large data arrays frequently; batch updates when possible
+- Use React.memo for complex render items in FlatList variant
+</Card>
+
+<Card title="User Experience" icon="figma">
+- Provide immediate feedback by opening the sheet before data loads
+- Use appropriate snap heights based on content (30% for simple actions, 80%+ for detailed content)
+- Switch variants based on data type: scroll for forms/details, list for collections
+</Card>
+
+<Card title="State Management" icon="seti:clock">
+- Check `isOpen` state before performing sheet operations
+- Reset content when switching between different use cases
+- Use descriptive titles to provide context for sheet content
+</Card>
+
+<Aside type="tip">
+When switching between variants, always set the new variant before setting content or data to ensure proper rendering.
+</Aside>
+
+<Aside type="caution">
+Remember that the hook must be used within a `BottomSheetProvider`. The provider manages the actual sheet rendering and animations.
+</Aside>
+
+## Common Patterns
+
+### Progressive Disclosure
+
+```tsx
+// Start with summary, expand to details
+const showItemSummary = (item) => {
+  bottomSheet.setContent(<ItemSummary item={item} />);
+  bottomSheet.expand('40%');
+};
+
+const showFullDetails = (item) => {
+  bottomSheet.setContent(<ItemDetails item={item} />);
+  bottomSheet.expand('85%');
+};
+```
+
+### Master-Detail Flow
+
+```tsx
+// List to detail navigation
+const showList = () => {
+  bottomSheet.setVariant('flatlist');
+  bottomSheet.setListData(items);
+  bottomSheet.setRenderItem(({ item }) => (
+    <ListItem onPress={() => showDetail(item)} />
+  ));
+};
+
+const showDetail = (item) => {
+  bottomSheet.setVariant('scroll');
+  bottomSheet.setContent(<DetailView item={item} />);
+};
+```

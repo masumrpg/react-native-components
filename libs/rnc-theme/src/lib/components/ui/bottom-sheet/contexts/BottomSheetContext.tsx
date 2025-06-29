@@ -229,7 +229,12 @@ export const BottomSheetProvider = <T = any,>({
           backgroundColor: backgroundColor,
         }}
       >
-        <Text style={{ fontSize: 20, fontWeight: '600' }}>{title}</Text>
+        {/* <Text style={{ fontSize: 20, fontWeight: '600' }}>{title}</Text> */}
+        {typeof title === 'string' ? (
+          <Text style={{ fontSize: 20, fontWeight: '600' }}>{title}</Text>
+        ) : (
+          title
+        )}
       </View>
     ) : null;
 

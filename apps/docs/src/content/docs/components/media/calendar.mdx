@@ -1,0 +1,491 @@
+---
+title: Calendar
+description: A comprehensive calendar component with custom header, month/year picker, date marking, and theme integration for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Calendar provides a feature-rich date selection interface with a custom header that includes month/year picker modal, marked dates support, and seamless theme integration. Built on top of react-native-calendars with enhanced navigation and visual customization.
+
+## Import
+
+```tsx
+import { Calendar } from 'rnc-theme';
+import type { CalendarProps, ListMarkedDates } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Calendar">
+    ```tsx
+    <Calendar
+      onDayPress={(day) => {
+        console.log('Selected day:', day);
+      }}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="With Selected Date">
+    ```tsx
+    const [selectedDate, setSelectedDate] = useState(null);
+
+    <Calendar
+      selectedDate={selectedDate}
+      onDayPress={(day) => {
+        setSelectedDate(day);
+      }}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="With Marked Dates">
+    ```tsx
+    const markedDates = [
+      { date: '2024-06-15', marked: true },
+      { date: '2024-06-20', marked: true },
+      { date: '2024-06-25', marked: true }
+    ];
+
+    <Calendar
+      listMarkedDates={markedDates}
+      onDayPress={(day) => {
+        console.log('Selected:', day);
+      }}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Month">
+    ```tsx
+    <Calendar
+      current="2024-12-01"
+      onMonthChange={(month) => {
+        console.log('Month changed:', month);
+      }}
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Calendar Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `selectedDate` | `DateData \| undefined` | `undefined` | Currently selected date object |
+| `listMarkedDates` | `ListMarkedDates` | `undefined` | Array of dates to mark with dots |
+| `current` | `string` | Today's date | Initial month to display (YYYY-MM-DD) |
+| `onMonthChange` | `(month: DateData) => void` | `undefined` | Callback when month changes |
+| `onDayPress` | `(day: DateData) => void` | `undefined` | Callback when day is pressed |
+| `...props` | `RNCalendarProps` | - | All react-native-calendars props |
+
+### Type Definitions
+
+```tsx
+type DatePattern = `${number}${number}${number}${number}-${number}${number}-${number}${number}`;
+
+type MarkedDateItem = {
+  date: DatePattern;
+  marked: boolean;
+};
+
+type ListMarkedDates = MarkedDateItem[];
+
+interface CalendarProps extends RNCalendarProps {
+  selectedDate?: DateData | undefined;
+  listMarkedDates?: ListMarkedDates;
+}
+```
+
+### DateData Object
+
+```tsx
+interface DateData {
+  dateString: string;    // '2024-06-15'
+  day: number;          // 15
+  month: number;        // 6
+  year: number;         // 2024
+  timestamp: number;    // Unix timestamp
+}
+```
+
+## Features
+
+### Custom Header with Month/Year Picker
+
+The calendar includes a custom header that displays the current month and selected date, with a dropdown button that opens a modal picker for easy month and year navigation.
+
+```tsx
+<Calendar
+  selectedDate={selectedDate}
+  onDayPress={(day) => setSelectedDate(day)}
+  onMonthChange={(month) => {
+    console.log('Navigated to:', month.dateString);
+  }}
+/>
+```
+
+### Navigation Controls
+
+Fixed navigation arrows positioned over the calendar header provide intuitive month navigation without interfering with the native calendar component.
+
+### Theme Integration
+
+The calendar automatically adapts to your app's theme through the `useTheme` hook, ensuring consistent styling across your application.
+
+## Examples
+
+### Event Calendar
+
+```tsx
+const EventCalendar = () => {
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [events, setEvents] = useState([
+    { date: '2024-06-15', marked: true },
+    { date: '2024-06-18', marked: true },
+    { date: '2024-06-22', marked: true },
+    { date: '2024-06-28', marked: true }
+  ]);
+
+  return (
+    <VStack spacing="lg" padding="md">
+      <Calendar
+        selectedDate={selectedDate}
+        listMarkedDates={events}
+        onDayPress={(day) => {
+          setSelectedDate(day);
+        }}
+        onMonthChange={(month) => {
+          // Load events for the new month
+          loadEventsForMonth(month.month, month.year);
+        }}
+      />
+
+      {selectedDate && (
+        <Card padding="md">
+          <Text>Selected: {selectedDate.dateString}</Text>
+        </Card>
+      )}
+    </VStack>
+  );
+};
+```
+
+### Appointment Booking
+
+```tsx
+const AppointmentBooking = () => {
+  const [selectedDate, setSelectedDate] = useState(null);
+  const [availableDates, setAvailableDates] = useState([
+    { date: '2024-06-17', marked: true },
+    { date: '2024-06-19', marked: true },
+    { date: '2024-06-21', marked: true },
+    { date: '2024-06-24', marked: true },
+    { date: '2024-06-26', marked: true }
+  ]);
+
+  const isDateAvailable = (dateString) => {
+    return availableDates.some(date => date.date === dateString);
+  };
+
+  return (
+    <VStack spacing="lg" padding="lg">
+      <Text variant="heading2">Select Appointment Date</Text>
+
+      <Calendar
+        selectedDate={selectedDate}
+        listMarkedDates={availableDates}
+        onDayPress={(day) => {
+          if (isDateAvailable(day.dateString)) {
+            setSelectedDate(day);
+          } else {
+            Alert.alert('Date Unavailable', 'Please select an available date marked with a dot.');
+          }
+        }}
+        minDate={new Date().toISOString().split('T')[0]}
+      />
+
+      {selectedDate && (
+        <VStack spacing="md">
+          <Text>Selected Date: {selectedDate.dateString}</Text>
+          <Button
+            variant="primary"
+            onPress={() => bookAppointment(selectedDate)}
+          >
+            <ButtonText>Book Appointment</ButtonText>
+          </Button>
+        </VStack>
+      )}
+    </VStack>
+  );
+};
+```
+
+### Date Range Picker
+
+```tsx
+const DateRangePicker = () => {
+  const [startDate, setStartDate] = useState(null);
+  const [endDate, setEndDate] = useState(null);
+  const [markedDates, setMarkedDates] = useState([]);
+
+  const generateDateRange = (start, end) => {
+    const dates = [];
+    const currentDate = new Date(start.timestamp);
+    const endDateTime = new Date(end.timestamp);
+
+    while (currentDate <= endDateTime) {
+      dates.push({
+        date: currentDate.toISOString().split('T')[0],
+        marked: true
+      });
+      currentDate.setDate(currentDate.getDate() + 1);
+    }
+    return dates;
+  };
+
+  const handleDayPress = (day) => {
+    if (!startDate || (startDate && endDate)) {
+      // Start new selection
+      setStartDate(day);
+      setEndDate(null);
+      setMarkedDates([{ date: day.dateString, marked: true }]);
+    } else if (startDate && !endDate) {
+      // Complete the range
+      if (day.timestamp >= startDate.timestamp) {
+        setEndDate(day);
+        setMarkedDates(generateDateRange(startDate, day));
+      } else {
+        // Selected date is before start date, restart
+        setStartDate(day);
+        setMarkedDates([{ date: day.dateString, marked: true }]);
+      }
+    }
+  };
+
+  return (
+    <VStack spacing="lg" padding="lg">
+      <Text variant="heading2">Select Date Range</Text>
+
+      <Calendar
+        listMarkedDates={markedDates}
+        onDayPress={handleDayPress}
+        markingType="period"
+      />
+
+      <VStack spacing="sm">
+        <Text>Start Date: {startDate?.dateString || 'Not selected'}</Text>
+        <Text>End Date: {endDate?.dateString || 'Not selected'}</Text>
+
+        {startDate && endDate && (
+          <Button
+            variant="primary"
+            onPress={() => handleDateRangeSelection(startDate, endDate)}
+          >
+            <ButtonText>Confirm Selection</ButtonText>
+          </Button>
+        )}
+      </VStack>
+    </VStack>
+  );
+};
+```
+
+### Holiday Calendar
+
+```tsx
+const HolidayCalendar = () => {
+  const [holidays, setHolidays] = useState([
+    { date: '2024-06-12', marked: true }, // Independence Day
+    { date: '2024-06-17', marked: true }, // Pancasila Day
+    { date: '2024-06-29', marked: true }, // Eid al-Adha
+  ]);
+
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const getHolidayInfo = (dateString) => {
+    const holidayMap = {
+      '2024-06-12': 'Independence Day',
+      '2024-06-17': 'Pancasila Day',
+      '2024-06-29': 'Eid al-Adha'
+    };
+    return holidayMap[dateString];
+  };
+
+  return (
+    <VStack spacing="lg" padding="lg">
+      <Text variant="heading2">Holiday Calendar 2024</Text>
+
+      <Calendar
+        current="2024-06-01"
+        selectedDate={selectedDate}
+        listMarkedDates={holidays}
+        onDayPress={(day) => {
+          setSelectedDate(day);
+        }}
+      />
+
+      {selectedDate && (
+        <Card padding="md">
+          <VStack spacing="sm">
+            <Text variant="subheading">
+              {selectedDate.dateString}
+            </Text>
+            {getHolidayInfo(selectedDate.dateString) ? (
+              <Text variant="body" color="primary">
+                🎉 {getHolidayInfo(selectedDate.dateString)}
+              </Text>
+            ) : (
+              <Text variant="body" color="textSecondary">
+                Regular day
+              </Text>
+            )}
+          </VStack>
+        </Card>
+      )}
+    </VStack>
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Theme Integration
+
+```tsx
+const CustomThemedCalendar = () => {
+  const { theme } = useTheme();
+
+  return (
+    <Calendar
+      selectedDate={selectedDate}
+      onDayPress={handleDayPress}
+      // Additional theme customization
+      theme={{
+        textDayFontSize: theme.fontSizes.lg,
+        selectedDayBackgroundColor: theme.colors.secondary,
+        todayTextColor: theme.colors.warning,
+      }}
+    />
+  );
+};
+```
+
+### Dynamic Marked Dates
+
+```tsx
+const DynamicMarkedDates = () => {
+  const [markedDates, setMarkedDates] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  const fetchMarkedDatesForMonth = async (month, year) => {
+    setLoading(true);
+    try {
+      const response = await api.getMarkedDates(month, year);
+      const formatted = response.map(date => ({
+        date: date.dateString,
+        marked: true
+      }));
+      setMarkedDates(formatted);
+    } catch (error) {
+      console.error('Failed to fetch marked dates:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <VStack spacing="md">
+      {loading && <LoadingSpinner />}
+
+      <Calendar
+        listMarkedDates={markedDates}
+        onMonthChange={(month) => {
+          fetchMarkedDatesForMonth(month.month, month.year);
+        }}
+        onDayPress={(day) => {
+          console.log('Selected:', day);
+        }}
+      />
+    </VStack>
+  );
+};
+```
+
+## Styling Customization
+
+### Calendar Theme Properties
+
+The calendar automatically inherits theme properties but can be customized further:
+
+```tsx
+const calendarTheme = {
+  // Background colors
+  calendarBackground: theme.colors.surface,
+
+  // Text colors
+  dayTextColor: theme.colors.text,
+  textSectionTitleColor: theme.colors.textSecondary,
+  todayTextColor: theme.colors.primary,
+  selectedDayTextColor: theme.colors.surface,
+
+  // Selection colors
+  selectedDayBackgroundColor: theme.colors.primary,
+  todayBackgroundColor: theme.colors.primary + '15',
+
+  // Dots for marked dates
+  dotColor: theme.colors.primary,
+  selectedDotColor: theme.colors.surface,
+
+  // Navigation
+  arrowColor: theme.colors.primary,
+  disabledArrowColor: theme.colors.muted,
+};
+```
+
+### Custom Header Styling
+
+The custom header is fully integrated with your theme and includes:
+
+- Month/year display with selected date
+- Dropdown indicator
+- Modal picker with scrollable month and year lists
+- Localized action buttons
+
+## Best Practices
+
+<Card title="Date Validation" icon="seti:clock">
+- Always validate selected dates against your business logic
+- Use `minDate` and `maxDate` props to restrict date selection
+- Provide clear visual feedback for unavailable dates
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use `React.memo` for calendar components that re-render frequently
+- Debounce API calls when fetching data based on month changes
+- Limit the number of marked dates for better performance
+</Card>
+
+<Card title="User Experience" icon="seti:plan">
+- Show loading states when fetching calendar data
+- Provide visual feedback for marked dates and selections
+- Include clear navigation cues and month/year picker
+</Card>
+
+<Aside type="tip">
+The calendar component automatically handles timezone issues by formatting dates manually and using local date objects for consistency across different devices and regions.
+</Aside>
+
+<Aside type="caution">
+When using marked dates from APIs, ensure the date format matches the expected `YYYY-MM-DD` pattern. The component includes strict typing to prevent format errors.
+</Aside>
+
+## Integration Tips
+
+- Use with form libraries like React Hook Form for date input validation
+- Combine with modal components for date picker overlays
+- Integrate with state management solutions for complex calendar applications
+- Consider implementing local storage for user preferences and selected dates

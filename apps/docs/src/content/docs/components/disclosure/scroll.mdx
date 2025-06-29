@@ -1,0 +1,572 @@
+---
+title: Scroll
+description: Flexible scroll view components with hide-on-scroll functionality, theming support, and customizable styling for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Scroll provides versatile vertical and horizontal scrolling components with built-in hide-on-scroll functionality, theme integration, and flexible styling options. It supports both VScroll (vertical) and HScroll (horizontal) variants with customizable animations and scroll behavior.
+
+## Import
+
+```tsx
+import { VScroll, HScroll } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Vertical Scroll">
+    ```tsx
+    <VScroll padding="lg" backgroundColor="surface">
+      <Text>Content that scrolls vertically</Text>
+      <Text>More content...</Text>
+      <Text>Even more content...</Text>
+    </VScroll>
+    ```
+  </TabItem>
+
+  <TabItem label="Horizontal Scroll">
+    ```tsx
+    <HScroll padding="md" showsHorizontalScrollIndicator={false}>
+      <View style={{ width: 200, height: 100 }}>
+        <Text>Item 1</Text>
+      </View>
+      <View style={{ width: 200, height: 100 }}>
+        <Text>Item 2</Text>
+      </View>
+      <View style={{ width: 200, height: 100 }}>
+        <Text>Item 3</Text>
+      </View>
+    </HScroll>
+    ```
+  </TabItem>
+
+  <TabItem label="With Hide on Scroll">
+    ```tsx
+    const [scrollResult, setScrollResult] = useState(null);
+
+    <VScroll
+      hideOnScroll={{
+        height: 60,
+        duration: 300,
+        threshold: 10,
+        scrollDirection: 'down',
+        hideDirection: 'up',
+        result: setScrollResult
+      }}
+    >
+      <Text>Content that triggers hide behavior</Text>
+    </VScroll>
+    ```
+  </TabItem>
+
+  <TabItem label="Themed Scroll">
+    ```tsx
+    <VScroll
+      themed={true}
+      borderRadius="lg"
+      padding="xl"
+      margin="md"
+    >
+      <Text>Themed scroll view with background</Text>
+    </VScroll>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### ScrollProps (VScroll & HScroll)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Content to be scrolled |
+| `padding` | `keyof Theme['spacing']` | - | Internal padding using theme spacing |
+| `margin` | `keyof Theme['spacing']` | - | External margin using theme spacing |
+| `backgroundColor` | `keyof Theme['colors']` | - | Background color from theme |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | - | Border radius from theme |
+| `themed` | `boolean` | `false` | Apply theme background color |
+| `hideOnScroll` | `HideOnScrollConfig` | - | Configure hide-on-scroll behavior |
+| `...props` | `ScrollViewProps` | - | All React Native ScrollView props |
+
+### HideOnScrollConfig
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `height` | `number` | - | Height of element to hide (required) |
+| `duration` | `number` | `300` | Animation duration in milliseconds |
+| `threshold` | `number` | `10` | Scroll threshold to trigger hide |
+| `scrollDirection` | `ScrollDirectionType` | - | Direction to trigger hide ('up' \| 'down') |
+| `hideDirection` | `HideDirectionType` | - | Direction to hide element ('up' \| 'down' \| 'left' \| 'right') |
+| `result` | `(value: HideOnScrollResult \| null) => void` | - | Callback with scroll result data |
+
+## Component Variants
+
+| Component | Description | Use Case |
+|-----------|-------------|----------|
+| `VScroll` | Vertical scrolling container | Lists, articles, forms |
+| `HScroll` | Horizontal scrolling container | Carousels, tabs, galleries |
+
+## Examples
+
+### Content Lists
+
+```tsx
+const NewsArticles = ({ articles }) => {
+  return (
+    <VScroll
+      padding="lg"
+      backgroundColor="background"
+      themed={true}
+      showsVerticalScrollIndicator={false}
+    >
+      {articles.map((article, index) => (
+        <Card key={index} margin="sm">
+          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+            {article.title}
+          </Text>
+          <Text style={{ marginTop: 8 }}>
+            {article.excerpt}
+          </Text>
+        </Card>
+      ))}
+    </VScroll>
+  );
+};
+```
+
+### Horizontal Galleries
+
+```tsx
+const ImageGallery = ({ images }) => {
+  return (
+    <HScroll
+      padding="md"
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ paddingHorizontal: 16 }}
+    >
+      {images.map((image, index) => (
+        <View
+          key={index}
+          style={{
+            width: 250,
+            height: 150,
+            marginRight: 12,
+            borderRadius: 8,
+            overflow: 'hidden'
+          }}
+        >
+          <Image source={{ uri: image.url }} style={{ flex: 1 }} />
+        </View>
+      ))}
+    </HScroll>
+  );
+};
+```
+
+### Hide on Scroll Header
+
+```tsx
+const ScrollableContent = () => {
+  const [headerVisible, setHeaderVisible] = useState(true);
+
+  const handleScrollResult = (result) => {
+    if (result) {
+      setHeaderVisible(result.isVisible);
+    }
+  };
+
+  return (
+    <View style={{ flex: 1 }}>
+      {/* Animated Header */}
+      <Animated.View
+        style={{
+          height: headerVisible ? 60 : 0,
+          backgroundColor: '#f0f0f0',
+          overflow: 'hidden'
+        }}
+      >
+        <Text style={{ padding: 20, fontSize: 18 }}>
+          Header that hides on scroll
+        </Text>
+      </Animated.View>
+
+      {/* Scrollable Content */}
+      <VScroll
+        hideOnScroll={{
+          height: 60,
+          duration: 250,
+          threshold: 5,
+          scrollDirection: 'down',
+          hideDirection: 'up',
+          result: handleScrollResult
+        }}
+        flex={1}
+      >
+        {Array.from({ length: 50 }, (_, i) => (
+          <View key={i} style={{ padding: 16, borderBottomWidth: 1 }}>
+            <Text>List item {i + 1}</Text>
+          </View>
+        ))}
+      </VScroll>
+    </View>
+  );
+};
+```
+
+### Form with Scrollable Fields
+
+```tsx
+const LongForm = () => {
+  const [formData, setFormData] = useState({});
+
+  return (
+    <VScroll
+      padding="lg"
+      backgroundColor="surface"
+      themed={true}
+      borderRadius="md"
+      margin="md"
+      keyboardShouldPersistTaps="handled"
+    >
+      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 20 }}>
+        Registration Form
+      </Text>
+
+      <TextInput
+        placeholder="Full Name"
+        style={{ marginBottom: 16 }}
+        onChangeText={(text) => setFormData({ ...formData, name: text })}
+      />
+
+      <TextInput
+        placeholder="Email"
+        keyboardType="email-address"
+        style={{ marginBottom: 16 }}
+        onChangeText={(text) => setFormData({ ...formData, email: text })}
+      />
+
+      <TextInput
+        placeholder="Phone Number"
+        keyboardType="phone-pad"
+        style={{ marginBottom: 16 }}
+        onChangeText={(text) => setFormData({ ...formData, phone: text })}
+      />
+
+      <TextInput
+        placeholder="Address"
+        multiline
+        numberOfLines={4}
+        style={{ marginBottom: 16 }}
+        onChangeText={(text) => setFormData({ ...formData, address: text })}
+      />
+
+      <TextInput
+        placeholder="Bio"
+        multiline
+        numberOfLines={6}
+        style={{ marginBottom: 20 }}
+        onChangeText={(text) => setFormData({ ...formData, bio: text })}
+      />
+
+      <Button onPress={() => console.log('Form submitted:', formData)}>
+        <ButtonText>Submit Registration</ButtonText>
+      </Button>
+
+      {/* Extra spacing for keyboard */}
+      <View style={{ height: 100 }} />
+    </VScroll>
+  );
+};
+```
+
+### Tab-like Horizontal Scroll
+
+```tsx
+const CategoryTabs = ({ categories, activeCategory, onCategoryChange }) => {
+  return (
+    <HScroll
+      padding="sm"
+      backgroundColor="surface"
+      themed={true}
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ paddingHorizontal: 16 }}
+    >
+      {categories.map((category, index) => (
+        <TouchableOpacity
+          key={index}
+          onPress={() => onCategoryChange(category)}
+          style={{
+            paddingHorizontal: 20,
+            paddingVertical: 10,
+            marginRight: 12,
+            borderRadius: 20,
+            backgroundColor: activeCategory === category ? '#007AFF' : '#f0f0f0'
+          }}
+        >
+          <Text
+            style={{
+              color: activeCategory === category ? 'white' : 'black',
+              fontWeight: activeCategory === category ? 'bold' : 'normal'
+            }}
+          >
+            {category}
+          </Text>
+        </TouchableOpacity>
+      ))}
+    </HScroll>
+  );
+};
+```
+
+## Advanced Usage
+
+### Pull to Refresh
+
+```tsx
+const RefreshableList = ({ data, onRefresh }) => {
+  const [refreshing, setRefreshing] = useState(false);
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await onRefresh();
+    setRefreshing(false);
+  };
+
+  return (
+    <VScroll
+      refreshControl={
+        <RefreshControl
+          refreshing={refreshing}
+          onRefresh={handleRefresh}
+          colors={['#007AFF']}
+        />
+      }
+      padding="md"
+    >
+      {data.map((item, index) => (
+        <View key={index} style={{ padding: 16, borderBottomWidth: 1 }}>
+          <Text>{item.title}</Text>
+          <Text style={{ color: '#666', marginTop: 4 }}>
+            {item.description}
+          </Text>
+        </View>
+      ))}
+    </VScroll>
+  );
+};
+```
+
+### Infinite Scroll
+
+```tsx
+const InfiniteScrollList = () => {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadMore = async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    try {
+      const newData = await fetchMoreData(data.length);
+      setData(prev => [...prev, ...newData]);
+      setHasMore(newData.length > 0);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleScroll = (event) => {
+    const { layoutMeasurement, contentOffset, contentSize } = event.nativeEvent;
+    const isNearBottom = layoutMeasurement.height + contentOffset.y >= contentSize.height - 100;
+
+    if (isNearBottom) {
+      loadMore();
+    }
+  };
+
+  return (
+    <VScroll
+      onScroll={handleScroll}
+      scrollEventThrottle={400}
+      padding="md"
+    >
+      {data.map((item, index) => (
+        <View key={index} style={{ padding: 16, borderBottomWidth: 1 }}>
+          <Text>{item.title}</Text>
+        </View>
+      ))}
+
+      {loading && (
+        <View style={{ padding: 20, alignItems: 'center' }}>
+          <ActivityIndicator size="large" color="#007AFF" />
+          <Text style={{ marginTop: 8 }}>Loading more...</Text>
+        </View>
+      )}
+
+      {!hasMore && data.length > 0 && (
+        <View style={{ padding: 20, alignItems: 'center' }}>
+          <Text style={{ color: '#666' }}>No more items to load</Text>
+        </View>
+      )}
+    </VScroll>
+  );
+};
+```
+
+### Nested Scrolling
+
+```tsx
+const NestedScrollExample = () => {
+  return (
+    <VScroll padding="lg" backgroundColor="background" themed={true}>
+      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16 }}>
+        Categories
+      </Text>
+
+      {/* Horizontal scroll inside vertical scroll */}
+      <Text style={{ fontSize: 18, marginBottom: 12 }}>
+        Featured Products
+      </Text>
+      <HScroll
+        style={{ marginBottom: 24 }}
+        showsHorizontalScrollIndicator={false}
+      >
+        {Array.from({ length: 10 }, (_, i) => (
+          <View
+            key={i}
+            style={{
+              width: 150,
+              height: 100,
+              backgroundColor: '#f0f0f0',
+              marginRight: 12,
+              borderRadius: 8,
+              justifyContent: 'center',
+              alignItems: 'center'
+            }}
+          >
+            <Text>Product {i + 1}</Text>
+          </View>
+        ))}
+      </HScroll>
+
+      <Text style={{ fontSize: 18, marginBottom: 12 }}>
+        All Products
+      </Text>
+      {Array.from({ length: 20 }, (_, i) => (
+        <View
+          key={i}
+          style={{
+            padding: 16,
+            backgroundColor: 'white',
+            marginBottom: 8,
+            borderRadius: 8
+          }}
+        >
+          <Text>Product {i + 1}</Text>
+          <Text style={{ color: '#666', marginTop: 4 }}>
+            Product description here
+          </Text>
+        </View>
+      ))}
+    </VScroll>
+  );
+};
+```
+
+## Hide on Scroll Patterns
+
+<Tabs>
+  <TabItem label="Hide Header on Down Scroll">
+    ```tsx
+    <VScroll
+      hideOnScroll={{
+        height: 60,
+        scrollDirection: 'down',
+        hideDirection: 'up',
+        result: (result) => {
+          // Handle header visibility
+          if (result) {
+            animateHeader(result.isVisible);
+          }
+        }
+      }}
+    >
+      {/* Content */}
+    </VScroll>
+    ```
+  </TabItem>
+
+  <TabItem label="Hide Toolbar on Up Scroll">
+    ```tsx
+    <VScroll
+      hideOnScroll={{
+        height: 50,
+        scrollDirection: 'up',
+        hideDirection: 'down',
+        threshold: 15,
+        duration: 200,
+        result: (result) => {
+          // Handle toolbar visibility
+          setToolbarVisible(result?.isVisible ?? true);
+        }
+      }}
+    >
+      {/* Content */}
+    </VScroll>
+    ```
+  </TabItem>
+
+  <TabItem label="Hide Side Panel on Horizontal Scroll">
+    ```tsx
+    <HScroll
+      hideOnScroll={{
+        height: 200, // Width for horizontal
+        scrollDirection: 'right',
+        hideDirection: 'left',
+        result: (result) => {
+          // Handle side panel visibility
+          setSidePanelVisible(result?.isVisible ?? true);
+        }
+      }}
+    >
+      {/* Content */}
+    </HScroll>
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="Performance" icon="rocket">
+- Use `scrollEventThrottle` to limit scroll event frequency (default is 16ms)
+- Implement virtualization for large lists using FlatList or SectionList when appropriate
+- Avoid complex calculations in scroll handlers
+</Card>
+
+<Card title="User Experience" icon="figma">
+- Provide clear visual feedback for scroll interactions
+- Use appropriate scroll indicators for content overflow
+- Consider accessibility with proper content descriptions
+</Card>
+
+<Card title="Theming" icon="puzzle">
+- Leverage theme spacing and colors for consistent design
+- Use `themed` prop to automatically apply background colors
+- Combine with other themed components for cohesive UI
+</Card>
+
+<Aside type="tip">
+When using hide-on-scroll functionality, ensure the animated element transitions smoothly and provides clear visual feedback to users about the interaction.
+</Aside>
+
+<Aside type="caution">
+Be mindful of nested scroll views on iOS - they can cause unexpected behavior. Consider using `nestedScrollEnabled` prop on Android and test thoroughly on both platforms.
+</Aside>
+
+<Aside type="note">
+The hide-on-scroll feature requires careful consideration of the element being hidden. Make sure the `height` prop matches the actual height of the element you want to animate.
+</Aside>

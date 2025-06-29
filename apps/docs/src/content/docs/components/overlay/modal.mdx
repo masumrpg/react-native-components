@@ -1,0 +1,691 @@
+---
+title: Modal
+description: Flexible modal component with animated transitions, multiple positions, and customizable styling options for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Modal provides a comprehensive solution for overlays and dialogs with built-in animations, multiple positioning options, and flexible content management. It supports various animation types, backdrop interactions, and includes dedicated components for header, content, and footer sections.
+
+## Import
+
+```tsx
+import { Modal, ModalHeader, ModalContent, ModalFooter } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Modal">
+    ```tsx
+    <Modal visible={isVisible} onClose={() => setIsVisible(false)}>
+      <ModalHeader title="Confirmation" />
+      <ModalContent>
+        <Text>Are you sure you want to continue?</Text>
+      </ModalContent>
+      <ModalFooter>
+        <Button onPress={() => setIsVisible(false)}>
+          <ButtonText>Cancel</ButtonText>
+        </Button>
+        <Button variant="primary" onPress={handleConfirm}>
+          <ButtonText>Confirm</ButtonText>
+        </Button>
+      </ModalFooter>
+    </Modal>
+    ```
+  </TabItem>
+
+  <TabItem label="With Scrollable Content">
+    ```tsx
+    <Modal visible={isVisible} onClose={onClose} size="lg">
+      <ModalHeader
+        title="Terms of Service"
+        subtitle="Please read carefully"
+        borderBottom
+      />
+      <ModalContent scrollable>
+        <Text>{longTermsText}</Text>
+      </ModalContent>
+      <ModalFooter showBorder>
+        <Button variant="outline" onPress={onClose}>
+          <ButtonText>Decline</ButtonText>
+        </Button>
+        <Button variant="primary" onPress={handleAccept}>
+          <ButtonText>Accept</ButtonText>
+        </Button>
+      </ModalFooter>
+    </Modal>
+    ```
+  </TabItem>
+
+  <TabItem label="Bottom Sheet Style">
+    ```tsx
+    <Modal
+      visible={isVisible}
+      onClose={onClose}
+      position="bottom"
+      animation="slide"
+      size="lg"
+    >
+      <ModalHeader title="Select Option" />
+      <ModalContent>
+        <VStack spacing="md">
+          <TouchableOpacity onPress={() => handleSelect('option1')}>
+            <Text>Option 1</Text>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => handleSelect('option2')}>
+            <Text>Option 2</Text>
+          </TouchableOpacity>
+        </VStack>
+      </ModalContent>
+    </Modal>
+    ```
+  </TabItem>
+
+  <TabItem label="Full Screen Modal">
+    ```tsx
+    <Modal
+      visible={isVisible}
+      onClose={onClose}
+      size="xl"
+      position="center"
+      showCloseButton={false}
+    >
+      <ModalHeader
+        title="Edit Profile"
+        showCloseButton
+        onClose={onClose}
+      />
+      <ModalContent scrollable>
+        <ProfileEditForm />
+      </ModalContent>
+    </Modal>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Modal Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `visible` | `boolean` | - | Controls modal visibility |
+| `onClose` | `() => void` | - | Callback when modal should close |
+| `children` | `React.ReactNode` | - | Modal content |
+| `size` | `ComponentSize` | `'md'` | Modal size (xs, sm, md, lg, xl) |
+| `variant` | `ComponentVariant` | `'default'` | Visual style variant |
+| `position` | `'center' \| 'top' \| 'bottom'` | `'center'` | Modal position on screen |
+| `animation` | `'slide' \| 'fade' \| 'scale'` | `'fade'` | Animation type |
+| `closeOnBackdrop` | `boolean` | `true` | Close modal when backdrop is pressed |
+| `showCloseButton` | `boolean` | `true` | Show close button in top-right |
+| `backdropOpacity` | `number` | `0.5` | Backdrop opacity (0-1) |
+| `animationDuration` | `number` | `250` | Animation duration in milliseconds |
+| `padding` | `keyof Theme['spacing']` | `'lg'` | Internal padding |
+| `margin` | `keyof Theme['spacing']` | - | External margin |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | `'lg'` | Border radius |
+| `elevation` | `number` | `8` | Android elevation |
+| `shadowOpacity` | `number` | `0.15` | iOS shadow opacity |
+| `backgroundColor` | `string` | - | Custom background color |
+
+### ModalHeader Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | - | Header title text |
+| `subtitle` | `string` | - | Header subtitle text |
+| `children` | `React.ReactNode` | - | Custom header content |
+| `showCloseButton` | `boolean` | `false` | Show close button in header |
+| `onClose` | `() => void` | - | Close button callback |
+| `padding` | `keyof Theme['spacing']` | `'md'` | Header padding |
+| `titleVariant` | `keyof Theme['typography']` | `'subtitle'` | Title typography variant |
+| `subtitleVariant` | `keyof Theme['typography']` | `'body'` | Subtitle typography variant |
+| `borderBottom` | `boolean` | `false` | Show bottom border |
+
+### ModalContent Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Content to display |
+| `scrollable` | `boolean` | `false` | Make content scrollable |
+| `padding` | `keyof Theme['spacing']` | `'md'` | Content padding |
+| `style` | `StyleProp<ViewStyle>` | - | Additional styles |
+
+### ModalFooter Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Footer content (usually buttons) |
+| `padding` | `keyof Theme['spacing']` | `'md'` | Footer padding |
+| `showBorder` | `boolean` | `false` | Show top border |
+| `justifyContent` | `FlexAlignType` | `'flex-end'` | Button alignment |
+| `style` | `ViewStyle` | - | Additional footer styles |
+
+### Positions
+
+| Position | Description | Animation Behavior |
+|----------|-------------|-------------------|
+| `center` | Center of screen | Fade/scale from center |
+| `top` | Top of screen | Slide down from top |
+| `bottom` | Bottom of screen | Slide up from bottom |
+
+### Animations
+
+| Animation | Description | Best Use Case |
+|-----------|-------------|---------------|
+| `fade` | Opacity transition | General purpose, subtle |
+| `scale` | Scale from small to full | Attention-grabbing alerts |
+| `slide` | Slide in from position | Bottom sheets, drawers |
+
+## Examples
+
+### Confirmation Dialog
+
+```tsx
+const ConfirmationModal = ({ visible, onClose, onConfirm, title, message }) => {
+  return (
+    <Modal
+      visible={visible}
+      onClose={onClose}
+      size="sm"
+      animation="scale"
+      variant="primary"
+    >
+      <ModalHeader title={title} />
+      <ModalContent>
+        <Text style={{ textAlign: 'center', marginVertical: 16 }}>
+          {message}
+        </Text>
+      </ModalContent>
+      <ModalFooter justifyContent="space-between">
+        <Button variant="outline" onPress={onClose} style={{ flex: 1, marginRight: 8 }}>
+          <ButtonText>Cancel</ButtonText>
+        </Button>
+        <Button variant="primary" onPress={onConfirm} style={{ flex: 1, marginLeft: 8 }}>
+          <ButtonText>Confirm</ButtonText>
+        </Button>
+      </ModalFooter>
+    </Modal>
+  );
+};
+
+// Usage
+<ConfirmationModal
+  visible={showDeleteModal}
+  onClose={() => setShowDeleteModal(false)}
+  onConfirm={handleDelete}
+  title="Delete Item"
+  message="Are you sure you want to delete this item? This action cannot be undone."
+/>
+```
+
+### Form Modal
+
+```tsx
+const ProfileEditModal = ({ visible, onClose, user, onSave }) => {
+  const [name, setName] = useState(user?.name || '');
+  const [email, setEmail] = useState(user?.email || '');
+  const [loading, setLoading] = useState(false);
+
+  const handleSave = async () => {
+    setLoading(true);
+    try {
+      await onSave({ name, email });
+      onClose();
+    } catch (error) {
+      // Handle error
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      onClose={onClose}
+      size="lg"
+      position="center"
+    >
+      <ModalHeader
+        title="Edit Profile"
+        subtitle="Update your personal information"
+        borderBottom
+      />
+      <ModalContent scrollable>
+        <VStack spacing="lg" padding="md">
+          <VStack spacing="sm">
+            <Text>Full Name</Text>
+            <TextInput
+              value={name}
+              onChangeText={setName}
+              placeholder="Enter your name"
+            />
+          </VStack>
+
+          <VStack spacing="sm">
+            <Text>Email Address</Text>
+            <TextInput
+              value={email}
+              onChangeText={setEmail}
+              placeholder="Enter your email"
+              keyboardType="email-address"
+            />
+          </VStack>
+        </VStack>
+      </ModalContent>
+      <ModalFooter showBorder justifyContent="flex-end">
+        <Button variant="outline" onPress={onClose} disabled={loading}>
+          <ButtonText>Cancel</ButtonText>
+        </Button>
+        <Button
+          variant="primary"
+          onPress={handleSave}
+          loading={loading}
+          style={{ marginLeft: 12 }}
+        >
+          <ButtonText>Save Changes</ButtonText>
+        </Button>
+      </ModalFooter>
+    </Modal>
+  );
+};
+```
+
+### Image Gallery Modal
+
+```tsx
+const ImageGalleryModal = ({ visible, onClose, images, initialIndex = 0 }) => {
+  const [currentIndex, setCurrentIndex] = useState(initialIndex);
+
+  const goToPrevious = () => {
+    setCurrentIndex(prev => prev > 0 ? prev - 1 : images.length - 1);
+  };
+
+  const goToNext = () => {
+    setCurrentIndex(prev => prev < images.length - 1 ? prev + 1 : 0);
+  };
+
+  return (
+    <Modal
+      visible={visible}
+      onClose={onClose}
+      size="xl"
+      position="center"
+      animation="fade"
+      backgroundColor="rgba(0, 0, 0, 0.95)"
+      showCloseButton={false}
+    >
+      <ModalHeader
+        showCloseButton
+        onClose={onClose}
+        title={`${currentIndex + 1} of ${images.length}`}
+        style={{ backgroundColor: 'transparent' }}
+      />
+      <ModalContent style={{ flex: 1, justifyContent: 'center' }}>
+        <Image
+          source={{ uri: images[currentIndex]?.url }}
+          style={{
+            width: '100%',
+            height: 300,
+            resizeMode: 'contain'
+          }}
+        />
+      </ModalContent>
+      <ModalFooter justifyContent="space-between">
+        <Button
+          variant="ghost"
+          onPress={goToPrevious}
+          disabled={images.length <= 1}
+        >
+          <ButtonIcon icon={<ChevronLeftIcon />} position="left" />
+          <ButtonText>Previous</ButtonText>
+        </Button>
+
+        <HStack spacing="xs">
+          {images.map((_, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => setCurrentIndex(index)}
+              style={{
+                width: 8,
+                height: 8,
+                borderRadius: 4,
+                backgroundColor: index === currentIndex ? '#fff' : 'rgba(255,255,255,0.3)'
+              }}
+            />
+          ))}
+        </HStack>
+
+        <Button
+          variant="ghost"
+          onPress={goToNext}
+          disabled={images.length <= 1}
+        >
+          <ButtonText>Next</ButtonText>
+          <ButtonIcon icon={<ChevronRightIcon />} position="right" />
+        </Button>
+      </ModalFooter>
+    </Modal>
+  );
+};
+```
+
+### Action Sheet Modal
+
+```tsx
+const ActionSheetModal = ({ visible, onClose, options }) => {
+  return (
+    <Modal
+      visible={visible}
+      onClose={onClose}
+      position="bottom"
+      animation="slide"
+      size="md"
+      borderRadius="xl"
+    >
+      <ModalHeader title="Choose Action" />
+      <ModalContent>
+        <VStack spacing="sm">
+          {options.map((option, index) => (
+            <TouchableOpacity
+              key={index}
+              onPress={() => {
+                option.onPress();
+                onClose();
+              }}
+              style={{
+                padding: 16,
+                borderRadius: 8,
+                backgroundColor: option.destructive ?
+                  'rgba(255, 59, 48, 0.1)' :
+                  'rgba(0, 0, 0, 0.05)'
+              }}
+            >
+              <HStack spacing="md" align="center">
+                {option.icon && (
+                  <View style={{ width: 24, height: 24 }}>
+                    {option.icon}
+                  </View>
+                )}
+                <Text style={{
+                  flex: 1,
+                  color: option.destructive ? '#FF3B30' : undefined
+                }}>
+                  {option.title}
+                </Text>
+              </HStack>
+            </TouchableOpacity>
+          ))}
+        </VStack>
+      </ModalContent>
+    </Modal>
+  );
+};
+
+// Usage
+const menuOptions = [
+  {
+    title: 'Edit',
+    icon: <EditIcon />,
+    onPress: handleEdit
+  },
+  {
+    title: 'Share',
+    icon: <ShareIcon />,
+    onPress: handleShare
+  },
+  {
+    title: 'Delete',
+    icon: <DeleteIcon />,
+    onPress: handleDelete,
+    destructive: true
+  }
+];
+
+<ActionSheetModal
+  visible={showActionSheet}
+  onClose={() => setShowActionSheet(false)}
+  options={menuOptions}
+/>
+```
+
+### Loading Modal
+
+```tsx
+const LoadingModal = ({ visible, message = 'Loading...', progress }) => {
+  return (
+    <Modal
+      visible={visible}
+      onClose={() => {}} // Prevent closing during loading
+      size="sm"
+      animation="fade"
+      closeOnBackdrop={false}
+      showCloseButton={false}
+    >
+      <ModalContent style={{ alignItems: 'center', padding: 32 }}>
+        <ActivityIndicator size="large" style={{ marginBottom: 16 }} />
+        <Text style={{ textAlign: 'center', marginBottom: 8 }}>
+          {message}
+        </Text>
+        {progress !== undefined && (
+          <View style={{
+            width: '100%',
+            height: 4,
+            backgroundColor: '#e0e0e0',
+            borderRadius: 2,
+            overflow: 'hidden'
+          }}>
+            <View style={{
+              width: `${progress * 100}%`,
+              height: '100%',
+              backgroundColor: '#007AFF'
+            }} />
+          </View>
+        )}
+      </ModalContent>
+    </Modal>
+  );
+};
+```
+
+### Notification Modal
+
+```tsx
+const NotificationModal = ({
+  visible,
+  onClose,
+  type = 'info',
+  title,
+  message,
+  actions
+}) => {
+  const getTypeStyles = () => {
+    switch (type) {
+      case 'success':
+        return { variant: 'success', icon: <CheckCircleIcon /> };
+      case 'error':
+        return { variant: 'error', icon: <XCircleIcon /> };
+      case 'warning':
+        return { variant: 'warning', icon: <AlertTriangleIcon /> };
+      default:
+        return { variant: 'info', icon: <InfoIcon /> };
+    }
+  };
+
+  const typeStyles = getTypeStyles();
+
+  return (
+    <Modal
+      visible={visible}
+      onClose={onClose}
+      size="sm"
+      variant={typeStyles.variant}
+      position="top"
+      animation="slide"
+    >
+      <ModalContent>
+        <HStack spacing="md" align="flex-start">
+          <View style={{ marginTop: 4 }}>
+            {typeStyles.icon}
+          </View>
+          <VStack spacing="xs" style={{ flex: 1 }}>
+            <Text style={{ fontWeight: '600', fontSize: 16 }}>
+              {title}
+            </Text>
+            <Text style={{ color: '#666', lineHeight: 20 }}>
+              {message}
+            </Text>
+          </VStack>
+        </HStack>
+      </ModalContent>
+
+      {actions && (
+        <ModalFooter>
+          {actions.map((action, index) => (
+            <Button
+              key={index}
+              variant={action.primary ? 'primary' : 'outline'}
+              onPress={() => {
+                action.onPress();
+                onClose();
+              }}
+              style={{
+                marginLeft: index > 0 ? 8 : 0,
+                flex: actions.length > 1 ? 1 : undefined
+              }}
+            >
+              <ButtonText>{action.title}</ButtonText>
+            </Button>
+          ))}
+        </ModalFooter>
+      )}
+    </Modal>
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Hook for Modal Management
+
+```tsx
+const useModal = (initialVisible = false) => {
+  const [visible, setVisible] = useState(initialVisible);
+
+  const show = useCallback(() => setVisible(true), []);
+  const hide = useCallback(() => setVisible(false), []);
+  const toggle = useCallback(() => setVisible(prev => !prev), []);
+
+  return {
+    visible,
+    show,
+    hide,
+    toggle,
+    setVisible
+  };
+};
+
+// Usage
+const MyComponent = () => {
+  const editModal = useModal();
+  const deleteModal = useModal();
+
+  return (
+    <>
+      <Button onPress={editModal.show}>
+        <ButtonText>Edit</ButtonText>
+      </Button>
+
+      <Modal visible={editModal.visible} onClose={editModal.hide}>
+        {/* Edit modal content */}
+      </Modal>
+
+      <Modal visible={deleteModal.visible} onClose={deleteModal.hide}>
+        {/* Delete modal content */}
+      </Modal>
+    </>
+  );
+};
+```
+
+### Modal Stack Management
+
+```tsx
+const ModalStack = () => {
+  const [modals, setModals] = useState([]);
+
+  const pushModal = (modalComponent) => {
+    setModals(prev => [...prev, { id: Date.now(), component: modalComponent }]);
+  };
+
+  const popModal = () => {
+    setModals(prev => prev.slice(0, -1));
+  };
+
+  return (
+    <>
+      {modals.map((modal, index) => (
+        <View key={modal.id} style={{ zIndex: 1000 + index }}>
+          {React.cloneElement(modal.component, {
+            onClose: popModal
+          })}
+        </View>
+      ))}
+    </>
+  );
+};
+```
+
+## Animation Configurations
+
+<Tabs>
+  <TabItem label="Smooth Fade">
+    ```tsx
+    <Modal
+      animation="fade"
+      animationDuration={300}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="Bouncy Scale">
+    ```tsx
+    <Modal
+      animation="scale"
+      animationDuration={400}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="Quick Slide">
+    ```tsx
+    <Modal
+      animation="slide"
+      position="bottom"
+      animationDuration={200}
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+## Best Practices
+
+<Card title="User Experience" icon="seti:plan">
+- Always provide a clear way to close the modal (backdrop tap or close button)
+- Use appropriate animation types: fade for general use, scale for important alerts, slide for sheets
+- Keep modal content focused and avoid nested scrolling when possible
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use conditional rendering to avoid mounting modals when not needed
+- Implement proper cleanup in `onClose` handlers
+- Consider using `React.memo` for complex modal content
+</Card>
+
+<Aside type="tip">
+For better performance on Android, the modal uses hardware acceleration and optimized status bar handling. The component automatically handles safe area padding and screen dimension changes.
+</Aside>
+
+<Aside type="caution">
+Be careful with modal stacking - too many overlays can confuse users. Consider using navigation instead of deeply nested modals for complex workflows.
+</Aside>

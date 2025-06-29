@@ -124,6 +124,56 @@ export default defineConfig({
                 { label: 'Divider', slug: 'components/navigation/divider' },
               ],
             },
+            {
+              label: 'Overlay',
+              collapsed: false,
+              items: [
+                {
+                  label: 'Modal',
+                  slug: 'components/overlay/modal',
+                  badge: {
+                    text: 'Unstable',
+                    variant: 'danger',
+                  },
+                },
+                {
+                  label: 'Bottom Sheet',
+                  slug: 'components/overlay/bottom-sheet',
+                },
+                {
+                  label: 'Portal',
+                  slug: 'components/overlay/portal',
+                },
+              ],
+            },
+            {
+              label: 'Media',
+              collapsed: false,
+              items: [
+                {
+                  label: 'Image Carousel',
+                  slug: 'components/media/image-carousel',
+                },
+                {
+                  label: 'Calendar',
+                  slug: 'components/media/calendar',
+                },
+              ],
+            },
+            {
+              label: 'Disclosure',
+              collapsed: false,
+              items: [
+                {
+                  label: 'Accordion',
+                  slug: 'components/disclosure/accordion',
+                },
+                {
+                  label: 'Scroll',
+                  slug: 'components/disclosure/scroll',
+                },
+              ],
+            },
           ],
         },
         {

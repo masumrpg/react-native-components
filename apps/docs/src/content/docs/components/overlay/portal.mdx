@@ -1,0 +1,547 @@
+---
+title: Portal
+description: Flexible portal system for rendering React components outside their normal component tree with host-based targeting and dynamic mounting
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Portal provides a powerful solution for rendering React components outside their normal component tree hierarchy. It features host-based targeting, dynamic mounting/unmounting, and seamless integration with React's component lifecycle.
+
+## Import
+
+```tsx
+import { Portal, PortalHost, PortalProvider, usePortal } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Portal">
+    ```tsx
+    <PortalHost name="modal-host">
+      <App />
+
+      {/* Somewhere deep in your component tree */}
+      <Portal hostName="modal-host">
+        <Modal>
+          <Text>This renders at the PortalHost location!</Text>
+        </Modal>
+      </Portal>
+    </PortalHost>
+    ```
+  </TabItem>
+
+  <TabItem label="Default Host">
+    ```tsx
+    <PortalHost>
+      <App />
+
+      {/* Portal without hostName uses default host */}
+      <Portal>
+        <Tooltip>Default host portal content</Tooltip>
+      </Portal>
+    </PortalHost>
+    ```
+  </TabItem>
+
+  <TabItem label="Named Portal">
+    ```tsx
+    <PortalHost name="notifications">
+      <App />
+
+      <Portal name="toast-notification" hostName="notifications">
+        <Toast message="Success!" />
+      </Portal>
+    </PortalHost>
+    ```
+  </TabItem>
+
+  <TabItem label="Multiple Hosts">
+    ```tsx
+    <View>
+      <PortalHost name="modals">
+        <PortalHost name="tooltips">
+          <App />
+
+          <Portal hostName="modals">
+            <Modal />
+          </Portal>
+
+          <Portal hostName="tooltips">
+            <Tooltip />
+          </Portal>
+        </PortalHost>
+      </PortalHost>
+    </View>
+    ```
+  </TabItem>
+</Tabs>
+
+## Components
+
+### Portal
+
+Renders children at a specified PortalHost location.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Content to render at the portal host |
+| `name` | `string` | `auto-generated` | Unique identifier for the portal |
+| `hostName` | `string` | `'default'` | Target host name where content should render |
+
+### PortalHost
+
+Defines a mounting point where Portal content will be rendered.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Normal component tree content |
+| `name` | `string` | `'default'` | Host identifier for targeting portals |
+
+### PortalProvider
+
+Context provider that manages portal state and mounting logic.
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | Component tree to provide portal context to |
+| `hostName` | `string` | `'default'` | Host name for this provider instance |
+
+## Hook API
+
+### usePortal
+
+Access portal context methods for programmatic control.
+
+```tsx
+const { mount, unmount, update, hostName } = usePortal();
+```
+
+#### Methods
+
+| Method | Parameters | Description |
+|--------|------------|-------------|
+| `mount` | `name: string, children: ReactNode, targetHost?: string` | Mount content to a portal |
+| `unmount` | `name: string, targetHost?: string` | Remove content from a portal |
+| `update` | `name: string, children: ReactNode, targetHost?: string` | Update existing portal content |
+
+## Examples
+
+### Modal System
+
+```tsx
+const App = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  return (
+    <PortalHost name="modal-root">
+      <View style={{ flex: 1 }}>
+        <Text>Main App Content</Text>
+
+        <Button onPress={() => setShowModal(true)}>
+          <ButtonText>Open Modal</ButtonText>
+        </Button>
+
+        {showModal && (
+          <Portal hostName="modal-root" name="main-modal">
+            <Modal onClose={() => setShowModal(false)}>
+              <View style={styles.modalContent}>
+                <Text>Modal Content</Text>
+                <Button onPress={() => setShowModal(false)}>
+                  <ButtonText>Close</ButtonText>
+                </Button>
+              </View>
+            </Modal>
+          </Portal>
+        )}
+      </View>
+    </PortalHost>
+  );
+};
+```
+
+### Toast Notification System
+
+```tsx
+const ToastProvider = ({ children }) => {
+  const [toasts, setToasts] = useState([]);
+
+  const showToast = (message, type = 'info') => {
+    const id = Date.now().toString();
+    setToasts(prev => [...prev, { id, message, type }]);
+
+    // Auto-remove after 3 seconds
+    setTimeout(() => {
+      setToasts(prev => prev.filter(toast => toast.id !== id));
+    }, 3000);
+  };
+
+  return (
+    <PortalHost name="toast-container">
+      <ToastContext.Provider value={{ showToast }}>
+        {children}
+
+        {toasts.map(toast => (
+          <Portal key={toast.id} hostName="toast-container">
+            <Toast
+              message={toast.message}
+              type={toast.type}
+              onDismiss={() =>
+                setToasts(prev => prev.filter(t => t.id !== toast.id))
+              }
+            />
+          </Portal>
+        ))}
+      </ToastContext.Provider>
+    </PortalHost>
+  );
+};
+
+const SomeComponent = () => {
+  const { showToast } = useContext(ToastContext);
+
+  return (
+    <Button onPress={() => showToast('Operation successful!', 'success')}>
+      <ButtonText>Show Toast</ButtonText>
+    </Button>
+  );
+};
+```
+
+### Tooltip System
+
+```tsx
+const TooltipExample = () => {
+  const [activeTooltip, setActiveTooltip] = useState(null);
+
+  return (
+    <PortalHost name="tooltip-layer">
+      <View style={{ padding: 20 }}>
+        <Text>Hover over buttons to see tooltips</Text>
+
+        <Button
+          onPressIn={() => setActiveTooltip('button1')}
+          onPressOut={() => setActiveTooltip(null)}
+        >
+          <ButtonText>Button 1</ButtonText>
+        </Button>
+
+        <Button
+          onPressIn={() => setActiveTooltip('button2')}
+          onPressOut={() => setActiveTooltip(null)}
+        >
+          <ButtonText>Button 2</ButtonText>
+        </Button>
+
+        {activeTooltip === 'button1' && (
+          <Portal hostName="tooltip-layer" name="tooltip-1">
+            <Tooltip>This is button 1 tooltip</Tooltip>
+          </Portal>
+        )}
+
+        {activeTooltip === 'button2' && (
+          <Portal hostName="tooltip-layer" name="tooltip-2">
+            <Tooltip>This is button 2 tooltip</Tooltip>
+          </Portal>
+        )}
+      </View>
+    </PortalHost>
+  );
+};
+```
+
+### Programmatic Portal Control
+
+```tsx
+const ProgrammaticPortalExample = () => {
+  const { mount, unmount, update } = usePortal();
+  const [counter, setCounter] = useState(0);
+
+  const mountPortal = () => {
+    mount(
+      'dynamic-portal',
+      <View style={styles.dynamicContent}>
+        <Text>Dynamically mounted content!</Text>
+      </View>,
+      'dynamic-host'
+    );
+  };
+
+  const updatePortal = () => {
+    const newCounter = counter + 1;
+    setCounter(newCounter);
+
+    update(
+      'dynamic-portal',
+      <View style={styles.dynamicContent}>
+        <Text>Updated content: {newCounter}</Text>
+      </View>,
+      'dynamic-host'
+    );
+  };
+
+  const unmountPortal = () => {
+    unmount('dynamic-portal', 'dynamic-host');
+  };
+
+  return (
+    <PortalHost name="dynamic-host">
+      <View style={{ padding: 20 }}>
+        <VStack spacing="md">
+          <Button onPress={mountPortal}>
+            <ButtonText>Mount Portal</ButtonText>
+          </Button>
+
+          <Button onPress={updatePortal}>
+            <ButtonText>Update Portal</ButtonText>
+          </Button>
+
+          <Button onPress={unmountPortal} variant="error">
+            <ButtonText>Unmount Portal</ButtonText>
+          </Button>
+        </VStack>
+      </View>
+    </PortalHost>
+  );
+};
+```
+
+### Multi-Host Architecture
+
+```tsx
+const MultiHostApp = () => {
+  return (
+    <PortalHost name="root">
+      <View style={{ flex: 1 }}>
+        {/* Header with its own portal host for dropdowns */}
+        <PortalHost name="header-overlays">
+          <Header />
+        </PortalHost>
+
+        {/* Main content area */}
+        <PortalHost name="content-overlays">
+          <MainContent />
+        </PortalHost>
+
+        {/* Footer with notifications */}
+        <PortalHost name="notifications">
+          <Footer />
+        </PortalHost>
+      </View>
+    </PortalHost>
+  );
+};
+
+const Header = () => {
+  const [showDropdown, setShowDropdown] = useState(false);
+
+  return (
+    <View>
+      <Button onPress={() => setShowDropdown(!showDropdown)}>
+        <ButtonText>Menu</ButtonText>
+      </Button>
+
+      {showDropdown && (
+        <Portal hostName="header-overlays" name="menu-dropdown">
+          <Dropdown onClose={() => setShowDropdown(false)}>
+            <MenuItem>Profile</MenuItem>
+            <MenuItem>Settings</MenuItem>
+            <MenuItem>Logout</MenuItem>
+          </Dropdown>
+        </Portal>
+      )}
+    </View>
+  );
+};
+
+const MainContent = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  return (
+    <View>
+      <Text>Main content here</Text>
+
+      <Button onPress={() => setShowModal(true)}>
+        <ButtonText>Open Modal</ButtonText>
+      </Button>
+
+      {showModal && (
+        <Portal hostName="content-overlays" name="main-modal">
+          <Modal onClose={() => setShowModal(false)}>
+            <Text>Modal content</Text>
+          </Modal>
+        </Portal>
+      )}
+    </View>
+  );
+};
+```
+
+## Advanced Usage
+
+### Portal with Animation
+
+```tsx
+const AnimatedPortal = ({ children, visible, hostName }) => {
+  const fadeAnim = useRef(new Animated.Value(0)).current;
+
+  useEffect(() => {
+    Animated.timing(fadeAnim, {
+      toValue: visible ? 1 : 0,
+      duration: 300,
+      useNativeDriver: true,
+    }).start();
+  }, [visible, fadeAnim]);
+
+  if (!visible) return null;
+
+  return (
+    <Portal hostName={hostName}>
+      <Animated.View style={{ opacity: fadeAnim }}>
+        {children}
+      </Animated.View>
+    </Portal>
+  );
+};
+```
+
+### Portal Manager Hook
+
+```tsx
+const usePortalManager = (hostName = 'default') => {
+  const { mount, unmount, update } = usePortal();
+  const portalsRef = useRef(new Set());
+
+  const createPortal = useCallback((name, content) => {
+    mount(name, content, hostName);
+    portalsRef.current.add(name);
+  }, [mount, hostName]);
+
+  const removePortal = useCallback((name) => {
+    unmount(name, hostName);
+    portalsRef.current.delete(name);
+  }, [unmount, hostName]);
+
+  const updatePortal = useCallback((name, content) => {
+    update(name, content, hostName);
+  }, [update, hostName]);
+
+  const clearAllPortals = useCallback(() => {
+    portalsRef.current.forEach(name => {
+      unmount(name, hostName);
+    });
+    portalsRef.current.clear();
+  }, [unmount, hostName]);
+
+  useEffect(() => {
+    return () => {
+      clearAllPortals();
+    };
+  }, [clearAllPortals]);
+
+  return {
+    createPortal,
+    removePortal,
+    updatePortal,
+    clearAllPortals,
+  };
+};
+```
+
+### Conditional Portal Rendering
+
+```tsx
+const ConditionalPortal = ({ condition, children, hostName, name }) => {
+  const portalRef = useRef(null);
+
+  useEffect(() => {
+    if (condition && !portalRef.current) {
+      portalRef.current = true;
+    } else if (!condition && portalRef.current) {
+      portalRef.current = false;
+    }
+  }, [condition]);
+
+  if (!condition) return null;
+
+  return (
+    <Portal hostName={hostName} name={name}>
+      {children}
+    </Portal>
+  );
+};
+```
+
+## Best Practices
+
+<Card title="Host Organization" icon="seti:plan">
+- Use descriptive host names that reflect their purpose (`modals`, `tooltips`, `notifications`)
+- Organize hosts by UI layer (overlays, dropdowns, floating elements)
+- Keep host hierarchy shallow to avoid complexity
+</Card>
+
+<Card title="Portal Lifecycle" icon="seti:clock">
+- Always unmount portals when components unmount to prevent memory leaks
+- Use unique names for portals to avoid conflicts
+- Consider portal cleanup in error boundaries
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Minimize portal updates by using stable references
+- Use `React.memo` for portal content that doesn't change frequently
+- Consider portal pooling for frequently mounted/unmounted content
+</Card>
+
+<Aside type="tip">
+Portal names are auto-generated if not provided, but explicit naming helps with debugging and provides better control over portal lifecycle.
+</Aside>
+
+<Aside type="caution">
+Be careful with portal targeting - ensure the target host exists before mounting. Portal content will not render if the specified host is not found.
+</Aside>
+
+## Common Patterns
+
+### Modal Stack Management
+
+```tsx
+const useModalStack = () => {
+  const [modals, setModals] = useState([]);
+
+  const pushModal = (modal) => {
+    setModals(prev => [...prev, { ...modal, id: Date.now() }]);
+  };
+
+  const popModal = () => {
+    setModals(prev => prev.slice(0, -1));
+  };
+
+  const clearModals = () => {
+    setModals([]);
+  };
+
+  return {
+    modals,
+    pushModal,
+    popModal,
+    clearModals,
+    hasModals: modals.length > 0,
+  };
+};
+```
+
+### Portal-based Drawer
+
+```tsx
+const Drawer = ({ isOpen, children, position = 'right' }) => {
+  if (!isOpen) return null;
+
+  return (
+    <Portal hostName="drawer-host" name={`drawer-${position}`}>
+      <View style={[styles.drawer, styles[position]]}>
+        {children}
+      </View>
+    </Portal>
+  );
+};
+```

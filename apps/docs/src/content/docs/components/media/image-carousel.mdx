@@ -1,0 +1,562 @@
+---
+title: Image Carousel
+description: A powerful, animated image carousel component with fullscreen support, pagination, navigation controls, and customizable styling for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Image Carousel provides a feature-rich solution for displaying multiple images with smooth animations, automatic playback, and interactive controls. Built with React Native Reanimated for optimal performance and includes fullscreen modal support, customizable pagination, and flexible styling options.
+
+## Import
+
+```tsx
+import { ImageCarousel } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Carousel">
+    ```tsx
+    const images = [
+      { image: require('./assets/image1.jpg') },
+      { image: require('./assets/image2.jpg') },
+      { image: require('./assets/image3.jpg') },
+    ];
+
+    <ImageCarousel data={images} />
+    ```
+  </TabItem>
+
+  <TabItem label="With Auto Play">
+    ```tsx
+    <ImageCarousel
+      data={images}
+      autoPlay={true}
+      autoPlayInterval={4000}
+      loop={true}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="Custom Styling">
+    ```tsx
+    <ImageCarousel
+      data={images}
+      width="100%"
+      height={250}
+      containerStyle={{
+        backgroundColor: '#f0f0f0',
+        borderRadius: 12,
+      }}
+      imageStyle={{
+        borderRadius: 8,
+      }}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="With Controls">
+    ```tsx
+    <ImageCarousel
+      data={images}
+      showControls={{
+        arrows: true,
+        pagination: true,
+        counter: true,
+      }}
+      controlsStyle={{
+        arrowColor: '#ffffff',
+        arrowBackground: 'rgba(0, 0, 0, 0.7)',
+        counterBackground: 'rgba(0, 0, 0, 0.6)',
+      }}
+    />
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### ImageCarousel Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `data` | `CarouselItem[]` | - | Array of carousel items to display |
+| `autoPlay` | `boolean` | `false` | Enable automatic slide progression |
+| `autoPlayInterval` | `number` | `3000` | Time between auto slides (ms) |
+| `pagination` | `boolean` | `true` | Show pagination dots |
+| `paginationPosition` | `'bottom' \| 'overlay'` | `'bottom'` | Position of pagination dots |
+| `paginationStyle` | `StyleProp<ViewStyle>` | - | Custom pagination container style |
+| `dotStyle` | `StyleProp<ViewStyle>` | - | Style for inactive dots |
+| `activeDotStyle` | `StyleProp<ViewStyle>` | - | Style for active dot |
+| `fullscreen` | `boolean` | `false` | Enable fullscreen modal on tap |
+| `imageStyle` | `StyleProp<ImageStyle>` | - | Custom image styling |
+| `containerStyle` | `StyleProp<ViewStyle>` | - | Custom container styling |
+| `loop` | `boolean` | `true` | Enable infinite loop |
+| `width` | `DimensionValue` | `windowWidth * 0.7` | Carousel width |
+| `height` | `DimensionValue` | - | Carousel height |
+| `showControls` | `ControlsConfig` | See below | Control visibility settings |
+| `controlsStyle` | `ControlsStyle` | See below | Control styling options |
+
+### ControlsConfig
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `arrows` | `boolean` | `false` | Show navigation arrows |
+| `pagination` | `boolean` | `true` | Show pagination dots |
+| `counter` | `boolean` | `false` | Show current slide counter |
+
+### ControlsStyle
+
+| Property | Type | Default | Description |
+|----------|------|---------|-------------|
+| `arrowColor` | `string` | `'white'` | Arrow icon color |
+| `arrowSize` | `number` | `24` | Arrow icon size |
+| `arrowBackground` | `string` | `'rgba(0, 0, 0, 0.5)'` | Arrow background color |
+| `arrowBorderRadius` | `number` | `20` | Arrow button border radius |
+| `counterBackground` | `string` | `'rgba(0, 0, 0, 0.5)'` | Counter background color |
+| `counterTextColor` | `string` | `'white'` | Counter text color |
+| `top` | `ViewStyle['top']` | `'45%'` | Vertical position of arrows |
+
+### CarouselItem
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `key` | `string` | Optional unique identifier |
+| `image` | `ImageSourcePropType` | Image source (local or remote) |
+| `title` | `string` | Optional image title |
+| `description` | `string` | Optional image description |
+
+## Examples
+
+### Photo Gallery
+
+```tsx
+const PhotoGallery = () => {
+  const photos = [
+    {
+      image: { uri: 'https://example.com/photo1.jpg' },
+      title: 'Sunset Beach',
+      description: 'Beautiful sunset at the beach'
+    },
+    {
+      image: { uri: 'https://example.com/photo2.jpg' },
+      title: 'Mountain View',
+      description: 'Panoramic mountain landscape'
+    },
+    {
+      image: { uri: 'https://example.com/photo3.jpg' },
+      title: 'City Lights',
+      description: 'Night cityscape with lights'
+    },
+  ];
+
+  return (
+    <ImageCarousel
+      data={photos}
+      fullscreen={true}
+      autoPlay={true}
+      autoPlayInterval={5000}
+      showControls={{
+        arrows: true,
+        pagination: true,
+        counter: true,
+      }}
+      containerStyle={{
+        marginVertical: 20,
+        backgroundColor: '#000',
+        borderRadius: 16,
+        overflow: 'hidden',
+      }}
+    />
+  );
+};
+```
+
+### Product Showcase
+
+```tsx
+const ProductShowcase = ({ product }) => {
+  return (
+    <View style={{ padding: 16 }}>
+      <ImageCarousel
+        data={product.images}
+        width="100%"
+        height={300}
+        fullscreen={true}
+        paginationPosition="overlay"
+        showControls={{
+          arrows: false,
+          pagination: true,
+          counter: true,
+        }}
+        dotStyle={{
+          backgroundColor: 'rgba(255, 255, 255, 0.6)',
+        }}
+        activeDotStyle={{
+          backgroundColor: '#ffffff',
+        }}
+        controlsStyle={{
+          counterBackground: 'rgba(0, 0, 0, 0.8)',
+          counterTextColor: '#ffffff',
+        }}
+        imageStyle={{
+          borderRadius: 12,
+        }}
+      />
+    </View>
+  );
+};
+```
+
+### Hero Banner
+
+```tsx
+const HeroBanner = () => {
+  const banners = [
+    {
+      image: require('./assets/banner1.jpg'),
+      title: 'Summer Sale',
+      description: 'Up to 50% off on all items'
+    },
+    {
+      image: require('./assets/banner2.jpg'),
+      title: 'New Collection',
+      description: 'Discover our latest arrivals'
+    },
+    {
+      image: require('./assets/banner3.jpg'),
+      title: 'Free Shipping',
+      description: 'On orders over $50'
+    },
+  ];
+
+  return (
+    <ImageCarousel
+      data={banners}
+      autoPlay={true}
+      autoPlayInterval={4000}
+      loop={true}
+      width="100%"
+      height={200}
+      showControls={{
+        arrows: true,
+        pagination: true,
+        counter: false,
+      }}
+      controlsStyle={{
+        arrowColor: '#ffffff',
+        arrowBackground: 'rgba(0, 0, 0, 0.6)',
+        arrowBorderRadius: 25,
+        arrowSize: 28,
+      }}
+      paginationPosition="overlay"
+      dotStyle={{
+        backgroundColor: 'rgba(255, 255, 255, 0.5)',
+        width: 12,
+        height: 4,
+      }}
+      activeDotStyle={{
+        backgroundColor: '#ffffff',
+        width: 24,
+      }}
+    />
+  );
+};
+```
+
+### Thumbnail Gallery
+
+```tsx
+const ThumbnailGallery = ({ images }) => {
+  const [selectedIndex, setSelectedIndex] = useState(0);
+
+  return (
+    <View>
+      {/* Main Carousel */}
+      <ImageCarousel
+        data={images}
+        fullscreen={true}
+        pagination={false}
+        showControls={{
+          arrows: true,
+          pagination: false,
+          counter: true,
+        }}
+        width="100%"
+        height={400}
+        onIndexChange={setSelectedIndex}
+      />
+
+      {/* Thumbnail Strip */}
+      <ScrollView
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        style={{ marginTop: 16 }}
+      >
+        {images.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => setSelectedIndex(index)}
+            style={[
+              styles.thumbnail,
+              selectedIndex === index && styles.activeThumbnail
+            ]}
+          >
+            <Image
+              source={item.image}
+              style={styles.thumbnailImage}
+              resizeMode="cover"
+            />
+          </TouchableOpacity>
+        ))}
+      </ScrollView>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  thumbnail: {
+    width: 60,
+    height: 60,
+    marginRight: 8,
+    borderRadius: 8,
+    overflow: 'hidden',
+    borderWidth: 2,
+    borderColor: 'transparent',
+  },
+  activeThumbnail: {
+    borderColor: '#007AFF',
+  },
+  thumbnailImage: {
+    width: '100%',
+    height: '100%',
+  },
+});
+```
+
+### Custom Pagination
+
+```tsx
+const CustomPaginationCarousel = () => {
+  return (
+    <ImageCarousel
+      data={images}
+      pagination={true}
+      paginationPosition="bottom"
+      paginationStyle={{
+        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+        borderRadius: 20,
+        paddingHorizontal: 16,
+        marginHorizontal: 20,
+        marginBottom: 10,
+      }}
+      dotStyle={{
+        backgroundColor: '#cccccc',
+        width: 8,
+        height: 8,
+        borderRadius: 4,
+        marginHorizontal: 2,
+      }}
+      activeDotStyle={{
+        backgroundColor: '#007AFF',
+        width: 20,
+        height: 8,
+        borderRadius: 4,
+      }}
+    />
+  );
+};
+```
+
+## Advanced Usage
+
+### Controlled Carousel
+
+```tsx
+const ControlledCarousel = () => {
+  const carouselRef = useRef<ImageCarouselRef>(null);
+  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const goToSlide = (index: number) => {
+    carouselRef.current?.scrollToIndex(index);
+  };
+
+  const nextSlide = () => {
+    carouselRef.current?.scrollToNext();
+  };
+
+  const prevSlide = () => {
+    carouselRef.current?.scrollToPrev();
+  };
+
+  return (
+    <View>
+      <ImageCarousel
+        ref={carouselRef}
+        data={images}
+        onIndexChange={setCurrentIndex}
+        showControls={{
+          arrows: false,
+          pagination: false,
+          counter: false,
+        }}
+      />
+
+      <View style={styles.customControls}>
+        <TouchableOpacity onPress={prevSlide}>
+          <Text>Previous</Text>
+        </TouchableOpacity>
+
+        <Text>{currentIndex + 1} of {images.length}</Text>
+
+        <TouchableOpacity onPress={nextSlide}>
+          <Text>Next</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.thumbnailControls}>
+        {images.map((_, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => goToSlide(index)}
+            style={[
+              styles.thumbnailButton,
+              currentIndex === index && styles.activeThumbnailButton
+            ]}
+          >
+            <Text>{index + 1}</Text>
+          </TouchableOpacity>
+        ))}
+      </View>
+    </View>
+  );
+};
+```
+
+### Dynamic Image Loading
+
+```tsx
+const DynamicImageCarousel = () => {
+  const [images, setImages] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadImages();
+  }, []);
+
+  const loadImages = async () => {
+    try {
+      const response = await fetch('/api/images');
+      const imageData = await response.json();
+      setImages(imageData);
+    } catch (error) {
+      console.error('Failed to load images:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" />
+        <Text>Loading images...</Text>
+      </View>
+    );
+  }
+
+  return (
+    <ImageCarousel
+      data={images}
+      autoPlay={true}
+      fullscreen={true}
+      showControls={{
+        arrows: true,
+        pagination: true,
+        counter: true,
+      }}
+      onImageError={(error, index) => {
+        console.error(`Failed to load image at index ${index}:`, error);
+      }}
+    />
+  );
+};
+```
+
+## Animation Details
+
+The carousel uses React Native Reanimated for smooth, performant animations:
+
+### Dot Animation
+- **Width**: Interpolates between 8px (inactive) and 16px (active)
+- **Opacity**: Transitions from 0.5 to 1.0 for active state
+- **Scale**: Active dot scales to 1.2x with spring animation
+
+### Image Animation
+- **Scale**: Images scale from 0.8 to 1.0 based on scroll position
+- **Smooth Transitions**: Uses interpolation for fluid movement
+
+### Fullscreen Modal
+- **Fade Animation**: Modal appears with fade transition
+- **Status Bar**: Automatically hidden in fullscreen mode
+- **Close Button**: Custom X icon with smooth animations
+
+## Performance Considerations
+
+<Card title="Optimization Tips" icon="rocket">
+- Use `React.memo` for carousel items when data changes frequently
+- Implement lazy loading for large image sets
+- Consider image caching for remote images
+- Use appropriate image sizes to reduce memory usage
+</Card>
+
+<Card title="Memory Management" icon="bars">
+- Implement image recycling for very large datasets
+- Use `removeClippedSubviews` for long lists
+- Monitor memory usage with large images
+- Consider using placeholder images during loading
+</Card>
+
+## Best Practices
+
+<Card title="User Experience" icon="figma">
+- Always provide loading states for remote images
+- Use appropriate aspect ratios for consistent layout
+- Consider accessibility labels for screen readers
+- Provide clear visual feedback for interactive elements
+</Card>
+
+<Card title="Design Guidelines" icon="seti:brush">
+- Maintain consistent spacing and styling
+- Use appropriate contrast for controls
+- Consider touch target sizes (minimum 44px)
+- Provide visual hierarchy with proper sizing
+</Card>
+
+<Aside type="tip">
+When using auto-play, consider providing a pause/play button for users who need more time to view content or have motion sensitivity.
+</Aside>
+
+<Aside type="caution">
+Be mindful of image sizes and loading times, especially on slower connections. Consider implementing progressive loading or placeholder images for better user experience.
+</Aside>
+
+## Troubleshooting
+
+### Common Issues
+
+**Images not displaying:**
+- Ensure image sources are correctly formatted
+- Check network connectivity for remote images
+- Verify local image paths and imports
+
+**Performance issues:**
+- Reduce image sizes and implement lazy loading
+- Use `getItemLayout` for better scroll performance
+- Consider virtualization for large datasets
+
+**Animation stuttering:**
+- Ensure React Native Reanimated is properly installed
+- Check for blocking operations on the UI thread
+- Use `useNativeDriver` where possible
