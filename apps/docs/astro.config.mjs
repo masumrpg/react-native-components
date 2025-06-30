@@ -192,6 +192,7 @@ export default defineConfig({
         },
         {
           label: 'API Reference',
+          collapsed: true,
           items: [
             { label: 'Provider', slug: 'api/provider' },
             { label: 'Theme', slug: 'api/theme' },
