@@ -38,12 +38,15 @@ The `RNCProvider` is the core component that provides theme context to your enti
   <TabItem label="Basic Setup">
     ```tsx title="_layout.tsx"
     import { RNCProvider } from 'rnc-theme';
+    import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
     export default function RootLayout() {
       return (
-        <RNCProvider defaultTheme="system">
-          {/* Your app content */}
-        </RNCProvider>
+        <GestureHandlerRootView>
+          <RNCProvider defaultTheme="system">
+            {/* Your app content */}
+          </RNCProvider>
+        </GestureHandlerRootView>
       );
     }
     ```
@@ -51,41 +54,44 @@ The `RNCProvider` is the core component that provides theme context to your enti
   <TabItem label="Full Configuration">
     ```tsx title="_layout.tsx"
     import { RNCProvider } from 'rnc-theme';
+    import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
     export default function RootLayout() {
       return (
-        <RNCProvider
-          // Theme Configuration
-          defaultTheme="system" // 'light' | 'dark' | 'system'
+        <GestureHandlerRootView>
+          <RNCProvider
+            // Theme Configuration
+            defaultTheme="system" // 'light' | 'dark' | 'system'
 
-          // Toast Configuration
-          toast={{
-            maxToasts: 4, // Maximum number of toasts
-            position: "bottom", // 'top' | 'bottom'
-          }}
+            // Toast Configuration
+            toast={{
+              maxToasts: 4, // Maximum number of toasts
+              position: "bottom", // 'top' | 'bottom'
+            }}
 
-          // Internationalization
-          i18nConfig={{
-            defaultLocale: "en", // Default locale
-            translations: {
-              en: {
-                /* English translations */
+            // Internationalization
+            i18nConfig={{
+              defaultLocale: "en", // Default locale
+              translations: {
+                en: {
+                  /* English translations */
+                },
+                id: {
+                  /* Indonesian translations */
+                },
               },
-              id: {
-                /* Indonesian translations */
-              },
-            },
-          }}
+            }}
 
-          // Bottom Sheet Configuration
-          bottomSheetProps={{}}
+            // Bottom Sheet Configuration
+            bottomSheetProps={{}}
 
-          // Theme Colors
-          customLightTheme={{}}
-          customDarkTheme={{}}
-        >
-          {/* Your app content */}
-        </RNCProvider>
+            // Theme Colors
+            customLightTheme={{}}
+            customDarkTheme={{}}
+          >
+            {/* Your app content */}
+          </RNCProvider>
+        </GestureHandlerRootView>
       );
     }
     ```

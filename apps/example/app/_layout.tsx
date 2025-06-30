@@ -4,7 +4,9 @@ import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
-import RootLayoutNav from '@/components/RootLayoutNav';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { RNCProvider } from 'rnc-theme';
+import { i18nConfig } from '@/config';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -41,14 +43,20 @@ export default function RootLayout() {
   }
 
   return (
-    <RootLayoutNav>
-      <Stack
-        screenOptions={{
-          headerShown: false,
-        }}
+    <GestureHandlerRootView>
+      <RNCProvider
+        defaultTheme="system"
+        toast={{ maxToasts: 4, position: 'bottom' }}
+        i18nConfig={i18nConfig}
       >
-        <Stack.Screen name="index" />
-      </Stack>
-    </RootLayoutNav>
+        <Stack
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <Stack.Screen name="index" />
+        </Stack>
+      </RNCProvider>
+    </GestureHandlerRootView>
   );
 }

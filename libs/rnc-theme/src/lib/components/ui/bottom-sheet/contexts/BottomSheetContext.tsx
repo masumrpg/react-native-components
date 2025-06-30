@@ -7,8 +7,7 @@ import {
   ReactNode,
   useEffect,
 } from 'react';
-import { View, Text, BackHandler } from 'react-native';
-import { GestureHandlerRootView } from 'react-native-gesture-handler';
+import { View, Text, BackHandler, Platform } from 'react-native';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { ListRenderItem } from 'react-native';
 import BottomSheetScrollView from '../components/BottomSheetScrollView';
@@ -32,7 +31,7 @@ const BottomSheetContext = createContext<BottomSheetContextType | undefined>(
 export const BottomSheetProvider = <T = any,>({
   children,
   defaultSnapTo = '70%',
-  maxSnapTo = '100%',
+  maxSnapTo = Platform.OS === 'web' ? '0%' : '100%',
   backgroundColor = '#FFFFFF',
   backDropColor = 'rgba(0,0,0,0.5)',
   lineBackgroundColor = '#000000',
@@ -244,46 +243,44 @@ export const BottomSheetProvider = <T = any,>({
     (() => <Text style={{ padding: 20 }}>No item renderer provided</Text>);
 
   return (
-    <GestureHandlerRootView style={{ flex: 1 }}>
-      <BottomSheetContext.Provider value={contextValue}>
-        {children}
-        {sheetVariant === 'scroll' ? (
-          <BottomSheetScrollView
-            ref={bottomSheetRef}
-            snapTo={snapTo}
-            maxSnapTo={maxSnapToValue}
-            backgroundColor={backgroundColor}
-            backDropColor={backDropColor}
-            lineBackgroundColor={lineBackgroundColor}
-            borderTopLeftRadius={borderTopLeftRadius}
-            borderTopRightRadius={borderTopRightRadius}
-            onStateChange={handleStateChange}
-            stickyHeaderIndices={title ? [0] : []}
-          >
-            <TitleContainer />
-            <View style={{ padding: 20 }}>{content}</View>
-          </BottomSheetScrollView>
-        ) : (
-          <BottomSheetFlatList
-            ref={bottomSheetRef}
-            snapTo={snapTo}
-            maxSnapTo={maxSnapToValue}
-            backgroundColor={backgroundColor}
-            backDropColor={backDropColor}
-            lineBackgroundColor={lineBackgroundColor}
-            borderTopLeftRadius={borderTopLeftRadius}
-            borderTopRightRadius={borderTopRightRadius}
-            onStateChange={handleStateChange}
-            data={listData}
-            renderItem={safeRenderItem}
-            ListHeaderComponent={<TitleContainer />}
-            stickyHeaderIndices={title ? [0] : []}
-            contentContainerStyle={{ paddingBottom: 20, backgroundColor }}
-            {...flatListProps}
-          />
-        )}
-      </BottomSheetContext.Provider>
-    </GestureHandlerRootView>
+    <BottomSheetContext.Provider value={contextValue}>
+      {children}
+      {sheetVariant === 'scroll' ? (
+        <BottomSheetScrollView
+          ref={bottomSheetRef}
+          snapTo={snapTo}
+          maxSnapTo={maxSnapToValue}
+          backgroundColor={backgroundColor}
+          backDropColor={backDropColor}
+          lineBackgroundColor={lineBackgroundColor}
+          borderTopLeftRadius={borderTopLeftRadius}
+          borderTopRightRadius={borderTopRightRadius}
+          onStateChange={handleStateChange}
+          stickyHeaderIndices={title ? [0] : []}
+        >
+          <TitleContainer />
+          <View style={{ padding: 20 }}>{content}</View>
+        </BottomSheetScrollView>
+      ) : (
+        <BottomSheetFlatList
+          ref={bottomSheetRef}
+          snapTo={snapTo}
+          maxSnapTo={maxSnapToValue}
+          backgroundColor={backgroundColor}
+          backDropColor={backDropColor}
+          lineBackgroundColor={lineBackgroundColor}
+          borderTopLeftRadius={borderTopLeftRadius}
+          borderTopRightRadius={borderTopRightRadius}
+          onStateChange={handleStateChange}
+          data={listData}
+          renderItem={safeRenderItem}
+          ListHeaderComponent={<TitleContainer />}
+          stickyHeaderIndices={title ? [0] : []}
+          contentContainerStyle={{ paddingBottom: 20, backgroundColor }}
+          {...flatListProps}
+        />
+      )}
+    </BottomSheetContext.Provider>
   );
 };
 

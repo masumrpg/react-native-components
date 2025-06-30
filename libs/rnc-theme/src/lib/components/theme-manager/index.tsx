@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { Alert, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
 import { CustomThemeConfigFactory, Theme } from '../../types/theme';
 import { useTheme } from '../../context/RNCProvider';
 import { useThemedStyles } from '../../hooks/useThemedStyles';
@@ -9,6 +9,7 @@ import { Card, CardContent, CardHeader } from '../ui/card';
 import { Switcher } from '../ui/switcher';
 import { Button, ButtonText } from '../ui/button';
 import { VStack } from '../ui/layout';
+import { useToast } from '../ui/toast';
 
 /**
  * Configuration object for a theme preset
@@ -251,6 +252,8 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
 }) => {
   const { setThemeMode, isDark, updateCustomTheme, resetTheme } = useTheme();
   const styles = useThemedStyles(createStyles);
+  const { toast } = useToast();
+
   const [selectedPreset, setSelectedPreset] = useState<string>(initialTheme);
   const [appliedTheme, setAppliedTheme] = useState<string>(initialTheme);
   const [previewTheme, setPreviewTheme] = useState<string | null>(null);
@@ -376,8 +379,12 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
           customization?.warningMessage ?? 'Warning: Please check your input!',
         info: customization?.infoMessage ?? 'Info: Theme has been updated!',
       };
-      Alert.alert('Notification', messages[type]);
+      toast({
+        title: 'Change Theme',
+        description: messages[type],
+      });
     },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [customization]
   );
 

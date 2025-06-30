@@ -1,90 +1,120 @@
-# ReactNativeComponents
+# React Native Components Theme
 
-<a alt="Nx logo" href="https://nx.dev" target="_blank" rel="noreferrer"><img src="https://raw.githubusercontent.com/nrwl/nx/master/images/nx-logo.png" width="45"></a>
+[![npm version](https://badge.fury.io/js/rnc-theme.svg)](https://badge.fury.io/js/rnc-theme)
+![npm downloads](https://img.shields.io/npm/dt/rnc-theme)
+[![TypeScript](https://img.shields.io/badge/TypeScript-Ready-blue.svg)](https://www.typescriptlang.org/)
+[![React Native](https://img.shields.io/badge/React%20Native-Optimized-61DAFB.svg)](https://reactnative.dev/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-✨ Your new, shiny [Nx workspace](https://nx.dev) is almost ready ✨.
+> A comprehensive React Native UI component library and theme system designed to accelerate your mobile application development. With a focus on customization, performance, and exceptional developer experience.
 
-[Learn more about this workspace setup and its capabilities](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects) or run `npx nx graph` to visually explore what was created. Now, let's get you up to speed!
+## ✨ Key Features
 
-## Finish your remote caching setup
+### 🌓 Dynamic Theme Switching
+Seamlessly switch between light and dark modes, or create your own custom themes.
 
-[Click here to finish setting up your workspace!](https://cloud.nx.app/connect/DRYZ4kuSf5)
+### 🔒 Type-Safe
+Complete TypeScript support with comprehensive type definitions for a safe development experience.
 
+### 🎨 Highly Customizable
+Easily customize every aspect of components using a flexible theme system.
 
-## Generate a library
+### ⚡ React Native Optimized
+Built specifically for React Native with optimal performance and perfect native experience.
 
-```sh
-npx nx g @nx/js:lib packages/pkg1 --publishable --importPath=@my-org/pkg1
+### 💾 Persistent Storage
+Automatically saves user theme preferences for consistent experience.
+
+### 🎯 Multiple Presets
+Comes with various built-in theme presets that are ready to use and customizable.
+
+## 🚀 Installation
+
+```bash
+npm install rnc-theme
+# or
+yarn add rnc-theme
 ```
 
-## Run tasks
+## 📖 Quick Start
 
-To build the library use:
+```jsx
+import React from 'react';
+import { View } from 'react-native';
+import { RNCProvider, Button, Typography } from 'rnc-theme';
 
-```sh
-npx nx build pkg1
+const App = () => {
+  return (
+    <RNCProvider>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+        <Typography variant="h1">Welcome!</Typography>
+        <Button onPress={() => console.log('Button pressed!')}>
+          <Typography color="white">Press Me</Typography>
+        </Button>
+      </View>
+    </RNCProvider>
+  );
+};
+
+export default App;
 ```
 
-To run any task with Nx use:
+## 📦 30+ UI Components Ready to Use
 
-```sh
-npx nx <target> <project-name>
-```
+### 🔘 Button & FAB
+Customizable buttons with various variants, sizes, and Floating Action Button.
 
-These targets are either [inferred automatically](https://nx.dev/concepts/inferred-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects) or defined in the `project.json` or `package.json` files.
+### 📝 Typography
+Complete typography system with various heading, body, and caption variants.
 
-[More about running tasks in the docs &raquo;](https://nx.dev/features/run-tasks?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### 📋 Form Controls
+Input, Checkbox, Radio, Switcher, Toggle, Slider, and integrated Form Control.
 
-## Versioning and releasing
+### 🏗️ Layout & Navigation
+Card, Divider, Layout components, Modal, Bottom Sheet, and Accordion.
 
-To version and release the library use
+### 📊 Data Display
+Table, Badge, Avatar, Progress, Rating, and Skeleton loading.
 
-```
-npx nx release
-```
+### 💬 Feedback & Interaction
+Toast notifications, Tooltip, Spinner, and various other interactive components.
 
-Pass `--dry-run` to see what would happen without actually releasing the library.
+### 🖼️ Media & Content
+Image Carousel, Calendar, Date Picker for displaying multimedia content.
 
-[Learn more about Nx release &raquo;](hhttps://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+### 🚀 Advanced Features
+Combobox, Scroll components, and Internationalization (i18n) support.
 
-## Keep TypeScript project references up to date
+## 📚 Documentation
 
-Nx automatically updates TypeScript [project references](https://www.typescriptlang.org/docs/handbook/project-references.html) in `tsconfig.json` files to ensure they remain accurate based on your project dependencies (`import` or `require` statements). This sync is automatically done when running tasks such as `build` or `typecheck`, which require updated references to function correctly.
+Visit our comprehensive documentation for detailed guides and examples:
 
-To manually trigger the process to sync the project graph dependencies information to the TypeScript project references, run the following command:
+### [🚀 Getting Started](https://rnc.masum.cloud/)
+Complete guide to start using rnc-theme in your project.
 
-```sh
-npx nx sync
-```
+### [🎨 Theming Guide](https://rnc.masum.cloud/)
+Learn how to create and customize themes according to your brand.
 
-You can enforce that the TypeScript project references are always in the correct state when running in CI by adding a step to your CI job configuration that runs the following command:
+### [🧩 Components](https://rnc.masum.cloud/)
+Explore all available components with complete usage examples.
 
-```sh
-npx nx sync:check
-```
+### [💡 Examples](https://rnc.masum.cloud/)
+See real implementation examples and best practices.
 
-[Learn more about nx sync](https://nx.dev/reference/nx-commands#sync)
+## 🤝 Contributing
 
+We welcome contributions! Please see our contributing guidelines for more details.
 
-[Learn more about Nx on CI](https://nx.dev/ci/intro/ci-with-nx#ready-get-started-with-your-provider?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+1. Fork this repository
+2. Create a new feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a new Pull Request
 
-## Install Nx Console
+## 📄 License
 
-Nx Console is an editor extension that enriches your developer experience. It lets you run tasks, generate code, and improves code autocompletion in your IDE. It is available for VSCode and IntelliJ.
+MIT - See [LICENSE](LICENSE) for details
 
-[Install Nx Console &raquo;](https://nx.dev/getting-started/editor-setup?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+---
 
-## Useful links
-
-Learn more:
-
-- [Learn more about this workspace setup](https://nx.dev/nx-api/js?utm_source=nx_project&amp;utm_medium=readme&amp;utm_campaign=nx_projects)
-- [Learn about Nx on CI](https://nx.dev/ci/intro/ci-with-nx?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [Releasing Packages with Nx release](https://nx.dev/features/manage-releases?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-- [What are Nx plugins?](https://nx.dev/concepts/nx-plugins?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
-
-And join the Nx community:
-- [Discord](https://go.nx.dev/community)
-- [Follow us on X](https://twitter.com/nxdevtools) or [LinkedIn](https://www.linkedin.com/company/nrwl)
-- [Our Youtube channel](https://www.youtube.com/@nxdevtools)
-- [Our blog](https://nx.dev/blog?utm_source=nx_project&utm_medium=readme&utm_campaign=nx_projects)
+Made with ❤️ for the React Native community

@@ -104,15 +104,15 @@ Choose your preferred package manager to initialize your Expo project:
      }
 
      return (
-       <RNCProvider defaultTheme="system">
-         <GestureHandlerRootView>
-           <Stack>
-             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
-             <Stack.Screen name="+not-found" />
-           </Stack>
+       <GestureHandlerRootView>
+          <RNCProvider defaultTheme="system">
+            <Stack>
+              <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+              <Stack.Screen name="+not-found" />
+            </Stack>
            <StatusBar style="auto" />
-         </GestureHandlerRootView>
-       </RNCProvider>
+          </RNCProvider>
+      </GestureHandlerRootView>
      );
    }
    ```

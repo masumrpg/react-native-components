@@ -217,14 +217,14 @@ Create a test component to verify your installation:
     function RootLayoutNav() {
       return (
 -      <ThemeProvider>
-+        <RNCProvider>
-+            <GestureHandlerRootView>
++        <GestureHandlerRootView>
++           <RNCProvider>
                   {/* stack or children */}
                   <Stack>
                     <Stack.Screen name="index" />
                   </Stack>
-+            </GestureHandlerRootView>
-+        </RNCProvider>
++           </RNCProvider>
++        </GestureHandlerRootView>
 -      </ThemeProvider>
       );
     }
@@ -232,7 +232,7 @@ Create a test component to verify your installation:
   </TabItem>
 
   <TabItem label="TypeScript" icon="seti:typescript">
-    ```diff lang="ts" title="_layout.tsx"
+    ```diff lang="js" title="_layout.tsx"
 - import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
     import { Stack, usePathname } from 'expo-router';
     import { RNCProvider } from 'rnc-theme';
@@ -246,14 +246,14 @@ Create a test component to verify your installation:
     function RootLayoutNav() {
       return (
 -      <ThemeProvider>
-+        <RNCProvider>
-+            <GestureHandlerRootView>
++        <GestureHandlerRootView>
++           <RNCProvider>
                   {/* stack or children */}
                   <Stack>
                     <Stack.Screen name="index" />
                   </Stack>
-+            </GestureHandlerRootView>
-+        </RNCProvider>
++           </RNCProvider>
++        </GestureHandlerRootView>
 -      </ThemeProvider>
       );
     }

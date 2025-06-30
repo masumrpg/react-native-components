@@ -6,24 +6,24 @@ banner:
     🚧 Our documentation is currently under development. We're working hard to bring you comprehensive guides and examples. Stay tuned for updates! Thank you for your patience.
 template: splash
 hero:
-  tagline: Build beautiful and scalable React Native applications with rnc-theme - a powerful theme system with complete TypeScript support.
+  tagline: Transform your React Native development with rnc-theme - Craft stunning, type-safe mobile experiences with unparalleled flexibility and developer-friendly components.
   image:
     file: ../../assets/logo.webp
   actions:
     - text: Get Started
       link: /getting-started/installation
       icon: right-arrow
-    - text: View on GitHub
+    - text: Give Star on GitHub
       link: https://github.com/masumrpg/react-native-components
       icon: external
       variant: minimal
 ---
 
-import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Card, CardGrid, Tabs, TabItem } from '@astrojs/starlight/components';
 
 ## About React Native Components Theme
 
-**React Native Components Theme** is a comprehensive React Native UI component library and theme system designed to accelerate your mobile application development. With a focus on customization, performance, and exceptional developer experience.
+**React Native Components Theme** is a comprehensive React Native UI component library and theme system designed to accelerate your mobile application development. With a focus on customization, performance, and exceptional developer experience. The primary goal of these components is to empower full-stack developers and rapid application developers to streamline their mobile app development process, allowing them to focus more on core features and business logic rather than UI implementation details. This library serves as your ultimate companion in building sophisticated mobile applications with remarkable speed and efficiency.
 
 ## Key Features
 
@@ -50,11 +50,31 @@ import { Card, CardGrid } from '@astrojs/starlight/components';
 
 ## Quick Installation
 
-```bash
-npm install rnc-theme
-# or
-yarn add rnc-theme
-```
+<Tabs syncKey="package">
+  <TabItem label="npm" icon='npm'>
+    ```bash
+			npm install rnc-theme
+		```
+  </TabItem>
+
+  <TabItem label="yarn" icon="seti:yarn">
+    ```bash
+			yarn add rnc-theme
+		```
+  </TabItem>
+
+  <TabItem label="pnpm" icon='pnpm'>
+    ```bash
+			pnpm add install rnc-theme
+		```
+  </TabItem>
+
+  <TabItem label="bun" icon='bun'>
+    ```bash
+			bun add rnc-theme
+		```
+  </TabItem>
+</Tabs>
 
 ## Basic Usage
 
