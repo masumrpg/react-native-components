@@ -55,12 +55,15 @@ bun add rnc-theme
 import React from 'react';
 import { RNCProvider } from 'rnc-theme';
 import App from './App';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function Root() {
   return (
-    <RNCProvider>
-      <App />
-    </RNCProvider>
+    <GestureHandlerRootView>
+      <RNCProvider>
+        <App />
+      </RNCProvider>
+    </GestureHandlerRootView>
   );
 }
 ```

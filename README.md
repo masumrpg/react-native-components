@@ -42,17 +42,20 @@ yarn add rnc-theme
 import React from 'react';
 import { View } from 'react-native';
 import { RNCProvider, Button, Typography } from 'rnc-theme';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const App = () => {
   return (
-    <RNCProvider>
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-        <Typography variant="h1">Welcome!</Typography>
-        <Button onPress={() => console.log('Button pressed!')}>
-          <Typography color="white">Press Me</Typography>
-        </Button>
-      </View>
-    </RNCProvider>
+		<GestureHandlerRootView>
+			<RNCProvider>
+				<View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+					<Typography variant="h1">Welcome!</Typography>
+					<Button onPress={() => console.log('Button pressed!')}>
+						<Typography color="white">Press Me</Typography>
+					</Button>
+				</View>
+			</RNCProvider>
+		</GestureHandlerRootView>
   );
 };
 
