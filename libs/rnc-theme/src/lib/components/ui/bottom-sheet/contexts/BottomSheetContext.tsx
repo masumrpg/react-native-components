@@ -245,41 +245,42 @@ export const BottomSheetProvider = <T = any,>({
   return (
     <BottomSheetContext.Provider value={contextValue}>
       {children}
-      {sheetVariant === 'scroll' ? (
-        <BottomSheetScrollView
-          ref={bottomSheetRef}
-          snapTo={snapTo}
-          maxSnapTo={maxSnapToValue}
-          backgroundColor={backgroundColor}
-          backDropColor={backDropColor}
-          lineBackgroundColor={lineBackgroundColor}
-          borderTopLeftRadius={borderTopLeftRadius}
-          borderTopRightRadius={borderTopRightRadius}
-          onStateChange={handleStateChange}
-          stickyHeaderIndices={title ? [0] : []}
-        >
-          <TitleContainer />
-          <View style={{ padding: 20 }}>{content}</View>
-        </BottomSheetScrollView>
-      ) : (
-        <BottomSheetFlatList
-          ref={bottomSheetRef}
-          snapTo={snapTo}
-          maxSnapTo={maxSnapToValue}
-          backgroundColor={backgroundColor}
-          backDropColor={backDropColor}
-          lineBackgroundColor={lineBackgroundColor}
-          borderTopLeftRadius={borderTopLeftRadius}
-          borderTopRightRadius={borderTopRightRadius}
-          onStateChange={handleStateChange}
-          data={listData}
-          renderItem={safeRenderItem}
-          ListHeaderComponent={<TitleContainer />}
-          stickyHeaderIndices={title ? [0] : []}
-          contentContainerStyle={{ paddingBottom: 20, backgroundColor }}
-          {...flatListProps}
-        />
-      )}
+      {(isOpen || content) &&
+        (sheetVariant === 'scroll' ? (
+          <BottomSheetScrollView
+            ref={bottomSheetRef}
+            snapTo={snapTo}
+            maxSnapTo={maxSnapToValue}
+            backgroundColor={backgroundColor}
+            backDropColor={backDropColor}
+            lineBackgroundColor={lineBackgroundColor}
+            borderTopLeftRadius={borderTopLeftRadius}
+            borderTopRightRadius={borderTopRightRadius}
+            onStateChange={handleStateChange}
+            stickyHeaderIndices={title ? [0] : []}
+          >
+            <TitleContainer />
+            <View style={{ padding: 20 }}>{content}</View>
+          </BottomSheetScrollView>
+        ) : (
+          <BottomSheetFlatList
+            ref={bottomSheetRef}
+            snapTo={snapTo}
+            maxSnapTo={maxSnapToValue}
+            backgroundColor={backgroundColor}
+            backDropColor={backDropColor}
+            lineBackgroundColor={lineBackgroundColor}
+            borderTopLeftRadius={borderTopLeftRadius}
+            borderTopRightRadius={borderTopRightRadius}
+            onStateChange={handleStateChange}
+            data={listData}
+            renderItem={safeRenderItem}
+            ListHeaderComponent={<TitleContainer />}
+            stickyHeaderIndices={title ? [0] : []}
+            contentContainerStyle={{ paddingBottom: 20, backgroundColor }}
+            {...flatListProps}
+          />
+        ))}
     </BottomSheetContext.Provider>
   );
 };
