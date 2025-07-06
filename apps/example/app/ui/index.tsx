@@ -248,6 +248,12 @@ export default function HomeScreen() {
       path: '/ui/theme-manager',
       icon: <Palette size={30} color={theme.colors.text} />,
     },
+    {
+      id: 34,
+      title: 'AAA',
+      path: '/ui/aaa',
+      icon: <Palette size={30} color={theme.colors.text} />,
+    },
   ];
 
   return (

@@ -37,3 +37,4 @@ export * from './image-carousel';
 export * from './rating';
 export * from './calendar';
 export * from './date-picker';
+export * from './selectable-tag';
