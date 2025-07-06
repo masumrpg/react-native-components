@@ -30,6 +30,7 @@
     "@react-native/assets": "^1.0.0",
     "@react-native/normalize-color": "^2.1.0",
     "@react-navigation/native": "^7.1.6",
+    "@shopify/flash-list": "^1.8.3",
     "@types/color": "^4.2.0",
     "@types/qrcode": "^1.5.5",
     "clsx": "^2.1.1",

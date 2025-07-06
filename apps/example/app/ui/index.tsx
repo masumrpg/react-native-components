@@ -35,6 +35,7 @@ import {
   Languages,
   Images,
   CheckCircleIcon,
+  Barcode,
 } from 'lucide-react-native';
 import { ReactElement } from 'react';
 import { Card, Typography, useTheme } from 'rnc-theme';
@@ -254,6 +255,12 @@ export default function HomeScreen() {
       title: 'Selectable Tag',
       path: '/ui/selectable-tag',
       icon: <CheckCircleIcon size={30} color={theme.colors.text} />,
+    },
+    {
+      id: 35,
+      title: 'List',
+      path: '/ui/list',
+      icon: <Barcode size={30} color={theme.colors.text} />,
     },
   ];
 

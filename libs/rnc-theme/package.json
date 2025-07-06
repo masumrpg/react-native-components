@@ -58,7 +58,8 @@
     "@react-navigation/native": ">=6",
     "react-native-safe-area-context": ">=4",
     "expo-localization": ">=16.1.5",
-    "i18n-js": ">=4.5.1"
+    "i18n-js": ">=4.5.1",
+    "@shopify/flash-list": ">=1.8.3"
   },
   "devDependencies": {
     "@types/react": ">=19.0.14",
