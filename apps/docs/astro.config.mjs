@@ -109,7 +109,14 @@ export default defineConfig({
                 { label: 'Badge', slug: 'components/data-display/badge' },
                 { label: 'Card', slug: 'components/data-display/card' },
                 { label: 'Table', slug: 'components/data-display/table' },
-                { label: 'List', slug: 'components/data-display/list' },
+                {
+                  label: 'List',
+                  slug: 'components/data-display/list',
+                  badge: {
+                    text: 'Updated',
+                    variant: 'tip',
+                  },
+                },
                 { label: 'Rating', slug: 'components/data-display/rating' },
                 {
                   label: 'Typography',

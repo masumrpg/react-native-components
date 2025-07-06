@@ -25,6 +25,7 @@
 | 🛡️ [`react-native-safe-area-context`](https://www.npmjs.com/package/react-native-safe-area-context) | `>=4` | Safe area handling |
 | 🌍 [`expo-localization`](https://www.npmjs.com/package/expo-localization) | `>=16.1.5` | Locale detection |
 | 🗣️ [`i18n-js`](https://www.npmjs.com/package/i18n-js) | `>=4.5.1` | Internationalization |
+| 🚀 [`@shopify/flash-list`](https://www.npmjs.com/package/@shopify/flash-list) | `>=1.8.0` | Optimized list rendering |
 
 ## ✨ Features
 
