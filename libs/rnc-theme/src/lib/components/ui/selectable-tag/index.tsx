@@ -52,6 +52,8 @@ const SelectableTag: React.FC<SelectableTagProps> = ({
 }) => {
   const { theme } = useTheme();
   const styles = useThemedStyles(createStylesSelectableTag);
+
+  // Hitung fadedActiveColor di luar useAnimatedStyle dan tambahkan ke dependency
   const fadedActiveColor = Color(theme.colors.primary).alpha(0.1).toString();
 
   const rContainerStyle = useAnimatedStyle(() => {
@@ -67,7 +69,7 @@ const SelectableTag: React.FC<SelectableTagProps> = ({
       paddingLeft: 20,
       paddingRight: !checked ? 20 : 14,
     };
-  }, [checked]);
+  }, [checked, fadedActiveColor, theme.colors.primary, theme.colors.border]);
 
   const rTextStyle = useAnimatedStyle(() => {
     return {
@@ -76,7 +78,7 @@ const SelectableTag: React.FC<SelectableTagProps> = ({
         TimingConfig
       ),
     };
-  }, [checked]);
+  }, [checked, theme.colors.primary, theme.colors.text]);
 
   return (
     <Animated.View
