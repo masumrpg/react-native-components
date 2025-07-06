@@ -12,10 +12,9 @@ import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { useTheme } from '../../../context/RNCProvider';
 import { CircleCheckBig } from 'lucide-react-native';
 import { ViewProps } from 'react-native-svg/lib/typescript/fabric/utils';
+import { ItemSelectTag, useItemSelectTag } from './hooks/useItemSelectTag';
 
-type SelectableTagContainerListProps = {
-
-} & ViewProps;
+type SelectableTagContainerListProps = ViewProps;
 
 type SelectableTagProps = {
   label: string;
@@ -51,7 +50,7 @@ const SelectableTag: React.FC<SelectableTagProps> = ({
   checked,
   onPress,
 }) => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   const styles = useThemedStyles(createStylesSelectableTag);
   const fadedActiveColor = Color(theme.colors.primary).alpha(0.1).toString();
 
@@ -72,7 +71,10 @@ const SelectableTag: React.FC<SelectableTagProps> = ({
 
   const rTextStyle = useAnimatedStyle(() => {
     return {
-      color: withTiming(checked ? theme.colors.primary : theme.colors.text, TimingConfig),
+      color: withTiming(
+        checked ? theme.colors.primary : theme.colors.text,
+        TimingConfig
+      ),
     };
   }, [checked]);
 
@@ -102,21 +104,26 @@ const SelectableTag: React.FC<SelectableTagProps> = ({
   );
 };
 
-const createStylesSelectableTag = (theme: Theme) => StyleSheet.create({
-  container: {
-    paddingVertical: 12,
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    borderRadius: theme.components.borderRadius.md,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  label: {
-    fontSize: theme.fontSizes.md,
-    color: theme.colors.text,
-  },
-});
+const createStylesSelectableTag = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      paddingVertical: 12,
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      borderRadius: theme.components.borderRadius.md,
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+    label: {
+      fontSize: theme.fontSizes.md,
+      color: theme.colors.text,
+    },
+  });
 
-export { SelectableTag, SelectableTagContainerList };
-export type { SelectableTagProps, SelectableTagContainerListProps };
+export { SelectableTag, SelectableTagContainerList, useItemSelectTag };
+export type {
+  SelectableTagProps,
+  SelectableTagContainerListProps,
+  ItemSelectTag,
+};

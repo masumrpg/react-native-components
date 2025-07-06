@@ -34,6 +34,7 @@ import {
   CalendarDays,
   Languages,
   Images,
+  CheckCircleIcon,
 } from 'lucide-react-native';
 import { ReactElement } from 'react';
 import { Card, Typography, useTheme } from 'rnc-theme';
@@ -250,9 +251,9 @@ export default function HomeScreen() {
     },
     {
       id: 34,
-      title: 'AAA',
-      path: '/ui/aaa',
-      icon: <Palette size={30} color={theme.colors.text} />,
+      title: 'Selectable Tag',
+      path: '/ui/selectable-tag',
+      icon: <CheckCircleIcon size={30} color={theme.colors.text} />,
     },
   ];
 
