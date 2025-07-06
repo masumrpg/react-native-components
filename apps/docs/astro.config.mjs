@@ -35,7 +35,7 @@ export default defineConfig({
         },
         {
           label: 'Theming',
-          collapsed: true,
+          collapsed: false,
           items: [
             { label: 'Overview', slug: 'theming/overview' },
             { label: 'Theme Provider', slug: 'theming/theme-provider' },
@@ -50,7 +50,7 @@ export default defineConfig({
         },
         {
           label: 'Hooks',
-          collapsed: true,
+          collapsed: false,
           items: [
             // { label: 'Overview', slug: 'hooks/overview' },
             { label: 'useTheme', slug: 'hooks/use-theme' },
@@ -60,12 +60,12 @@ export default defineConfig({
         },
         {
           label: 'Components',
-          collapsed: true,
+          collapsed: false,
           items: [
             { label: 'Demo', slug: 'components/demo' },
             {
               label: 'Layout',
-              collapsed: true,
+              collapsed: false,
               items: [
                 { label: 'HStack', slug: 'components/layout/hstack' },
                 { label: 'VStack', slug: 'components/layout/vstack' },
@@ -77,7 +77,7 @@ export default defineConfig({
             },
             {
               label: 'Form',
-              collapsed: true,
+              collapsed: false,
               items: [
                 {
                   label: 'Button',
@@ -91,11 +91,19 @@ export default defineConfig({
                 { label: 'Form Control', slug: 'components/form/form-control' },
                 { label: 'Date Picker', slug: 'components/form/date-picker' },
                 { label: 'Combobox', slug: 'components/form/combobox' },
+                {
+                  label: 'Selectable Tag',
+                  slug: 'components/form/selectable-tag',
+                  badge: {
+                    text: 'New',
+                    variant: 'success',
+                  },
+                },
               ],
             },
             {
               label: 'Data Display',
-              collapsed: true,
+              collapsed: false,
               items: [
                 { label: 'Avatar', slug: 'components/data-display/avatar' },
                 { label: 'Badge', slug: 'components/data-display/badge' },
@@ -111,7 +119,7 @@ export default defineConfig({
             },
             {
               label: 'Feedback',
-              collapsed: true,
+              collapsed: false,
               items: [
                 { label: 'Spinner', slug: 'components/feedback/spinner' },
                 { label: 'Skeleton', slug: 'components/feedback/skeleton' },
@@ -122,7 +130,7 @@ export default defineConfig({
             },
             {
               label: 'Navigation',
-              collapsed: true,
+              collapsed: false,
               items: [
                 { label: 'Fab', slug: 'components/navigation/fab' },
                 { label: 'Divider', slug: 'components/navigation/divider' },
@@ -130,7 +138,7 @@ export default defineConfig({
             },
             {
               label: 'Overlay',
-              collapsed: true,
+              collapsed: false,
               items: [
                 {
                   label: 'Modal',
@@ -152,7 +160,7 @@ export default defineConfig({
             },
             {
               label: 'Media',
-              collapsed: true,
+              collapsed: false,
               items: [
                 {
                   label: 'Image Carousel',
@@ -166,7 +174,7 @@ export default defineConfig({
             },
             {
               label: 'Disclosure',
-              collapsed: true,
+              collapsed: false,
               items: [
                 {
                   label: 'Accordion',
@@ -182,7 +190,7 @@ export default defineConfig({
         },
         {
           label: 'Internationalization',
-          collapsed: true,
+          collapsed: false,
           items: [
             {
               label: 'I18n',
@@ -192,7 +200,7 @@ export default defineConfig({
         },
         {
           label: 'API Reference',
-          collapsed: true,
+          collapsed: false,
           items: [
             { label: 'Provider', slug: 'api/provider' },
             { label: 'Theme', slug: 'api/theme' },

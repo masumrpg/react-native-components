@@ -1,0 +1,474 @@
+---
+title: SelectableTag
+description: Interactive tag component with selection state, smooth animations, and flexible container layout for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+SelectableTag provides an elegant solution for creating interactive tag lists with selection states. It features smooth animations, visual feedback, and a flexible container system for organizing multiple tags in various layouts.
+
+## Import
+
+```tsx
+import {
+  SelectableTag,
+  SelectableTagContainerList,
+  useItemSelectTag
+} from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Tag">
+    ```tsx
+    <SelectableTag
+      label="React Native"
+      checked={false}
+      onPress={() => handleSelect()}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="With Container">
+    ```tsx
+    <SelectableTagContainerList>
+      <SelectableTag
+        label="JavaScript"
+        checked={true}
+        onPress={() => handleSelect()}
+      />
+      <SelectableTag
+        label="TypeScript"
+        checked={false}
+        onPress={() => handleSelect()}
+      />
+    </SelectableTagContainerList>
+    ```
+  </TabItem>
+
+  <TabItem label="With Hook">
+    ```tsx
+    const items = [
+      { id: 1, name: 'Frontend', selected: false },
+      { id: 2, name: 'Backend', selected: false },
+    ];
+
+    const { items: tags, toggleItems } = useItemSelectTag(items);
+
+    <SelectableTagContainerList>
+      {tags.map((tag) => (
+        <SelectableTag
+          key={tag.id}
+          label={tag.name}
+          checked={tag.selected}
+          onPress={() => toggleItems(tag.id)}
+        />
+      ))}
+    </SelectableTagContainerList>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### SelectableTag Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `label` | `string` | - | Text content to display on the tag |
+| `checked` | `boolean` | - | Selection state of the tag |
+| `onPress` | `() => void` | - | Callback function when tag is pressed |
+
+### SelectableTagContainerList Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `children` | `React.ReactNode` | - | SelectableTag components to render |
+| `...props` | `ViewProps` | - | Additional View props |
+
+### useItemSelectTag Hook
+
+#### Parameters
+
+| Parameter | Type | Description |
+|-----------|------|-------------|
+| `itemInit` | `ItemSelectTag[]` | Initial array of items with selection state |
+
+#### Returns
+
+| Property | Type | Description |
+|----------|------|-------------|
+| `items` | `ItemSelectTag[]` | Current array of items with their states |
+| `toggleItems` | `(id: number) => void` | Function to toggle selection state by ID |
+
+### ItemSelectTag Type
+
+```tsx
+type ItemSelectTag = {
+  id: number;
+  name: string;
+  selected: boolean;
+};
+```
+
+## Examples
+
+### Skills Selection
+
+```tsx
+const skillsData = [
+  { id: 1, name: 'React', selected: false },
+  { id: 2, name: 'Vue.js', selected: false },
+  { id: 3, name: 'Angular', selected: false },
+  { id: 4, name: 'Node.js', selected: false },
+  { id: 5, name: 'Python', selected: false },
+  { id: 6, name: 'Java', selected: false },
+];
+
+const SkillsSelector = () => {
+  const { items, toggleItems } = useItemSelectTag(skillsData);
+
+  return (
+    <VStack spacing="md">
+      <Title>Select Your Skills</Title>
+      <SelectableTagContainerList>
+        {items.map((skill) => (
+          <SelectableTag
+            key={skill.id}
+            label={skill.name}
+            checked={skill.selected}
+            onPress={() => toggleItems(skill.id)}
+          />
+        ))}
+      </SelectableTagContainerList>
+    </VStack>
+  );
+};
+```
+
+### Category Filter
+
+```tsx
+const categoriesData = [
+  { id: 1, name: 'Technology', selected: false },
+  { id: 2, name: 'Design', selected: false },
+  { id: 3, name: 'Business', selected: false },
+  { id: 4, name: 'Marketing', selected: false },
+  { id: 5, name: 'Science', selected: false },
+];
+
+const CategoryFilter = ({ onFiltersChange }) => {
+  const { items, toggleItems } = useItemSelectTag(categoriesData);
+
+  useEffect(() => {
+    const selectedCategories = items
+      .filter(item => item.selected)
+      .map(item => item.name);
+    onFiltersChange(selectedCategories);
+  }, [items, onFiltersChange]);
+
+  return (
+    <VStack spacing="sm">
+      <Text variant="label">Filter by Category</Text>
+      <SelectableTagContainerList>
+        {items.map((category) => (
+          <SelectableTag
+            key={category.id}
+            label={category.name}
+            checked={category.selected}
+            onPress={() => toggleItems(category.id)}
+          />
+        ))}
+      </SelectableTagContainerList>
+    </VStack>
+  );
+};
+```
+
+### Interests Survey
+
+```tsx
+const interestsData = [
+  { id: 1, name: 'K-pop', selected: false },
+  { id: 2, name: 'K-drama', selected: false },
+  { id: 3, name: 'Variety Show', selected: false },
+  { id: 4, name: 'Webtoon', selected: false },
+  { id: 5, name: 'Fashion', selected: false },
+  { id: 6, name: 'Beauty', selected: false },
+  { id: 7, name: 'Dance Cover', selected: false },
+  { id: 8, name: 'Fanart', selected: false },
+  { id: 9, name: 'Idol News', selected: false },
+  { id: 10, name: 'Korean Food', selected: false },
+];
+
+const InterestsSurvey = () => {
+  const { items, toggleItems } = useItemSelectTag(interestsData);
+  const [submitted, setSubmitted] = useState(false);
+
+  const selectedCount = items.filter(item => item.selected).length;
+
+  const handleSubmit = () => {
+    const selectedInterests = items
+      .filter(item => item.selected)
+      .map(item => item.name);
+
+    console.log('Selected interests:', selectedInterests);
+    setSubmitted(true);
+  };
+
+  return (
+    <VScroll style={{ flex: 1, padding: 16 }}>
+      <VStack spacing="lg">
+        <VStack spacing="sm">
+          <Title>What are your interests?</Title>
+          <Text variant="secondary">
+            Select at least 3 topics you're interested in
+          </Text>
+        </VStack>
+
+        <SelectableTagContainerList>
+          {items.map((interest) => (
+            <SelectableTag
+              key={interest.id}
+              label={interest.name}
+              checked={interest.selected}
+              onPress={() => toggleItems(interest.id)}
+            />
+          ))}
+        </SelectableTagContainerList>
+
+        <VStack spacing="sm">
+          <Text variant="caption">
+            {selectedCount} interests selected
+          </Text>
+
+          <Button
+            variant="primary"
+            disabled={selectedCount < 3}
+            onPress={handleSubmit}
+          >
+            <ButtonText>Continue</ButtonText>
+          </Button>
+        </VStack>
+      </VStack>
+    </VScroll>
+  );
+};
+```
+
+### Dynamic Tags with Search
+
+```tsx
+const DynamicTagSelector = () => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [allTags] = useState([
+    { id: 1, name: 'JavaScript', selected: false },
+    { id: 2, name: 'TypeScript', selected: false },
+    { id: 3, name: 'React', selected: false },
+    { id: 4, name: 'Vue.js', selected: false },
+    { id: 5, name: 'Angular', selected: false },
+    { id: 6, name: 'Node.js', selected: false },
+    { id: 7, name: 'Python', selected: false },
+    { id: 8, name: 'Java', selected: false },
+  ]);
+
+  const { items, toggleItems } = useItemSelectTag(allTags);
+
+  const filteredItems = items.filter(item =>
+    item.name.toLowerCase().includes(searchQuery.toLowerCase())
+  );
+
+  return (
+    <VStack spacing="md" style={{ flex: 1, padding: 16 }}>
+      <VStack spacing="sm">
+        <Title>Select Technologies</Title>
+        <TextInput
+          placeholder="Search technologies..."
+          value={searchQuery}
+          onChangeText={setSearchQuery}
+        />
+      </VStack>
+
+      <SelectableTagContainerList>
+        {filteredItems.map((tag) => (
+          <SelectableTag
+            key={tag.id}
+            label={tag.name}
+            checked={tag.selected}
+            onPress={() => toggleItems(tag.id)}
+          />
+        ))}
+      </SelectableTagContainerList>
+
+      {filteredItems.length === 0 && (
+        <Text variant="secondary" style={{ textAlign: 'center' }}>
+          No technologies found matching "{searchQuery}"
+        </Text>
+      )}
+    </VStack>
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Hook Implementation
+
+```tsx
+const useAdvancedItemSelectTag = (
+  itemInit: ItemSelectTag[],
+  maxSelection?: number
+) => {
+  const [items, setItems] = useState(itemInit);
+
+  const toggleItems = useCallback((id: number) => {
+    setItems((prevItems) => {
+      const selectedCount = prevItems.filter(item => item.selected).length;
+
+      return prevItems.map((item) => {
+        if (item.id === id) {
+          // Check if we can select more items
+          if (!item.selected && maxSelection && selectedCount >= maxSelection) {
+            return item; // Don't select if max reached
+          }
+
+          return {
+            ...item,
+            selected: !item.selected,
+          };
+        }
+        return item;
+      });
+    });
+  }, [maxSelection]);
+
+  const clearAll = useCallback(() => {
+    setItems(prevItems =>
+      prevItems.map(item => ({ ...item, selected: false }))
+    );
+  }, []);
+
+  const selectAll = useCallback(() => {
+    setItems(prevItems =>
+      prevItems.map(item => ({ ...item, selected: true }))
+    );
+  }, []);
+
+  const selectedItems = items.filter(item => item.selected);
+
+  return {
+    items,
+    toggleItems,
+    clearAll,
+    selectAll,
+    selectedItems,
+    selectedCount: selectedItems.length,
+  };
+};
+```
+
+### Custom Container Layout
+
+```tsx
+const CustomTagContainer = ({ children, columns = 2 }) => {
+  const itemsPerRow = Math.ceil(children.length / columns);
+
+  return (
+    <View style={{ flexDirection: 'column', gap: 12 }}>
+      {Array.from({ length: columns }, (_, columnIndex) => (
+        <View key={columnIndex} style={{ flexDirection: 'row', gap: 12 }}>
+          {children.slice(
+            columnIndex * itemsPerRow,
+            (columnIndex + 1) * itemsPerRow
+          )}
+        </View>
+      ))}
+    </View>
+  );
+};
+```
+
+### Animated Selection Counter
+
+```tsx
+const AnimatedTagCounter = ({ count, maxCount }) => {
+  const animatedValue = useSharedValue(0);
+
+  useEffect(() => {
+    animatedValue.value = withSpring(count);
+  }, [count]);
+
+  const animatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ scale: animatedValue.value > 0 ? 1.1 : 1 }],
+    };
+  });
+
+  return (
+    <Animated.View style={[animatedStyle, { alignItems: 'center' }]}>
+      <Text variant="caption">
+        {count} / {maxCount} selected
+      </Text>
+    </Animated.View>
+  );
+};
+```
+
+## Animation Configuration
+
+The SelectableTag component uses React Native Reanimated with the following timing configuration:
+
+```tsx
+const TimingConfig = {
+  duration: 150,
+};
+```
+
+### Customizing Animations
+
+```tsx
+// Custom timing for faster animations
+const FastTimingConfig = {
+  duration: 100,
+};
+
+// Custom spring animation
+const SpringConfig = {
+  damping: 15,
+  stiffness: 150,
+  mass: 1,
+};
+```
+
+## Best Practices
+
+<Card title="Selection Limits" icon="seti:config">
+- Set reasonable maximum selection limits for better UX
+- Provide clear feedback when selection limits are reached
+- Consider using visual indicators for minimum/maximum requirements
+</Card>
+
+<Card title="Performance" icon="rocket">
+- Use `React.memo` for tag lists with many items
+- Implement virtualization for very long lists (100+ items)
+- Debounce search queries to avoid excessive re-renders
+</Card>
+
+<Card title="Layout" icon="seti:default">
+- Use proper spacing between tags for easy interaction
+- Consider responsive layouts for different screen sizes
+- Group related tags logically for better organization
+</Card>
+
+<Aside type="tip">
+When implementing search functionality, consider highlighting matching text within tags to improve user experience and make selections more obvious.
+</Aside>
+
+<Aside type="caution">
+Be mindful of performance when dealing with large datasets. Consider implementing pagination or virtualization for lists with more than 50-100 items.
+</Aside>
+
+<Aside type="note">
+The SelectableTag component automatically handles color theming based on your app's theme configuration. The selected state uses the primary color with reduced opacity for the background.
+</Aside>
