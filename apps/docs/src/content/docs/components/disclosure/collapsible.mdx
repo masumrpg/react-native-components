@@ -1,0 +1,388 @@
+---
+title: Collapsible
+description: A simple collapsible content component with smooth animations and customizable styling for React Native applications
+---
+
+import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
+
+Collapsible provides a clean and simple solution for creating expandable content sections with smooth animations and customizable styling. Perfect for FAQ sections, help content, and organizing information in a space-efficient manner.
+
+## Import
+
+```tsx
+import { Collapsible } from 'rnc-theme';
+```
+
+## Basic Usage
+
+<Tabs>
+  <TabItem label="Simple Collapsible">
+    ```tsx
+    <Collapsible title="What is React Native?">
+      <P>
+        React Native is a framework for building mobile applications using React and JavaScript.
+      </P>
+    </Collapsible>
+    ```
+  </TabItem>
+
+  <TabItem label="With Custom Styling">
+    ```tsx
+    <Collapsible
+      title="Custom Styled Section"
+      containerStyle={{ marginBottom: 16 }}
+      titleStyle={{ color: 'blue', fontSize: 16 }}
+    >
+      <P>
+        This collapsible section has custom styling applied to both the container and title.
+      </P>
+    </Collapsible>
+    ```
+  </TabItem>
+
+  <TabItem label="Rich Content">
+    ```tsx
+    <Collapsible title="Product Features">
+      <VStack spacing="md">
+        <P>• Cross-platform development</P>
+        <P>• Hot reloading for faster development</P>
+        <P>• Native performance</P>
+        <P>• Large ecosystem of libraries</P>
+        <Button variant="primary">
+          <ButtonText>Learn More</ButtonText>
+        </Button>
+      </VStack>
+    </Collapsible>
+    ```
+  </TabItem>
+</Tabs>
+
+## Props
+
+### Collapsible Props
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `title` | `string` | - | The title text displayed in the header |
+| `containerStyle` | `StyleProp<ViewStyle>` | - | Additional styles for the container |
+| `titleStyle` | `StyleProp<TextStyle>` | - | Additional styles for the title text |
+| `children` | `React.ReactNode` | - | The content to be shown/hidden |
+
+## Examples
+
+### FAQ Section
+
+```tsx
+const FAQSection = () => {
+  const { theme } = useTheme();
+
+  const faqs = [
+    {
+      question: "About Superfan Badges",
+      answer: "Superfan badges are given to the most active and dedicated fans. You can earn them by interacting often, joining events, and supporting your favorite artists consistently."
+    },
+    {
+      question: "How to Earn Points",
+      answer: "Earn points by liking posts, leaving comments, joining livestreams, and participating in fan missions. Points help you climb the leaderboard and unlock exclusive perks."
+    },
+    {
+      question: "What Is a Fandom Level?",
+      answer: "Your fandom level represents your activity and loyalty. The higher your level, the more features and rewards you unlock as a fan."
+    }
+  ];
+
+  return (
+    <VStack spacing="md">
+      {faqs.map((faq, index) => (
+        <Card key={index}>
+          <Collapsible title={faq.question}>
+            <P>{faq.answer}</P>
+          </Collapsible>
+        </Card>
+      ))}
+    </VStack>
+  );
+};
+```
+
+### Help Documentation
+
+```tsx
+const HelpSection = () => {
+  return (
+    <VStack spacing="lg">
+      <Card>
+        <Collapsible title="Getting Started">
+          <VStack spacing="md">
+            <P>Welcome to our platform! Here's how to get started:</P>
+            <P>1. Create your account</P>
+            <P>2. Complete your profile</P>
+            <P>3. Explore the features</P>
+            <Button variant="outline">
+              <ButtonText>View Tutorial</ButtonText>
+            </Button>
+          </VStack>
+        </Collapsible>
+      </Card>
+
+      <Card>
+        <Collapsible title="Account Settings">
+          <VStack spacing="md">
+            <P>Manage your account preferences:</P>
+            <HStack spacing="sm">
+              <SettingsIcon size={16} />
+              <P>Privacy settings</P>
+            </HStack>
+            <HStack spacing="sm">
+              <BellIcon size={16} />
+              <P>Notification preferences</P>
+            </HStack>
+            <HStack spacing="sm">
+              <UserIcon size={16} />
+              <P>Profile information</P>
+            </HStack>
+          </VStack>
+        </Collapsible>
+      </Card>
+
+      <Card>
+        <Collapsible title="Troubleshooting">
+          <VStack spacing="md">
+            <P>Common issues and solutions:</P>
+            <P style={{ fontWeight: '600' }}>App not loading?</P>
+            <P>Try restarting the app or checking your internet connection.</P>
+            <P style={{ fontWeight: '600' }}>Can't sign in?</P>
+            <P>Reset your password or contact support.</P>
+          </VStack>
+        </Collapsible>
+      </Card>
+    </VStack>
+  );
+};
+```
+
+### Product Information
+
+```tsx
+const ProductInfo = ({ product }) => {
+  return (
+    <VStack spacing="md">
+      <Card>
+        <Collapsible title="Product Description">
+          <P>{product.description}</P>
+        </Collapsible>
+      </Card>
+
+      <Card>
+        <Collapsible title="Specifications">
+          <VStack spacing="sm">
+            {product.specifications.map((spec, index) => (
+              <HStack key={index} justify="space-between">
+                <P style={{ fontWeight: '600' }}>{spec.name}</P>
+                <P>{spec.value}</P>
+              </HStack>
+            ))}
+          </VStack>
+        </Collapsible>
+      </Card>
+
+      <Card>
+        <Collapsible title="Shipping Information">
+          <VStack spacing="md">
+            <HStack spacing="md">
+              <TruckIcon size={20} />
+              <VStack>
+                <P style={{ fontWeight: '600' }}>Free Shipping</P>
+                <P>On orders over $50</P>
+              </VStack>
+            </HStack>
+            <HStack spacing="md">
+              <ClockIcon size={20} />
+              <VStack>
+                <P style={{ fontWeight: '600' }}>Delivery Time</P>
+                <P>2-3 business days</P>
+              </VStack>
+            </HStack>
+          </VStack>
+        </Collapsible>
+      </Card>
+    </VStack>
+  );
+};
+```
+
+### Settings Panel
+
+```tsx
+const SettingsPanel = () => {
+  return (
+    <VStack spacing="md">
+      <Card>
+        <Collapsible
+          title="Preferences"
+          titleStyle={{ fontSize: 16, fontWeight: '600' }}
+        >
+          <VStack spacing="lg">
+            <HStack justify="space-between" align="center">
+              <P>Dark Mode</P>
+              <Switch value={false} />
+            </HStack>
+            <HStack justify="space-between" align="center">
+              <P>Notifications</P>
+              <Switch value={true} />
+            </HStack>
+            <HStack justify="space-between" align="center">
+              <P>Auto-save</P>
+              <Switch value={true} />
+            </HStack>
+          </VStack>
+        </Collapsible>
+      </Card>
+
+      <Card>
+        <Collapsible title="Language & Region">
+          <VStack spacing="md">
+            <HStack justify="space-between" align="center">
+              <P>Language</P>
+              <P style={{ color: 'gray' }}>English</P>
+            </HStack>
+            <HStack justify="space-between" align="center">
+              <P>Region</P>
+              <P style={{ color: 'gray' }}>United States</P>
+            </HStack>
+            <HStack justify="space-between" align="center">
+              <P>Time Zone</P>
+              <P style={{ color: 'gray' }}>UTC-5</P>
+            </HStack>
+          </VStack>
+        </Collapsible>
+      </Card>
+    </VStack>
+  );
+};
+```
+
+## Advanced Usage
+
+### Custom Content with Forms
+
+```tsx
+const ContactForm = () => {
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    message: ''
+  });
+
+  return (
+    <Card>
+      <Collapsible title="Contact Us">
+        <VStack spacing="md">
+          <Input
+            placeholder="Your Name"
+            value={formData.name}
+            onChangeText={(text) => setFormData(prev => ({ ...prev, name: text }))}
+          />
+          <Input
+            placeholder="Your Email"
+            value={formData.email}
+            onChangeText={(text) => setFormData(prev => ({ ...prev, email: text }))}
+            keyboardType="email-address"
+          />
+          <Input
+            placeholder="Your Message"
+            value={formData.message}
+            onChangeText={(text) => setFormData(prev => ({ ...prev, message: text }))}
+            multiline
+            numberOfLines={4}
+          />
+          <Button variant="primary">
+            <ButtonText>Send Message</ButtonText>
+          </Button>
+        </VStack>
+      </Collapsible>
+    </Card>
+  );
+};
+```
+
+### Dynamic Content Loading
+
+```tsx
+const DynamicCollapsible = ({ itemId, title }) => {
+  const [content, setContent] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
+
+  const loadContent = async () => {
+    if (!content && !isLoading) {
+      setIsLoading(true);
+      try {
+        const data = await fetchContentForItem(itemId);
+        setContent(data);
+      } catch (error) {
+        console.error('Failed to load content:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  return (
+    <Card>
+      <Collapsible title={title}>
+        {isLoading ? (
+          <ActivityIndicator size="small" />
+        ) : content ? (
+          <P>{content}</P>
+        ) : (
+          <TouchableOpacity onPress={loadContent}>
+            <P style={{ color: 'blue' }}>Tap to load content</P>
+          </TouchableOpacity>
+        )}
+      </Collapsible>
+    </Card>
+  );
+};
+```
+
+## Animation Details
+
+The Collapsible component features smooth animations powered by React Native Reanimated:
+
+- **Height Animation**: Content height smoothly animates from 0 to full height
+- **Opacity Animation**: Content fades in/out during expand/collapse
+- **Icon Rotation**: Chevron icon rotates 90 degrees when expanding
+- **Duration**: All animations use a 300ms duration for consistent feel
+
+## Best Practices
+
+<Card title="Content Organization" icon="seti:folder">
+- Use descriptive titles that clearly indicate what content will be revealed
+- Keep content concise and well-structured for better readability
+- Group related information together within each collapsible section
+</Card>
+
+<Card title="User Experience" icon="seti:plan">
+- Provide visual feedback during animations
+- Use consistent styling across multiple collapsible sections
+- Consider using cards or containers to visually separate different collapsible items
+</Card>
+
+<Card title="Performance" icon="rocket">
+- The component automatically measures content height for smooth animations
+- Content is only rendered once expanded, helping with initial load performance
+- Consider implementing lazy loading for heavy content within collapsible sections
+</Card>
+
+<Aside type="tip">
+For FAQ sections or help documentation, consider wrapping each Collapsible in a Card component to create clear visual separation and improve the overall user experience.
+</Aside>
+
+<Aside type="note">
+The component uses a hidden content measurement technique to ensure smooth animations. The content is temporarily rendered off-screen to measure its height, then properly animated when expanded.
+</Aside>
+
+<Aside type="caution">
+When using custom styling, ensure that the title remains clearly clickable and maintains good contrast with the background for accessibility.
+</Aside>

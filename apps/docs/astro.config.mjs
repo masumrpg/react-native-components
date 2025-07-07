@@ -188,6 +188,14 @@ export default defineConfig({
                   slug: 'components/disclosure/accordion',
                 },
                 {
+                  label: 'Collapsible',
+                  slug: 'components/disclosure/collapsible',
+                  badge: {
+                    text: 'New',
+                    variant: 'success',
+                  },
+                },
+                {
                   label: 'Scroll',
                   slug: 'components/disclosure/scroll',
                 },
