@@ -36,6 +36,7 @@ import {
   Images,
   CheckCircleIcon,
   Barcode,
+  ChevronDown,
 } from 'lucide-react-native';
 import { ReactElement } from 'react';
 import { Card, Typography, useTheme } from 'rnc-theme';
@@ -261,6 +262,12 @@ export default function HomeScreen() {
       title: 'List',
       path: '/ui/list',
       icon: <Barcode size={30} color={theme.colors.text} />,
+    },
+    {
+      id: 36,
+      title: 'Collapsible',
+      path: '/ui/collapsible',
+      icon: <ChevronDown size={30} color={theme.colors.text} />,
     },
   ];
 
