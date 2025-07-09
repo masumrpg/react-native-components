@@ -1,8 +1,7 @@
 import { StyleSheet } from "react-native";
-import { Card, Collapsible, P, useTheme, VStack } from "rnc-theme";
+import { Card, Collapsible, P, VStack } from "rnc-theme";
 
 export default function CollapsibleScreen() {
-  const {theme} = useTheme();
   return (
     <VStack themed style={styles.container}>
       <Card>

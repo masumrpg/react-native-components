@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useCallback } from 'react';
 import {
   Image,
   StyleSheet,
@@ -7,7 +7,14 @@ import {
   ActivityIndicator,
   TouchableOpacity,
 } from 'react-native';
-import { Box, Card, HFlashList, Typography, useTheme, VFlashList } from 'rnc-theme';
+import {
+  Box,
+  Card,
+  HFlashList,
+  Typography,
+  useTheme,
+  VFlashList,
+} from 'rnc-theme';
 
 const { width } = Dimensions.get('window');
 
@@ -32,7 +39,7 @@ interface Post {
 }
 
 // Generate dummy data
-const generateDummyStories = (count: number, offset: number = 0): Story[] => {
+const generateDummyStories = (count: number, offset = 0): Story[] => {
   return Array.from({ length: count }, (_, index) => ({
     id: `story-${offset + index}`,
     username: `user${offset + index + 1}`,
@@ -42,7 +49,7 @@ const generateDummyStories = (count: number, offset: number = 0): Story[] => {
   }));
 };
 
-const generateDummyPosts = (count: number, offset: number = 0): Post[] => {
+const generateDummyPosts = (count: number, offset = 0): Post[] => {
   const captions = [
     'Beautiful sunset today! 🌅',
     'Great coffee and good vibes ☕',
@@ -69,7 +76,7 @@ const generateDummyPosts = (count: number, offset: number = 0): Post[] => {
 };
 
 const FlashListScreen: React.FC = () => {
-  const {theme} = useTheme();
+  const { theme } = useTheme();
   // Stories state
   const [stories, setStories] = useState<Story[]>(() =>
     generateDummyStories(10)
@@ -202,59 +209,57 @@ const FlashListScreen: React.FC = () => {
   const postKeyExtractor = useCallback((item: Post) => item.id, []);
 
   return (
-      <ScrollView style={styles.scrollView}>
-        {/* Stories Section */}
-        <Box themed style={styles.section}>
-          <Box style={styles.sectionHeader}>
-            <Typography style={styles.sectionTitle}>Stories</Typography>
-            {storiesLoading && (
-              <ActivityIndicator size="small" color="#007AFF" />
-            )}
-          </Box>
-          <Box style={styles.storiesContainer}>
-            <HFlashList
-              data={stories}
-              renderItem={renderStoryItem}
-              keyExtractor={storyKeyExtractor}
-              estimatedItemSize={100}
-              estimatedListSize={{ height: 120, width: width }}
-              infiniteScroll={{
-                onLoadMore: loadMoreStories,
-                loading: storiesLoading,
-                hasMore: storiesHasMore,
-                threshold: 0.8,
-              }}
-              showsHorizontalScrollIndicator={false}
-              contentContainerStyle={styles.storiesContent}
-            />
-          </Box>
+    <ScrollView style={styles.scrollView}>
+      {/* Stories Section */}
+      <Box themed style={styles.section}>
+        <Box style={styles.sectionHeader}>
+          <Typography style={styles.sectionTitle}>Stories</Typography>
+          {storiesLoading && <ActivityIndicator size="small" color="#007AFF" />}
         </Box>
+        <Box style={styles.storiesContainer}>
+          <HFlashList
+            data={stories}
+            renderItem={renderStoryItem}
+            keyExtractor={storyKeyExtractor}
+            estimatedItemSize={100}
+            estimatedListSize={{ height: 120, width: width }}
+            infiniteScroll={{
+              onLoadMore: loadMoreStories,
+              loading: storiesLoading,
+              hasMore: storiesHasMore,
+              threshold: 0.8,
+            }}
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.storiesContent}
+          />
+        </Box>
+      </Box>
 
-        {/* Posts Section */}
-        <Box themed style={styles.section}>
-          <Box style={styles.sectionHeader}>
-            <Typography style={styles.sectionTitle}>Posts</Typography>
-            {postsLoading && <ActivityIndicator size="small" color="#007AFF" />}
-          </Box>
-          <Box style={styles.postsContainer}>
-            <VFlashList
-              data={posts}
-              renderItem={renderPostItem}
-              keyExtractor={postKeyExtractor}
-              estimatedItemSize={400}
-              estimatedListSize={{ height: 600, width: width }}
-              infiniteScroll={{
-                onLoadMore: loadMorePosts,
-                loading: postsLoading,
-                hasMore: postsHasMore,
-                threshold: 0.5,
-              }}
-              showsVerticalScrollIndicator={false}
-              contentContainerStyle={styles.postsContent}
-            />
-          </Box>
+      {/* Posts Section */}
+      <Box themed style={styles.section}>
+        <Box style={styles.sectionHeader}>
+          <Typography style={styles.sectionTitle}>Posts</Typography>
+          {postsLoading && <ActivityIndicator size="small" color="#007AFF" />}
         </Box>
-      </ScrollView>
+        <Box style={styles.postsContainer}>
+          <VFlashList
+            data={posts}
+            renderItem={renderPostItem}
+            keyExtractor={postKeyExtractor}
+            estimatedItemSize={400}
+            estimatedListSize={{ height: 600, width: width }}
+            infiniteScroll={{
+              onLoadMore: loadMorePosts,
+              loading: postsLoading,
+              hasMore: postsHasMore,
+              threshold: 0.5,
+            }}
+            showsVerticalScrollIndicator={false}
+            contentContainerStyle={styles.postsContent}
+          />
+        </Box>
+      </Box>
+    </ScrollView>
   );
 };
 
