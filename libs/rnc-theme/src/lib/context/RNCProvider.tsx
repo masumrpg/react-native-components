@@ -193,7 +193,7 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
           }
         }
       } else {
-        console.info('No stored theme config found, using defaults');
+        // console.info('No stored theme config found, using defaults');
       }
     } catch (error) {
       console.warn('Failed to load theme from storage:', error);
