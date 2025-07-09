@@ -1,0 +1,107 @@
+name: 🚀 Publish NPM Packages
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # Job untuk testing dan linting (berjalan di semua push/PR)
+  test:
+    name: 🧪 Test & Lint
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.16.0'
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: 📦 Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: '1.2.17'
+
+    - name: 📥 Install dependencies
+      run: bun install
+
+    - name: 🔍 Run linting
+      run: bun run lint
+
+    - name: 🏗️ Build all libraries
+      run: bun run build:libs
+
+  # Job untuk publish (hanya berjalan di main branch)
+  publish:
+    name: 📦 Publish to NPM
+    runs-on: ubuntu-latest
+    needs: test
+    # Hanya berjalan jika push ke main branch (bukan PR)
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+    - name: 📥 Checkout code
+      uses: actions/checkout@v4
+      with:
+        # Fetch full history untuk git operations
+        fetch-depth: 0
+
+    - name: 🟢 Setup Node.js
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22.16.0'
+        registry-url: 'https://registry.npmjs.org'
+
+    - name: 📦 Setup Bun
+      uses: oven-sh/setup-bun@v1
+      with:
+        bun-version: '1.2.17'
+
+    - name: 📥 Install dependencies
+      run: bun install
+
+    - name: 🔧 Configure git
+      run: |
+        git config --global user.name "github-actions[bot]"
+        git config --global user.email "github-actions[bot]@users.noreply.github.com"
+
+    - name: 🚀 Publish to NPM
+      run: node tools/scripts/publish-all.js
+      env:
+        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+
+    - name: 📝 Commit version changes
+      run: |
+        git add .
+        if git diff --staged --quiet; then
+          echo "No changes to commit"
+        else
+          git commit -m "🔖 Auto-bump package versions [skip ci]"
+          git push origin main
+        fi
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+  # Job untuk notifikasi (opsional)
+  notify:
+    name: 📬 Notify
+    runs-on: ubuntu-latest
+    needs: [test, publish]
+    if: always() && github.event_name == 'push' && github.ref == 'refs/heads/main'
+
+    steps:
+    - name: 📬 Notify success
+      if: needs.publish.result == 'success'
+      run: |
+        echo "✅ NPM packages published successfully!"
+
+    - name: 📬 Notify failure
+      if: needs.publish.result == 'failure'
+      run: |
+        echo "❌ NPM package publishing failed!"
+        exit 1
