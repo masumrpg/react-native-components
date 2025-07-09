@@ -28,13 +28,13 @@ type CardProps = BaseCardProps & React.ComponentPropsWithoutRef<typeof View>;
 type CardContentProps = React.ComponentPropsWithoutRef<typeof View> & {
   children?: React.ReactNode;
   style?: ViewStyle;
-  padding?: keyof Theme['spacing'];
+  padding?: keyof Theme['spacing'] | 'none';
 };
 
 type CardFooterProps = React.ComponentPropsWithoutRef<typeof View> & {
   children?: React.ReactNode;
   style?: ViewStyle;
-  padding?: keyof Theme['spacing'];
+  padding?: keyof Theme['spacing'] | 'none';
   showBorder?: boolean;
   justify?: ViewStyle['justifyContent'];
 };
@@ -46,7 +46,7 @@ type CardHeaderProps = React.ComponentPropsWithoutRef<typeof View> & {
   style?: ViewStyle;
   titleStyle?: TextStyle;
   subtitleStyle?: TextStyle;
-  padding?: keyof Theme['spacing'];
+  padding?: keyof Theme['spacing'] | 'none';
   titleVariant?: keyof Theme['typography'];
   subtitleVariant?: keyof Theme['typography'];
   borderBottom?: boolean;
@@ -234,7 +234,7 @@ const CardContent = forwardRef<
       ref={ref}
       style={[
         {
-          padding: theme.spacing[padding],
+          padding: padding === 'none' ? 0 : theme.spacing[padding],
         },
         style,
       ]}
@@ -264,7 +264,7 @@ const CardFooter = forwardRef<React.ComponentRef<typeof View>, CardFooterProps>(
         ref={ref}
         style={[
           {
-            padding: theme.spacing[padding],
+            padding: padding === 'none' ? 0 : theme.spacing[padding],
             borderTopWidth: showBorder ? 1 : 0,
             borderTopColor: theme.colors.border,
             flexDirection: 'row',
@@ -335,7 +335,7 @@ const CardHeader = forwardRef<React.ComponentRef<typeof View>, CardHeaderProps>(
         ref={ref}
         style={[
           {
-            padding: theme.spacing[padding],
+            padding: padding === 'none' ? 0 : theme.spacing[padding],
             borderBottomWidth: borderBottom ? 1 : 0,
             borderBottomColor: theme.colors.border,
           },
