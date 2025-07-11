@@ -496,6 +496,14 @@ const Button = forwardRef<ButtonRef, ButtonProps>(
         ...styles[size],
         borderRadius: theme.components.borderRadius[borderRadius],
         ...(fullWidth && { width: '100%' }),
+        // Tambahkan kondisi untuk ghost variant
+        ...(variant === 'ghost' && {
+          paddingHorizontal: 0,
+          paddingVertical: 0,
+          paddingTop: 0,
+          paddingBottom: 0,
+          minHeight: 0,
+        }),
         ...(style as ViewStyle),
       }),
       [
