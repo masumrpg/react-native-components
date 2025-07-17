@@ -225,7 +225,14 @@ export default defineConfig({
           label: 'API Reference',
           collapsed: false,
           items: [
-            { label: 'Provider', slug: 'api/provider' },
+            {
+              label: 'Provider',
+              slug: 'api/provider',
+              badge: {
+                text: 'Updated',
+                variant: 'tip',
+              },
+            },
             { label: 'Theme', slug: 'api/theme' },
             { label: 'Registry', slug: 'api/registry' },
             { label: 'Theme Switcher', slug: 'api/theme-switcher' },
