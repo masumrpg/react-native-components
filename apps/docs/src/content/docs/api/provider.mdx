@@ -16,6 +16,7 @@ Provider component is used to wrap your app content and provide the theme contex
 | `bottomSheetProps` | <a href='/api/provider#bottomsheetprops'>`BottomSheetProps`</a> | `{}` | Global props for bottom sheet components |
 | `toast` | <a href='/api/provider#toastconfig'>`ToastConfig`</a> | `{}` | Configuration for toast notifications |
 | `i18nConfig` | <a href='/api/provider#i18nconfig'>`I18nConfig`</a> | `undefined` | Internationalization configuration |
+| `scrollToHideProps` | <a href='/api/provider#scrolltohideprops'>`ScrollToHideProps`</a> | `undefined` | Configuration for scroll-to-hide behavior |
 
 ### BottomSheetProps
 
@@ -28,17 +29,24 @@ Provider component is used to wrap your app content and provide the theme contex
 | `lineBackgroundColor` | <a href='https://reactnative.dev/docs/view-style-props#backgroundcolor'>`ViewStyle['backgroundColor']`</a> | No | `undefined` | Color of the drag indicator line |
 | `borderTopLeftRadius` | <a href='https://reactnative.dev/docs/view-style-props#borderradius'>`ViewStyle['borderTopLeftRadius']`</a> | No | `undefined` | Top left border radius |
 | `borderTopRightRadius` | <a href='https://reactnative.dev/docs/view-style-props#borderradius'>`ViewStyle['borderTopRightRadius']`</a> | No | `undefined` | Top right border radius |
-| `isBorderBottomTitleVisible` | `boolean` | `false` | Whether to show border below title |
-| `onStateChange` | `(state: boolean) => void` | `undefined` | Callback when bottom sheet state changes |
-| `variant` | `'scroll' \| 'flatlist'` | `'scroll'` | Type of scrollable content in bottom sheet |
-| `flatListProps` | `Omit<FlatListProps<T>, 'ref'>` | `undefined` | Props for FlatList when variant is 'flatlist' |
+| `isBorderBottomTitleVisible` | `boolean` | No | `false` | Whether to show border below title |
+| `onStateChange` | `(state: boolean) => void` | No | `undefined` | Callback when bottom sheet state changes |
+| `variant` | `'scroll' \| 'flatlist'` | No | `'scroll'` | Type of scrollable content in bottom sheet |
+| `flatListProps` | `Omit<FlatListProps<T>, 'ref'>` | No | `undefined` | Props for FlatList when variant is 'flatlist' |
 
 ### ToastConfig
 
 | Property | Type | Default | Description |
 |----------|------|---------|-------------|
-| `position` | `'top' or 'bottom'` | `'bottom'` | Position of the toast notifications |
+| `position` | `'top' \| 'bottom'` | `'bottom'` | Position of the toast notifications |
 | `maxToasts` | `number` | `5` | Maximum number of toast notifications to show at once |
+
+### ScrollToHideProps
+
+| Property | Type | Required | Default | Description |
+|----------|------|----------|---------|-------------|
+| `headerHeight` | `number` | No | `100` | Height of the header component in pixels |
+| `tabBarHeight` | `number` | No | `60` | Height of the tab bar component in pixels |
 
 ### I18nConfig
 

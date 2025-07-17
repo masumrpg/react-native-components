@@ -1,6 +1,9 @@
 export * from './context/RNCProvider';
+export {
+  useScrollToHide,
+  type ScrollToHideProviderProps,
+} from './context/ScrollToHideProvider';
 export * from './hooks/useThemedStyles';
-export * from './hooks/useHideOnScroll';
 export * from './themes/defaultThemes';
 export * from './themes/presetThemes';
 export * from './types/theme';

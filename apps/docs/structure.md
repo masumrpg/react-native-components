@@ -158,9 +158,7 @@ export default defineConfig({
           label: '🪝 Hooks',
           items: [
             { label: 'Overview', slug: 'hooks/overview' },
-            { label: 'useThemedStyles', slug: 'hooks/use-themed-styles' },
-            { label: 'useHideOnScroll', slug: 'hooks/use-hide-on-scroll' },
-          ],
+            { label: 'useThemedStyles', slug: 'hooks/use-themed-styles' },          ],
         },
         {
           label: '🧩 Components',

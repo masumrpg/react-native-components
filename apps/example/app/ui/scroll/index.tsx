@@ -2,9 +2,8 @@ import { router } from 'expo-router';
 import { ArrowLeft } from 'lucide-react-native';
 import React, { useState } from 'react';
 import { Image, StyleSheet } from 'react-native';
-import Animated from 'react-native-reanimated';
+import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import {
-  VScroll,
   HScroll,
   HList,
   Card,
@@ -16,11 +15,12 @@ import {
   HStack,
   useThemedStyles,
   Theme,
-  HideOnScrollResult,
   useTheme,
   Button,
   ButtonIcon,
   ToggleMode,
+  AnimatedVScroll,
+  useScrollToHide,
 } from 'rnc-theme';
 
 interface Product {
@@ -187,8 +187,7 @@ const HEADER_HEIGHT = 100;
 const ScrollScreen = () => {
   const { theme } = useTheme();
   const styles = useThemedStyles(createStyles);
-  const [hideOnScrollResult, setHideOnScrollResult] =
-    useState<HideOnScrollResult | null>(null);
+  const { onScroll, headerTranslateY } = useScrollToHide();
 
   // State untuk infinite scroll
   const [infiniteProducts, setInfiniteProducts] = useState<Product[]>(
@@ -217,10 +216,16 @@ const ScrollScreen = () => {
     }, 1000);
   };
 
+  const headerAnimatedStyle = useAnimatedStyle(() => {
+    return {
+      transform: [{ translateY: headerTranslateY.value }],
+    };
+  });
+
   return (
     <Box style={styles.container}>
       {/* Animated Header with hideOnScroll integration */}
-      <Animated.View style={[styles.header, hideOnScrollResult?.animatedStyle]}>
+      <Animated.View style={[styles.header, headerAnimatedStyle]}>
         <HStack
           justify="space-between"
           padding="md"
@@ -237,20 +242,7 @@ const ScrollScreen = () => {
         </HStack>
       </Animated.View>
 
-      <VScroll
-        style={styles.content}
-        themed
-        hideOnScroll={{
-          height: HEADER_HEIGHT,
-          duration: 300,
-          threshold: 10,
-          scrollDirection: 'down',
-          hideDirection: 'up',
-          result: (value) => {
-            setHideOnScrollResult(value);
-          },
-        }}
-      >
+      <AnimatedVScroll style={styles.content} themed onScroll={onScroll}>
         <VStack spacing="lg" padding="lg" style={{ paddingBottom: 150 }}>
           {/* Basic HScroll Example */}
           <Card>
@@ -377,7 +369,7 @@ const ScrollScreen = () => {
             </CardContent>
           </Card>
         </VStack>
-      </VScroll>
+      </AnimatedVScroll>
     </Box>
   );
 };

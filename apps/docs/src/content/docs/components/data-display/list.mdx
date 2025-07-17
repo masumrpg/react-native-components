@@ -13,10 +13,12 @@ List provides versatile vertical and horizontal list components built on React N
 import {
   VList,
   HList,
+  AnimatedVList,
+  AnimatedHList,
   VFlashList,
   HFlashList
 } from 'rnc-theme';
-import type { ListProps, InfiniteScrollProps } from 'rnc-theme';
+import type { ListProps, AnimatedListProps, InfiniteScrollProps } from 'rnc-theme';
 ```
 
 ## Available Components
@@ -24,6 +26,10 @@ import type { ListProps, InfiniteScrollProps } from 'rnc-theme';
 ### Standard List Components
 - **VList** - Vertical list component based on FlatList
 - **HList** - Horizontal list component based on FlatList
+
+### Animated List Components <Badge text="New" variant="tip" />
+- **AnimatedVList** - Vertical list component with animation support
+- **AnimatedHList** - Horizontal list component with animation support
 
 ### High-Performance List Components <Badge text="New" variant="tip" />
 - **VFlashList** - Vertical high-performance list based on Shopify's FlashList
@@ -123,6 +129,20 @@ import type { ListProps, InfiniteScrollProps } from 'rnc-theme';
 | `borderRadius` | `keyof Theme['components']['borderRadius']` | - | Border radius from theme |
 | `themed` | `boolean` | `false` | Enable theme-based styling |
 | `hideOnScroll` | `HideOnScrollConfig` | - | Configuration for hide-on-scroll animation |
+| `infiniteScroll` | `InfiniteScrollProps` | - | Configuration for infinite scrolling |
+
+### `AnimatedListProps<T>` <Badge text="New" variant="tip" /> (AnimatedVList & AnimatedHList)
+
+| Prop | Type | Default | Description |
+|------|------|---------|-------------|
+| `data` | `readonly T[]` | - | Array of data items to render |
+| `renderItem` | `(item: { item: T; index: number }) => React.ReactElement` | - | Function to render each list item |
+| `keyExtractor` | `(item: T, index: number) => string` | - | Function to extract unique key for each item |
+| `padding` | `keyof Theme['spacing']` | - | Internal padding using theme spacing |
+| `margin` | `keyof Theme['spacing']` | - | External margin using theme spacing |
+| `backgroundColor` | `keyof Theme['colors']` | `'background'` | Background color from theme |
+| `borderRadius` | `keyof Theme['components']['borderRadius']` | - | Border radius from theme |
+| `themed` | `boolean` | `false` | Enable theme-based styling |
 | `infiniteScroll` | `InfiniteScrollProps` | - | Configuration for infinite scrolling |
 
 ### `FlashListProps<T>` <Badge text="New" variant="tip" /> (VFlashList & HFlashList)
@@ -553,6 +573,42 @@ const InfiniteProductList = () => {
     ```
   </TabItem>
 
+  <TabItem label="AnimatedVList (Vertical)">
+    <Badge text="New" variant="tip" />
+    ```tsx
+    // Animated vertical list with scroll-based animations
+    <AnimatedVList
+      data={items}
+      renderItem={renderItem}
+      keyExtractor={keyExtractor}
+      padding="md"
+      infiniteScroll={{
+        onLoadMore: loadMore,
+        loading: loading,
+        hasMore: hasMore
+      }}
+    />
+    ```
+  </TabItem>
+
+  <TabItem label="AnimatedHList (Horizontal)">
+    <Badge text="New" variant="tip" />
+    ```tsx
+    // Animated horizontal list with scroll-based animations
+    <AnimatedHList
+      data={items}
+      renderItem={renderItem}
+      keyExtractor={keyExtractor}
+      showsHorizontalScrollIndicator={false}
+      infiniteScroll={{
+        onLoadMore: loadMore,
+        loading: loading,
+        hasMore: hasMore
+      }}
+    />
+    ```
+  </TabItem>
+
   <TabItem label="VFlashList (Vertical)">
     <Badge text="New" variant="tip" />
     ```tsx
@@ -668,6 +724,15 @@ const InfiniteProductList = () => {
 - **Real-time data** updates requiring smooth performance
 </Card>
 
+<Card title="When to Use AnimatedList" icon="right-arrow"> <Badge text="New" variant="tip" />
+
+- Lists requiring **smooth animations** on scroll or item updates
+- **Interactive feeds** with dynamic content transitions
+- **Social media-like** interfaces with engaging animations
+- **Item-level animations** for entering/exiting elements
+- **Gesture-based** interactions with animated feedback
+</Card>
+
 <Card title="When to Use Standard List" icon="setting">
 - **Simple lists** with fewer than 100 items
 - **Static content** that doesn't change frequently
@@ -700,6 +765,78 @@ const InfiniteProductList = () => {
 </Card>
 
 ## Advanced Usage
+
+### Animated List with Scroll-Based Animations <Badge text="New" variant="tip" />
+
+```tsx
+const AnimatedFeed = () => {
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [hasMore, setHasMore] = useState(true);
+
+  const loadMorePosts = useCallback(async () => {
+    if (loading || !hasMore) return;
+
+    setLoading(true);
+    try {
+      const newPosts = await fetchPosts(posts.length, 10);
+      setPosts(prev => [...prev, ...newPosts]);
+      setHasMore(newPosts.length === 10);
+    } catch (error) {
+      console.error('Failed to load posts:', error);
+    } finally {
+      setLoading(false);
+    }
+  }, [posts.length, loading, hasMore]);
+
+  const renderPost = useCallback(({ item }: { item: Post }) => (
+    <Animated.View
+      entering={FadeIn.duration(300)}
+      exiting={FadeOut.duration(300)}
+    >
+      <Card style={styles.postCard}>
+        <Box style={styles.postHeader}>
+          <Image source={{ uri: item.avatar }} style={styles.avatar} />
+          <Box style={styles.userInfo}>
+            <Typography weight="semibold">{item.username}</Typography>
+            <Typography variant="caption" color="muted">
+              {item.timestamp}
+            </Typography>
+          </Box>
+        </Box>
+
+        <Image source={{ uri: item.image }} style={styles.postImage} />
+
+        <Box style={styles.postActions}>
+          <TouchableOpacity style={styles.actionButton}>
+            <Typography>❤️ {item.likes}</Typography>
+          </TouchableOpacity>
+          <TouchableOpacity style={styles.actionButton}>
+            <Typography>💬 {item.comments}</Typography>
+          </TouchableOpacity>
+        </Box>
+      </Card>
+    </Animated.View>
+  ), []);
+
+  return (
+    <AnimatedVList
+      data={posts}
+      renderItem={renderPost}
+      keyExtractor={(item) => item.id}
+      infiniteScroll={{
+        onLoadMore: loadMorePosts,
+        loading,
+        hasMore,
+        threshold: 0.5
+      }}
+      themed
+      backgroundColor="background"
+      showsVerticalScrollIndicator={false}
+    />
+  );
+};
+```
 
 ### Custom List with Ref
 

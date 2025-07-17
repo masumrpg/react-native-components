@@ -49,6 +49,9 @@ export default function RootLayout() {
         toast={{ maxToasts: 4, position: 'bottom' }}
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         i18nConfig={i18nConfig}
+        scrollToHideProps={{
+          headerHeight: 100,
+        }}
       >
         <Stack
           screenOptions={{

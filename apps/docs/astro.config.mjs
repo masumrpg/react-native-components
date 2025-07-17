@@ -55,7 +55,11 @@ export default defineConfig({
             // { label: 'Overview', slug: 'hooks/overview' },
             { label: 'useTheme', slug: 'hooks/use-theme' },
             { label: 'useThemeStyle', slug: 'hooks/use-themed-styles' },
-            { label: 'useHideOnScroll', slug: 'hooks/use-hide-on-scroll' },
+            {
+              label: 'useScrollToHide',
+              slug: 'hooks/use-scroll-to-hide',
+              badge: { text: 'New', variant: 'success' },
+            },
           ],
         },
         {
@@ -198,6 +202,10 @@ export default defineConfig({
                 {
                   label: 'Scroll',
                   slug: 'components/disclosure/scroll',
+                  badge: {
+                    text: 'Updated',
+                    variant: 'tip',
+                  },
                 },
               ],
             },

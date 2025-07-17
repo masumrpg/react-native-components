@@ -1,16 +1,16 @@
 ---
 title: Scroll
-description: Flexible scroll view components with hide-on-scroll functionality, theming support, and customizable styling for React Native applications
+description: Flexible scroll view components with animated variants, theming support, and customizable styling for React Native applications
 ---
 
 import { Card, Aside, Code, Tabs, TabItem } from '@astrojs/starlight/components';
 
-Scroll provides versatile vertical and horizontal scrolling components with built-in hide-on-scroll functionality, theme integration, and flexible styling options. It supports both VScroll (vertical) and HScroll (horizontal) variants with customizable animations and scroll behavior.
+Scroll provides versatile vertical and horizontal scrolling components with built-in theme integration, and flexible styling options. It supports both regular and animated variants (VScroll, HScroll, AnimatedVScroll, AnimatedHScroll) with customizable animations and scroll behavior.
 
 ## Import
 
 ```tsx
-import { VScroll, HScroll } from 'rnc-theme';
+import { VScroll, HScroll, AnimatedVScroll, AnimatedHScroll } from 'rnc-theme';
 ```
 
 ## Basic Usage
@@ -42,22 +42,62 @@ import { VScroll, HScroll } from 'rnc-theme';
     ```
   </TabItem>
 
-  <TabItem label="With Hide on Scroll">
+  <TabItem label="Animated Vertical Scroll">
     ```tsx
-    const [scrollResult, setScrollResult] = useState(null);
+    import { useSharedValue, useAnimatedScrollHandler } from 'react-native-reanimated';
 
-    <VScroll
-      hideOnScroll={{
-        height: 60,
-        duration: 300,
-        threshold: 10,
-        scrollDirection: 'down',
-        hideDirection: 'up',
-        result: setScrollResult
-      }}
-    >
-      <Text>Content that triggers hide behavior</Text>
-    </VScroll>
+    const MyComponent = () => {
+      const scrollY = useSharedValue(0);
+
+      const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (event) => {
+          scrollY.value = event.contentOffset.y;
+        },
+      });
+
+      return (
+        <AnimatedVScroll
+          padding="lg"
+          backgroundColor="surface"
+          onScroll={scrollHandler}
+          scrollEventThrottle={16}
+        >
+          <Text>Animated scroll content</Text>
+          <Text>More content...</Text>
+        </AnimatedVScroll>
+      );
+    };
+    ```
+  </TabItem>
+
+  <TabItem label="Animated Horizontal Scroll">
+    ```tsx
+    import { useSharedValue, useAnimatedScrollHandler } from 'react-native-reanimated';
+
+    const MyComponent = () => {
+      const scrollX = useSharedValue(0);
+
+      const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (event) => {
+          scrollX.value = event.contentOffset.x;
+        },
+      });
+
+      return (
+        <AnimatedHScroll
+          padding="md"
+          onScroll={scrollHandler}
+          showsHorizontalScrollIndicator={false}
+        >
+          <View style={{ width: 200, height: 100 }}>
+            <Text>Animated Item 1</Text>
+          </View>
+          <View style={{ width: 200, height: 100 }}>
+            <Text>Animated Item 2</Text>
+          </View>
+        </AnimatedHScroll>
+      );
+    };
     ```
   </TabItem>
 
@@ -77,7 +117,7 @@ import { VScroll, HScroll } from 'rnc-theme';
 
 ## Props
 
-### ScrollProps (VScroll & HScroll)
+### ScrollProps (VScroll, HScroll, AnimatedVScroll & AnimatedHScroll)
 
 | Prop | Type | Default | Description |
 |------|------|---------|-------------|
@@ -87,19 +127,7 @@ import { VScroll, HScroll } from 'rnc-theme';
 | `backgroundColor` | `keyof Theme['colors']` | - | Background color from theme |
 | `borderRadius` | `keyof Theme['components']['borderRadius']` | - | Border radius from theme |
 | `themed` | `boolean` | `false` | Apply theme background color |
-| `hideOnScroll` | `HideOnScrollConfig` | - | Configure hide-on-scroll behavior |
 | `...props` | `ScrollViewProps` | - | All React Native ScrollView props |
-
-### HideOnScrollConfig
-
-| Prop | Type | Default | Description |
-|------|------|---------|-------------|
-| `height` | `number` | - | Height of element to hide (required) |
-| `duration` | `number` | `300` | Animation duration in milliseconds |
-| `threshold` | `number` | `10` | Scroll threshold to trigger hide |
-| `scrollDirection` | `ScrollDirectionType` | - | Direction to trigger hide ('up' \| 'down') |
-| `hideDirection` | `HideDirectionType` | - | Direction to hide element ('up' \| 'down' \| 'left' \| 'right') |
-| `result` | `(value: HideOnScrollResult \| null) => void` | - | Callback with scroll result data |
 
 ## Component Variants
 
@@ -107,6 +135,8 @@ import { VScroll, HScroll } from 'rnc-theme';
 |-----------|-------------|----------|
 | `VScroll` | Vertical scrolling container | Lists, articles, forms |
 | `HScroll` | Horizontal scrolling container | Carousels, tabs, galleries |
+| `AnimatedVScroll` | Animated vertical scrolling with Reanimated | Complex animations, parallax effects |
+| `AnimatedHScroll` | Animated horizontal scrolling with Reanimated | Interactive carousels, gesture-driven UI |
 
 ## Examples
 
@@ -165,51 +195,254 @@ const ImageGallery = ({ images }) => {
 };
 ```
 
-### Hide on Scroll Header
+### Animated Parallax Header
 
 ```tsx
-const ScrollableContent = () => {
-  const [headerVisible, setHeaderVisible] = useState(true);
+import { useSharedValue, useAnimatedScrollHandler, useAnimatedStyle, interpolate } from 'react-native-reanimated';
 
-  const handleScrollResult = (result) => {
-    if (result) {
-      setHeaderVisible(result.isVisible);
-    }
-  };
+const ParallaxHeader = ({ data }) => {
+  const scrollY = useSharedValue(0);
+  const HEADER_HEIGHT = 200;
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+    },
+  });
+
+  const headerAnimatedStyle = useAnimatedStyle(() => {
+    const translateY = interpolate(
+      scrollY.value,
+      [0, HEADER_HEIGHT],
+      [0, -HEADER_HEIGHT / 2],
+      'clamp'
+    );
+
+    const opacity = interpolate(
+      scrollY.value,
+      [0, HEADER_HEIGHT],
+      [1, 0],
+      'clamp'
+    );
+
+    return {
+      transform: [{ translateY }],
+      opacity,
+    };
+  });
 
   return (
     <View style={{ flex: 1 }}>
-      {/* Animated Header */}
       <Animated.View
-        style={{
-          height: headerVisible ? 60 : 0,
-          backgroundColor: '#f0f0f0',
-          overflow: 'hidden'
-        }}
+        style={[
+          {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: HEADER_HEIGHT,
+            backgroundColor: '#007AFF',
+            zIndex: 1,
+          },
+          headerAnimatedStyle,
+        ]}
       >
-        <Text style={{ padding: 20, fontSize: 18 }}>
-          Header that hides on scroll
+        <Text style={{ color: 'white', fontSize: 24, padding: 20 }}>
+          Parallax Header
         </Text>
       </Animated.View>
 
-      {/* Scrollable Content */}
-      <VScroll
-        hideOnScroll={{
-          height: 60,
-          duration: 250,
-          threshold: 5,
-          scrollDirection: 'down',
-          hideDirection: 'up',
-          result: handleScrollResult
-        }}
-        flex={1}
+      <AnimatedVScroll
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+        contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
       >
-        {Array.from({ length: 50 }, (_, i) => (
-          <View key={i} style={{ padding: 16, borderBottomWidth: 1 }}>
-            <Text>List item {i + 1}</Text>
+        {data.map((item, index) => (
+          <View key={index} style={{ padding: 20, backgroundColor: 'white' }}>
+            <Text style={{ fontSize: 18 }}>{item.title}</Text>
+            <Text style={{ marginTop: 8, color: '#666' }}>
+              {item.description}
+            </Text>
           </View>
         ))}
-      </VScroll>
+      </AnimatedVScroll>
+    </View>
+  );
+};
+```
+
+### Animated Horizontal Carousel
+
+```tsx
+import { useSharedValue, useAnimatedScrollHandler, useAnimatedStyle, interpolate } from 'react-native-reanimated';
+
+const AnimatedCarousel = ({ items }) => {
+  const scrollX = useSharedValue(0);
+  const ITEM_WIDTH = 300;
+  const ITEM_SPACING = 20;
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollX.value = event.contentOffset.x;
+    },
+  });
+
+  const CarouselItem = ({ item, index }) => {
+    const animatedStyle = useAnimatedStyle(() => {
+      const inputRange = [
+        (index - 1) * (ITEM_WIDTH + ITEM_SPACING),
+        index * (ITEM_WIDTH + ITEM_SPACING),
+        (index + 1) * (ITEM_WIDTH + ITEM_SPACING),
+      ];
+
+      const scale = interpolate(
+        scrollX.value,
+        inputRange,
+        [0.8, 1, 0.8],
+        'clamp'
+      );
+
+      const opacity = interpolate(
+        scrollX.value,
+        inputRange,
+        [0.6, 1, 0.6],
+        'clamp'
+      );
+
+      return {
+        transform: [{ scale }],
+        opacity,
+      };
+    });
+
+    return (
+      <Animated.View
+        style={[
+          {
+            width: ITEM_WIDTH,
+            height: 200,
+            marginHorizontal: ITEM_SPACING / 2,
+            backgroundColor: '#f0f0f0',
+            borderRadius: 12,
+            padding: 20,
+            justifyContent: 'center',
+            alignItems: 'center',
+          },
+          animatedStyle,
+        ]}
+      >
+        <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+          {item.title}
+        </Text>
+        <Text style={{ marginTop: 8, textAlign: 'center' }}>
+          {item.description}
+        </Text>
+      </Animated.View>
+    );
+  };
+
+  return (
+    <AnimatedHScroll
+      onScroll={scrollHandler}
+      scrollEventThrottle={16}
+      showsHorizontalScrollIndicator={false}
+      contentContainerStyle={{ paddingHorizontal: ITEM_SPACING }}
+      snapToInterval={ITEM_WIDTH + ITEM_SPACING}
+      decelerationRate="fast"
+    >
+      {items.map((item, index) => (
+        <CarouselItem key={index} item={item} index={index} />
+      ))}
+    </AnimatedHScroll>
+  );
+};
+```
+
+### Animated Pull-to-Refresh
+
+```tsx
+import { useSharedValue, useAnimatedScrollHandler, useAnimatedStyle, interpolate, runOnJS } from 'react-native-reanimated';
+
+const AnimatedPullToRefresh = ({ data, onRefresh }) => {
+  const scrollY = useSharedValue(0);
+  const [refreshing, setRefreshing] = useState(false);
+  const REFRESH_THRESHOLD = 100;
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+    },
+    onEndDrag: (event) => {
+      if (event.contentOffset.y < -REFRESH_THRESHOLD && !refreshing) {
+        runOnJS(handleRefresh)();
+      }
+    },
+  });
+
+  const handleRefresh = async () => {
+    setRefreshing(true);
+    await onRefresh();
+    setRefreshing(false);
+  };
+
+  const refreshIndicatorStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      scrollY.value,
+      [-REFRESH_THRESHOLD, 0],
+      [1, 0],
+      'clamp'
+    );
+
+    const scale = interpolate(
+      scrollY.value,
+      [-REFRESH_THRESHOLD, 0],
+      [1, 0.5],
+      'clamp'
+    );
+
+    return {
+      opacity,
+      transform: [{ scale }],
+    };
+  });
+
+  return (
+    <View style={{ flex: 1 }}>
+      <Animated.View
+        style={[
+          {
+            position: 'absolute',
+            top: 50,
+            left: 0,
+            right: 0,
+            height: 50,
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 1,
+          },
+          refreshIndicatorStyle,
+        ]}
+      >
+        <Text style={{ color: '#007AFF', fontSize: 16 }}>
+          {refreshing ? 'Refreshing...' : 'Pull to refresh'}
+        </Text>
+      </Animated.View>
+
+      <AnimatedVScroll
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+        bounces={true}
+        contentContainerStyle={{ paddingTop: 20 }}
+      >
+        {data.map((item, index) => (
+          <View key={index} style={{ padding: 16, borderBottomWidth: 1 }}>
+            <Text style={{ fontSize: 16 }}>{item.title}</Text>
+            <Text style={{ color: '#666', marginTop: 4 }}>
+              {item.description}
+            </Text>
+          </View>
+        ))}
+      </AnimatedVScroll>
     </View>
   );
 };
@@ -477,64 +710,180 @@ const NestedScrollExample = () => {
 };
 ```
 
-## Hide on Scroll Patterns
+## Animated Scroll Patterns
 
 <Tabs>
-  <TabItem label="Hide Header on Down Scroll">
+  <TabItem label="Parallax Background">
     ```tsx
-    <VScroll
-      hideOnScroll={{
-        height: 60,
-        scrollDirection: 'down',
-        hideDirection: 'up',
-        result: (result) => {
-          // Handle header visibility
-          if (result) {
-            animateHeader(result.isVisible);
-          }
-        }
-      }}
-    >
-      {/* Content */}
-    </VScroll>
+    import { useSharedValue, useAnimatedScrollHandler, useAnimatedStyle, interpolate } from 'react-native-reanimated';
+
+    const ParallaxBackground = () => {
+      const scrollY = useSharedValue(0);
+
+      const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (event) => {
+          scrollY.value = event.contentOffset.y;
+        },
+      });
+
+      const backgroundStyle = useAnimatedStyle(() => {
+        const translateY = interpolate(
+          scrollY.value,
+          [0, 300],
+          [0, 150],
+          'clamp'
+        );
+
+        return {
+          transform: [{ translateY }],
+        };
+      });
+
+      return (
+        <View style={{ flex: 1 }}>
+          <Animated.View
+            style={[
+              {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: 300,
+                backgroundColor: '#007AFF',
+              },
+              backgroundStyle,
+            ]}
+          />
+
+          <AnimatedVScroll
+            onScroll={scrollHandler}
+            scrollEventThrottle={16}
+            contentContainerStyle={{ paddingTop: 200 }}
+          >
+            {/* Content */}
+          </AnimatedVScroll>
+        </View>
+      );
+    };
     ```
   </TabItem>
 
-  <TabItem label="Hide Toolbar on Up Scroll">
+  <TabItem label="Sticky Header with Animation">
     ```tsx
-    <VScroll
-      hideOnScroll={{
-        height: 50,
-        scrollDirection: 'up',
-        hideDirection: 'down',
-        threshold: 15,
-        duration: 200,
-        result: (result) => {
-          // Handle toolbar visibility
-          setToolbarVisible(result?.isVisible ?? true);
-        }
-      }}
-    >
-      {/* Content */}
-    </VScroll>
+    const StickyAnimatedHeader = () => {
+      const scrollY = useSharedValue(0);
+      const HEADER_HEIGHT = 100;
+
+      const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (event) => {
+          scrollY.value = event.contentOffset.y;
+        },
+      });
+
+      const headerStyle = useAnimatedStyle(() => {
+        const opacity = interpolate(
+          scrollY.value,
+          [0, HEADER_HEIGHT],
+          [0, 1],
+          'clamp'
+        );
+
+        return {
+          opacity,
+        };
+      });
+
+      return (
+        <View style={{ flex: 1 }}>
+          <Animated.View
+            style={[
+              {
+                position: 'absolute',
+                top: 0,
+                left: 0,
+                right: 0,
+                height: HEADER_HEIGHT,
+                backgroundColor: 'white',
+                zIndex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              },
+              headerStyle,
+            ]}
+          >
+            <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+              Sticky Header
+            </Text>
+          </Animated.View>
+
+          <AnimatedVScroll
+            onScroll={scrollHandler}
+            scrollEventThrottle={16}
+            contentContainerStyle={{ paddingTop: HEADER_HEIGHT }}
+          >
+            {/* Content */}
+          </AnimatedVScroll>
+        </View>
+      );
+    };
     ```
   </TabItem>
 
-  <TabItem label="Hide Side Panel on Horizontal Scroll">
+  <TabItem label="Scale on Scroll">
     ```tsx
-    <HScroll
-      hideOnScroll={{
-        height: 200, // Width for horizontal
-        scrollDirection: 'right',
-        hideDirection: 'left',
-        result: (result) => {
-          // Handle side panel visibility
-          setSidePanelVisible(result?.isVisible ?? true);
-        }
-      }}
-    >
-      {/* Content */}
-    </HScroll>
+    const ScaleOnScroll = () => {
+      const scrollX = useSharedValue(0);
+      const ITEM_WIDTH = 200;
+
+      const scrollHandler = useAnimatedScrollHandler({
+        onScroll: (event) => {
+          scrollX.value = event.contentOffset.x;
+        },
+      });
+
+      const AnimatedItem = ({ index, children }) => {
+        const animatedStyle = useAnimatedStyle(() => {
+          const inputRange = [
+            (index - 1) * ITEM_WIDTH,
+            index * ITEM_WIDTH,
+            (index + 1) * ITEM_WIDTH,
+          ];
+
+          const scale = interpolate(
+            scrollX.value,
+            inputRange,
+            [0.7, 1, 0.7],
+            'clamp'
+          );
+
+          return {
+            transform: [{ scale }],
+          };
+        });
+
+        return (
+          <Animated.View style={[{ width: ITEM_WIDTH }, animatedStyle]}>
+            {children}
+          </Animated.View>
+        );
+      };
+
+      return (
+        <AnimatedHScroll
+          onScroll={scrollHandler}
+          scrollEventThrottle={16}
+          showsHorizontalScrollIndicator={false}
+        >
+          {items.map((item, index) => (
+            <AnimatedItem key={index} index={index}>
+              <View style={{ height: 150, backgroundColor: '#f0f0f0' }}>
+                <Text>{item.title}</Text>
+              </View>
+            </AnimatedItem>
+          ))}
+        </AnimatedHScroll>
+      );
+    };
     ```
   </TabItem>
 </Tabs>
@@ -545,12 +894,14 @@ const NestedScrollExample = () => {
 - Use `scrollEventThrottle` to limit scroll event frequency (default is 16ms)
 - Implement virtualization for large lists using FlatList or SectionList when appropriate
 - Avoid complex calculations in scroll handlers
+- Use `useAnimatedScrollHandler` for better performance in animated scenarios
 </Card>
 
 <Card title="User Experience" icon="figma">
 - Provide clear visual feedback for scroll interactions
 - Use appropriate scroll indicators for content overflow
 - Consider accessibility with proper content descriptions
+- Test animated interactions on different devices for performance
 </Card>
 
 <Card title="Theming" icon="puzzle">
@@ -559,14 +910,270 @@ const NestedScrollExample = () => {
 - Combine with other themed components for cohesive UI
 </Card>
 
+<Card title="Animation Performance" icon="lightning">
+- Use `runOnUI` for complex calculations in animated scroll handlers
+- Prefer `useAnimatedScrollHandler` over regular `onScroll` for animations
+- Keep animated operations lightweight to maintain 60fps
+- Test on lower-end devices to ensure smooth performance
+</Card>
+
 <Aside type="tip">
-When using hide-on-scroll functionality, ensure the animated element transitions smoothly and provides clear visual feedback to users about the interaction.
+For complex animations, consider using `AnimatedVScroll` or `AnimatedHScroll` with `react-native-reanimated` for better performance and smoother animations.
 </Aside>
 
 <Aside type="caution">
 Be mindful of nested scroll views on iOS - they can cause unexpected behavior. Consider using `nestedScrollEnabled` prop on Android and test thoroughly on both platforms.
 </Aside>
 
-<Aside type="note">
-The hide-on-scroll feature requires careful consideration of the element being hidden. Make sure the `height` prop matches the actual height of the element you want to animate.
+<Aside type="caution">
+When using animated scroll components, avoid heavy computations in scroll handlers. Use `runOnUI` for UI thread operations and `runOnJS` for JavaScript thread operations.
 </Aside>
+
+<Aside type="note">
+`AnimatedVScroll` and `AnimatedHScroll` are built on top of `react-native-reanimated`'s `Animated.ScrollView`, providing better performance for complex animations and gesture-driven interactions.
+</Aside>
+
+## Migration Guide
+
+### From Regular to Animated Components
+
+If you're migrating from regular scroll components to animated ones:
+
+```tsx
+// Before
+<VScroll onScroll={handleScroll}>
+  {content}
+</VScroll>
+
+// After
+import { useAnimatedScrollHandler } from 'react-native-reanimated';
+
+const scrollHandler = useAnimatedScrollHandler({
+  onScroll: (event) => {
+    // Handle scroll with better performance
+    scrollY.value = event.contentOffset.y;
+  },
+});
+
+<AnimatedVScroll onScroll={scrollHandler}>
+  {content}
+</AnimatedVScroll>
+```
+
+### Adding Reanimated Dependencies
+
+Make sure you have the required dependencies:
+
+```bash
+npm install react-native-reanimated
+# or
+yarn add react-native-reanimated
+```
+
+For iOS, you'll also need to run:
+```bash
+cd ios && pod install
+```
+
+## Common Patterns
+
+### Animated Header with Search Bar
+
+```tsx
+const AnimatedSearchHeader = () => {
+  const scrollY = useSharedValue(0);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollY.value = event.contentOffset.y;
+    },
+  });
+
+  const headerStyle = useAnimatedStyle(() => {
+    const height = interpolate(
+      scrollY.value,
+      [0, 100],
+      [120, 80],
+      'clamp'
+    );
+
+    return {
+      height,
+    };
+  });
+
+  const searchBarStyle = useAnimatedStyle(() => {
+    const opacity = interpolate(
+      scrollY.value,
+      [0, 50],
+      [1, 0],
+      'clamp'
+    );
+
+    return {
+      opacity,
+    };
+  });
+
+  return (
+    <View style={{ flex: 1 }}>
+      <Animated.View
+        style={[
+          {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            backgroundColor: 'white',
+            zIndex: 1,
+            paddingTop: 50,
+            paddingHorizontal: 16,
+          },
+          headerStyle,
+        ]}
+      >
+        <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 8 }}>
+          My App
+        </Text>
+        <Animated.View style={searchBarStyle}>
+          <TextInput
+            placeholder="Search..."
+            value={searchQuery}
+            onChangeText={setSearchQuery}
+            style={{
+              backgroundColor: '#f0f0f0',
+              borderRadius: 8,
+              paddingHorizontal: 12,
+              paddingVertical: 8,
+            }}
+          />
+        </Animated.View>
+      </Animated.View>
+
+      <AnimatedVScroll
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+        contentContainerStyle={{ paddingTop: 120 }}
+      >
+        {/* Content */}
+      </AnimatedVScroll>
+    </View>
+  );
+};
+```
+
+### Animated Tab Indicator
+
+```tsx
+const AnimatedTabIndicator = ({ tabs, activeTab, onTabChange }) => {
+  const scrollX = useSharedValue(0);
+  const TAB_WIDTH = 100;
+
+  const scrollHandler = useAnimatedScrollHandler({
+    onScroll: (event) => {
+      scrollX.value = event.contentOffset.x;
+    },
+  });
+
+  const indicatorStyle = useAnimatedStyle(() => {
+    const translateX = interpolate(
+      scrollX.value,
+      tabs.map((_, index) => index * TAB_WIDTH),
+      tabs.map((_, index) => index * TAB_WIDTH),
+      'clamp'
+    );
+
+    return {
+      transform: [{ translateX }],
+    };
+  });
+
+  return (
+    <View>
+      <View style={{ flexDirection: 'row', backgroundColor: '#f0f0f0' }}>
+        {tabs.map((tab, index) => (
+          <TouchableOpacity
+            key={index}
+            onPress={() => onTabChange(index)}
+            style={{
+              width: TAB_WIDTH,
+              padding: 16,
+              alignItems: 'center',
+            }}
+          >
+            <Text style={{ fontWeight: activeTab === index ? 'bold' : 'normal' }}>
+              {tab.title}
+            </Text>
+          </TouchableOpacity>
+        ))}
+        <Animated.View
+          style={[
+            {
+              position: 'absolute',
+              bottom: 0,
+              height: 3,
+              width: TAB_WIDTH,
+              backgroundColor: '#007AFF',
+            },
+            indicatorStyle,
+          ]}
+        />
+      </View>
+
+      <AnimatedHScroll
+        onScroll={scrollHandler}
+        scrollEventThrottle={16}
+        showsHorizontalScrollIndicator={false}
+        pagingEnabled
+      >
+        {tabs.map((tab, index) => (
+          <View key={index} style={{ width: TAB_WIDTH }}>
+            {tab.content}
+          </View>
+        ))}
+      </AnimatedHScroll>
+    </View>
+  );
+};
+```
+
+## TypeScript Support
+
+The components are fully typed and support TypeScript:
+
+```tsx
+import { ScrollProps } from 'rnc-theme';
+
+interface CustomScrollProps extends ScrollProps {
+  customProp?: string;
+}
+
+const CustomScroll: React.FC<CustomScrollProps> = ({ customProp, ...props }) => {
+  return <VScroll {...props} />;
+};
+```
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Performance Problems**: Use `scrollEventThrottle` to limit scroll event frequency
+2. **Animation Jank**: Avoid heavy computations in scroll handlers
+3. **Nested Scroll Issues**: Test on both iOS and Android, use `nestedScrollEnabled` when needed
+4. **Memory Leaks**: Properly clean up animated values and listeners
+
+### Debug Tips
+
+```tsx
+// Add logging to scroll handlers
+const scrollHandler = useAnimatedScrollHandler({
+  onScroll: (event) => {
+    console.log('Scroll Y:', event.contentOffset.y);
+    scrollY.value = event.contentOffset.y;
+  },
+});
+
+// Monitor performance
+import { enableScreens } from 'react-native-screens';
+enableScreens();

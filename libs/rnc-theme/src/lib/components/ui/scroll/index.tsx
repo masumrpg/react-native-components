@@ -3,20 +3,13 @@ import {
   ScrollView,
   ScrollViewProps,
   ViewStyle,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
   StyleSheet,
 } from 'react-native';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { resolveColor } from '../../../utils';
-import {
-  HideDirectionType,
-  useHideOnScroll as onScrolling,
-  ScrollDirectionType,
-  HideOnScrollResult,
-} from '../../../hooks/useHideOnScroll';
+import Animated from 'react-native-reanimated';
 
 interface ScrollProps extends ScrollViewProps {
   children?: React.ReactNode;
@@ -25,14 +18,6 @@ interface ScrollProps extends ScrollViewProps {
   backgroundColor?: keyof Theme['colors'];
   borderRadius?: keyof Theme['components']['borderRadius'];
   themed?: boolean;
-  hideOnScroll?: {
-    height: number;
-    duration?: number;
-    threshold?: number;
-    scrollDirection?: ScrollDirectionType;
-    hideDirection?: HideDirectionType;
-    result: (value: HideOnScrollResult | null) => void;
-  };
 }
 
 const VScroll = forwardRef<ScrollView, ScrollProps>(
@@ -45,23 +30,12 @@ const VScroll = forwardRef<ScrollView, ScrollProps>(
       backgroundColor,
       borderRadius,
       themed = false,
-      hideOnScroll,
       ...props
     },
     ref
   ) => {
     const { theme } = useTheme();
     const styles = useThemedStyles(createVStyles);
-
-    const hideOnScrollProps = hideOnScroll
-      ? onScrolling({
-          height: hideOnScroll.height,
-          duration: hideOnScroll.duration ?? 300,
-          threshold: hideOnScroll.threshold ?? 10,
-          scrollDirection: hideOnScroll.scrollDirection,
-          hideDirection: hideOnScroll.hideDirection,
-        })
-      : null;
 
     const scrollStyle: ViewStyle = {
       ...styles.base,
@@ -77,16 +51,10 @@ const VScroll = forwardRef<ScrollView, ScrollProps>(
         : undefined,
     };
 
-    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      hideOnScrollProps?.onScroll(event);
-      hideOnScroll?.result(hideOnScrollProps ?? null);
-    };
-
     return (
       <ScrollView
         ref={ref}
         style={[scrollStyle, style]}
-        onScroll={handleScroll}
         scrollEventThrottle={16}
         {...props}
       >
@@ -98,7 +66,7 @@ const VScroll = forwardRef<ScrollView, ScrollProps>(
 
 VScroll.displayName = 'VScroll';
 
-const HScroll = forwardRef<ScrollView, ScrollProps>(
+const AnimatedVScroll = forwardRef<Animated.ScrollView, ScrollProps>(
   (
     {
       children,
@@ -108,23 +76,12 @@ const HScroll = forwardRef<ScrollView, ScrollProps>(
       backgroundColor,
       borderRadius,
       themed = false,
-      hideOnScroll,
       ...props
     },
     ref
   ) => {
     const { theme } = useTheme();
-    const styles = useThemedStyles(createHStyles);
-
-    const hideOnScrollProps = hideOnScroll
-      ? onScrolling({
-          height: hideOnScroll.height,
-          duration: hideOnScroll.duration ?? 300,
-          threshold: hideOnScroll.threshold ?? 10,
-          scrollDirection: hideOnScroll.scrollDirection,
-          hideDirection: hideOnScroll.hideDirection,
-        })
-      : null;
+    const styles = useThemedStyles(createVStyles);
 
     const scrollStyle: ViewStyle = {
       ...styles.base,
@@ -140,16 +97,56 @@ const HScroll = forwardRef<ScrollView, ScrollProps>(
         : undefined,
     };
 
-    const handleScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      hideOnScrollProps?.onScroll(event);
-      hideOnScroll?.result(hideOnScrollProps ?? null);
+    return (
+      <Animated.ScrollView
+        ref={ref}
+        style={[scrollStyle, style]}
+        scrollEventThrottle={16}
+        {...props}
+      >
+        {children}
+      </Animated.ScrollView>
+    );
+  }
+);
+
+AnimatedVScroll.displayName = 'AnimatedVScroll';
+
+const HScroll = forwardRef<ScrollView, ScrollProps>(
+  (
+    {
+      children,
+      style,
+      padding,
+      margin,
+      backgroundColor,
+      borderRadius,
+      themed = false,
+      ...props
+    },
+    ref
+  ) => {
+    const { theme } = useTheme();
+    const styles = useThemedStyles(createHStyles);
+
+    const scrollStyle: ViewStyle = {
+      ...styles.base,
+      padding: padding ? theme.spacing[padding] : undefined,
+      margin: margin ? theme.spacing[margin] : undefined,
+      backgroundColor: resolveColor(
+        theme,
+        backgroundColor,
+        themed ? theme.colors.background : 'transparent'
+      ),
+      borderRadius: borderRadius
+        ? theme.components.borderRadius[borderRadius]
+        : undefined,
     };
 
     return (
       <ScrollView
         ref={ref}
         style={[scrollStyle, style]}
-        onScroll={handleScroll}
         scrollEventThrottle={16}
         {...props}
       >
@@ -160,6 +157,52 @@ const HScroll = forwardRef<ScrollView, ScrollProps>(
 );
 
 HScroll.displayName = 'HScroll';
+
+const AnimatedHScroll = forwardRef<Animated.ScrollView, ScrollProps>(
+  (
+    {
+      children,
+      style,
+      padding,
+      margin,
+      backgroundColor,
+      borderRadius,
+      themed = false,
+      ...props
+    },
+    ref
+  ) => {
+    const { theme } = useTheme();
+    const styles = useThemedStyles(createHStyles);
+
+    const scrollStyle: ViewStyle = {
+      ...styles.base,
+      padding: padding ? theme.spacing[padding] : undefined,
+      margin: margin ? theme.spacing[margin] : undefined,
+      backgroundColor: resolveColor(
+        theme,
+        backgroundColor,
+        themed ? theme.colors.background : 'transparent'
+      ),
+      borderRadius: borderRadius
+        ? theme.components.borderRadius[borderRadius]
+        : undefined,
+    };
+
+    return (
+      <Animated.ScrollView
+        ref={ref}
+        style={[scrollStyle, style]}
+        scrollEventThrottle={16}
+        {...props}
+      >
+        {children}
+      </Animated.ScrollView>
+    );
+  }
+);
+
+AnimatedHScroll.displayName = 'AnimatedHScroll';
 
 const createVStyles = (_: Theme) =>
   StyleSheet.create({
@@ -177,5 +220,5 @@ const createHStyles = (_: Theme) =>
     },
   });
 
-export { VScroll, HScroll };
+export { VScroll, HScroll, AnimatedVScroll, AnimatedHScroll };
 export type { ScrollProps };

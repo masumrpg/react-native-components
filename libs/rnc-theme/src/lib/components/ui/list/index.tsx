@@ -1,22 +1,10 @@
-import {
-  FlatList,
-  FlatListProps,
-  NativeScrollEvent,
-  NativeSyntheticEvent,
-  StyleSheet,
-  ViewStyle,
-} from 'react-native';
+import { FlatList, FlatListProps, StyleSheet, ViewStyle } from 'react-native';
 import { FlashList, FlashListProps } from '@shopify/flash-list';
 import { Theme } from '../../../types/theme';
-import {
-  HideDirectionType,
-  HideOnScrollResult,
-  ScrollDirectionType,
-  useHideOnScroll as onScrolling,
-} from '../../../hooks/useHideOnScroll';
 import { forwardRef, useCallback, useMemo } from 'react';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
+import Animated from 'react-native-reanimated';
 
 interface InfiniteScrollProps {
   onLoadMore: () => void;
@@ -31,14 +19,6 @@ interface BaseListProps {
   backgroundColor?: keyof Theme['colors'];
   borderRadius?: keyof Theme['components']['borderRadius'];
   themed?: boolean;
-  hideOnScroll?: {
-    height: number;
-    duration?: number;
-    threshold?: number;
-    scrollDirection?: ScrollDirectionType;
-    hideDirection?: HideDirectionType;
-    result: (value: HideOnScrollResult | null) => void;
-  };
   infiniteScroll?: InfiniteScrollProps;
 }
 
@@ -60,6 +40,13 @@ interface FlashListPropsExtended<T>
   disableAutoLayout?: boolean;
 }
 
+// Animated FlatList Props - more restrictive to match Reanimated requirements
+interface AnimatedListProps<T>
+  extends Omit<FlatListProps<T>, 'renderItem' | 'CellRendererComponent'>,
+    BaseListProps {
+  renderItem: (item: { item: T; index: number }) => React.ReactElement;
+}
+
 // ============= FLATLIST COMPONENTS =============
 
 // VFlatList with generics
@@ -73,7 +60,6 @@ const VFlatList = <T,>(
     margin,
     backgroundColor,
     borderRadius,
-    hideOnScroll,
     themed = false,
     infiniteScroll,
     ...props
@@ -82,20 +68,6 @@ const VFlatList = <T,>(
 ) => {
   const { theme } = useTheme();
   const styles = useThemedStyles(createVStyles);
-
-  const hideOnScrollProps = useMemo(
-    () =>
-      hideOnScroll
-        ? onScrolling({
-            height: hideOnScroll.height,
-            duration: hideOnScroll.duration ?? 300,
-            threshold: hideOnScroll.threshold ?? 10,
-            scrollDirection: hideOnScroll.scrollDirection,
-            hideDirection: hideOnScroll.hideDirection,
-          })
-        : null,
-    [hideOnScroll]
-  );
 
   const flatListStyle: ViewStyle = useMemo(
     () => ({
@@ -108,14 +80,6 @@ const VFlatList = <T,>(
         : undefined,
     }),
     [styles.base, padding, margin, backgroundColor, borderRadius, theme]
-  );
-
-  const handleScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      hideOnScrollProps?.onScroll(event);
-      hideOnScroll?.result(hideOnScrollProps ?? null);
-    },
-    [hideOnScrollProps, hideOnScroll]
   );
 
   const handleEndReached = useCallback(() => {
@@ -131,7 +95,6 @@ const VFlatList = <T,>(
       renderItem={renderItem}
       keyExtractor={keyExtractor}
       style={[flatListStyle, style]}
-      onScroll={handleScroll}
       onEndReached={infiniteScroll ? handleEndReached : undefined}
       onEndReachedThreshold={infiniteScroll?.threshold ?? 0.1}
       // Performance optimizations for FlatList
@@ -157,7 +120,6 @@ const HFlatList = <T,>(
     margin,
     backgroundColor,
     borderRadius,
-    hideOnScroll,
     themed = false,
     infiniteScroll,
     ...props
@@ -166,20 +128,6 @@ const HFlatList = <T,>(
 ) => {
   const { theme } = useTheme();
   const styles = useThemedStyles(createHStyles);
-
-  const hideOnScrollProps = useMemo(
-    () =>
-      hideOnScroll
-        ? onScrolling({
-            height: hideOnScroll.height,
-            duration: hideOnScroll.duration ?? 300,
-            threshold: hideOnScroll.threshold ?? 10,
-            scrollDirection: hideOnScroll.scrollDirection,
-            hideDirection: hideOnScroll.hideDirection,
-          })
-        : null,
-    [hideOnScroll]
-  );
 
   const flatListStyle: ViewStyle = useMemo(
     () => ({
@@ -192,14 +140,6 @@ const HFlatList = <T,>(
         : undefined,
     }),
     [styles.base, padding, margin, backgroundColor, borderRadius, theme]
-  );
-
-  const handleScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      hideOnScrollProps?.onScroll(event);
-      hideOnScroll?.result(hideOnScrollProps ?? null);
-    },
-    [hideOnScrollProps, hideOnScroll]
   );
 
   const handleEndReached = useCallback(() => {
@@ -216,7 +156,129 @@ const HFlatList = <T,>(
       keyExtractor={keyExtractor}
       horizontal
       style={[flatListStyle, style]}
-      onScroll={handleScroll}
+      onEndReached={infiniteScroll ? handleEndReached : undefined}
+      onEndReachedThreshold={infiniteScroll?.threshold ?? 0.1}
+      // Performance optimizations for FlatList
+      removeClippedSubviews={true}
+      maxToRenderPerBatch={10}
+      updateCellsBatchingPeriod={50}
+      initialNumToRender={10}
+      windowSize={10}
+      legacyImplementation={false}
+      {...props}
+    />
+  );
+};
+
+// ============= ANIMATED FLATLIST COMPONENTS =============
+
+// AnimatedVFlatList with generics
+const AnimatedVFlatList = <T,>(
+  {
+    data,
+    renderItem,
+    keyExtractor,
+    style,
+    padding,
+    margin,
+    backgroundColor,
+    borderRadius,
+    themed = false,
+    infiniteScroll,
+    ...props
+  }: AnimatedListProps<T>,
+  ref: React.ForwardedRef<FlatList<T>>
+) => {
+  const { theme } = useTheme();
+  const styles = useThemedStyles(createVStyles);
+
+  const flatListStyle: ViewStyle = useMemo(
+    () => ({
+      ...styles.base,
+      padding: padding ? theme.spacing[padding] : undefined,
+      margin: margin ? theme.spacing[margin] : undefined,
+      backgroundColor: backgroundColor ?? theme.colors.background,
+      borderRadius: borderRadius
+        ? theme.components.borderRadius[borderRadius]
+        : undefined,
+    }),
+    [styles.base, padding, margin, backgroundColor, borderRadius, theme]
+  );
+
+  const handleEndReached = useCallback(() => {
+    if (infiniteScroll && infiniteScroll.hasMore && !infiniteScroll.loading) {
+      infiniteScroll.onLoadMore();
+    }
+  }, [infiniteScroll]);
+
+  return (
+    <Animated.FlatList<T>
+      ref={ref}
+      data={data}
+      renderItem={renderItem}
+      keyExtractor={keyExtractor}
+      style={[flatListStyle, style]}
+      onEndReached={infiniteScroll ? handleEndReached : undefined}
+      onEndReachedThreshold={infiniteScroll?.threshold ?? 0.1}
+      // Performance optimizations for FlatList
+      removeClippedSubviews={true}
+      maxToRenderPerBatch={10}
+      updateCellsBatchingPeriod={50}
+      initialNumToRender={10}
+      windowSize={10}
+      legacyImplementation={false}
+      {...props}
+    />
+  );
+};
+
+// AnimatedHFlatList with generics
+const AnimatedHFlatList = <T,>(
+  {
+    data,
+    renderItem,
+    keyExtractor,
+    style,
+    padding,
+    margin,
+    backgroundColor,
+    borderRadius,
+    themed = false,
+    infiniteScroll,
+    ...props
+  }: AnimatedListProps<T>,
+  ref: React.ForwardedRef<FlatList<T>>
+) => {
+  const { theme } = useTheme();
+  const styles = useThemedStyles(createHStyles);
+
+  const flatListStyle: ViewStyle = useMemo(
+    () => ({
+      ...styles.base,
+      padding: padding ? theme.spacing[padding] : undefined,
+      margin: margin ? theme.spacing[margin] : undefined,
+      backgroundColor: backgroundColor ?? theme.colors.background,
+      borderRadius: borderRadius
+        ? theme.components.borderRadius[borderRadius]
+        : undefined,
+    }),
+    [styles.base, padding, margin, backgroundColor, borderRadius, theme]
+  );
+
+  const handleEndReached = useCallback(() => {
+    if (infiniteScroll && infiniteScroll.hasMore && !infiniteScroll.loading) {
+      infiniteScroll.onLoadMore();
+    }
+  }, [infiniteScroll]);
+
+  return (
+    <Animated.FlatList<T>
+      ref={ref}
+      data={data}
+      renderItem={renderItem}
+      keyExtractor={keyExtractor}
+      horizontal
+      style={[flatListStyle, style]}
       onEndReached={infiniteScroll ? handleEndReached : undefined}
       onEndReachedThreshold={infiniteScroll?.threshold ?? 0.1}
       // Performance optimizations for FlatList
@@ -244,7 +306,6 @@ const VFlashList = <T,>(
     margin,
     backgroundColor,
     borderRadius,
-    hideOnScroll,
     themed = false,
     infiniteScroll,
     estimatedItemSize = 50,
@@ -258,20 +319,6 @@ const VFlashList = <T,>(
   const { theme } = useTheme();
   const styles = useThemedStyles(createVStyles);
 
-  const hideOnScrollProps = useMemo(
-    () =>
-      hideOnScroll
-        ? onScrolling({
-            height: hideOnScroll.height,
-            duration: hideOnScroll.duration ?? 300,
-            threshold: hideOnScroll.threshold ?? 10,
-            scrollDirection: hideOnScroll.scrollDirection,
-            hideDirection: hideOnScroll.hideDirection,
-          })
-        : null,
-    [hideOnScroll]
-  );
-
   const flashListStyle: ViewStyle = useMemo(
     () => ({
       ...styles.base,
@@ -283,14 +330,6 @@ const VFlashList = <T,>(
         : undefined,
     }),
     [styles.base, padding, margin, backgroundColor, borderRadius, theme]
-  );
-
-  const handleScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      hideOnScrollProps?.onScroll(event);
-      hideOnScroll?.result(hideOnScrollProps ?? null);
-    },
-    [hideOnScrollProps, hideOnScroll]
   );
 
   const handleEndReached = useCallback(() => {
@@ -316,7 +355,6 @@ const VFlashList = <T,>(
       drawDistance={drawDistance}
       disableAutoLayout={disableAutoLayout}
       contentContainerStyle={contentContainerStyle ?? flashListStyle}
-      onScroll={handleScroll}
       onEndReached={infiniteScroll ? handleEndReached : undefined}
       onEndReachedThreshold={infiniteScroll?.threshold ?? 0.1}
       {...props}
@@ -335,7 +373,6 @@ const HFlashList = <T,>(
     margin,
     backgroundColor,
     borderRadius,
-    hideOnScroll,
     themed = false,
     infiniteScroll,
     estimatedItemSize = 100,
@@ -349,20 +386,6 @@ const HFlashList = <T,>(
   const { theme } = useTheme();
   const styles = useThemedStyles(createHStyles);
 
-  const hideOnScrollProps = useMemo(
-    () =>
-      hideOnScroll
-        ? onScrolling({
-            height: hideOnScroll.height,
-            duration: hideOnScroll.duration ?? 300,
-            threshold: hideOnScroll.threshold ?? 10,
-            scrollDirection: hideOnScroll.scrollDirection,
-            hideDirection: hideOnScroll.hideDirection,
-          })
-        : null,
-    [hideOnScroll]
-  );
-
   const flashListStyle: ViewStyle = useMemo(
     () => ({
       ...styles.base,
@@ -374,14 +397,6 @@ const HFlashList = <T,>(
         : undefined,
     }),
     [styles.base, padding, margin, backgroundColor, borderRadius, theme]
-  );
-
-  const handleScroll = useCallback(
-    (event: NativeSyntheticEvent<NativeScrollEvent>) => {
-      hideOnScrollProps?.onScroll(event);
-      hideOnScroll?.result(hideOnScrollProps ?? null);
-    },
-    [hideOnScrollProps, hideOnScroll]
   );
 
   const handleEndReached = useCallback(() => {
@@ -408,7 +423,6 @@ const HFlashList = <T,>(
       drawDistance={drawDistance}
       disableAutoLayout={disableAutoLayout}
       contentContainerStyle={contentContainerStyle ?? flashListStyle}
-      onScroll={handleScroll}
       onEndReached={infiniteScroll ? handleEndReached : undefined}
       onEndReachedThreshold={infiniteScroll?.threshold ?? 0.1}
       {...props}
@@ -424,6 +438,18 @@ const VList = forwardRef(VFlatList) as <T>(
 
 const HList = forwardRef(HFlatList) as <T>(
   props: ListProps<T> & { ref?: React.ForwardedRef<FlatList<T>> }
+) => React.ReactElement;
+
+const AnimatedVList = forwardRef(AnimatedVFlatList) as <T>(
+  props: AnimatedListProps<T> & {
+    ref?: React.ForwardedRef<Animated.FlatList<T>>;
+  }
+) => React.ReactElement;
+
+const AnimatedHList = forwardRef(AnimatedHFlatList) as <T>(
+  props: AnimatedListProps<T> & {
+    ref?: React.ForwardedRef<Animated.FlatList<T>>;
+  }
 ) => React.ReactElement;
 
 const VFlashListComponent = forwardRef(VFlashList) as <T>(
@@ -457,8 +483,15 @@ const createHStyles = (_: Theme) =>
 export {
   VList,
   HList,
+  AnimatedVList,
+  AnimatedHList,
   VFlashListComponent as VFlashList,
   HFlashListComponent as HFlashList,
 };
 
-export type { ListProps, FlashListPropsExtended, InfiniteScrollProps };
+export type {
+  ListProps,
+  FlashListPropsExtended,
+  AnimatedListProps,
+  InfiniteScrollProps,
+};

@@ -1,0 +1,582 @@
+---
+title: ScrollToHide Components
+description: Complete guide to ScrollToHideProvider context and hooks for implementing scroll-to-hide animations in React Native applications.
+---
+
+import { Tabs, TabItem } from '@astrojs/starlight/components';
+import { Code } from '@astrojs/starlight/components';
+import { Aside } from '@astrojs/starlight/components';
+import { Badge } from '@astrojs/starlight/components';
+import { Card, CardGrid } from '@astrojs/starlight/components';
+import { Steps } from '@astrojs/starlight/components';
+
+## ScrollToHideProvider
+
+The `ScrollToHideProvider` is a React context provider that manages scroll-to-hide animations for headers and tab bars. It provides smooth animations that hide/show UI elements based on scroll direction and position.
+
+<Aside type="note" title="Provider Integration">
+The `ScrollToHideProvider` is automatically integrated into the `RNCProvider`. You can configure it using the `scrollToHideProps` parameter in your main provider setup.
+</Aside>
+
+### Basic Usage
+
+<Code code={`import { RNCProvider } from 'your-package';
+
+function App() {
+  return (
+    <RNCProvider
+      scrollToHideProps={{
+        headerHeight: 100,
+        tabBarHeight: 60,
+      }}
+    >
+      <YourScreenContent />
+    </RNCProvider>
+  );
+}`} lang="tsx" title="App.tsx" />
+
+### Standalone Usage (Not Recommended)
+
+If you need to use `ScrollToHideProvider` outside of `RNCProvider`, you can import it directly:
+
+<Code code={`import { ScrollToHideProvider } from 'your-package/contexts/ScrollToHideProvider';
+
+function StandaloneApp() {
+  return (
+    <ScrollToHideProvider
+      headerHeight={100}
+      tabBarHeight={60}
+    >
+      <YourScreenContent />
+    </ScrollToHideProvider>
+  );
+}`} lang="tsx" title="StandaloneApp.tsx" />
+
+<Aside type="caution" title="Not Recommended">
+Using `ScrollToHideProvider` standalone means you'll miss out on theme integration and other RNCProvider features. Always prefer using it through `RNCProvider` with `scrollToHideProps`.
+</Aside>
+
+### Props
+
+<CardGrid>
+  <Card title="children: React.ReactNode" icon="document">
+    The child components that will have access to the scroll context.
+  </Card>
+
+  <Card title="headerHeight?: number" icon="seti:config">
+    Height of the header component in pixels.
+    **Default:** `100`
+  </Card>
+
+  <Card title="tabBarHeight?: number" icon="seti:config">
+    Height of the tab bar component in pixels.
+    **Default:** `60`
+  </Card>
+</CardGrid>
+
+### Features
+
+- **Smooth Animations**: Uses React Native Reanimated for 60fps animations
+- **Bidirectional Scrolling**: Responds to both scroll up and scroll down
+- **Clamped Values**: Prevents over-scrolling animations
+- **Flexible Heights**: Customizable header and tab bar heights
+- **Multiple Handlers**: Supports both animated and regular scroll handlers
+
+## `useScrollToHide` Hook <Badge text="Primary Hook" variant="tip" />
+
+The main hook for accessing scroll-to-hide functionality and animated values.
+
+### Return Values
+
+<CardGrid>
+  <Card title="scrollY: SharedValue<number>" icon="up-caret">
+    Raw scroll position value from the scroll view. Updates in real-time as user scrolls.
+  </Card>
+
+  <Card title="clampedScrollY: SharedValue<number>" icon="setting">
+    Clamped scroll position that ranges from 0 to headerHeight. Used for smooth hide/show animations.
+  </Card>
+
+  <Card title="headerTranslateY: SharedValue<number>" icon="up-arrow">
+    Animated translateY value for the header component. Ranges from 0 to -headerHeight.
+  </Card>
+
+  <Card title="tabBarTranslateY: SharedValue<number>" icon="bars">
+    Animated translateY value for the tab bar component. Ranges from 0 to tabBarHeight.
+  </Card>
+
+  <Card title="headerHeight: number" icon="seti:config">
+    The configured header height in pixels.
+  </Card>
+
+  <Card title="tabBarHeight: number" icon="seti:config">
+    The configured tab bar height in pixels.
+  </Card>
+
+  <Card title="width: number" icon="external">
+    Current window width from useWindowDimensions.
+  </Card>
+
+  <Card title="onScroll: AnimatedScrollHandler" icon="down-arrow">
+    Animated scroll handler for use with Animated.ScrollView or Animated.FlatList.
+  </Card>
+
+  <Card title="onScrollRegular: ScrollHandler" icon="down-caret">
+    Regular scroll handler for use with standard ScrollView components.
+  </Card>
+</CardGrid>
+
+### Usage Example
+
+<Code code={`import { useScrollToHide } from 'your-package';
+import Animated from 'react-native-reanimated';
+
+function MyScreen() {
+  const {
+    headerTranslateY,
+    tabBarTranslateY,
+    onScroll,
+    headerHeight,
+    tabBarHeight
+  } = useScrollToHide();
+
+  return (
+    <View style={{ flex: 1 }}>
+      {/* Animated Header */}
+      <Animated.View
+        style={[
+          {
+            position: 'absolute',
+            top: 0,
+            left: 0,
+            right: 0,
+            height: headerHeight,
+            backgroundColor: '#fff',
+            zIndex: 1000,
+          },
+          { transform: [{ translateY: headerTranslateY }] }
+        ]}
+      >
+        <Text>Header Content</Text>
+      </Animated.View>
+
+      {/* Scrollable Content */}
+      <Animated.ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        style={{ flex: 1, marginTop: headerHeight }}
+      >
+        {/* Your content here */}
+      </Animated.ScrollView>
+
+      {/* Animated Tab Bar */}
+      <Animated.View
+        style={[
+          {
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: tabBarHeight,
+            backgroundColor: '#f0f0f0',
+          },
+          { transform: [{ translateY: tabBarTranslateY }] }
+        ]}
+      >
+        <Text>Tab Bar Content</Text>
+      </Animated.View>
+    </View>
+  );
+}`} lang="tsx" title="MyScreen.tsx" />
+
+## `useScrollValues` Hook <Badge text="Lightweight Hook" variant="note" />
+
+A lightweight hook that only returns the current scroll values without the full context.
+
+### Return Values
+
+<CardGrid>
+  <Card title="scrollValue: number" icon="up-caret">
+    Current raw scroll position value.
+  </Card>
+
+  <Card title="clampedValue: number" icon="setting">
+    Current clamped scroll position value (0 to headerHeight).
+  </Card>
+</CardGrid>
+
+### Usage Example
+
+<Code code={`import { useScrollValues } from 'your-package';
+
+function ScrollIndicator() {
+  const { scrollValue, clampedValue } = useScrollValues();
+
+  return (
+    <View>
+      <Text>Scroll Position: {scrollValue}</Text>
+      <Text>Clamped Value: {clampedValue}</Text>
+    </View>
+  );
+}`} lang="tsx" title="ScrollIndicator.tsx" />
+
+## Implementation Patterns
+
+### With Animated.FlatList
+
+<Code code={`import { useScrollToHide } from 'your-package';
+import Animated from 'react-native-reanimated';
+
+function AnimatedFlatListExample() {
+  const { onScroll, headerTranslateY } = useScrollToHide();
+
+  const data = Array.from({ length: 50 }, (_, i) => ({ id: i, title: \`Item \${i}\` }));
+
+  return (
+    <View style={{ flex: 1 }}>
+      <Animated.View
+        style={[
+          styles.header,
+          { transform: [{ translateY: headerTranslateY }] }
+        ]}
+      >
+        <Text style={styles.headerText}>Dynamic Header</Text>
+      </Animated.View>
+
+      <Animated.FlatList
+        data={data}
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        renderItem={({ item }) => (
+          <View style={styles.item}>
+            <Text>{item.title}</Text>
+          </View>
+        )}
+        keyExtractor={item => item.id.toString()}
+      />
+    </View>
+  );
+}`} lang="tsx" title="AnimatedFlatListExample.tsx" />
+
+### With Regular ScrollView
+
+<Code code={`import { useScrollToHide } from 'your-package';
+import { ScrollView } from 'react-native';
+
+function RegularScrollViewExample() {
+  const { onScrollRegular, headerTranslateY } = useScrollToHide();
+
+  return (
+    <View style={{ flex: 1 }}>
+      <Animated.View
+        style={[
+          styles.header,
+          { transform: [{ translateY: headerTranslateY }] }
+        ]}
+      >
+        <Text>Header with Regular ScrollView</Text>
+      </Animated.View>
+
+      <ScrollView
+        onScroll={onScrollRegular}
+        scrollEventThrottle={16}
+      >
+        {/* Your content */}
+      </ScrollView>
+    </View>
+  );
+}`} lang="tsx" title="RegularScrollViewExample.tsx" />
+
+### Custom Animation Logic
+
+<Code code={`import { useScrollToHide } from 'your-package';
+import { interpolate, useDerivedValue } from 'react-native-reanimated';
+
+function CustomAnimationExample() {
+  const { clampedScrollY, headerHeight } = useScrollToHide();
+
+  // Custom opacity animation
+  const headerOpacity = useDerivedValue(() => {
+    return interpolate(
+      clampedScrollY.value,
+      [0, headerHeight * 0.5],
+      [1, 0],
+      'clamp'
+    );
+  });
+
+  // Custom scale animation
+  const headerScale = useDerivedValue(() => {
+    return interpolate(
+      clampedScrollY.value,
+      [0, headerHeight],
+      [1, 0.8],
+      'clamp'
+    );
+  });
+
+  return (
+    <Animated.View
+      style={[
+        styles.header,
+        {
+          opacity: headerOpacity,
+          transform: [{ scale: headerScale }]
+        }
+      ]}
+    >
+      <Text>Custom Animated Header</Text>
+    </Animated.View>
+  );
+}`} lang="tsx" title="CustomAnimationExample.tsx" />
+
+## Advanced Usage
+
+### Multi-Component Layout
+
+<Code code={`function CompleteLayoutExample() {
+  const {
+    headerTranslateY,
+    tabBarTranslateY,
+    onScroll,
+    headerHeight,
+    tabBarHeight,
+    width
+  } = useScrollToHide();
+
+  return (
+    <View style={{ flex: 1 }}>
+      {/* Status Bar Spacer */}
+      <View style={{ height: 44 }} />
+
+      {/* Header */}
+      <Animated.View
+        style={[
+          {
+            position: 'absolute',
+            top: 44,
+            left: 0,
+            right: 0,
+            height: headerHeight,
+            backgroundColor: '#ffffff',
+            zIndex: 1000,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+            elevation: 5,
+          },
+          { transform: [{ translateY: headerTranslateY }] }
+        ]}
+      >
+        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+          <Text style={{ fontSize: 18, fontWeight: 'bold' }}>
+            Scroll to Hide Header
+          </Text>
+        </View>
+      </Animated.View>
+
+      {/* Main Content */}
+      <Animated.ScrollView
+        onScroll={onScroll}
+        scrollEventThrottle={16}
+        style={{ flex: 1 }}
+        contentContainerStyle={{
+          paddingTop: headerHeight,
+          paddingBottom: tabBarHeight
+        }}
+      >
+        {Array.from({ length: 50 }, (_, i) => (
+          <View key={i} style={styles.contentItem}>
+            <Text>Content Item {i + 1}</Text>
+          </View>
+        ))}
+      </Animated.ScrollView>
+
+      {/* Tab Bar */}
+      <Animated.View
+        style={[
+          {
+            position: 'absolute',
+            bottom: 0,
+            left: 0,
+            right: 0,
+            height: tabBarHeight,
+            backgroundColor: '#f8f8f8',
+            flexDirection: 'row',
+            borderTopWidth: 1,
+            borderTopColor: '#e0e0e0',
+          },
+          { transform: [{ translateY: tabBarTranslateY }] }
+        ]}
+      >
+        <TouchableOpacity style={styles.tabItem}>
+          <Text>Home</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem}>
+          <Text>Search</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.tabItem}>
+          <Text>Profile</Text>
+        </TouchableOpacity>
+      </Animated.View>
+    </View>
+  );
+}`} lang="tsx" title="CompleteLayoutExample.tsx" />
+
+## Error Handling
+
+<Tabs>
+  <TabItem label="❌ Hook Outside Provider">
+    <Code code={`// ❌ This will throw an error
+function ComponentOutsideProvider() {
+  const scrollContext = useScrollToHide(); // Error!
+  return <View />;
+}
+
+// Error: useScrollToHide must be used within a ScrollToHideProvider`} lang="tsx" />
+  </TabItem>
+
+  <TabItem label="✅ Correct Usage">
+    <Code code={`// ✅ Correct usage within RNCProvider
+function App() {
+  return (
+    <RNCProvider
+      scrollToHideProps={{
+        headerHeight: 100,
+        tabBarHeight: 60,
+      }}
+    >
+      <ComponentWithScrollToHide />
+    </RNCProvider>
+  );
+}`} lang="tsx" />
+  </TabItem>
+</Tabs>
+
+## TypeScript Support
+
+The components provide full TypeScript support with proper type definitions:
+
+<Code code={`import { useScrollToHide, ScrollToHideProvider } from 'your-package';
+import type { ScrollToHideProviderProps } from 'your-package';
+
+// Provider props are fully typed
+const providerProps: ScrollToHideProviderProps = {
+  children: <MyComponent />,
+  headerHeight: 120,
+  tabBarHeight: 80,
+};
+
+function TypedComponent() {
+  const {
+    scrollY,          // SharedValue<number>
+    clampedScrollY,   // SharedValue<number>
+    headerTranslateY, // SharedValue<number>
+    tabBarTranslateY, // SharedValue<number>
+    headerHeight,     // number
+    tabBarHeight,     // number
+    width,            // number
+    onScroll,         // AnimatedScrollHandler
+    onScrollRegular,  // (event: NativeSyntheticEvent<NativeScrollEvent>) => void
+  } = useScrollToHide();
+
+  // All values are properly typed
+}`} lang="tsx" title="TypedComponent.tsx" />
+
+## Performance Considerations
+
+### Optimization Tips
+
+<Steps>
+1. **Use scrollEventThrottle**: Set to 16 for smooth 60fps animations
+2. **Avoid excessive re-renders**: Use `useScrollValues` when you only need values
+3. **Memoize expensive operations**: Cache complex calculations based on scroll values
+4. **Optimize scroll content**: Use FlatList for large datasets
+5. **Profile animations**: Use Flipper or React DevTools to monitor performance
+</Steps>
+
+### Worklet Optimization
+
+<Code code={`// The onScrollRegular handler is marked as 'worklet' for performance
+const onScrollRegular = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+  'worklet'; // Runs on UI thread
+  scrollY.value = event.nativeEvent.contentOffset.y;
+};`} lang="tsx" title="Worklet Implementation" />
+
+## Best Practices
+
+<CardGrid>
+  <Card title="Consistent Heights" icon="seti:config">
+    Define header and tab bar heights as constants to maintain consistency across your app.
+  </Card>
+
+  <Card title="Safe Area Handling" icon="shield">
+    Consider device safe areas when positioning absolute elements.
+  </Card>
+
+  <Card title="Performance Testing" icon="random">
+    Test scroll performance on lower-end devices to ensure smooth animations.
+  </Card>
+</CardGrid>
+
+## Common Styling Patterns
+
+<Code code={`const styles = StyleSheet.create({
+  header: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#ffffff',
+    zIndex: 1000,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  tabBar: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    backgroundColor: '#f8f8f8',
+    flexDirection: 'row',
+    borderTopWidth: 1,
+    borderTopColor: '#e0e0e0',
+  },
+  contentItem: {
+    padding: 20,
+    borderBottomWidth: 1,
+    borderBottomColor: '#e0e0e0',
+  },
+  tabItem: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});`} lang="tsx" title="Common Styles" />
+
+## Troubleshooting
+
+### Common Issues
+
+<Card title="Animations not smooth" icon="error">
+  **Cause:** Missing `scrollEventThrottle={16}` or running on JS thread
+  **Solution:** Add throttling and ensure worklet usage
+</Card>
+
+<Card title="Header/TabBar positioning issues" icon="warning">
+  **Cause:** Incorrect z-index or positioning values
+  **Solution:** Use proper absolute positioning and z-index values
+</Card>
+
+<Card title="Context errors" icon="information">
+  **Cause:** Using hooks outside of RNCProvider
+  **Solution:** Wrap your app with `RNCProvider`
+</Card>
+
+<Aside type="tip" title="Pro Tip">
+Test your scroll-to-hide implementation on various devices and screen sizes to ensure consistent behavior across different configurations.
+</Aside>

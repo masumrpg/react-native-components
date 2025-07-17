@@ -18,8 +18,12 @@ import { ToastPosition } from '../components/ui/toast/types';
 import { Toast } from '../components/ui/toast/components/ToastContainer';
 import { PortalProvider } from '../components/ui/portal/context/PortalContext';
 import { I18nConfig, LanguageProvider } from '../i18n/context/LanguageProvider';
+import {
+  ScrollToHideProvider,
+  ScrollToHideProviderProps,
+} from './ScrollToHideProvider';
 
-interface ThemeContextType {
+type ThemeContextType = {
   theme: Theme;
   themeMode: ThemeMode;
   isDark: boolean;
@@ -31,7 +35,7 @@ interface ThemeContextType {
     presetConfig?: (isDark: boolean) => Partial<Theme>
   ) => void;
   resetTheme: () => void;
-}
+};
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
 
@@ -51,6 +55,8 @@ const mergeThemes = (baseTheme: Theme, customTheme?: Partial<Theme>): Theme => {
 
 type BottomSheetProps = Omit<BottomSheetProviderProps, 'children'>;
 
+type ScrollToHideProps = Omit<ScrollToHideProviderProps, 'children'>;
+
 interface ThemeProviderProps {
   children: ReactNode;
   defaultTheme?: ThemeMode;
@@ -62,6 +68,7 @@ interface ThemeProviderProps {
     maxToasts?: number | undefined;
   };
   i18nConfig?: I18nConfig;
+  scrollToHideProps?: ScrollToHideProps;
 }
 
 export const RNCProvider: React.FC<ThemeProviderProps> = ({
@@ -72,6 +79,7 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
   bottomSheetProps,
   toast,
   i18nConfig,
+  scrollToHideProps,
 }) => {
   const [themeMode, setThemeModeState] = useState<ThemeMode>(defaultTheme);
   const [customTheme, setCustomTheme] = useState<{
@@ -294,7 +302,9 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
               }
               {...bottomSheetProps}
             >
-              {children}
+              <ScrollToHideProvider {...scrollToHideProps}>
+                {children}
+              </ScrollToHideProvider>
             </BottomSheetProvider>
           </PortalProvider>
           <Toast
