@@ -19,7 +19,7 @@ The `ScrollToHideProvider` is automatically integrated into the `RNCProvider`. Y
 
 ### Basic Usage
 
-<Code code={`import { RNCProvider } from 'your-package';
+<Code code={`import { RNCProvider } from 'rnc-theme';
 
 function App() {
   return (
@@ -34,26 +34,6 @@ function App() {
   );
 }`} lang="tsx" title="App.tsx" />
 
-### Standalone Usage (Not Recommended)
-
-If you need to use `ScrollToHideProvider` outside of `RNCProvider`, you can import it directly:
-
-<Code code={`import { ScrollToHideProvider } from 'your-package/contexts/ScrollToHideProvider';
-
-function StandaloneApp() {
-  return (
-    <ScrollToHideProvider
-      headerHeight={100}
-      tabBarHeight={60}
-    >
-      <YourScreenContent />
-    </ScrollToHideProvider>
-  );
-}`} lang="tsx" title="StandaloneApp.tsx" />
-
-<Aside type="caution" title="Not Recommended">
-Using `ScrollToHideProvider` standalone means you'll miss out on theme integration and other RNCProvider features. Always prefer using it through `RNCProvider` with `scrollToHideProps`.
-</Aside>
 
 ### Props
 
@@ -123,11 +103,15 @@ The main hook for accessing scroll-to-hide functionality and animated values.
   <Card title="onScrollRegular: ScrollHandler" icon="down-caret">
     Regular scroll handler for use with standard ScrollView components.
   </Card>
+
+  <Card title="resetPosition: ResetPosition" icon="seti:crystal">
+    Reset to the initial scroll position.
+  </Card>
 </CardGrid>
 
 ### Usage Example
 
-<Code code={`import { useScrollToHide } from 'your-package';
+<Code code={`import { useScrollToHide } from 'rnc-theme';
 import Animated from 'react-native-reanimated';
 
 function MyScreen() {
@@ -206,7 +190,7 @@ A lightweight hook that only returns the current scroll values without the full 
 
 ### Usage Example
 
-<Code code={`import { useScrollValues } from 'your-package';
+<Code code={`import { useScrollValues } from 'rnc-theme';
 
 function ScrollIndicator() {
   const { scrollValue, clampedValue } = useScrollValues();
@@ -223,7 +207,7 @@ function ScrollIndicator() {
 
 ### With Animated.FlatList
 
-<Code code={`import { useScrollToHide } from 'your-package';
+<Code code={`import { useScrollToHide } from 'rnc-theme';
 import Animated from 'react-native-reanimated';
 
 function AnimatedFlatListExample() {
@@ -259,7 +243,7 @@ function AnimatedFlatListExample() {
 
 ### With Regular ScrollView
 
-<Code code={`import { useScrollToHide } from 'your-package';
+<Code code={`import { useScrollToHide } from 'rnc-theme';
 import { ScrollView } from 'react-native';
 
 function RegularScrollViewExample() {
@@ -288,7 +272,7 @@ function RegularScrollViewExample() {
 
 ### Custom Animation Logic
 
-<Code code={`import { useScrollToHide } from 'your-package';
+<Code code={`import { useScrollToHide } from 'rnc-theme';
 import { interpolate, useDerivedValue } from 'react-native-reanimated';
 
 function CustomAnimationExample() {
@@ -457,8 +441,8 @@ function App() {
 
 The components provide full TypeScript support with proper type definitions:
 
-<Code code={`import { useScrollToHide, ScrollToHideProvider } from 'your-package';
-import type { ScrollToHideProviderProps } from 'your-package';
+<Code code={`import { useScrollToHide, ScrollToHideProvider } from 'rnc-theme';
+import type { ScrollToHideProviderProps } from 'rnc-theme';
 
 // Provider props are fully typed
 const providerProps: ScrollToHideProviderProps = {

@@ -10,6 +10,7 @@ import {
   useAnimatedScrollHandler,
   useDerivedValue,
   useSharedValue,
+  withTiming,
 } from 'react-native-reanimated';
 
 const DEFAULT_HEADER_HEIGHT = 100;
@@ -25,6 +26,7 @@ interface ScrollContextType {
   width: number;
   onScroll: ReturnType<typeof useAnimatedScrollHandler>;
   onScrollRegular: (event: NativeSyntheticEvent<NativeScrollEvent>) => void;
+  resetPosition: () => void;
 }
 
 const ScrollContext = createContext<ScrollContextType | null>(null);
@@ -33,7 +35,7 @@ export type ScrollToHideProviderProps = {
   children: React.ReactNode;
   headerHeight?: number;
   tabBarHeight?: number;
-}
+};
 
 export const ScrollToHideProvider = ({
   children,
@@ -91,6 +93,13 @@ export const ScrollToHideProvider = ({
     scrollY.value = event.nativeEvent.contentOffset.y;
   };
 
+  // Function untuk reset posisi header dan tabbar ke awal
+  const resetPosition = () => {
+    scrollY.value = withTiming(0, { duration: 300 });
+    lastScrollY.value = withTiming(0, { duration: 300 });
+    clampedOffset.value = withTiming(0, { duration: 300 });
+  };
+
   const contextValue: ScrollContextType = {
     scrollY,
     clampedScrollY,
@@ -101,6 +110,7 @@ export const ScrollToHideProvider = ({
     width,
     onScroll,
     onScrollRegular,
+    resetPosition,
   };
 
   return (

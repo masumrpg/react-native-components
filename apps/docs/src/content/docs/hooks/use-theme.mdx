@@ -16,7 +16,7 @@ The `useTheme` hook is the primary interface for accessing and managing theme fu
 
 ### Basic Usage
 
-<Code code={`import { useTheme } from 'your-theme-package';
+<Code code={`import { useTheme } from 'rnc-theme';
 
 function MyComponent() {
   const { theme, isDark, setThemeMode } = useTheme();
@@ -231,8 +231,8 @@ function App() {
 
 The hook is fully typed and provides excellent IntelliSense support:
 
-<Code code={`import { useTheme } from 'your-theme-package';
-import type { Theme, ThemeMode } from 'your-theme-package/types';
+<Code code={`import { useTheme } from 'rnc-theme';
+import type { Theme, ThemeMode } from 'rnc-theme';
 
 function TypedComponent() {
   const {
