@@ -69,6 +69,7 @@ interface ThemeProviderProps {
   };
   i18nConfig?: I18nConfig;
   scrollToHideProps?: ScrollToHideProps;
+  themeStorageKeyName?: string;
 }
 
 export const RNCProvider: React.FC<ThemeProviderProps> = ({
@@ -80,6 +81,7 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
   toast,
   i18nConfig,
   scrollToHideProps,
+  themeStorageKeyName,
 }) => {
   const [themeMode, setThemeModeState] = useState<ThemeMode>(defaultTheme);
   const [customTheme, setCustomTheme] = useState<{
@@ -93,6 +95,7 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
   const [systemColorScheme, setSystemColorScheme] = useState<ColorSchemeName>(
     Appearance.getColorScheme()
   );
+  const themeStorageKey = themeStorageKeyName ?? THEME_STORAGE_KEY;
 
   // Determine if dark mode should be active
   const isDark =
@@ -146,7 +149,7 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
 
   const loadThemeFromStorage = async () => {
     try {
-      const storedConfig = await AsyncStorage.getItem(THEME_STORAGE_KEY);
+      const storedConfig = await AsyncStorage.getItem(themeStorageKey);
       if (storedConfig) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const config: ThemeConfig = JSON.parse(storedConfig);
@@ -218,7 +221,7 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
   ) => {
     try {
       const config: ThemeConfig = { mode, customTheme, activePreset: preset };
-      await AsyncStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(config));
+      await AsyncStorage.setItem(themeStorageKey, JSON.stringify(config));
     } catch (error) {
       console.warn('Failed to save theme to storage:', error);
     }
