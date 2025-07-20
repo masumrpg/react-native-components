@@ -11,13 +11,17 @@ Provider component is used to wrap your app content and provide the theme contex
 |------|------|---------|-------------|
 | `children` | <a href='https://reactnative.dev/docs/react-node'>`ReactNode`</a> | - | App content wrapped by the provider |
 | `defaultTheme?` | <a href='/api/theme#thememode'>`ThemeMode`</a> | `'system'` | Sets the initial theme mode. `'system'` follows device preference |
-| `customDarkTheme` | <a href='/api/theme#theme'>`Partial<Theme>`</a> | `undefined` | Custom theme configuration for dark mode |
-| `customLightTheme` | <a href='/api/theme#theme'>`Partial<Theme>`</a> | `undefined` | Custom theme configuration for light mode |
-| `bottomSheetProps` | <a href='/api/provider#bottomsheetprops'>`BottomSheetProps`</a> | `{}` | Global props for bottom sheet components |
-| `toast` | <a href='/api/provider#toastconfig'>`ToastConfig`</a> | `{}` | Configuration for toast notifications |
-| `i18nConfig` | <a href='/api/provider#i18nconfig'>`I18nConfig`</a> | `undefined` | Internationalization configuration |
-| `scrollToHideProps` | <a href='/api/provider#scrolltohideprops'>`ScrollToHideProps`</a> | `undefined` | Configuration for scroll-to-hide behavior |
-| `themeStorageKeyName?` | `string` | `undefined` | Configuration for key name storage |
+| `customDarkTheme?` | <a href='/api/theme#theme'>`Partial<Theme>`</a> | `undefined` | Custom theme configuration for dark mode |
+| `customLightTheme?` | <a href='/api/theme#theme'>`Partial<Theme>`</a> | `undefined` | Custom theme configuration for light mode |
+| `bottomSheetProps?` | <a href='/api/provider#bottomsheetprops'>`BottomSheetProps`</a> | `{}` | Global props for bottom sheet components |
+| `toast?` | <a href='/api/provider#toastconfig'>`ToastConfig`</a> | `{}` | Configuration for toast notifications |
+| `i18nConfig?` | <a href='/api/provider#i18nconfig'>`I18nConfig`</a> | `undefined` | Internationalization configuration |
+| `scrollToHideProps?` | <a href='/api/provider#scrolltohideprops'>`ScrollToHideProps`</a> | `undefined` | Configuration for scroll-to-hide behavior |
+| `themeStorageKeyName?` | `string` | `'RNC_THEME'` | Custom key name for theme storage in AsyncStorage |
+| `showLoadingSplash?` | `boolean` | `true` | Whether to show loading splash screen while theme is initializing |
+| `loadingComponent?` | `ReactNode` | `undefined` | Custom loading component to display during theme initialization |
+| `splashDuration?` | `number` | `150` | Minimum splash duration in milliseconds to prevent flash |
+| `fallbackTheme?` | `'light' \| 'dark'` | `'light'` | Fallback theme to use when system theme is unavailable |
 
 ### BottomSheetProps
 

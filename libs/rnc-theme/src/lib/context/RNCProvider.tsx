@@ -5,8 +5,9 @@ import React, {
   useState,
   ReactNode,
   useCallback,
+  useMemo,
 } from 'react';
-import { Appearance, ColorSchemeName } from 'react-native';
+import { Appearance, ColorSchemeName, View, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Theme, ThemeMode, ThemeConfig } from '../types/theme';
 import { lightTheme, darkTheme } from '../themes/defaultThemes';
@@ -53,8 +54,65 @@ const mergeThemes = (baseTheme: Theme, customTheme?: Partial<Theme>): Theme => {
   };
 };
 
-type BottomSheetProps = Omit<BottomSheetProviderProps, 'children'>;
+// Cache untuk mengurangi AsyncStorage reads
+let themeCache: ThemeConfig | null = null;
+let isCacheLoaded = false;
 
+// Pre-load theme saat app start (dipanggil sebelum render)
+const preloadTheme = async (themeStorageKey: string): Promise<ThemeConfig | null> => {
+  if (isCacheLoaded && themeCache) {
+    return themeCache;
+  }
+
+  try {
+    const storedConfig = await AsyncStorage.getItem(themeStorageKey);
+    if (storedConfig) {
+      themeCache = JSON.parse(storedConfig) as ThemeConfig;
+    } else {
+      themeCache = null;
+    }
+    isCacheLoaded = true;
+    return themeCache;
+  } catch (error) {
+    console.warn('⚠️ Failed to preload theme:', error);
+    isCacheLoaded = true;
+    themeCache = null;
+    return null;
+  }
+};
+
+// Optimized save dengan debounce untuk mengurangi I/O
+let saveTimeout: NodeJS.Timeout | null = null;
+
+const saveThemeToStorage = (
+  themeStorageKey: string,
+  config: ThemeConfig,
+  immediate = false
+) => {
+  // Update cache immediately untuk konsistensi
+  themeCache = config;
+
+  const performSave = async () => {
+    try {
+      await AsyncStorage.setItem(themeStorageKey, JSON.stringify(config));
+    } catch (error) {
+      console.warn('⚠️ Failed to save theme:', error);
+    }
+  };
+
+  if (immediate) {
+    // Save immediately untuk perubahan penting
+    performSave();
+  } else {
+    // Debounce untuk perubahan yang bisa di-batch
+    if (saveTimeout) {
+      clearTimeout(saveTimeout);
+    }
+    saveTimeout = setTimeout(performSave, 100);
+  }
+};
+
+type BottomSheetProps = Omit<BottomSheetProviderProps, 'children'>;
 type ScrollToHideProps = Omit<ScrollToHideProviderProps, 'children'>;
 
 interface ThemeProviderProps {
@@ -70,19 +128,31 @@ interface ThemeProviderProps {
   i18nConfig?: I18nConfig;
   scrollToHideProps?: ScrollToHideProps;
   themeStorageKeyName?: string;
+  showLoadingSplash?: boolean; // Control loading behavior
+  loadingComponent?: ReactNode; // Custom loading component
+  splashDuration?: number; // Minimum splash duration (ms)
+  fallbackTheme?: 'light' | 'dark'; // Fallback if system unavailable
 }
 
 export const RNCProvider: React.FC<ThemeProviderProps> = ({
-  children,
-  defaultTheme = 'system',
-  customLightTheme,
-  customDarkTheme,
-  bottomSheetProps,
-  toast,
-  i18nConfig,
-  scrollToHideProps,
-  themeStorageKeyName,
-}) => {
+                                                            children,
+                                                            defaultTheme = 'system',
+                                                            customLightTheme,
+                                                            customDarkTheme,
+                                                            bottomSheetProps,
+                                                            toast,
+                                                            i18nConfig,
+                                                            scrollToHideProps,
+                                                            themeStorageKeyName,
+                                                            showLoadingSplash = true,
+                                                            loadingComponent,
+                                                            splashDuration = 150, // Minimum 150ms to prevent flash
+                                                            fallbackTheme = 'light',
+                                                          }) => {
+  const themeStorageKey = themeStorageKeyName ?? THEME_STORAGE_KEY;
+
+  // States
+  const [isThemeReady, setIsThemeReady] = useState(false);
   const [themeMode, setThemeModeState] = useState<ThemeMode>(defaultTheme);
   const [customTheme, setCustomTheme] = useState<{
     light?: Partial<Theme>;
@@ -92,146 +162,149 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
   const [presetConfig, setPresetConfig] = useState<
     ((isDark: boolean) => Partial<Theme>) | undefined
   >();
-  const [systemColorScheme, setSystemColorScheme] = useState<ColorSchemeName>(
-    Appearance.getColorScheme()
-  );
-  const themeStorageKey = themeStorageKeyName ?? THEME_STORAGE_KEY;
 
-  // Determine if dark mode should be active
-  const isDark =
-    themeMode === 'dark' ||
-    (themeMode === 'system' && systemColorScheme === 'dark');
+  // System color scheme dengan fallback
+  const [systemColorScheme, setSystemColorScheme] = useState<ColorSchemeName>(() => {
+    const scheme = Appearance.getColorScheme();
+    return scheme ?? fallbackTheme;
+  });
 
-  // Auto-regenerate theme when mode changes and there's an active preset
+  // Determine dark mode
+  const isDark = useMemo(() => {
+    return themeMode === 'dark' ||
+      (themeMode === 'system' && systemColorScheme === 'dark');
+  }, [themeMode, systemColorScheme]);
+
+  // OPTIMIZED: Load theme dengan minimum delay
   useEffect(() => {
-    if (activePreset && presetConfig) {
-      const newCustomTheme = presetConfig(isDark);
-      // Update the appropriate theme variant
-      setCustomTheme((prev) => ({
-        ...prev,
-        [isDark ? 'dark' : 'light']: newCustomTheme,
-      }));
-      // Update storage with new generated theme
-      saveThemeToStorage(
-        themeMode,
-        {
-          ...customTheme,
-          [isDark ? 'dark' : 'light']: newCustomTheme,
-        },
-        activePreset
-      );
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isDark, themeMode, activePreset, presetConfig]);
+    let isMounted = true;
+    const startTime = Date.now();
 
-  // Load theme from storage on mount and when system color scheme changes
-  useEffect(() => {
-    loadThemeFromStorage();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    const initializeTheme = async () => {
+      try {
+        // Preload theme (bisa dari cache)
+        const storedConfig = await preloadTheme(themeStorageKey);
 
-  // Separate effect for system color scheme changes
-  useEffect(() => {
-    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
-      setSystemColorScheme(colorScheme);
-    });
+        if (!isMounted) return;
 
-    return () => subscription.remove();
-  }, []);
+        if (storedConfig) {
+          // Apply stored configuration
+          setThemeModeState(storedConfig.mode);
 
-  // Reload theme when system color scheme changes (for system mode)
-  useEffect(() => {
-    if (themeMode === 'system') {
-      loadThemeFromStorage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [systemColorScheme]);
+          if (storedConfig.customTheme) {
+            setCustomTheme(storedConfig.customTheme);
+          }
 
-  const loadThemeFromStorage = async () => {
-    try {
-      const storedConfig = await AsyncStorage.getItem(themeStorageKey);
-      if (storedConfig) {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const config: ThemeConfig = JSON.parse(storedConfig);
-        setThemeModeState(config.mode);
+          setActivePreset(storedConfig.activePreset);
 
-        // Set custom theme with both variants if available
-        if (config.customTheme) {
-          setCustomTheme(config.customTheme);
-        }
+          // Restore preset config from registry
+          if (storedConfig.activePreset && themeRegistry.hasPreset(storedConfig.activePreset)) {
+            const restoredPresetConfig = themeRegistry.getPreset(storedConfig.activePreset);
+            setPresetConfig(() => restoredPresetConfig);
 
-        setActivePreset(config.activePreset);
+            // Check dan generate missing theme variant jika perlu
+            if (restoredPresetConfig) {
+              const loadedIsDark =
+                storedConfig.mode === 'dark' ||
+                (storedConfig.mode === 'system' && systemColorScheme === 'dark');
 
-        // Restore presetConfig from registry
-        if (
-          config.activePreset &&
-          themeRegistry.hasPreset(config.activePreset)
-        ) {
-          const restoredPresetConfig = themeRegistry.getPreset(
-            config.activePreset
-          );
-          setPresetConfig(() => restoredPresetConfig);
-          // Only regenerate if we don't have the theme variant stored
-          if (restoredPresetConfig) {
-            const currentSystemScheme = Appearance.getColorScheme();
-            const loadedIsDark =
-              config.mode === 'dark' ||
-              (config.mode === 'system' && currentSystemScheme === 'dark');
+              const hasStoredVariant =
+                storedConfig.customTheme?.[loadedIsDark ? 'dark' : 'light'];
 
-            // Check if we already have the theme variant stored
-            const hasStoredVariant =
-              config.customTheme?.[loadedIsDark ? 'dark' : 'light'];
+              if (!hasStoredVariant) {
+                const newCustomTheme = restoredPresetConfig(loadedIsDark);
+                const updatedCustomTheme = {
+                  ...storedConfig.customTheme,
+                  [loadedIsDark ? 'dark' : 'light']: newCustomTheme,
+                };
+                setCustomTheme(updatedCustomTheme);
 
-            if (!hasStoredVariant) {
-              // Generate missing theme variant
-              const newCustomTheme = restoredPresetConfig(loadedIsDark);
-              const updatedCustomTheme = {
-                ...config.customTheme,
-                [loadedIsDark ? 'dark' : 'light']: newCustomTheme,
-              };
-              setCustomTheme(updatedCustomTheme);
-              // Save the generated variant
-              saveThemeToStorage(
-                config.mode,
-                updatedCustomTheme,
-                config.activePreset
-              );
-              console.info(
-                'Generated missing theme variant:',
-                loadedIsDark ? 'dark' : 'light'
-              );
+                // Save updated config
+                saveThemeToStorage(themeStorageKey, {
+                  mode: storedConfig.mode,
+                  customTheme: updatedCustomTheme,
+                  activePreset: storedConfig.activePreset
+                }, false);
+              }
             }
           }
         }
-      } else {
-        // console.info('No stored theme config found, using defaults');
+
+        // Ensure minimum splash duration untuk smooth UX
+        const elapsedTime = Date.now() - startTime;
+        const remainingTime = Math.max(0, splashDuration - elapsedTime);
+
+        if (remainingTime > 0 && showLoadingSplash) {
+          setTimeout(() => {
+            if (isMounted) {
+              setIsThemeReady(true);
+            }
+          }, remainingTime);
+        } else {
+          setIsThemeReady(true);
+        }
+
+      } catch (error) {
+        console.warn('⚠️ Failed to initialize theme:', error);
+        // Fallback ke ready state
+        if (isMounted) {
+          setIsThemeReady(true);
+        }
       }
-    } catch (error) {
-      console.warn('Failed to load theme from storage:', error);
-    }
-  };
+    };
 
-  const saveThemeToStorage = async (
-    mode: ThemeMode,
-    customTheme?: {
-      light?: Partial<Theme>;
-      dark?: Partial<Theme>;
-    },
-    preset?: string
-  ) => {
-    try {
-      const config: ThemeConfig = { mode, customTheme, activePreset: preset };
-      await AsyncStorage.setItem(themeStorageKey, JSON.stringify(config));
-    } catch (error) {
-      console.warn('Failed to save theme to storage:', error);
-    }
-  };
+    initializeTheme();
 
-  const setThemeMode = (mode: ThemeMode) => {
+    return () => {
+      isMounted = false;
+    };
+  }, [themeStorageKey, systemColorScheme, splashDuration, showLoadingSplash]);
+
+  // System color scheme listener
+  useEffect(() => {
+    const subscription = Appearance.addChangeListener(({ colorScheme }) => {
+      const newScheme = colorScheme ?? fallbackTheme;
+      setSystemColorScheme(newScheme);
+    });
+
+    return () => subscription.remove();
+  }, [fallbackTheme]);
+
+  // Auto-regenerate theme ketika mode berubah dan ada active preset
+  useEffect(() => {
+    if (!isThemeReady) return; // Tunggu sampai theme ready
+
+    if (activePreset && presetConfig) {
+      const currentVariant = isDark ? 'dark' : 'light';
+      const hasCurrentVariant = isDark ? customTheme.dark : customTheme.light;
+
+      if (!hasCurrentVariant) {
+        const newCustomTheme = presetConfig(isDark);
+        const updatedCustomTheme = {
+          ...customTheme,
+          [currentVariant]: newCustomTheme,
+        };
+
+        setCustomTheme(updatedCustomTheme);
+
+        saveThemeToStorage(themeStorageKey, {
+          mode: themeMode,
+          customTheme: updatedCustomTheme,
+          activePreset: activePreset
+        }, false);
+      }
+    }
+  }, [isDark, themeMode, activePreset, presetConfig, isThemeReady, customTheme, themeStorageKey]);
+
+  // Theme management functions
+  const setThemeMode = useCallback((mode: ThemeMode) => {
     setThemeModeState(mode);
-    // Save theme mode to storage immediately
-    saveThemeToStorage(mode, customTheme, activePreset);
-  };
+    saveThemeToStorage(themeStorageKey, {
+      mode,
+      customTheme,
+      activePreset
+    }, true); // Immediate save untuk mode changes
+  }, [customTheme, activePreset, themeStorageKey]);
 
   const updateCustomTheme = useCallback(
     (
@@ -239,7 +312,6 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
       preset?: string,
       newPresetConfig?: (isDark: boolean) => Partial<Theme>
     ) => {
-      // Update the appropriate theme variant based on current mode
       const updatedCustomTheme = {
         ...customTheme,
         [isDark ? 'dark' : 'light']: newCustomTheme,
@@ -247,33 +319,44 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
 
       setCustomTheme(updatedCustomTheme);
       setActivePreset(preset);
+
       if (newPresetConfig) {
         setPresetConfig(() => newPresetConfig);
       }
-      saveThemeToStorage(themeMode, updatedCustomTheme, preset);
+
+
+      saveThemeToStorage(themeStorageKey, {
+        mode: themeMode,
+        customTheme: updatedCustomTheme,
+        activePreset: preset
+      }, true); // Immediate save untuk theme updates
     },
-    [themeMode, customTheme, isDark]
+    [themeMode, customTheme, isDark, themeStorageKey]
   );
 
-  const resetTheme = () => {
+  const resetTheme = useCallback(() => {
     setCustomTheme({});
     setActivePreset(undefined);
     setPresetConfig(undefined);
-    saveThemeToStorage(themeMode, {}, undefined);
-  };
 
-  // Get base theme
-  const baseTheme = isDark ? darkTheme : lightTheme;
+    saveThemeToStorage(themeStorageKey, {
+      mode: themeMode,
+      customTheme: {},
+      activePreset: undefined
+    }, true); // Immediate save untuk reset
+  }, [themeMode, themeStorageKey]);
 
-  // Apply custom theme overrides - now using the appropriate variant
-  const providedCustomTheme = isDark ? customDarkTheme : customLightTheme;
-  const currentCustomTheme = isDark ? customTheme.dark : customTheme.light;
-  const finalCustomTheme = { ...providedCustomTheme, ...currentCustomTheme };
+  // Calculate final theme
+  const theme = useMemo(() => {
+    const baseTheme = isDark ? darkTheme : lightTheme;
+    const providedCustomTheme = isDark ? customDarkTheme : customLightTheme;
+    const currentCustomTheme = isDark ? customTheme.dark : customTheme.light;
+    const finalCustomTheme = { ...providedCustomTheme, ...currentCustomTheme };
 
-  // Merge themes
-  const theme = mergeThemes(baseTheme, finalCustomTheme);
+    return mergeThemes(baseTheme, finalCustomTheme);
+  }, [isDark, customDarkTheme, customLightTheme, customTheme]);
 
-  const value: ThemeContextType = {
+  const contextValue: ThemeContextType = useMemo(() => ({
     theme,
     themeMode,
     isDark,
@@ -281,10 +364,33 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
     setThemeMode,
     updateCustomTheme,
     resetTheme,
-  };
+  }), [theme, themeMode, isDark, activePreset, setThemeMode, updateCustomTheme, resetTheme]);
+
+  // Show loading splash sementara theme belum ready
+  if (showLoadingSplash && !isThemeReady) {
+    if (loadingComponent) {
+      return loadingComponent;
+    }
+
+    // Default loading screen dengan base theme
+    const baseTheme = isDark ? darkTheme : lightTheme;
+    return (
+      <View style={{
+        flex: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        backgroundColor: theme.colors.background,
+      }}>
+        <ActivityIndicator
+          size="large"
+          color={baseTheme.colors.primary}
+        />
+      </View>
+    );
+  }
 
   return (
-    <ThemeContext.Provider value={value}>
+    <ThemeContext.Provider value={contextValue}>
       <LanguageProvider i18nConfig={i18nConfig}>
         <ToastProvider maxToasts={toast?.maxToasts ?? 5}>
           <PortalProvider>
@@ -293,15 +399,15 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
               lineBackgroundColor={theme.colors.text}
               borderTopLeftRadius={
                 bottomSheetProps?.borderTopLeftRadius ??
-                theme.components.borderRadius.md < 5
+                (theme.components.borderRadius.md < 5
                   ? theme.components.borderRadius.md
-                  : theme.components.borderRadius.md + 10
+                  : theme.components.borderRadius.md + 10)
               }
               borderTopRightRadius={
                 bottomSheetProps?.borderTopRightRadius ??
-                theme.components.borderRadius.md < 5
+                (theme.components.borderRadius.md < 5
                   ? theme.components.borderRadius.md
-                  : theme.components.borderRadius.md + 10
+                  : theme.components.borderRadius.md + 10)
               }
               {...bottomSheetProps}
             >
@@ -327,4 +433,9 @@ export const useTheme = (): ThemeContextType => {
     throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
+};
+
+// Export helper untuk preload theme di App.tsx
+export const preloadAppTheme = (storageKey: string = THEME_STORAGE_KEY) => {
+  return preloadTheme(storageKey);
 };
