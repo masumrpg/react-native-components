@@ -1,0 +1,99 @@
+# EditorConfig is awesome: https://EditorConfig.org
+
+# top-most EditorConfig file
+root = true
+
+# All files
+[*]
+charset = utf-8
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+indent_style = space
+indent_size = 2
+
+# TypeScript and JavaScript files
+[*.{ts,tsx,js,jsx}]
+indent_style = space
+indent_size = 2
+max_line_length = 100
+
+# JSON files
+[*.json]
+indent_style = space
+indent_size = 2
+
+# YAML files
+[*.{yml,yaml}]
+indent_style = space
+indent_size = 2
+
+# Markdown files
+[*.md]
+trim_trailing_whitespace = false
+max_line_length = 80
+
+# Package.json
+[package.json]
+indent_style = space
+indent_size = 2
+
+# Configuration files
+[*.{config.js,config.ts}]
+indent_style = space
+indent_size = 2
+
+# Gradle files
+[*.gradle]
+indent_style = space
+indent_size = 4
+
+# Java files
+[*.java]
+indent_style = space
+indent_size = 4
+
+# Kotlin files
+[*.{kt,kts}]
+indent_style = space
+indent_size = 4
+
+# Swift files
+[*.swift]
+indent_style = space
+indent_size = 4
+
+# Objective-C files
+[*.{m,mm,h}]
+indent_style = space
+indent_size = 4
+
+# Ruby files (for CocoaPods)
+[*.rb]
+indent_style = space
+indent_size = 2
+
+# Shell scripts
+[*.sh]
+indent_style = space
+indent_size = 2
+
+# Makefile
+[Makefile]
+indent_style = tab
+indent_size = 4
+
+# XML files
+[*.xml]
+indent_style = space
+indent_size = 2
+
+# Properties files
+[*.properties]
+indent_style = space
+indent_size = 2
+
+# Ignore generated files
+[{*.generated.*,**/generated/**}]
+insert_final_newline = unset
+trim_trailing_whitespace = unset

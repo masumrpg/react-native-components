@@ -106,13 +106,35 @@ See real implementation examples and best practices.
 
 ## 🤝 Contributing
 
-We welcome contributions! Please see our contributing guidelines for more details.
+We warmly welcome contributions from the community! Please read our comprehensive contribution guidelines:
 
-1. Fork this repository
-2. Create a new feature branch
-3. Commit your changes
-4. Push to the branch
-5. Create a new Pull Request
+📋 **[Contributing Guide](CONTRIBUTING.md)** - Complete guide for contributing  
+📜 **[Code of Conduct](CODE_OF_CONDUCT.md)** - Community rules and ethics  
+🔒 **[Security Policy](SECURITY.md)** - Security policy and vulnerability reporting  
+🗺️ **[Roadmap](ROADMAP.md)** - Future development plans  
+👥 **[Authors](AUTHORS.md)** - List of contributors and maintainers  
+📝 **[Changelog](CHANGELOG.md)** - Version change history  
+
+### Quick Start for Contributors
+
+1. **Fork** this repository
+2. **Clone** your fork: `git clone https://github.com/YOUR_USERNAME/react-native-components.git`
+3. **Install** dependencies: `bun install`
+4. **Create** feature branch: `git checkout -b feature/amazing-feature`
+5. **Make** your changes and **test** thoroughly
+6. **Commit** with conventional format: `git commit -m "feat: add amazing feature"`
+7. **Push** to branch: `git push origin feature/amazing-feature`
+8. **Create** Pull Request using the provided template
+
+### How to Contribute
+
+- 🐛 **Report Bugs**: Use [bug report template](.github/ISSUE_TEMPLATE/bug_report.md)
+- ✨ **Request Features**: Use [feature request template](.github/ISSUE_TEMPLATE/feature_request.md)
+- 💻 **Code Contributions**: Follow [development guidelines](CONTRIBUTING.md#development-guidelines)
+- 📚 **Improve Documentation**: Any documentation improvements are highly appreciated
+- 🎨 **Design & UX**: Help improve design system and user experience
+- 🧪 **Testing**: Help test new features and bug fixes
+- 🌍 **Translation**: Help translate documentation to other languages
 
 ## 📄 License
 
