@@ -96,7 +96,7 @@ export function Collapsible({ children, title, containerStyle, titleStyle }: Col
 
       {/* Hidden content untuk mengukur tinggi - hanya render sekali */}
       {measuredHeight === 0 && (
-        <View style={styles.hiddenContent} onLayout={handleLayout}>
+        <View style={styles.hiddenContent} onLayout={handleLayout} pointerEvents="none">
           <View style={styles.content}>{children}</View>
         </View>
       )}
@@ -118,7 +118,6 @@ const createStyle = (theme: Theme) => StyleSheet.create({
     position: 'absolute',
     opacity: 0,
     zIndex: -1,
-    pointerEvents: 'none',
   },
   title: {
     fontSize: 18,

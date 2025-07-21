@@ -19,6 +19,7 @@ import {
 import { Theme } from '../../../types/theme';
 import { useState } from 'react';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react-native';
+import { createShadow } from '../../../utils';
 
 // Type untuk pattern date YYYY-MM-DD
 type DatePattern =
@@ -558,14 +559,7 @@ const styles = StyleSheet.create({
   pickerContainer: {
     width: Math.min(screenWidth - 40, 400),
     maxHeight: screenHeight * 0.8,
-    elevation: 8,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 4,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 8,
+    ...createShadow(8),
   },
   pickerHeader: {
     padding: 20,

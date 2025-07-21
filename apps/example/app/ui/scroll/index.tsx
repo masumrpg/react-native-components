@@ -21,6 +21,7 @@ import {
   ToggleMode,
   AnimatedVScroll,
   useScrollToHide,
+  utils,
 } from 'rnc-theme';
 
 interface Product {
@@ -387,11 +388,7 @@ const createStyles = (theme: Theme) =>
       right: 0,
       zIndex: 1000,
       backgroundColor: theme.colors.background,
-      shadowColor: 'black',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 8,
-      elevation: 5,
+      ...utils.createShadow(5)
     },
     headerContent: {
       height: HEADER_HEIGHT,
@@ -429,11 +426,7 @@ const createStyles = (theme: Theme) =>
       maxWidth: 80,
     },
     productCard: {
-      shadowColor: 'black',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.1,
-      shadowRadius: 8,
-      elevation: 2,
+      ...utils.createShadow(2)
     },
     productImage: {
       width: '100%',

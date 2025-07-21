@@ -31,6 +31,7 @@ import {
   ComponentSize,
   ComponentVariant,
 } from '../../../types/ui';
+import { createShadow } from '../../../utils';
 
 // Type definitions
 type SliderRef = {
@@ -891,14 +892,7 @@ const createSliderStyles = (theme: Theme) => StyleSheet.create({
   } ,
   thumb: {
     position: 'absolute',
-    // shadowColor: theme.colors.shadow,
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 3.84,
-    elevation: 5,
+    ...createShadow(5),
   } ,
   labelContainer: {
     position: 'absolute',

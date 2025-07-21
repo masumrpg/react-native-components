@@ -13,6 +13,7 @@ import {
   Typography,
   Box,
   Switcher,
+  utils,
 } from 'rnc-theme';
 
 export default function ModalScreen() {
@@ -434,11 +435,7 @@ export default function ModalScreen() {
             style={{
               flex: 1,
               borderRadius: theme.components.borderRadius.lg,
-              shadowColor: '#ef4444',
-              shadowOffset: { width: 0, height: 4 },
-              shadowOpacity: 0.3,
-              shadowRadius: 8,
-              elevation: 6,
+              ...utils.createShadow(6)
             }}
           >
             <ButtonText>Delete</ButtonText>

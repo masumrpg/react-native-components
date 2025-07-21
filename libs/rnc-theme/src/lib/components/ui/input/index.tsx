@@ -814,7 +814,6 @@ const createStyles = (theme: Theme) =>
     },
     stateDisabled: {
       opacity: 0.6,
-      pointerEvents: 'none',
     },
     stateLoading: {
       opacity: 0.8,

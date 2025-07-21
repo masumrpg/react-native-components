@@ -1,6 +1,5 @@
 import React, { forwardRef, createContext, useContext } from 'react';
 import {
-  Platform,
   StyleSheet,
   Text,
   TextStyle,
@@ -11,7 +10,7 @@ import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { BaseComponentProps, ComponentVariant } from '../../../types/ui';
-import { getBackgroundColor, getSizeStyles } from '../../../utils';
+import { createShadow, getBackgroundColor, getSizeStyles } from '../../../utils';
 
 type BaseCardProps = BaseComponentProps & {
   children?: React.ReactNode;
@@ -149,7 +148,6 @@ const createStyles = (theme: Theme) =>
     },
     stateDisabled: {
       opacity: 0.6,
-      pointerEvents: 'none',
     },
     stateLoading: {
       opacity: 0.8,
@@ -200,11 +198,7 @@ const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
           backgroundColor ??
           getBackgroundColor(variant, theme.colors, disabled, true),
         borderRadius: theme.components.borderRadius[borderRadius],
-        shadowOpacity,
-        elevation: disabled ? 0 : elevation,
-        ...(Platform.OS === 'web'
-          ? { boxShadow: '0px 4px 12px rgba(0,0,0,0.2)' }
-          : {}),
+        ...createShadow((elevation !== 0 ? elevation : 0) | (shadowOpacity * 2)),
       },
       style,
     ];
@@ -215,7 +209,7 @@ const Card = forwardRef<React.ComponentRef<typeof View>, CardProps>(
 
     return (
       <CardContext.Provider value={{ variant }}>
-        <View ref={ref} style={cardStyles} {...props}>
+        <View ref={ref} style={cardStyles} pointerEvents={disabled ? "none" : "box-none"} {...props}>
           {children}
         </View>
       </CardContext.Provider>

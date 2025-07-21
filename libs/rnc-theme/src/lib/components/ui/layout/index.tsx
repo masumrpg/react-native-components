@@ -9,6 +9,7 @@ import {
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
+import { createShadow } from '../../../utils';
 
 interface BaseLayoutProps {
   children?: React.ReactNode;
@@ -302,8 +303,7 @@ const Box = forwardRef<React.ComponentRef<typeof View>, BoxProps>(
         : undefined,
       borderWidth: borderWidth ?? undefined,
       borderColor: borderColor ?? theme.colors.border,
-      shadowOpacity: shadowOpacity ?? undefined,
-      elevation: elevation ?? undefined,
+      ...createShadow((elevation ?? 0) | (shadowOpacity ? shadowOpacity * 2 : 0)),
       flex,
       width,
       height,
@@ -442,11 +442,7 @@ const createBoxStyles = (theme: Theme) => ({
     backgroundColor: theme.colors.surface,
     borderRadius: theme.components.borderRadius.lg,
     padding: theme.spacing.md,
-    shadowColor: theme.colors.text,
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    ...createShadow(4)
   },
   surface: {
     backgroundColor: theme.colors.background,

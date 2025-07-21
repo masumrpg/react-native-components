@@ -12,6 +12,7 @@ import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { BaseComponentProps } from '../../../types/ui';
+import { createShadow } from '../../../utils';
 
 type SwitcherProps = BaseComponentProps & {
   value: boolean;
@@ -254,21 +255,13 @@ const createSwitcherStyles = (theme: Theme) => StyleSheet.create({
     justifyContent: 'center' ,
     position: 'relative' ,
     // iOS-like styling
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 1,
-    elevation: 1,
+    ...createShadow(1)
   },
   thumb: {
     borderRadius: theme.components.borderRadius.full,
     position: 'absolute' ,
     // Enhanced iOS-like shadow
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.25,
-    shadowRadius: 3,
-    elevation: 4,
+    ...createShadow(4)
   },
 });
 

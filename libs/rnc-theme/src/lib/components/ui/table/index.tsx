@@ -10,6 +10,7 @@ import {
 } from 'react-native';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
+import { createShadow } from '../../../utils';
 
 interface TableProps {
   children?: React.ReactNode;
@@ -321,14 +322,7 @@ const createTableStyles = (theme: Theme) => StyleSheet.create({
     backgroundColor: 'transparent',
   },
   elevated: {
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 3.84,
-    elevation: 5,
+    ...createShadow(5),
   },
 });
 

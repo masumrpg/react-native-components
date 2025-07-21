@@ -27,12 +27,11 @@ import {
 import { useTheme } from '../../../context/RNCProvider';
 import { Theme } from '../../../types/theme';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import { resolveColor } from '../../../utils';
+import { createShadow } from '../../../utils';
 import { ChevronDown, Check, X } from 'lucide-react-native';
 import {
   ComponentSize,
   ComponentState,
-  ComponentVariant,
 } from '../../../types/ui';
 import { ANIMATION_CONSTANTS } from '../../../constants/ui';
 
@@ -52,7 +51,6 @@ interface ComboboxOption {
 type BaseComboboxProps = {
   label?: string;
   placeholder?: string;
-  variant?: ComponentVariant;
   size?: ComponentSize;
   state?: ComponentState;
   helperText?: string;
@@ -77,7 +75,6 @@ type BaseComboboxProps = {
   maxDropdownHeight?: number;
   closeOnSelect?: boolean;
   backgroundColor?: string;
-  padding?: keyof Theme['spacing'];
   elevation?: number;
   shadowOpacity?: number;
 };
@@ -86,7 +83,7 @@ type ComboboxProps = BaseComboboxProps;
 
 // Styles factory following Modal pattern
 const createComboboxStyles = (theme: Theme) => StyleSheet.create({
-  container: {} ,
+  container: {},
 
   label: {
     fontSize: theme.typography.body.fontSize,
@@ -105,40 +102,29 @@ const createComboboxStyles = (theme: Theme) => StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: theme.components.borderRadius.lg,
-    backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
+    backgroundColor: theme.colors.surface,
     borderWidth: 1,
-    borderColor: resolveColor(theme, 'border', theme.colors.border),
-    shadowColor: resolveColor(theme, 'text', theme.colors.text),
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    ...(Platform.OS === 'android' && {
-      elevation: 1,
-    }),
-  } ,
+    borderColor: theme.colors.border,
+    ...createShadow(2)
+  },
 
   triggerFocused: {
     borderColor: theme.colors.primary,
-    shadowColor: theme.colors.primary,
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    ...(Platform.OS === 'android' && {
-      elevation: 2,
-    }),
-  } ,
+    ...createShadow(2)
+  },
 
   triggerError: {
     borderColor: theme.colors.error,
-  } ,
+  },
 
   triggerSuccess: {
     borderColor: theme.colors.success,
-  } ,
+  },
 
   triggerDisabled: {
     opacity: 0.6,
-    backgroundColor: resolveColor(theme, 'background', theme.colors.background),
-  } ,
+    backgroundColor: theme.colors.background,
+  },
 
   triggerText: {
     flex: 1,
@@ -158,14 +144,14 @@ const createComboboxStyles = (theme: Theme) => StyleSheet.create({
   chevron: {
     marginLeft: theme.spacing.sm,
     padding: 4,
-  } ,
+  },
 
   clearButton: {
     marginLeft: theme.spacing.xs,
     padding: 6,
     borderRadius: theme.components.borderRadius.sm,
-    backgroundColor: resolveColor(theme, 'background', theme.colors.background),
-  } ,
+    backgroundColor: theme.colors.background,
+  },
 
   helperText: {
     fontSize: theme.typography.body.fontSize,
@@ -181,30 +167,24 @@ const createComboboxStyles = (theme: Theme) => StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0, 0, 0, 0.4)',
-  } ,
+  },
 
   modalContent: {
     position: 'absolute',
-    backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
+    backgroundColor: theme.colors.surface,
     borderRadius: theme.components.borderRadius.lg,
-    shadowColor: resolveColor(theme, 'text', theme.colors.text),
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.15,
-    shadowRadius: 24,
     overflow: 'hidden',
     borderWidth: 1,
-    borderColor: resolveColor(theme, 'border', theme.colors.border),
-    ...(Platform.OS === 'android' && {
-      elevation: 8,
-    }),
-  } ,
+    borderColor: theme.colors.border,
+    ...createShadow(8)
+  },
 
   searchContainer: {
     padding: theme.spacing.md,
-    backgroundColor: resolveColor(theme, 'background', theme.colors.background),
+    backgroundColor: theme.colors.background,
     borderBottomWidth: 1,
-    borderBottomColor: resolveColor(theme, 'border', theme.colors.border),
-  } ,
+    borderBottomColor: theme.colors.border,
+  },
 
   searchInput: {
     fontSize: theme.typography.body.fontSize,
@@ -212,20 +192,20 @@ const createComboboxStyles = (theme: Theme) => StyleSheet.create({
     paddingVertical: theme.spacing.sm,
     paddingHorizontal: theme.spacing.md,
     borderRadius: theme.components.borderRadius.md,
-    backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
+    backgroundColor: theme.colors.surface,
     fontWeight: '400',
     minHeight: 44,
     borderWidth: 1,
-    borderColor: resolveColor(theme, 'border', theme.colors.border),
-  } ,
+    borderColor: theme.colors.border,
+  },
 
   optionsList: {
     flexGrow: 1,
-  } ,
+  },
 
   optionsScrollContainer: {
     paddingBottom: Platform.OS === 'android' ? 8 : 0,
-  } ,
+  },
 
   option: {
     flexDirection: 'row',
@@ -235,19 +215,19 @@ const createComboboxStyles = (theme: Theme) => StyleSheet.create({
     paddingVertical: theme.spacing.md,
     minHeight: 48,
     backgroundColor: 'transparent',
-  } ,
+  },
 
   optionHover: {
-    backgroundColor: resolveColor(theme, 'background', theme.colors.background),
-  } ,
+    backgroundColor: theme.colors.background,
+  },
 
   optionSelected: {
     backgroundColor: theme.colors.primary + '08',
-  } ,
+  },
 
   optionDisabled: {
     opacity: 0.4,
-  } ,
+  },
 
   optionText: {
     flex: 1,
@@ -262,13 +242,13 @@ const createComboboxStyles = (theme: Theme) => StyleSheet.create({
     backgroundColor: theme.colors.primary,
     borderRadius: theme.components.borderRadius.full,
     padding: 2,
-  } ,
+  },
 
   emptyState: {
     paddingHorizontal: theme.spacing.md,
     paddingVertical: theme.spacing.lg,
     alignItems: 'center',
-  } ,
+  },
 
   emptyText: {
     fontSize: theme.typography.body.fontSize,
@@ -354,7 +334,6 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
     {
       label,
       placeholder = 'Select an option...',
-      variant = 'default',
       size = 'md',
       state = 'default',
       helperText,
@@ -379,7 +358,6 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
       maxDropdownHeight = 250,
       closeOnSelect = true,
       backgroundColor,
-      padding,
       elevation = 3,
       shadowOpacity = 0.1,
     },
@@ -843,8 +821,8 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
               style={[
                 styles.overlay,
                 overlayAnimatedStyle,
-                { pointerEvents: isModalReady ? 'auto' : 'none' },
               ]}
+              pointerEvents={isModalReady ? 'auto' : 'none'}
             >
               <Pressable
                 style={{ flex: 1 }}
@@ -860,18 +838,18 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
                       width: dropdownPosition.width,
                       maxHeight: maxDropdownHeight,
                       backgroundColor: backgroundColor ?? theme.colors.surface,
-                      ...(Platform.OS === 'android'
+                      ...(Platform.OS === 'ios'
                         ? {
-                            elevation,
-                          }
+                          shadowOpacity,
+                        }
                         : {
-                            shadowOpacity,
-                          }),
+                          elevation,
+                        }),
                     },
                     dropdownStyle,
                     animationEnabled ? dropdownAnimatedStyle : {},
-                    { pointerEvents: 'box-none' },
                   ]}
+                  pointerEvents={isModalReady ? 'auto' : 'none'}
                 >
                   {searchable && (
                     <View style={styles.searchContainer}>
@@ -945,5 +923,5 @@ const Combobox = forwardRef<React.ComponentRef<typeof View>, ComboboxProps>(
 Combobox.displayName = 'Combobox';
 
 
-export {Combobox};
+export { Combobox };
 export type { ComboboxProps, ComboboxOption };

@@ -13,6 +13,7 @@ import {
   HFlashList,
   Typography,
   useTheme,
+  utils,
   VFlashList,
 } from 'rnc-theme';
 
@@ -348,14 +349,7 @@ const styles = StyleSheet.create({
   },
   postItem: {
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    ...utils.createShadow(3)
   },
   postHeader: {
     flexDirection: 'row',

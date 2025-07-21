@@ -15,6 +15,7 @@ import Animated, {
 import { Plus } from 'lucide-react-native';
 import { Theme } from '../../../types/theme';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
+import { createShadow } from '../../../utils';
 
 /** Item type for Clustered FAB variant with label */
 type FabClusteredItem = {
@@ -143,11 +144,7 @@ const createFabStyles = (theme: Theme) =>
       bottom: 30,
       right: 30,
       borderRadius: 50,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
+      ...createShadow(5),
     },
 
     // Clustered specific styles
@@ -207,11 +204,7 @@ const createFabStyles = (theme: Theme) =>
       borderRadius: 50,
       width: 60,
       height: 60,
-      shadowColor: '#000',
-      shadowOffset: { width: 0, height: 2 },
-      shadowOpacity: 0.25,
-      shadowRadius: 3.84,
-      elevation: 5,
+      ...createShadow(5),
     },
 
     // Single variant touchable
@@ -397,11 +390,7 @@ const FabClustered = ({
         styles.container,
         containerStyle,
         {
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          elevation: 5,
+          ...createShadow(5),
         },
       ]}
     >
@@ -663,11 +652,7 @@ const FabExtended = ({
         styles.container,
         containerStyle,
         {
-          shadowColor: '#000' ,
-          shadowOffset: { width: 0, height: 2 },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          elevation: 5,
+          ...createShadow(5),
         },
       ]}
     >

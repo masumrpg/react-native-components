@@ -33,7 +33,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import { resolveColor } from '../../../utils';
+import { createShadow } from '../../../utils';
 import { Theme } from '../../../types/theme';
 import { ComponentSize, ComponentVariant } from '../../../types/ui';
 
@@ -123,11 +123,8 @@ const createModalStyles = (theme: Theme) => StyleSheet.create({
   } ,
   container: {
     borderWidth: 1,
-    borderColor: resolveColor(theme, 'border', theme.colors.border),
-    backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-    shadowColor: resolveColor(theme, 'text', theme.colors.text),
-    shadowOffset: { width: 0, height: 4 },
-    shadowRadius: 8,
+    borderColor: theme.colors.border,
+    backgroundColor: theme.colors.surface,
     overflow: 'hidden',
     // FIXED: Better sizing constraints
     maxWidth: '100%',
@@ -135,9 +132,7 @@ const createModalStyles = (theme: Theme) => StyleSheet.create({
     minWidth: 280,
     minHeight: 120,
     alignSelf: 'center',
-    ...(Platform.OS === 'android' && {
-      elevation: 12,
-    }),
+    ...createShadow(8)
   } ,
   closeButton: {
     position: 'absolute',
@@ -146,19 +141,15 @@ const createModalStyles = (theme: Theme) => StyleSheet.create({
     width: 32,
     height: 32,
     borderRadius: 16,
-    backgroundColor: resolveColor(theme, 'background', theme.colors.background),
+    backgroundColor: theme.colors.background,
     justifyContent: 'center',
     alignItems: 'center',
-    shadowColor: resolveColor(theme, 'text', theme.colors.text),
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 4,
-    elevation: 4,
+    ...createShadow(4),
     zIndex: 1000,
   } ,
   closeButtonText: {
     fontSize: 16,
-    color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
+    color: theme.colors.textSecondary,
     fontWeight: '600',
     lineHeight: 16,
   },
@@ -172,30 +163,30 @@ const getVariantStyles = (
   switch (variant) {
     case 'default':
       return {
-        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-        borderColor: resolveColor(theme, 'border', theme.colors.border),
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.border,
       };
     case 'primary':
       return {
-        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-        borderColor: resolveColor(theme, 'primary', theme.colors.primary),
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.primary,
         borderWidth: 2,
       };
     case 'secondary':
       return {
-        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-        borderColor: resolveColor(theme, 'secondary', theme.colors.secondary),
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.secondary,
         borderWidth: 2,
       };
     case 'outline':
       return {
         backgroundColor: 'transparent',
-        borderColor: resolveColor(theme, 'border', theme.colors.border),
+        borderColor: theme.colors.border,
         borderWidth: 2,
       };
     case 'filled':
       return {
-        backgroundColor: resolveColor(theme, 'primary', theme.colors.primary),
+        backgroundColor: theme.colors.primary,
         borderColor: 'transparent',
       };
     case 'ghost':
@@ -205,40 +196,44 @@ const getVariantStyles = (
       };
     case 'success':
       return {
-        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-        borderColor: resolveColor(theme, 'success', theme.colors.success),
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.success,
         borderWidth: 2,
       };
     case 'error':
       return {
-        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-        borderColor: resolveColor(theme, 'error', theme.colors.error),
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.error,
         borderWidth: 2,
       };
     case 'warning':
       return {
-        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-        borderColor: resolveColor(theme, 'warning', theme.colors.warning),
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.warning,
         borderWidth: 2,
       };
     case 'info':
       return {
-        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-        borderColor: resolveColor(theme, 'info', theme.colors.info),
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.info,
         borderWidth: 2,
       };
     case 'destructive':
       return {
-        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-        borderColor: resolveColor(theme, 'error', theme.colors.error),
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.error,
         borderWidth: 2,
-        shadowColor: resolveColor(theme, 'error', theme.colors.error),
-        shadowOpacity: 0.2,
+        ...Platform.select({
+          ios: {
+            shadowColor: theme.colors.error,
+            shadowOpacity: 0.2,
+          },
+        }),
       };
     default:
       return {
-        backgroundColor: resolveColor(theme, 'surface', theme.colors.surface),
-        borderColor: resolveColor(theme, 'border', theme.colors.border),
+        backgroundColor: theme.colors.surface,
+        borderColor: theme.colors.border,
       };
   }
 };

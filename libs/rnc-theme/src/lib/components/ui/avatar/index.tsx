@@ -196,8 +196,8 @@ const Avatar = forwardRef<React.ComponentRef<typeof View>, AvatarProps>(
         return (
           <Image
             source={source}
+            resizeMode="cover"
             style={[
-              styles.image,
               {
                 width: sizeConfig.size,
                 height: sizeConfig.size,
@@ -412,9 +412,6 @@ const createAvatarStyles = (theme: Theme) =>
       justifyContent: 'center',
       overflow: 'hidden',
     },
-    image: {
-      resizeMode: 'cover',
-    } as ImageStyle,
     text: {
       fontWeight: '600',
       textAlign: 'center',

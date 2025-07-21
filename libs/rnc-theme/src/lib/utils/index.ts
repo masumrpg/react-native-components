@@ -1,6 +1,6 @@
 import { ComponentSize, ComponentVariant } from '../types/ui';
 import { Theme } from '../types/theme';
-import { ViewStyle } from 'react-native';
+import { Platform, ViewStyle } from 'react-native';
 
 const resolveColor = (
   theme: Theme,
@@ -95,4 +95,28 @@ const getSizeStyles = (
   }
 };
 
-export { resolveColor, getVariantColor as getBackgroundColor, getSizeStyles };
+const createShadow = (elevation: number): ViewStyle => {
+  return {
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: elevation / 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: elevation,
+      },
+      android: {
+        elevation,
+      },
+      web: {
+        boxShadow: `0px ${elevation / 2}px ${elevation}px rgba(0, 0, 0, 0.25)`,
+      },
+    }),
+  };
+};
+
+export {
+  resolveColor,
+  getVariantColor as getBackgroundColor,
+  getSizeStyles,
+  createShadow,
+};

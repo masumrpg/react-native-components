@@ -41,10 +41,8 @@ const ToastContainer: React.FC<ToastContainerProps> = ({
     <View
       style={[
         containerStyle,
-        {
-          pointerEvents: 'box-none',
-        },
       ]}
+      pointerEvents="box-none"
     >
       {orderedToasts.map((toast, renderIndex) => {
         // Untuk bottom, kita perlu menghitung ulang index yang benar

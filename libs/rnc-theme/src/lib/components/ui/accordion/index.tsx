@@ -92,207 +92,207 @@ const useAccordionItem = () => {
 };
 
 // Styles
-const createAccordionStyles = (theme: Theme) => StyleSheet.create({
-  container: {
-    width: '100%',
-  },
+const createAccordionStyles = (theme: Theme) =>
+  StyleSheet.create({
+    container: {
+      width: '100%',
+    },
 
-  // Item styles
-  item: {
-    borderBottomWidth: 1,
-    borderBottomColor: theme.colors.border,
-    overflow: 'hidden',
-  },
+    // Item styles
+    item: {
+      borderBottomWidth: 1,
+      borderBottomColor: theme.colors.border,
+      overflow: 'hidden',
+    },
 
-  itemLast: {
-    borderBottomWidth: 0,
-  },
+    itemLast: {
+      borderBottomWidth: 0,
+    },
 
-  // Trigger styles
-  trigger: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: 'transparent',
-    borderWidth: 0,
-  },
+    // Trigger styles
+    trigger: {
+      flexDirection: 'row',
+      alignItems: 'center',
+      justifyContent: 'space-between',
+      backgroundColor: 'transparent',
+      borderWidth: 0,
+    },
 
-  triggerText: {
-    flex: 1,
-    color: theme.colors.text,
-    fontWeight: '500',
-  },
+    triggerText: {
+      flex: 1,
+      color: theme.colors.text,
+      fontWeight: '500',
+    },
 
-  triggerIcon: {
-    marginLeft: theme.spacing.sm,
-  },
+    triggerIcon: {
+      marginLeft: theme.spacing.sm,
+    },
 
-  // Content styles
-  content: {
-    overflow: 'hidden',
-  },
+    // Content styles
+    content: {
+      overflow: 'hidden',
+    },
 
-  contentInner: {
-    backgroundColor: theme.colors.surface,
-  },
+    contentInner: {
+      backgroundColor: theme.colors.surface,
+    },
 
-  // Variants
-  default: {
-    backgroundColor: theme.colors.surface,
-    borderColor: theme.colors.border,
-  },
+    // Variants
+    default: {
+      backgroundColor: theme.colors.surface,
+      borderColor: theme.colors.border,
+    },
 
-  primary: {
-    backgroundColor: `${theme.colors.primary}05`,
-    borderColor: theme.colors.primary,
-  },
+    primary: {
+      backgroundColor: `${theme.colors.primary}05`,
+      borderColor: theme.colors.primary,
+    },
 
-  secondary: {
-    backgroundColor: `${theme.colors.secondary}05`,
-    borderColor: theme.colors.secondary,
-  },
+    secondary: {
+      backgroundColor: `${theme.colors.secondary}05`,
+      borderColor: theme.colors.secondary,
+    },
 
-  outline: {
-    backgroundColor: 'transparent',
-    borderColor: theme.colors.border,
-    borderWidth: 1,
-  },
+    outline: {
+      backgroundColor: 'transparent',
+      borderColor: theme.colors.border,
+      borderWidth: 1,
+    },
 
-  filled: {
-    backgroundColor: theme.colors.background,
-    borderColor: 'transparent',
-  },
+    filled: {
+      backgroundColor: theme.colors.background,
+      borderColor: 'transparent',
+    },
 
-  ghost: {
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
-  },
+    ghost: {
+      backgroundColor: 'transparent',
+      borderColor: 'transparent',
+    },
 
-  success: {
-    backgroundColor: `${theme.colors.success}05`,
-    borderColor: theme.colors.success,
-  },
+    success: {
+      backgroundColor: `${theme.colors.success}05`,
+      borderColor: theme.colors.success,
+    },
 
-  error: {
-    backgroundColor: `${theme.colors.error}05`,
-    borderColor: theme.colors.error,
-  },
+    error: {
+      backgroundColor: `${theme.colors.error}05`,
+      borderColor: theme.colors.error,
+    },
 
-  warning: {
-    backgroundColor: `${theme.colors.warning}05`,
-    borderColor: theme.colors.warning,
-  },
+    warning: {
+      backgroundColor: `${theme.colors.warning}05`,
+      borderColor: theme.colors.warning,
+    },
 
-  info: {
-    backgroundColor: `${theme.colors.info}05`,
-    borderColor: theme.colors.info,
-  },
+    info: {
+      backgroundColor: `${theme.colors.info}05`,
+      borderColor: theme.colors.info,
+    },
 
-  destructive: {
-    backgroundColor: `${theme.colors.error}05`,
-    borderColor: theme.colors.error,
-  },
+    destructive: {
+      backgroundColor: `${theme.colors.error}05`,
+      borderColor: theme.colors.error,
+    },
 
-  // Sizes
-  xs: {
-    minHeight: 32,
-  },
+    // Sizes
+    xs: {
+      minHeight: 32,
+    },
 
-  sm: {
-    minHeight: 36,
-  },
+    sm: {
+      minHeight: 36,
+    },
 
-  md: {
-    minHeight: 44,
-  },
+    md: {
+      minHeight: 44,
+    },
 
-  lg: {
-    minHeight: 52,
-  },
+    lg: {
+      minHeight: 52,
+    },
 
-  xl: {
-    minHeight: 60,
-  },
+    xl: {
+      minHeight: 60,
+    },
 
-  // Size-specific trigger padding
-  triggerXs: {
-    paddingHorizontal: theme.spacing.sm,
-    paddingVertical: theme.spacing.xs,
-  },
+    // Size-specific trigger padding
+    triggerXs: {
+      paddingHorizontal: theme.spacing.sm,
+      paddingVertical: theme.spacing.xs,
+    },
 
-  triggerSm: {
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.sm,
-  },
+    triggerSm: {
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.sm,
+    },
 
-  triggerMd: {
-    paddingHorizontal: theme.spacing.md,
-    paddingVertical: theme.spacing.md,
-  },
+    triggerMd: {
+      paddingHorizontal: theme.spacing.md,
+      paddingVertical: theme.spacing.md,
+    },
 
-  triggerLg: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.md,
-  },
+    triggerLg: {
+      paddingHorizontal: theme.spacing.lg,
+      paddingVertical: theme.spacing.md,
+    },
 
-  triggerXl: {
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.lg,
-  },
+    triggerXl: {
+      paddingHorizontal: theme.spacing.lg,
+      paddingVertical: theme.spacing.lg,
+    },
 
-  // Size-specific content padding
-  contentPaddingXs: {
-    padding: theme.spacing.xs,
-  },
+    // Size-specific content padding
+    contentPaddingXs: {
+      padding: theme.spacing.xs,
+    },
 
-  contentPaddingSm: {
-    padding: theme.spacing.sm,
-  },
+    contentPaddingSm: {
+      padding: theme.spacing.sm,
+    },
 
-  contentPaddingMd: {
-    padding: theme.spacing.md,
-  },
+    contentPaddingMd: {
+      padding: theme.spacing.md,
+    },
 
-  contentPaddingLg: {
-    padding: theme.spacing.lg,
-  },
+    contentPaddingLg: {
+      padding: theme.spacing.lg,
+    },
 
-  contentPaddingXl: {
-    padding: theme.spacing.xl,
-  },
+    contentPaddingXl: {
+      padding: theme.spacing.xl,
+    },
 
-  // Size-specific text
-  textXs: {
-    fontSize: 12,
-    lineHeight: 16,
-  } as TextStyle,
+    // Size-specific text
+    textXs: {
+      fontSize: 12,
+      lineHeight: 16,
+    } as TextStyle,
 
-  textSm: {
-    fontSize: 14,
-    lineHeight: 18,
-  } as TextStyle,
+    textSm: {
+      fontSize: 14,
+      lineHeight: 18,
+    } as TextStyle,
 
-  textMd: {
-    fontSize: 16,
-    lineHeight: 20,
-  } as TextStyle,
+    textMd: {
+      fontSize: 16,
+      lineHeight: 20,
+    } as TextStyle,
 
-  textLg: {
-    fontSize: 18,
-    lineHeight: 24,
-  } as TextStyle,
+    textLg: {
+      fontSize: 18,
+      lineHeight: 24,
+    } as TextStyle,
 
-  textXl: {
-    fontSize: 20,
-    lineHeight: 28,
-  } as TextStyle,
+    textXl: {
+      fontSize: 20,
+      lineHeight: 28,
+    } as TextStyle,
 
-  // Disabled state
-  disabled: {
-    opacity: 0.6,
-    pointerEvents: 'none',
-  },
-});
+    // Disabled state
+    disabled: {
+      opacity: 0.6,
+    },
+  });
 
 // Components
 const Accordion = forwardRef<React.ComponentRef<typeof View>, AccordionProps>(
@@ -384,6 +384,7 @@ const AccordionItem = forwardRef<
             isDisabled && styles.disabled,
             style,
           ]}
+          pointerEvents={isDisabled ? "none" : "box-none"}
           {...props}
         >
           {children}

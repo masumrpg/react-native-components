@@ -14,7 +14,7 @@ import { Calendar, CalendarProps } from '../calendar';
 import { Portal } from '../portal';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
-import { resolveColor } from '../../../utils';
+import { createShadow } from '../../../utils';
 import { Theme } from '../../../types/theme';
 import {
   ComponentSize,
@@ -321,11 +321,11 @@ const DatePicker: React.FC<DatePickerProps> = ({
 
     return {
       borderColor,
-      shadowOpacity: borderAnimation.value * 0.1,
-      shadowRadius: borderAnimation.value * 4,
-      shadowColor: theme.colors.primary,
-      ...(Platform.OS === 'android' && {
-        elevation: borderAnimation.value * 2,
+      elevation: borderAnimation.value * 2,
+      ...(Platform.OS === 'ios' && {
+        shadowOpacity: borderAnimation.value * 0.1,
+        shadowRadius: borderAnimation.value * 4,
+        shadowColor: theme.colors.primary,
       }),
     };
   });
@@ -599,13 +599,7 @@ const createStyles = (
     },
     inputContainer: {
       borderRadius: theme.components.borderRadius[borderRadius],
-      shadowColor: resolveColor(theme, 'text', theme.colors.text),
-      shadowOffset: { width: 0, height: 1 },
-      shadowOpacity: 0.05,
-      shadowRadius: 2,
-      ...(Platform.OS === 'android' && {
-        elevation: 1,
-      }),
+      ...createShadow(1),
     },
     variant: {
       ...variantStyles[variant],
@@ -674,23 +668,14 @@ const createStyles = (
     },
     disabled: {
       opacity: 0.6,
-      backgroundColor: resolveColor(
-        theme,
-        'background',
-        theme.colors.background
-      ),
+      backgroundColor: theme.colors.background,
     },
     disabledText: {
       color: theme.colors.muted,
     },
     focused: {
       borderColor: theme.colors.primary,
-      shadowColor: theme.colors.primary,
-      shadowOpacity: 0.1,
-      shadowRadius: 4,
-      ...(Platform.OS === 'android' && {
-        elevation: 2,
-      }),
+      ...createShadow(2)
     },
     error: {
       borderColor: theme.colors.error,
@@ -722,14 +707,7 @@ const createStyles = (
       margin: theme.spacing.lg,
       width: Math.min(screenWidth - 32, 380),
       maxWidth: 380,
-      elevation: 8,
-      shadowColor: theme.colors.text,
-      shadowOffset: {
-        width: 0,
-        height: 4,
-      },
-      shadowOpacity: 0.25,
-      shadowRadius: 8,
+      ...createShadow(8)
     },
   });
 };

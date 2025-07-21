@@ -12,6 +12,7 @@ export * from './components/toggle';
 export * from './components/theme-manager';
 export * from './registry/ThemeRegistry';
 export * from './i18n';
+export * as utils from './utils';
 
 // Components UI
 export * from './components/ui';

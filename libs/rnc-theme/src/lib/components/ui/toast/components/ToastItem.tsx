@@ -23,6 +23,7 @@ import {
 import { ToastItemProps, ToastVariant } from '../types';
 import { Theme } from '../../../../types/theme';
 import { useToast } from '../context/ToastContext';
+import { createShadow } from '../../../../utils';
 
 const getToastIcon = (
   variant: ToastVariant,
@@ -237,15 +238,8 @@ const createToastItemStyle = (theme: Theme) =>
       borderRadius: theme.components.borderRadius.md,
       marginHorizontal: theme.spacing.md,
       marginVertical: theme.spacing.xs,
-      shadowColor: '#000',
-      shadowOffset: {
-        width: 0,
-        height: 2,
-      },
-      shadowOpacity: 0.1,
-      shadowRadius: 8,
-      elevation: 5,
       borderLeftWidth: 1,
+      ...createShadow(5),
     },
     content: {
       flexDirection: 'row',
