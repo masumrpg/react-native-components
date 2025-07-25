@@ -33,7 +33,7 @@ export default function HomeScreen() {
           fallbackText="XL"
           variant="primary"
         />
-        <Typography style={{ fontWeight: 'black' }} variant="h1">
+        <Typography variant="h1" style={{ fontFamily: theme.typography.title.fontFamily }}>
           Welcome to RNC Theme
         </Typography>
 

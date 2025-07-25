@@ -349,10 +349,25 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
       preset?: string,
       newPresetConfig?: (isDark: boolean) => Partial<Theme>
     ) => {
-      const updatedCustomTheme = {
-        ...customTheme,
-        [isDark ? 'dark' : 'light']: newCustomTheme,
-      };
+      let updatedCustomTheme;
+      
+      // If preset config is provided, generate both light and dark variants
+      if (newPresetConfig) {
+        const lightTheme = newPresetConfig(false);
+        const darkTheme = newPresetConfig(true);
+        
+        updatedCustomTheme = {
+          ...customTheme,
+          light: lightTheme,
+          dark: darkTheme,
+        };
+      } else {
+        // For manual theme updates, only update current mode
+        updatedCustomTheme = {
+          ...customTheme,
+          [isDark ? 'dark' : 'light']: newCustomTheme,
+        };
+      }
 
       setCustomTheme(updatedCustomTheme);
       setActivePreset(preset);
@@ -360,7 +375,6 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
       if (newPresetConfig) {
         setPresetConfig(() => newPresetConfig);
       }
-
 
       saveThemeToStorage(themeStorageKey, {
         mode: themeMode,

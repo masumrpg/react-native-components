@@ -36,6 +36,7 @@ export default function UILayout() {
         },
         headerTitleStyle: {
           color: theme.colors.text,
+          fontFamily: theme.typography.title.fontFamily,
         },
         headerBackButtonDisplayMode: 'minimal',
         headerLeft: () => (

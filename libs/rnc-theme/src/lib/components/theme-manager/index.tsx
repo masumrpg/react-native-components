@@ -343,15 +343,12 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
       } else {
         const themeConfig = getThemeConfig(preset);
         if (themeConfig) {
-          // Generate both light and dark variants when applying
-          const lightTheme = themeConfig(false);
-          const darkTheme = themeConfig(true);
-
-          // Apply current theme variant and save the config for future mode switches
+          // updateCustomTheme will now automatically generate both light and dark variants
+          // when themeConfig is provided, ensuring both modes are saved
           updateCustomTheme(
-            isDark ? darkTheme : lightTheme,
+            themeConfig(isDark), // Current theme for immediate application
             preset,
-            themeConfig
+            themeConfig // This will trigger generation of both variants
           );
         }
       }
@@ -399,9 +396,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
       {showControls &&
         (showCards ? (
           <Card style={[styles.card, contentStyle]}>
-            <CardHeader
-              title={customization?.controlsTitle ?? 'Theme Controls'}
-            />
+            <CardHeader title={customization?.controlsTitle ?? 'Theme Controls'} />
             <CardContent>
               <View style={styles.row}>
                 <Typography
@@ -411,8 +406,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                   }}
                 >
                   {customization?.darkModeLabel ?? 'Dark Mode'}{' '}
-                  {isDarkModeDisabled &&
-                    (customization?.darkModeDisabledLabel ?? '(Disabled)')}
+                  {isDarkModeDisabled && (customization?.darkModeDisabledLabel ?? '(Disabled)')}
                 </Typography>
                 <Switcher
                   value={isDark}
@@ -423,44 +417,27 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
 
               {previewTheme && previewTheme !== appliedTheme ? (
                 <View>
-                  <Button
-                    variant="primary"
-                    onPress={applySelectedTheme}
-                    style={styles.button}
-                  >
+                  <Button variant="primary" onPress={applySelectedTheme} style={styles.button}>
                     <ButtonText>
                       {customization?.applyButtonText ??
                         `Apply ${
-                          selectedPreset.charAt(0).toUpperCase() +
-                          selectedPreset.slice(1)
+                          selectedPreset.charAt(0).toUpperCase() + selectedPreset.slice(1)
                         } Theme`}
                     </ButtonText>
                   </Button>
 
-                  <Button
-                    variant="outline"
-                    onPress={cancelPreview}
-                    style={styles.button}
-                  >
-                    <ButtonText>
-                      {customization?.cancelPreviewText ?? 'Cancel Preview'}
-                    </ButtonText>
+                  <Button variant="outline" onPress={cancelPreview} style={styles.button}>
+                    <ButtonText>{customization?.cancelPreviewText ?? 'Cancel Preview'}</ButtonText>
                   </Button>
                 </View>
               ) : (
-                <Button
-                  variant="primary"
-                  onPress={applySelectedTheme}
-                  style={styles.button}
-                >
-                  <ButtonText>
+                <Button variant="primary" onPress={applySelectedTheme} style={styles.button}>
+                  <ButtonText style={{ color: 'white' }}>
                     {selectedPreset === 'default'
-                      ? customization?.resetButtonText ??
-                        'Reset to Default Theme'
+                      ? customization?.resetButtonText ?? 'Reset to Default Theme'
                       : customization?.applyButtonText ??
                         `Apply ${
-                          selectedPreset.charAt(0).toUpperCase() +
-                          selectedPreset.slice(1)
+                          selectedPreset.charAt(0).toUpperCase() + selectedPreset.slice(1)
                         } Theme`}
                   </ButtonText>
                 </Button>
@@ -471,9 +448,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                 onPress={() => applyThemePreset('default')}
                 style={styles.button}
               >
-                <ButtonText>
-                  {customization?.resetButtonText ?? 'Reset Theme'}
-                </ButtonText>
+                <ButtonText>{customization?.resetButtonText ?? 'Reset Theme'}</ButtonText>
               </Button>
             </CardContent>
           </Card>
@@ -490,55 +465,34 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                 }}
               >
                 {customization?.darkModeLabel ?? 'Dark Mode'}{' '}
-                {isDarkModeDisabled &&
-                  (customization?.darkModeDisabledLabel ?? '(Disabled)')}
+                {isDarkModeDisabled && (customization?.darkModeDisabledLabel ?? '(Disabled)')}
               </Typography>
-              <Switcher
-                value={isDark}
-                onValueChange={toggleTheme}
-                disabled={isDarkModeDisabled}
-              />
+              <Switcher value={isDark} onValueChange={toggleTheme} disabled={isDarkModeDisabled} />
             </View>
 
             {previewTheme && previewTheme !== appliedTheme ? (
               <View>
-                <Button
-                  variant="primary"
-                  onPress={applySelectedTheme}
-                  style={styles.button}
-                >
+                <Button variant="primary" onPress={applySelectedTheme} style={styles.button}>
                   <ButtonText>
                     {customization?.applyButtonText ??
                       `Apply ${
-                        selectedPreset.charAt(0).toUpperCase() +
-                        selectedPreset.slice(1)
+                        selectedPreset.charAt(0).toUpperCase() + selectedPreset.slice(1)
                       } Theme`}
                   </ButtonText>
                 </Button>
 
-                <Button
-                  variant="outline"
-                  onPress={cancelPreview}
-                  style={styles.button}
-                >
-                  <ButtonText>
-                    {customization?.cancelPreviewText ?? 'Cancel Preview'}
-                  </ButtonText>
+                <Button variant="outline" onPress={cancelPreview} style={styles.button}>
+                  <ButtonText>{customization?.cancelPreviewText ?? 'Cancel Preview'}</ButtonText>
                 </Button>
               </View>
             ) : (
-              <Button
-                variant="primary"
-                onPress={applySelectedTheme}
-                style={styles.button}
-              >
+              <Button variant="primary" onPress={applySelectedTheme} style={styles.button}>
                 <ButtonText>
                   {selectedPreset === 'default'
                     ? customization?.resetButtonText ?? 'Reset to Default Theme'
                     : customization?.applyButtonText ??
                       `Apply ${
-                        selectedPreset.charAt(0).toUpperCase() +
-                        selectedPreset.slice(1)
+                        selectedPreset.charAt(0).toUpperCase() + selectedPreset.slice(1)
                       } Theme`}
                 </ButtonText>
               </Button>
@@ -549,9 +503,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
               onPress={() => applyThemePreset('default')}
               style={styles.button}
             >
-              <ButtonText>
-                {customization?.resetButtonText ?? 'Reset Theme'}
-              </ButtonText>
+              <ButtonText>{customization?.resetButtonText ?? 'Reset Theme'}</ButtonText>
             </Button>
           </View>
         ))}
@@ -560,9 +512,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
       {showPresets &&
         (showCards ? (
           <Card style={[styles.card, contentStyle]}>
-            <CardHeader
-              title={customization?.presetsTitle ?? 'Theme Presets'}
-            />
+            <CardHeader title={customization?.presetsTitle ?? 'Theme Presets'} />
             <CardContent>
               <View style={styles.presetGrid}>
                 <Button
@@ -581,8 +531,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                   <ButtonText>
                     {customization?.defaultThemeText ?? 'Default'}
                     {appliedTheme === 'default' && selectedPreset !== 'default'}
-                    {selectedPreset === 'default' &&
-                      previewTheme !== appliedTheme}
+                    {selectedPreset === 'default' && previewTheme !== appliedTheme}
                   </ButtonText>
                 </Button>
                 {themePresets.map(({ key, label }) => (
@@ -631,8 +580,7 @@ export const ThemeManager: React.FC<ThemeManagerProps> = ({
                 <ButtonText>
                   {customization?.defaultThemeText ?? 'Default'}
                   {appliedTheme === 'default' && selectedPreset !== 'default'}
-                  {selectedPreset === 'default' &&
-                    previewTheme !== appliedTheme}
+                  {selectedPreset === 'default' && previewTheme !== appliedTheme}
                 </ButtonText>
               </Button>
               {themePresets.map(({ key, label }) => (

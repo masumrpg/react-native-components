@@ -1,10 +1,4 @@
-import React, {
-  useMemo,
-  useRef,
-  forwardRef,
-  useImperativeHandle,
-  useCallback,
-} from 'react';
+import React, { useMemo, useRef, forwardRef, useImperativeHandle, useCallback } from 'react';
 import {
   Pressable,
   TouchableOpacity,
@@ -32,16 +26,11 @@ import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
 import { Spinner } from '../spinner';
 import { Typography } from '../typography';
-import {
-  BaseComponentProps,
-  ComponentSize,
-  ComponentVariant,
-} from '../../../types/ui';
+import { BaseComponentProps, ComponentSize, ComponentVariant } from '../../../types/ui';
 
 // Animated components
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
-const AnimatedTouchableOpacity =
-  Animated.createAnimatedComponent(TouchableOpacity);
+const AnimatedTouchableOpacity = Animated.createAnimatedComponent(TouchableOpacity);
 
 type ButtonComponent = 'pressable' | 'touchable';
 type IconPosition = 'left' | 'right' | 'center';
@@ -244,6 +233,7 @@ const createButtonTextStyles = (theme: Theme) =>
   StyleSheet.create({
     base: {
       fontWeight: '600',
+      fontFamily: theme.typography.body.fontFamily,
       textAlign: 'center',
     },
     loadingContainer: {
@@ -259,7 +249,7 @@ const createButtonTextStyles = (theme: Theme) =>
     secondary: { color: '#FFFFFF' },
     outline: { color: resolveColor(theme, 'primary', theme.colors.primary) },
     filled: { color: theme.colors.text },
-    ghost: { color: resolveColor(theme, 'text', theme.colors.text) },
+    ghost: { color: '#000000' }, // FIXED: Pastikan text ghost variant selalu hitam
     success: { color: '#FFFFFF' },
     error: { color: '#FFFFFF' },
     warning: { color: '#FFFFFF' },
@@ -355,18 +345,13 @@ const createScaleAnimation = (
   );
 };
 
-const createShakeAnimation = (
-  translateX: SharedValue<number>,
-  config: ShakeConfig
-): void => {
+const createShakeAnimation = (translateX: SharedValue<number>, config: ShakeConfig): void => {
   'worklet';
   const { translateX: translateValues, duration } = config;
   const stepDuration = duration / translateValues.length;
 
   translateX.value = withSequence(
-    ...translateValues.map((value) =>
-      withTiming(value, { duration: stepDuration })
-    )
+    ...translateValues.map((value) => withTiming(value, { duration: stepDuration }))
   );
 };
 
@@ -402,14 +387,7 @@ const useButtonAnimation = (
     if (animationEnabled && !disabled && !loading) {
       scale.value = withSpring(pressAnimationScale, springConfig);
     }
-  }, [
-    animationEnabled,
-    pressAnimationScale,
-    springConfig,
-    scale,
-    disabled,
-    loading,
-  ]);
+  }, [animationEnabled, pressAnimationScale, springConfig, scale, disabled, loading]);
 
   const handlePressOut = useCallback(() => {
     'worklet';
@@ -480,14 +458,13 @@ const Button = forwardRef<ButtonRef, ButtonProps>(
       [springConfig]
     );
 
-    const { animatedStyle, handlePressIn, handlePressOut, animate } =
-      useButtonAnimation(
-        animationEnabled,
-        pressAnimationScale,
-        mergedSpringConfig,
-        disabled,
-        loading
-      );
+    const { animatedStyle, handlePressIn, handlePressOut, animate } = useButtonAnimation(
+      animationEnabled,
+      pressAnimationScale,
+      mergedSpringConfig,
+      disabled,
+      loading
+    );
 
     // FIXED: Removed opacity from baseStyle
     const baseStyle = useMemo(
@@ -507,15 +484,7 @@ const Button = forwardRef<ButtonRef, ButtonProps>(
         }),
         ...(style as ViewStyle),
       }),
-      [
-        styles,
-        variant,
-        size,
-        theme.components.borderRadius,
-        borderRadius,
-        fullWidth,
-        style,
-      ]
+      [styles, variant, size, theme.components.borderRadius, borderRadius, fullWidth, style]
     );
 
     const isDisabled = disabled || loading;
@@ -563,16 +532,10 @@ const Button = forwardRef<ButtonRef, ButtonProps>(
       [handlePressOut, onPressOut]
     );
 
-    const combinedStyle = useMemo(
-      () => [baseStyle, animatedStyle],
-      [baseStyle, animatedStyle]
-    );
+    const combinedStyle = useMemo(() => [baseStyle, animatedStyle], [baseStyle, animatedStyle]);
 
     if (component === 'touchable') {
-      const touchableProps = props as Omit<
-        TouchableOpacityProps,
-        keyof BaseButtonProps | 'style'
-      >;
+      const touchableProps = props as Omit<TouchableOpacityProps, keyof BaseButtonProps | 'style'>;
       return (
         <AnimatedTouchableOpacity
           ref={buttonRef}
@@ -587,10 +550,7 @@ const Button = forwardRef<ButtonRef, ButtonProps>(
       );
     }
 
-    const pressableProps = props as Omit<
-      PressableProps,
-      keyof BaseButtonProps | 'style'
-    >;
+    const pressableProps = props as Omit<PressableProps, keyof BaseButtonProps | 'style'>;
     return (
       <AnimatedPressable
         ref={buttonRef}
