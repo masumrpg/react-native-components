@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import { StyleProp, StyleSheet, Text, TextStyle } from 'react-native';
 import { useTheme } from '../../../context/RNCProvider';
-import { useThemedStyles } from '../../../hooks/useThemedStyles';
+import { createThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
 import { Theme } from '../../../types/theme';
 
@@ -61,7 +61,7 @@ const Typography = forwardRef<React.ComponentRef<typeof Text>, TypographyProps>(
     ref
   ) => {
     const { theme } = useTheme();
-    const styles = useThemedStyles(createTypographyStyles);
+    const styles = createThemedStyles(theme, createTypographyStyles);
 
     return (
       <Text

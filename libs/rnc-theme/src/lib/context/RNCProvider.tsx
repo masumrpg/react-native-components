@@ -303,6 +303,8 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
 
       return () => clearTimeout(timer);
     }
+    // Return undefined explicitly for the else case
+    return undefined;
   }, [fontsLoaded, onFontLoadError]);
 
   // Auto-regenerate theme ketika mode berubah dan ada active preset
@@ -388,19 +390,21 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
     }
 
     const getFontFamily = (weight: string): string => {
+      const fallbackFont = theme.typography.body.fontFamily ?? 'System';
+      
       switch (weight) {
         case '400':
         case 'normal':
-          return fontConfig.regular ?? theme.typography.body.fontFamily ?? 'System';
+          return fontConfig.regular ?? fallbackFont;
         case '500':
-          return fontConfig.medium ?? fontConfig.regular ?? theme.typography.body.fontFamily ?? 'System';
+          return fontConfig.medium ?? fontConfig.regular ?? fallbackFont;
         case '600':
-          return fontConfig.semiBold ?? fontConfig.medium ?? fontConfig.regular ?? theme.typography.body.fontFamily ?? 'System';
+          return fontConfig.semiBold ?? fontConfig.medium ?? fontConfig.regular ?? fallbackFont;
         case '700':
         case 'bold':
-          return fontConfig.bold ?? fontConfig.semiBold ?? fontConfig.medium ?? fontConfig.regular ?? theme.typography.body.fontFamily ?? 'System';
+          return fontConfig.bold ?? fontConfig.semiBold ?? fontConfig.medium ?? fontConfig.regular ?? fallbackFont;
         default:
-          return fontConfig.regular ?? theme.typography.body.fontFamily ?? 'System';
+          return fontConfig.regular ?? fallbackFont;
       }
     };
 

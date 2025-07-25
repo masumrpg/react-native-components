@@ -1,6 +1,5 @@
 import React, { useEffect, useCallback, useMemo } from 'react';
-import { View, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
-import { Typography } from '../../typography';
+import { View, TouchableOpacity, StyleSheet, ActivityIndicator, Text } from 'react-native';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -199,20 +198,10 @@ export const ToastItem: React.FC<ToastItemProps> = ({
       <View style={styles.content}>
         {icon && <View style={styles.iconContainer}>{icon}</View>}
         <View style={styles.textContainer}>
-          {toast.title && (
-            <Typography variant="subtitle" style={styles.title}>
-              {toast.title}
-            </Typography>
-          )}
-          {toast.description && (
-            <Typography variant="body" style={styles.description}>
-              {toast.description}
-            </Typography>
-          )}
+          {toast.title && <Text style={styles.title}>{toast.title}</Text>}
+          {toast.description && <Text style={styles.description}>{toast.description}</Text>}
           {toast.isLoading && toast.loadingText && (
-            <Typography variant="small" style={styles.loadingText}>
-              {toast.loadingText}
-            </Typography>
+            <Text style={styles.loadingText}>{toast.loadingText}</Text>
           )}
         </View>
         {/* Hanya tampilkan close button jika tidak loading */}
@@ -224,9 +213,7 @@ export const ToastItem: React.FC<ToastItemProps> = ({
       </View>
       {toast.action && !toast.isLoading && (
         <TouchableOpacity style={styles.actionButton} onPress={toast.action.onPress}>
-          <Typography variant="button" style={styles.actionText}>
-            {toast.action.label}
-          </Typography>
+          <Text style={styles.actionText}>{toast.action.label}</Text>
         </TouchableOpacity>
       )}
     </Animated.View>
@@ -256,18 +243,25 @@ const createToastItemStyle = (theme: Theme) =>
       flex: 1,
     },
     title: {
-      fontSize: theme.typography.body.fontSize,
-      fontWeight: '600',
+      fontSize: theme.typography.subtitle.fontSize,
+      lineHeight: theme.typography.subtitle.lineHeight,
+      fontWeight: theme.typography.subtitle.fontWeight ?? '500',
+      fontFamily: theme.typography.subtitle.fontFamily,
       color: theme.colors.text,
       marginBottom: theme.spacing.xs ? theme.spacing.xs : 0,
     },
     description: {
-      fontSize: theme.typography.caption.fontSize,
+      fontSize: theme.typography.body.fontSize,
+      lineHeight: theme.typography.body.lineHeight,
+      fontWeight: theme.typography.body.fontWeight ?? '400',
+      fontFamily: theme.typography.body.fontFamily,
       color: theme.colors.textSecondary,
-      lineHeight: theme.typography.caption.lineHeight,
     },
     loadingText: {
       fontSize: theme.typography.caption.fontSize,
+      lineHeight: theme.typography.caption.lineHeight,
+      fontWeight: theme.typography.caption.fontWeight ?? '400',
+      fontFamily: theme.typography.caption.fontFamily,
       color: theme.colors.primary,
       fontStyle: 'italic',
       marginTop: theme.spacing.xs,
@@ -283,8 +277,11 @@ const createToastItemStyle = (theme: Theme) =>
       borderTopColor: theme.colors.border,
     },
     actionText: {
-      fontSize: theme.typography.body.fontSize,
+      fontSize: 14,
+      lineHeight: 20,
       fontWeight: '600',
+      letterSpacing: 0.25,
+      textTransform: 'uppercase',
       color: theme.colors.primary,
     },
     // Variants
