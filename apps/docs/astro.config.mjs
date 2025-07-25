@@ -30,7 +30,11 @@ export default defineConfig({
               },
             },
             { label: 'Quick Start', slug: 'getting-started/quick-start' },
-            { label: 'Setup Guide', slug: 'getting-started/setup-guide' },
+            {
+              label: 'Setup Guide',
+              slug: 'getting-started/setup-guide',
+              badge: { text: 'New', variant: 'success' },
+            },
           ],
         },
         {

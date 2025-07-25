@@ -279,6 +279,105 @@ themeRegistry.registerPreset('custom', customThemeConfig);
   </TabItem>
 </Tabs>
 
+## Custom Font Configuration <Badge variant='success' text='New'/>
+
+### Setting Up Custom Fonts with Expo
+
+RNC Theme supports custom font configuration for enhanced typography. Here's how to set up custom fonts using Expo Google Fonts:
+
+<Steps>
+1. **Install required dependencies**
+   ```bash
+   npx expo install expo-font @expo-google-fonts/poppins
+   ```
+
+2. **Import fonts and utilities**
+   ```tsx title="_layout.tsx"
+   import { useFonts } from 'expo-font';
+   import { utils, RNCProvider } from 'rnc-theme';
+   import {
+     Poppins_400Regular,
+     Poppins_500Medium,
+     Poppins_600SemiBold,
+     Poppins_700Bold,
+   } from '@expo-google-fonts/poppins';
+   ```
+
+3. **Create font configuration**
+   ```tsx title="_layout.tsx"
+   // Font config
+   const fontConfig = utils.createExpoFontConfig({
+     'Poppins-Regular': Poppins_400Regular,
+     'Poppins-Medium': Poppins_500Medium,
+     'Poppins-SemiBold': Poppins_600SemiBold,
+     'Poppins-Bold': Poppins_700Bold,
+   });
+   ```
+
+4. **Load fonts and handle loading states**
+   ```tsx title="_layout.tsx"
+   export default function RootLayout() {
+     const [fontsLoaded, error] = useFonts({
+       'Poppins-Regular': Poppins_400Regular,
+       'Poppins-Medium': Poppins_500Medium,
+       'Poppins-SemiBold': Poppins_600SemiBold,
+       'Poppins-Bold': Poppins_700Bold,
+     });
+
+     const handleFontLoadError = (error: string) => {
+       console.warn('Font loading error:', error);
+       // You could show a toast notification or handle the error as needed
+     };
+
+     useEffect(() => {
+       if (error) throw error;
+     }, [error]);
+
+     useEffect(() => {
+       if (fontsLoaded) {
+         SplashScreen.hideAsync();
+       }
+     }, [fontsLoaded]);
+
+     if (!fontsLoaded) {
+       return null;
+     }
+
+     return (
+       <GestureHandlerRootView>
+         <RNCProvider
+           defaultTheme="system"
+           fontConfig={fontConfig}
+           fontsLoaded={fontsLoaded}
+           onFontLoadError={handleFontLoadError}
+           showLoadingSplash={true}
+           splashDuration={200}
+         >
+           {/* Your app content */}
+         </RNCProvider>
+       </GestureHandlerRootView>
+     );
+   }
+   ```
+</Steps>
+
+### Font Configuration Options
+
+| Option | Type | Description |
+|--------|------|-------------|
+| `fontConfig` | `FontConfig` | Maps font weights to font family names |
+| `fontsLoaded` | `boolean` | Indicates whether fonts have finished loading |
+| `onFontLoadError` | `(error: string) => void` | Callback for font loading errors |
+| `showLoadingSplash` | `boolean` | Shows loading screen while fonts load |
+| `splashDuration` | `number` | Minimum splash screen duration |
+
+<Aside type="tip" title="Font Loading Best Practices">
+- Always handle font loading errors gracefully
+- Use splash screens to prevent layout shifts
+- Provide fallback fonts for better user experience
+- Test font loading on different devices and network conditions
+</Aside>
+
 ## Internationalization (i18n)
 
 ### Complete i18n Setup

@@ -35,11 +35,6 @@ const fontConfig = utils.createExpoFontConfig({
 });
 
 export default function RootLayout() {
-  // const [loaded, error] = useFonts({
-  //   SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf') as FontSource,
-  //   ...FontAwesome.font,
-  // });
-
   const [fontsLoaded, error] = useFonts({
     'Poppins-Regular': Poppins_400Regular,
     'Poppins-Medium': Poppins_500Medium,

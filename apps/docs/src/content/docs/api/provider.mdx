@@ -22,6 +22,9 @@ Provider component is used to wrap your app content and provide the theme contex
 | `loadingComponent?` | `ReactNode` | `undefined` | Custom loading component to display during theme initialization |
 | `splashDuration?` | `number` | `150` | Minimum splash duration in milliseconds to prevent flash |
 | `fallbackTheme?` | `'light' \| 'dark'` | `'light'` | Fallback theme to use when system theme is unavailable |
+| `fontConfig?` | <a href='/api/provider#fontconfig'>`FontConfig`</a> | `undefined` | Custom font configuration for typography |
+| `fontsLoaded?` | `boolean` | `true` | External font loading state indicator |
+| `onFontLoadError?` | `(error: string) => void` | `undefined` | Callback function when font loading fails |
 
 ### BottomSheetProps
 
@@ -61,6 +64,15 @@ Provider component is used to wrap your app content and provide the theme contex
 | `supportedLocales` | `string[]` | No | `undefined` | An array of locale codes (e.g., `['en', 'id', 'fr']`) that the application supports. These should follow standard locale format (ISO 639-1 language codes). |
 | `defaultLocale` | `string` | No | `undefined` | The default locale code to use when no specific locale is selected or when the requested locale is not supported. Should be one of the locales listed in `supportedLocales`. |
 | `autoDetectLocale` | `boolean` | No | `undefined` | Whether to automatically detect the user's preferred locale from browser settings or other sources. When `true`, the application will attempt to match the user's preference with supported locales. |
+
+### FontConfig
+
+| Property | Type | Required | Default | Description |
+|----------|------|----------|---------|-------------|
+| `regular` | `string` | No | `'System'` | Font family name for regular weight text |
+| `medium` | `string` | No | `'System'` | Font family name for medium weight text |
+| `semiBold` | `string` | No | `'System'` | Font family name for semi-bold weight text |
+| `bold` | `string` | No | `'System'` | Font family name for bold weight text |
 
 ### `useTheme`
 

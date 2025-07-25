@@ -12,9 +12,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Issue and pull request templates
 - Security policy
 - Code of conduct
+- ✨ Custom font configuration support in `RNCProvider`
+- 📚 Font configuration documentation and examples
+- 🎨 `fontConfig`, `fontsLoaded`, and `onFontLoadError` props to `RNCProvider`
+- 📖 Custom font setup guide with Expo Google Fonts integration
 
 ### Changed
 - Improved project structure documentation
+- 🔄 Enhanced `RNCProvider` with font loading capabilities
+- 📚 Updated API documentation with new font-related props
 
 ### Deprecated
 - Nothing
@@ -23,7 +29,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Nothing
 
 ### Fixed
-- Nothing
+- 🐛 Fixed theme persistence issue where only current theme mode was saved
+- 🔧 Fixed `updateCustomTheme` to save both light and dark variants when preset is applied
+- ✨ Added missing `fontFamily: 'System'` to all typography variants in preset themes
 
 ### Security
 - Added security policy and guidelines
