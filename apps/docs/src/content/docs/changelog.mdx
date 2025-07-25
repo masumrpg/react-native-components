@@ -1,0 +1,191 @@
+---
+title: Changelog
+description: A detailed changelog of all the changes made to React Native Components (RNC Theme) library.
+---
+
+import { Aside, Card, CardGrid, Code, LinkCard, Badge } from '@astrojs/starlight/components';
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+<Aside type="tip" title="Latest Updates">
+For the most up-to-date changes, check our [GitHub Releases](https://github.com/masumrpg/react-native-components/releases) or [commit history](https://github.com/masumrpg/react-native-components/commits/main).
+</Aside>
+
+## [0.1.2] - 2025-07-25
+
+### <Badge text="Added" variant="success" /> New Features
+
+- Complete contribution documentation
+- Issue and pull request templates
+- Security policy and code of conduct
+- **Custom font configuration support** in `RNCProvider`
+- Font configuration documentation and examples
+- New props: `fontConfig`, `fontsLoaded`, and `onFontLoadError` for `RNCProvider`
+- Custom font setup guide with Expo Google Fonts integration
+
+### <Badge text="Changed" variant="note" /> Improvements
+
+- Improved project structure documentation
+- Enhanced `RNCProvider` with font loading capabilities
+- Updated API documentation with new font-related props
+
+### <Badge text="Fixed" variant="caution" /> Bug Fixes
+
+- **Fixed theme persistence issue** where only current theme mode was saved
+- Fixed `updateCustomTheme` to save both light and dark variants when preset is applied
+- Added missing `fontFamily: 'System'` to all typography variants in preset themes
+
+### <Badge text="Security" variant="danger" /> Security
+
+- Added security policy and guidelines
+
+---
+
+## [0.0.1] - 2025-07-15
+
+### <Badge text="Added" variant="success" /> Initial Release
+
+**Initial release of React Native Components (RNC Theme)**
+
+<CardGrid>
+  <Card title="Dynamic Theming" icon="puzzle">
+    Light/dark mode with custom theme support
+  </Card>
+  <Card title="TypeScript" icon="seti:typescript">
+    Complete TypeScript support
+  </Card>
+  <Card title="Customizable" icon="add-document">
+    Highly customizable theme system
+  </Card>
+  <Card title="Performance" icon="rocket">
+    React Native optimized performance
+  </Card>
+</CardGrid>
+
+#### Components
+
+- **Button & FAB**: Customizable buttons with variants and Floating Action Button
+- **Typography**: Complete typography system with heading, body, and caption variants
+- **Form Controls**: Input, Checkbox, Radio, Switcher, Toggle, Slider, Form Control
+- **Layout & Navigation**: Card, Divider, Layout, Modal, Bottom Sheet, Accordion
+- **Data Display**: Table, Badge, Avatar, Progress, Rating, Skeleton loading
+- **Feedback & Interaction**: Toast notifications, Tooltip, Spinner
+- **Media & Content**: Image Carousel, Calendar, Date Picker
+- **Advanced Features**: Combobox, Scroll components, i18n support
+
+#### Theme System
+
+- Pre-built light and dark themes
+- Custom theme creation support
+- Theme token system
+- Runtime theme switching
+- Persistent theme preferences
+
+#### Developer Experience
+
+- TypeScript definitions for all components
+- Comprehensive documentation
+- Example application
+- Storybook integration (coming soon)
+
+#### Accessibility
+
+- Screen reader support
+- Keyboard navigation
+- ARIA labels and roles
+- High contrast support
+
+#### Performance
+
+- Optimized for React Native
+- Minimal bundle size impact
+- Efficient re-rendering
+- Memory leak prevention
+
+#### Internationalization
+
+- i18n support with i18n-js
+- Multiple language support
+- RTL layout support (coming soon)
+
+### Technical Details
+
+| Feature | Support |
+|---------|--------|
+| **React Native** | 0.79+ |
+| **TypeScript** | Full type safety |
+| **Platform Support** | iOS, Android, Web (experimental) |
+
+---
+
+## Changelog Guidelines
+
+<Aside type="note">
+This changelog follows the [Keep a Changelog](https://keepachangelog.com/en/1.0.0/) format and [Semantic Versioning](https://semver.org/spec/v2.0.0.html) principles.
+</Aside>
+
+### Change Categories
+
+- **Added**: New features
+- **Changed**: Changes to existing features
+- **Deprecated**: Features to be removed in future versions
+- **Removed**: Removed features
+- **Fixed**: Bug fixes
+- **Security**: Security fixes
+
+### Versioning Guidelines
+
+#### Major Version (X.0.0)
+- Breaking changes
+- Major new features
+- Significant API changes
+- Minimum version requirement changes
+
+#### Minor Version (0.X.0)
+- New features (backward compatible)
+- New components
+- New props or methods
+- Deprecations
+
+#### Patch Version (0.0.X)
+- Bug fixes
+- Security patches
+- Documentation updates
+- Performance improvements (non-breaking)
+
+---
+
+## Resources
+
+<CardGrid>
+  <LinkCard
+    title="GitHub Repository"
+    description="Source code, issues, and contributions"
+    href="https://github.com/masumrpg/react-native-components"
+  />
+  <LinkCard
+    title="GitHub Releases"
+    description="Detailed release notes and downloads"
+    href="https://github.com/masumrpg/react-native-components/releases"
+  />
+  <LinkCard
+    title="Commit History"
+    description="View all commits and changes"
+    href="https://github.com/masumrpg/react-native-components/commits/main"
+  />
+  <LinkCard
+    title="Contributing Guide"
+    description="How to contribute to the project"
+    href="/contributing"
+  />
+</CardGrid>
+
+---
+
+<Aside type="note">
+Need help or found an issue? Create an issue on [GitHub](https://github.com/masumrpg/react-native-components/issues).
+</Aside>
+

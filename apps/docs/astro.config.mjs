@@ -242,6 +242,14 @@ export default defineConfig({
             { label: 'Theme Switcher', slug: 'api/theme-switcher' },
           ],
         },
+        {
+          label: 'Changelog',
+          slug: 'changelog',
+          badge: {
+            text: 'New',
+            variant: 'success',
+          },
+        },
       ],
     }),
   ],

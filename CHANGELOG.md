@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [0.1.2] - 2025-07-25
 
 ### Added
 - Complete contribution documentation
@@ -36,7 +36,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Added security policy and guidelines
 
-## [1.0.0] - 2025-07-15
+## [0.0.1] - 2025-07-15
 
 ### Added
 - 🎉 Initial release of React Native Components (RNC Theme)
@@ -88,10 +88,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - RTL layout support (coming soon)
 
 ### Technical Details
-- **React Native**: 0.72+ support
+- **React Native**: 0.79+ support
 - **TypeScript**: Full type safety
-- **Dependencies**: Minimal external dependencies
-- **Bundle Size**: < 50KB gzipped
 - **Platform Support**: iOS, Android, Web (experimental)
 
 ---
