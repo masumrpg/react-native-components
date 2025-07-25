@@ -7,7 +7,8 @@ import {
   ReactNode,
   useEffect,
 } from 'react';
-import { View, Text, BackHandler, Platform } from 'react-native';
+import { View, BackHandler, Platform } from 'react-native';
+import { Typography } from '../../typography';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { ListRenderItem } from 'react-native';
 import BottomSheetScrollView from '../components/BottomSheetScrollView';
@@ -230,7 +231,9 @@ export const BottomSheetProvider = <T = any,>({
       >
         {/* <Text style={{ fontSize: 20, fontWeight: '600' }}>{title}</Text> */}
         {typeof title === 'string' ? (
-          <Text style={{ fontSize: 20, fontWeight: '600' }}>{title}</Text>
+          <Typography variant="title" style={{ fontSize: 20, fontWeight: '600' }}>
+            {title}
+          </Typography>
         ) : (
           title
         )}
@@ -240,7 +243,11 @@ export const BottomSheetProvider = <T = any,>({
   // Add safeguard for renderItem in case it's still null
   const safeRenderItem =
     renderItem ??
-    (() => <Text style={{ padding: 20 }}>No item renderer provided</Text>);
+    (() => (
+      <Typography variant="body" style={{ padding: 20 }}>
+        No item renderer provided
+      </Typography>
+    ));
 
   return (
     <BottomSheetContext.Provider value={contextValue}>

@@ -1,13 +1,6 @@
 import React, { forwardRef } from 'react';
-import {
-  View,
-  Text,
-  ScrollView,
-  ViewStyle,
-  TextStyle,
-  StyleProp,
-  StyleSheet,
-} from 'react-native';
+import { View, ScrollView, ViewStyle, TextStyle, StyleProp, StyleSheet } from 'react-native';
+import { Typography } from '../typography';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
 import { createShadow } from '../../../utils';
@@ -87,10 +80,7 @@ const Table = forwardRef<React.ComponentRef<typeof View>, TableProps>(
       return React.Children.map(children, (child) => {
         if (React.isValidElement(child)) {
           if (child.type === TableBody) {
-            return React.cloneElement(
-              child as React.ReactElement<TableBodyProps>,
-              { striped }
-            );
+            return React.cloneElement(child as React.ReactElement<TableBodyProps>, { striped });
           }
           if (
             child.type === TableHeader ||
@@ -100,26 +90,17 @@ const Table = forwardRef<React.ComponentRef<typeof View>, TableProps>(
             const childElement = child as React.ReactElement<{
               children?: React.ReactNode;
             }>;
-            const childrenArray = React.Children.toArray(
-              childElement.props.children
-            );
+            const childrenArray = React.Children.toArray(childElement.props.children);
             const processedChildren = React.Children.map(
               childElement.props.children,
               (rowChild, index) => {
-                if (
-                  React.isValidElement(rowChild) &&
-                  rowChild.type === TableRow
-                ) {
-                  return React.cloneElement(
-                    rowChild as React.ReactElement<TableRowProps>,
-                    {
-                      isFirst: index === 0,
-                      isLast: index === childrenArray.length - 1,
-                      ...(child.type === TableHeader && { isHeader: true }),
-                      ...(child.type === TableBody &&
-                        striped && { isEven: index % 2 === 0 }),
-                    }
-                  );
+                if (React.isValidElement(rowChild) && rowChild.type === TableRow) {
+                  return React.cloneElement(rowChild as React.ReactElement<TableRowProps>, {
+                    isFirst: index === 0,
+                    isLast: index === childrenArray.length - 1,
+                    ...(child.type === TableHeader && { isHeader: true }),
+                    ...(child.type === TableBody && striped && { isEven: index % 2 === 0 }),
+                  });
                 }
                 return rowChild;
               }
@@ -136,12 +117,7 @@ const Table = forwardRef<React.ComponentRef<typeof View>, TableProps>(
     const tableContent = (
       <View
         ref={ref}
-        style={[
-          styles.table,
-          bordered && styles.bordered,
-          styles[variant],
-          style,
-        ]}
+        style={[styles.table, bordered && styles.bordered, styles[variant], style]}
         {...props}
       >
         {processChildren(children)}
@@ -162,18 +138,17 @@ const Table = forwardRef<React.ComponentRef<typeof View>, TableProps>(
 
 Table.displayName = 'Table';
 
-const TableHeader = forwardRef<
-  React.ComponentRef<typeof View>,
-  TableHeaderProps
->(({ children, style, ...props }, ref) => {
-  const styles = useThemedStyles(createTableHeaderStyles);
+const TableHeader = forwardRef<React.ComponentRef<typeof View>, TableHeaderProps>(
+  ({ children, style, ...props }, ref) => {
+    const styles = useThemedStyles(createTableHeaderStyles);
 
-  return (
-    <View ref={ref} style={[styles.header, style]} {...props}>
-      {children}
-    </View>
-  );
-});
+    return (
+      <View ref={ref} style={[styles.header, style]} {...props}>
+        {children}
+      </View>
+    );
+  }
+);
 
 TableHeader.displayName = 'TableHeader';
 
@@ -191,18 +166,17 @@ const TableBody = forwardRef<React.ComponentRef<typeof View>, TableBodyProps>(
 
 TableBody.displayName = 'TableBody';
 
-const TableFooter = forwardRef<
-  React.ComponentRef<typeof View>,
-  TableFooterProps
->(({ children, style, ...props }, ref) => {
-  const styles = useThemedStyles(createTableFooterStyles);
+const TableFooter = forwardRef<React.ComponentRef<typeof View>, TableFooterProps>(
+  ({ children, style, ...props }, ref) => {
+    const styles = useThemedStyles(createTableFooterStyles);
 
-  return (
-    <View ref={ref} style={[styles.footer, style]} {...props}>
-      {children}
-    </View>
-  );
-});
+    return (
+      <View ref={ref} style={[styles.footer, style]} {...props}>
+        {children}
+      </View>
+    );
+  }
+);
 
 TableFooter.displayName = 'TableFooter';
 
@@ -243,25 +217,14 @@ const TableRow = forwardRef<React.ComponentRef<typeof View>, TableRowProps>(
 TableRow.displayName = 'TableRow';
 
 const TableHead = forwardRef<React.ComponentRef<typeof View>, TableHeadProps>(
-  (
-    {
-      children,
-      style,
-      align = 'left',
-      flex = 1,
-      sortable = false,
-      onSort,
-      ...props
-    },
-    ref
-  ) => {
+  ({ children, style, align = 'left', flex = 1, sortable = false, onSort, ...props }, ref) => {
     const styles = useThemedStyles(createTableHeadStyles);
 
     return (
       <View ref={ref} style={[styles.cell, { flex }]}>
-        <Text style={[styles.headText, styles[align], style]} {...props}>
+        <Typography variant="subtitle" style={[styles.headText, styles[align], style]} {...props}>
           {children}
-        </Text>
+        </Typography>
       </View>
     );
   }
@@ -275,9 +238,9 @@ const TableData = forwardRef<React.ComponentRef<typeof View>, TableDataProps>(
 
     return (
       <View ref={ref} style={[styles.cell, { flex }]}>
-        <Text style={[styles.dataText, styles[align], style]} {...props}>
+        <Typography variant="body" style={[styles.dataText, styles[align], style]} {...props}>
           {children}
-        </Text>
+        </Typography>
       </View>
     );
   }
@@ -285,22 +248,22 @@ const TableData = forwardRef<React.ComponentRef<typeof View>, TableDataProps>(
 
 TableData.displayName = 'TableData';
 
-const TableCaption = forwardRef<
-  React.ComponentRef<typeof Text>,
-  TableCaptionProps
->(({ children, style, position = 'bottom', ...props }, ref) => {
-  const styles = useThemedStyles(createTableCaptionStyles);
+const TableCaption = forwardRef<React.ComponentRef<typeof Typography>, TableCaptionProps>(
+  ({ children, style, position = 'bottom', ...props }, ref) => {
+    const styles = useThemedStyles(createTableCaptionStyles);
 
-  return (
-    <Text
-      ref={ref}
-      style={[styles.caption, styles[position], style]}
-      {...props}
-    >
-      {children}
-    </Text>
-  );
-});
+    return (
+      <Typography
+        variant="small"
+        ref={ref}
+        style={[styles.caption, styles[position], style]}
+        {...props}
+      >
+        {children}
+      </Typography>
+    );
+  }
+);
 
 TableCaption.displayName = 'TableCaption';
 

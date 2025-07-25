@@ -1,13 +1,6 @@
 import React, { createContext, useContext, forwardRef } from 'react';
-import {
-  View,
-  TouchableOpacity,
-  ViewStyle,
-  TextStyle,
-  Text,
-  StyleProp,
-  StyleSheet,
-} from 'react-native';
+import { View, TouchableOpacity, ViewStyle, TextStyle, StyleProp, StyleSheet } from 'react-native';
+import { Typography } from '../typography';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -18,11 +11,7 @@ import Animated, {
 } from 'react-native-reanimated';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
-import {
-  BaseComponentProps,
-  ComponentSize,
-  ComponentVariant,
-} from '../../../types/ui';
+import { BaseComponentProps, ComponentSize, ComponentVariant } from '../../../types/ui';
 
 interface RadioGroupProps {
   children: React.ReactNode;
@@ -67,10 +56,7 @@ const useRadioGroup = () => {
   return useContext(RadioGroupContext);
 };
 
-const Radio = forwardRef<
-  React.ComponentRef<typeof TouchableOpacity>,
-  RadioProps
->(
+const Radio = forwardRef<React.ComponentRef<typeof TouchableOpacity>, RadioProps>(
   (
     {
       value,
@@ -93,9 +79,7 @@ const Radio = forwardRef<
     const borderProgress = useSharedValue(0);
 
     // Determine if radio is checked
-    const isChecked = groupContext
-      ? groupContext.value === value
-      : controlledChecked ?? false;
+    const isChecked = groupContext ? groupContext.value === value : controlledChecked ?? false;
 
     // Determine if radio is disabled
     const isDisabled = groupContext ? groupContext.disabled : radioDisabled;
@@ -127,12 +111,7 @@ const Radio = forwardRef<
 
     // Animated styles - Simplified, removed container scale animation
     const animatedRadioStyle = useAnimatedStyle(() => {
-      const bgProgress = interpolate(
-        borderProgress.value,
-        [0, 1],
-        [0, 1],
-        Extrapolation.CLAMP
-      );
+      const bgProgress = interpolate(borderProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP);
 
       const variantBorderColors = {
         default: styles.default.borderColor,
@@ -155,12 +134,7 @@ const Radio = forwardRef<
     });
 
     const animatedDotStyle = useAnimatedStyle(() => {
-      const dotScale = interpolate(
-        dotProgress.value,
-        [0, 1],
-        [0, 1],
-        Extrapolation.CLAMP
-      );
+      const dotScale = interpolate(dotProgress.value, [0, 1], [0, 1], Extrapolation.CLAMP);
 
       const variantColors = {
         default: styles.defaultBackground.backgroundColor,
@@ -189,12 +163,7 @@ const Radio = forwardRef<
       style,
     ];
 
-    const radioStyle = [
-      styles.radio,
-      styles[size],
-      styles[variant],
-      isDisabled && styles.disabled,
-    ];
+    const radioStyle = [styles.radio, styles[size], styles[variant], isDisabled && styles.disabled];
 
     const dotStyle = [styles.dot, styles[`${size}Dot`]];
 
@@ -251,10 +220,7 @@ const RadioIndicator: React.FC<
   const styles = useThemedStyles(createRadioIndicatorStyles);
 
   return (
-    <View
-      style={[styles.indicator, styles[size], styles[variant], style]}
-      {...props}
-    >
+    <View style={[styles.indicator, styles[size], styles[variant], style]} {...props}>
       {children}
     </View>
   );
@@ -267,22 +233,11 @@ const RadioIcon: React.FC<
   }
 > = ({ icon, style, size = 'md', variant = 'default', ...props }) => {
   const dotSize =
-    size === 'xs'
-      ? 4
-      : size === 'sm'
-      ? 6
-      : size === 'md'
-      ? 8
-      : size === 'lg'
-      ? 10
-      : 12;
+    size === 'xs' ? 4 : size === 'sm' ? 6 : size === 'md' ? 8 : size === 'lg' ? 10 : 12;
   const iconColor = 'white';
 
   return (
-    <View
-      style={[{ alignItems: 'center', justifyContent: 'center' }, style]}
-      {...props}
-    >
+    <View style={[{ alignItems: 'center', justifyContent: 'center' }, style]} {...props}>
       {icon ?? (
         <View
           style={{
@@ -305,17 +260,12 @@ const RadioLabel: React.FC<
   const styles = useThemedStyles(createRadioLabelStyles);
   const groupContext = useRadioGroup();
 
-  const labelStyle = [
-    styles.label,
-    styles[size],
-    groupContext?.disabled && styles.disabled,
-    style,
-  ];
+  const labelStyle = [styles.label, styles[size], groupContext?.disabled && styles.disabled, style];
 
   return (
-    <Text style={labelStyle} {...props}>
+    <Typography variant="body" style={labelStyle} {...props}>
       {children}
-    </Text>
+    </Typography>
   );
 };
 

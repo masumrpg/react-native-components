@@ -1,7 +1,6 @@
 import React, { forwardRef, useState, useMemo } from 'react';
 import {
   View,
-  Text,
   Image,
   ViewStyle,
   TextStyle,
@@ -10,6 +9,7 @@ import {
   StyleSheet,
   StyleProp,
 } from 'react-native';
+import { Typography } from '../typography';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -219,7 +219,8 @@ const Avatar = forwardRef<React.ComponentRef<typeof View>, AvatarProps>(
       // Fallback text (initials)
       if (fallbackText) {
         return (
-          <Text
+          <Typography
+            variant="body"
             style={[
               styles.text,
               {
@@ -229,7 +230,7 @@ const Avatar = forwardRef<React.ComponentRef<typeof View>, AvatarProps>(
             ]}
           >
             {getInitials(fallbackText)}
-          </Text>
+          </Typography>
         );
       }
 

@@ -4,10 +4,10 @@ import {
   TouchableOpacity,
   ViewStyle,
   TextStyle,
-  Text,
   StyleProp,
   StyleSheet,
 } from 'react-native';
+import { Typography } from '../typography';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -361,7 +361,7 @@ const CheckboxIcon: React.FC<
 };
 
 const CheckboxLabel = forwardRef<
-  Text,
+  React.ComponentRef<typeof Typography>,
   CheckboxLabelProps & {
     disabled?: boolean;
     size?: ComponentSize;
@@ -371,8 +371,9 @@ const CheckboxLabel = forwardRef<
   const styles = useThemedStyles(createCheckboxLabelStyles);
 
   return (
-    <Text
+    <Typography
       ref={ref}
+      variant="body"
       style={[
         styles.label,
         styles[size],
@@ -385,7 +386,7 @@ const CheckboxLabel = forwardRef<
       {...props}
     >
       {children}
-    </Text>
+    </Typography>
   );
 });
 

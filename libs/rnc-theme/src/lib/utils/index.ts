@@ -119,7 +119,7 @@ const createShadow = (elevation: number): ViewStyle => {
  */
 const getFontFamily = (fontConfig: FontConfig, weight: string | number): string => {
   const weightStr = weight.toString();
-  
+
   switch (weightStr) {
     case '400':
     case 'normal':
@@ -130,7 +130,13 @@ const getFontFamily = (fontConfig: FontConfig, weight: string | number): string 
       return fontConfig.semiBold ?? fontConfig.medium ?? fontConfig.regular ?? 'System';
     case '700':
     case 'bold':
-      return fontConfig.bold ?? fontConfig.semiBold ?? fontConfig.medium ?? fontConfig.regular ?? 'System';
+      return (
+        fontConfig.bold ??
+        fontConfig.semiBold ??
+        fontConfig.medium ??
+        fontConfig.regular ??
+        'System'
+      );
     default:
       return fontConfig.regular ?? 'System';
   }
@@ -148,12 +154,12 @@ const getFontFamily = (fontConfig: FontConfig, weight: string | number): string 
  */
 const createExpoFontConfig = (fonts: Record<string, unknown>): FontConfig => {
   const fontNames = Object.keys(fonts);
-  
+
   return {
-    regular: fontNames.find(name => name.includes('Regular')) ?? fontNames[0],
-    medium: fontNames.find(name => name.includes('Medium')),
-    semiBold: fontNames.find(name => name.includes('SemiBold')),
-    bold: fontNames.find(name => name.includes('Bold')),
+    regular: fontNames.find((name) => name.includes('Regular')) ?? fontNames[0],
+    medium: fontNames.find((name) => name.includes('Medium')),
+    semiBold: fontNames.find((name) => name.includes('SemiBold')),
+    bold: fontNames.find((name) => name.includes('Bold')),
   };
 };
 

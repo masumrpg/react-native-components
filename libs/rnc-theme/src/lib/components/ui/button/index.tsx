@@ -31,6 +31,7 @@ import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
 import { Spinner } from '../spinner';
+import { Typography } from '../typography';
 import {
   BaseComponentProps,
   ComponentSize,
@@ -647,17 +648,21 @@ const ButtonText: React.FC<ButtonTextProps> = React.memo(
             color={styles[variant].color as keyof ThemeColors}
             style={styles.loadingIndicator}
           />
-          <Animated.Text style={textStyle} {...props}>
-            {children}
-          </Animated.Text>
+          <Animated.View>
+            <Typography variant="button" style={textStyle} {...props}>
+              {children}
+            </Typography>
+          </Animated.View>
         </Animated.View>
       );
     }
 
     return (
-      <Animated.Text style={[textStyle, animatedTextStyle]} {...props}>
-        {children}
-      </Animated.Text>
+      <Animated.View style={animatedTextStyle}>
+        <Typography variant="button" style={textStyle} {...props}>
+          {children}
+        </Typography>
+      </Animated.View>
     );
   }
 );

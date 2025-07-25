@@ -1,4 +1,5 @@
-import { StyleProp, View, ViewStyle, Text, StyleSheet } from 'react-native';
+import { StyleProp, View, ViewStyle, StyleSheet } from 'react-native';
+import { Typography } from '../typography';
 import React, { useMemo } from 'react';
 import { Pressable, TouchableOpacity } from 'react-native';
 import Animated, {
@@ -317,12 +318,7 @@ const FabClustered = ({
   }));
 
   const firstIconStyle = useAnimatedStyle(() => {
-    const scale = interpolate(
-      firstValue.value,
-      [30, 130],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
+    const scale = interpolate(firstValue.value, [30, 130], [0, 1], Extrapolation.CLAMP);
     return {
       bottom: firstValue.value,
       transform: [{ scale }],
@@ -330,12 +326,7 @@ const FabClustered = ({
   });
 
   const secondIconStyle = useAnimatedStyle(() => {
-    const scale = interpolate(
-      secondValue.value,
-      [30, 210],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
+    const scale = interpolate(secondValue.value, [30, 210], [0, 1], Extrapolation.CLAMP);
     return {
       bottom: secondValue.value,
       transform: [{ scale }],
@@ -343,12 +334,7 @@ const FabClustered = ({
   });
 
   const thirdIconStyle = useAnimatedStyle(() => {
-    const scale = interpolate(
-      thirdValue.value,
-      [30, 290],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
+    const scale = interpolate(thirdValue.value, [30, 290], [0, 1], Extrapolation.CLAMP);
     return {
       bottom: thirdValue.value,
       transform: [{ scale }],
@@ -421,19 +407,15 @@ const FabClustered = ({
               handlePress();
             }}
           >
-            <Animated.Text style={[styles.text, opacityStyle]}>
-              {item?.label}
-            </Animated.Text>
+            <Animated.View style={opacityStyle}>
+              <Typography variant="button" style={styles.text}>{item?.label}</Typography>
+            </Animated.View>
           </TouchableOpacity>
         </Animated.View>
       ))}
 
       <Pressable
-        style={[
-          styles.baseContentContainer,
-          styles.clusteredContentContainer,
-          styles.background,
-        ]}
+        style={[styles.baseContentContainer, styles.clusteredContentContainer, styles.background]}
         onPress={handlePress}
       >
         <Animated.View style={[styles.iconContainer, plusIconStyle, style]}>
@@ -444,13 +426,7 @@ const FabClustered = ({
   );
 };
 
-const FabDoted = ({
-  items,
-  style,
-  containerStyle,
-  isOpen: setIsOpen,
-  plusIcon,
-}: FabDotedProps) => {
+const FabDoted = ({ items, style, containerStyle, isOpen: setIsOpen, plusIcon }: FabDotedProps) => {
   const styles = useThemedStyles(createFabStyles);
 
   const [firstValue, secondValue, thirdValue, isOpen] = [
@@ -490,23 +466,13 @@ const FabDoted = ({
 
   const firstAnimatedStyle = useAnimatedStyle(() => {
     'worklet';
-    const scale = interpolate(
-      firstValue.value,
-      [30, 110],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
+    const scale = interpolate(firstValue.value, [30, 110], [0, 1], Extrapolation.CLAMP);
     return { right: firstValue.value, transform: [{ scale }] };
   });
 
   const secondAnimatedStyle = useAnimatedStyle(() => {
     'worklet';
-    const scale = interpolate(
-      secondValue.value,
-      [30, 100],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
+    const scale = interpolate(secondValue.value, [30, 100], [0, 1], Extrapolation.CLAMP);
     return {
       bottom: secondValue.value,
       right: secondValue.value,
@@ -516,12 +482,7 @@ const FabDoted = ({
 
   const thirdAnimatedStyle = useAnimatedStyle(() => {
     'worklet';
-    const scale = interpolate(
-      thirdValue.value,
-      [30, 110],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
+    const scale = interpolate(thirdValue.value, [30, 110], [0, 1], Extrapolation.CLAMP);
     return { bottom: thirdValue.value, transform: [{ scale }] };
   });
 
@@ -537,12 +498,7 @@ const FabDoted = ({
       third: thirdAnimatedStyle,
       plus: plusAnimatedStyle,
     }),
-    [
-      firstAnimatedStyle,
-      secondAnimatedStyle,
-      thirdAnimatedStyle,
-      plusAnimatedStyle,
-    ]
+    [firstAnimatedStyle, secondAnimatedStyle, thirdAnimatedStyle, plusAnimatedStyle]
   );
 
   const sampleItems = useMemo(
@@ -559,11 +515,7 @@ const FabDoted = ({
       {items.map((item, index) => (
         <Animated.View
           key={index}
-          style={[
-            styles.baseContentContainer,
-            sampleItems[index].animate,
-            styles.background,
-          ]}
+          style={[styles.baseContentContainer, sampleItems[index].animate, styles.background]}
         >
           <TouchableOpacity
             onPress={() => {
@@ -577,13 +529,8 @@ const FabDoted = ({
         </Animated.View>
       ))}
 
-      <Pressable
-        style={[styles.baseContentContainer, styles.background]}
-        onPress={handlePress}
-      >
-        <Animated.View
-          style={[styles.iconContainer, animatedStyles.plus, style]}
-        >
+      <Pressable style={[styles.baseContentContainer, styles.background]} onPress={handlePress}>
+        <Animated.View style={[styles.iconContainer, animatedStyles.plus, style]}>
           {plusIcon ?? <Plus size={35} color={'white'} strokeWidth={2} />}
         </Animated.View>
       </Pressable>
@@ -666,9 +613,7 @@ const FabExtended = ({
         ]}
       >
         <Pressable style={styles.iconContainer} onPress={handlePress}>
-          <Animated.View
-            style={[styles.iconContainer, animatedStyles.plus, style]}
-          >
+          <Animated.View style={[styles.iconContainer, animatedStyles.plus, style]}>
             {plusIcon ?? <Plus size={35} color={'white'} strokeWidth={2} />}
           </Animated.View>
         </Pressable>
@@ -683,9 +628,9 @@ const FabExtended = ({
             }}
           >
             <View style={styles.iconContainer}>{item?.icon}</View>
-            <Text style={[styles.text, { color: styles.text.color }]}>
+            <Typography variant="button" style={[styles.text, { color: styles.text.color }]}>
               {item?.label}
-            </Text>
+            </Typography>
           </TouchableOpacity>
         ))}
       </Animated.View>
@@ -751,34 +696,19 @@ const FabStacked = ({
 
   const firstAnimatedStyle = useAnimatedStyle(() => {
     'worklet';
-    const scale = interpolate(
-      firstValue.value,
-      [30, 130],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
+    const scale = interpolate(firstValue.value, [30, 130], [0, 1], Extrapolation.CLAMP);
     return { bottom: firstValue.value, transform: [{ scale }] };
   });
 
   const secondAnimatedStyle = useAnimatedStyle(() => {
     'worklet';
-    const scale = interpolate(
-      secondValue.value,
-      [30, 210],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
+    const scale = interpolate(secondValue.value, [30, 210], [0, 1], Extrapolation.CLAMP);
     return { bottom: secondValue.value, transform: [{ scale }] };
   });
 
   const thirdAnimatedStyle = useAnimatedStyle(() => {
     'worklet';
-    const scale = interpolate(
-      thirdValue.value,
-      [30, 290],
-      [0, 1],
-      Extrapolation.CLAMP
-    );
+    const scale = interpolate(thirdValue.value, [30, 290], [0, 1], Extrapolation.CLAMP);
     return { bottom: thirdValue.value, transform: [{ scale }] };
   });
 
@@ -794,12 +724,7 @@ const FabStacked = ({
       third: thirdAnimatedStyle,
       plus: plusAnimatedStyle,
     }),
-    [
-      firstAnimatedStyle,
-      secondAnimatedStyle,
-      thirdAnimatedStyle,
-      plusAnimatedStyle,
-    ]
+    [firstAnimatedStyle, secondAnimatedStyle, thirdAnimatedStyle, plusAnimatedStyle]
   );
 
   const sampleItems = useMemo(
@@ -816,11 +741,7 @@ const FabStacked = ({
       {items.map((item, index) => (
         <Animated.View
           key={index}
-          style={[
-            styles.baseContentContainer,
-            sampleItems[index].animate,
-            styles.background,
-          ]}
+          style={[styles.baseContentContainer, sampleItems[index].animate, styles.background]}
         >
           <TouchableOpacity
             onPress={() => {
@@ -834,13 +755,8 @@ const FabStacked = ({
         </Animated.View>
       ))}
 
-      <Pressable
-        style={[styles.baseContentContainer, styles.background]}
-        onPress={handlePress}
-      >
-        <Animated.View
-          style={[styles.iconContainer, animatedStyles.plus, style]}
-        >
+      <Pressable style={[styles.baseContentContainer, styles.background]} onPress={handlePress}>
+        <Animated.View style={[styles.iconContainer, animatedStyles.plus, style]}>
           {plusIcon ?? <Plus size={35} color={'white'} strokeWidth={2} />}
         </Animated.View>
       </Pressable>
@@ -874,10 +790,4 @@ const Fab = (props: FabProps) => {
 };
 
 export { Fab };
-export type {
-  FabVariant,
-  FabClusteredProps,
-  FabDotedProps,
-  FabExtendedProps,
-  FabSingleProps,
-};
+export type { FabVariant, FabClusteredProps, FabDotedProps, FabExtendedProps, FabSingleProps };

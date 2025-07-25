@@ -4,10 +4,10 @@ import {
   useWindowDimensions,
   StyleSheet,
   TouchableOpacity,
-  Text,
   ViewStyle,
   Platform,
 } from 'react-native';
+import { Typography } from '../../typography';
 import Animated, {
   useAnimatedRef,
   useAnimatedScrollHandler,
@@ -273,7 +273,8 @@ const ImageCarousel = ({
             },
           ]}
         >
-          <Text
+          <Typography
+            variant="small"
             style={[
               styles.counterText,
               {
@@ -282,7 +283,7 @@ const ImageCarousel = ({
             ]}
           >
             {currentIndex + 1}/{data.length}
-          </Text>
+          </Typography>
         </View>
       )}
     </View>

@@ -6,6 +6,7 @@ import {
   StyleProp,
   StyleSheet,
 } from 'react-native';
+import { Typography } from '../typography';
 import Animated, {
   useAnimatedStyle,
   withSpring,
@@ -129,9 +130,11 @@ const BadgeText = forwardRef<
   }, [styles, style]);
 
   return (
-    <Animated.Text ref={ref} style={textStyle} {...props}>
-      {children}
-    </Animated.Text>
+    <Animated.View ref={ref} style={textStyle}>
+      <Typography variant="small" {...props}>
+        {children}
+      </Typography>
+    </Animated.View>
   );
 });
 

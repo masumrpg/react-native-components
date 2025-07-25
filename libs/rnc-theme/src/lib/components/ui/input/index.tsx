@@ -8,7 +8,6 @@ import React, {
 import {
   TextInput,
   View,
-  Text,
   TouchableOpacity,
   ViewStyle,
   TextStyle,
@@ -18,6 +17,7 @@ import {
   TextInputFocusEventData,
   StyleSheet,
 } from 'react-native';
+import { Typography } from '../typography';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -470,18 +470,30 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
 
       if (isFloatingVariant) {
         return (
-          <Animated.Text style={[getLabelStyles(), animatedLabelStyle]}>
-            {label}
-            {required && <Text style={styles.required}> *</Text>}
-          </Animated.Text>
+          <Animated.View style={animatedLabelStyle}>
+            <Typography variant="body" style={getLabelStyles()}>
+              {label}
+              {required && (
+                <Typography variant="body" style={styles.required}>
+                  {' '}
+                  *
+                </Typography>
+              )}
+            </Typography>
+          </Animated.View>
         );
       }
 
       return (
-        <Text style={getLabelStyles()}>
+        <Typography variant="label" style={getLabelStyles()}>
           {label}
-          {required && <Text style={styles.required}> *</Text>}
-        </Text>
+          {required && (
+            <Typography variant="body" style={styles.required}>
+              {' '}
+              *
+            </Typography>
+          )}
+        </Typography>
       );
     }, [
       label,
@@ -502,20 +514,19 @@ const Input = forwardRef<React.ComponentRef<typeof TextInput>, InputProps>(
       return (
         <HelperContainer style={[styles.helperContainer, helperAnimatedStyle]}>
           {text && (
-            <Text
-              style={[
-                styles.helperText,
-                error && styles.errorText,
-                helperTextStyle,
-              ].filter(Boolean)}
+            <Typography
+              variant="small"
+              style={[styles.helperText, error && styles.errorText, helperTextStyle].filter(
+                Boolean
+              )}
             >
               {text}
-            </Text>
+            </Typography>
           )}
           {showCharacterCount && maxLength && (
-            <Text style={styles.characterCount}>
+            <Typography variant="small" style={styles.characterCount}>
               {inputValue.length}/{maxLength}
-            </Text>
+            </Typography>
           )}
         </HelperContainer>
       );

@@ -6,14 +6,8 @@ import React, {
   useState,
   useCallback,
 } from 'react';
-import {
-  View,
-  Text,
-  ViewStyle,
-  TextStyle,
-  StyleProp,
-  StyleSheet,
-} from 'react-native';
+import { View, ViewStyle, TextStyle, StyleProp, StyleSheet } from 'react-native';
+import { Typography } from '../typography';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { resolveColor } from '../../../utils';
@@ -21,12 +15,7 @@ import { Theme } from '../../../types/theme';
 import { AlertCircle, Check, AlertTriangle } from 'lucide-react-native';
 
 // Types
-type FormControlState =
-  | 'default'
-  | 'error'
-  | 'success'
-  | 'warning'
-  | 'disabled';
+type FormControlState = 'default' | 'error' | 'success' | 'warning' | 'disabled';
 type FormControlSize = 'sm' | 'md' | 'lg';
 
 interface FormControlContextType {
@@ -200,9 +189,7 @@ const createFormControlStyles = (theme: Theme) =>
       ...theme.typography.small,
       color: resolveColor(theme, 'textSecondary', theme.colors.textSecondary),
       flex: 1,
-      lineHeight: theme.typography.small.fontSize
-        ? theme.typography.small.fontSize * 1.4
-        : 18,
+      lineHeight: theme.typography.small.fontSize ? theme.typography.small.fontSize * 1.4 : 18,
     } as TextStyle,
 
     helperTextDisabled: {
@@ -224,9 +211,7 @@ const createFormControlStyles = (theme: Theme) =>
       ...theme.typography.small,
       color: resolveColor(theme, 'error', theme.colors.error),
       flex: 1,
-      lineHeight: theme.typography.small.fontSize
-        ? theme.typography.small.fontSize * 1.4
-        : 18,
+      lineHeight: theme.typography.small.fontSize ? theme.typography.small.fontSize * 1.4 : 18,
       fontWeight: '500',
     } as TextStyle,
 
@@ -234,9 +219,7 @@ const createFormControlStyles = (theme: Theme) =>
       ...theme.typography.small,
       color: resolveColor(theme, 'success', theme.colors.success || '#22c55e'),
       flex: 1,
-      lineHeight: theme.typography.small.fontSize
-        ? theme.typography.small.fontSize * 1.4
-        : 18,
+      lineHeight: theme.typography.small.fontSize ? theme.typography.small.fontSize * 1.4 : 18,
       fontWeight: '500',
     } as TextStyle,
 
@@ -244,9 +227,7 @@ const createFormControlStyles = (theme: Theme) =>
       ...theme.typography.small,
       color: resolveColor(theme, 'warning', theme.colors.warning || '#f59e0b'),
       flex: 1,
-      lineHeight: theme.typography.small.fontSize
-        ? theme.typography.small.fontSize * 1.4
-        : 18,
+      lineHeight: theme.typography.small.fontSize ? theme.typography.small.fontSize * 1.4 : 18,
       fontWeight: '500',
     } as TextStyle,
   });
@@ -257,10 +238,7 @@ const generateId = (prefix: string) => {
 };
 
 // Main FormControl Component
-const FormControl = forwardRef<
-  React.ComponentRef<typeof View>,
-  FormControlProps
->(
+const FormControl = forwardRef<React.ComponentRef<typeof View>, FormControlProps>(
   (
     {
       children,
@@ -280,23 +258,15 @@ const FormControl = forwardRef<
     const styles = useThemedStyles(createFormControlStyles);
 
     // Internal state management for dynamic state changes
-    const [internalState, setInternalState] =
-      useState<FormControlState>(initialState);
-    const currentState =
-      initialState !== 'default' ? initialState : internalState;
+    const [internalState, setInternalState] = useState<FormControlState>(initialState);
+    const currentState = initialState !== 'default' ? initialState : internalState;
 
     const formControlId = useMemo(() => id ?? generateId('form-control'), [id]);
     const labelId = useMemo(() => `${formControlId}-label`, [formControlId]);
     const helperId = useMemo(() => `${formControlId}-helper`, [formControlId]);
     const errorId = useMemo(() => `${formControlId}-error`, [formControlId]);
-    const successId = useMemo(
-      () => `${formControlId}-success`,
-      [formControlId]
-    );
-    const warningId = useMemo(
-      () => `${formControlId}-warning`,
-      [formControlId]
-    );
+    const successId = useMemo(() => `${formControlId}-success`, [formControlId]);
+    const warningId = useMemo(() => `${formControlId}-warning`, [formControlId]);
 
     const setFieldState = useCallback(
       (newState: FormControlState) => {
@@ -366,27 +336,21 @@ const FormControl = forwardRef<
 );
 
 // Label Components
-const FormControlLabel = forwardRef<
-  React.ComponentRef<typeof View>,
-  FormControlLabelProps
->(({ children, style, ...props }, ref) => {
-  const styles = useThemedStyles(createFormControlStyles);
-  const { labelId } = useFormControl();
+const FormControlLabel = forwardRef<React.ComponentRef<typeof View>, FormControlLabelProps>(
+  ({ children, style, ...props }, ref) => {
+    const styles = useThemedStyles(createFormControlStyles);
+    const { labelId } = useFormControl();
 
-  return (
-    <View
-      ref={ref}
-      style={[styles.labelContainer, style]}
-      nativeID={labelId}
-      {...props}
-    >
-      {children}
-    </View>
-  );
-});
+    return (
+      <View ref={ref} style={[styles.labelContainer, style]} nativeID={labelId} {...props}>
+        {children}
+      </View>
+    );
+  }
+);
 
 const FormControlLabelText = forwardRef<
-  React.ComponentRef<typeof Text>,
+  React.ComponentRef<typeof Typography>,
   FormControlLabelTextProps
 >(({ children, style, variant, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
@@ -415,50 +379,42 @@ const FormControlLabelText = forwardRef<
 
   return (
     <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-      <Text ref={ref} style={[textStyle, style]} {...props}>
+      <Typography variant="label" ref={ref} style={[textStyle, style]} {...props}>
         {children}
-      </Text>
+      </Typography>
       {required && (
-        <Text
-          style={[
-            styles.requiredIndicator,
-            disabled && styles.labelTextDisabled,
-          ]}
+        <Typography
+          variant="body"
+          style={[styles.requiredIndicator, disabled && styles.labelTextDisabled]}
         >
           *
-        </Text>
+        </Typography>
       )}
     </View>
   );
 });
 
 // Helper Components
-const FormControlHelper = forwardRef<
-  React.ComponentRef<typeof View>,
-  FormControlHelperProps
->(({ children, style, ...props }, ref) => {
-  const styles = useThemedStyles(createFormControlStyles);
-  const { helperId, hasError, hasSuccess, hasWarning } = useFormControl();
+const FormControlHelper = forwardRef<React.ComponentRef<typeof View>, FormControlHelperProps>(
+  ({ children, style, ...props }, ref) => {
+    const styles = useThemedStyles(createFormControlStyles);
+    const { helperId, hasError, hasSuccess, hasWarning } = useFormControl();
 
-  // Don't render helper if there's any status message
-  if (hasError || hasSuccess || hasWarning) {
-    return null;
+    // Don't render helper if there's any status message
+    if (hasError || hasSuccess || hasWarning) {
+      return null;
+    }
+
+    return (
+      <View ref={ref} style={[styles.helperContainer, style]} nativeID={helperId} {...props}>
+        {children}
+      </View>
+    );
   }
-
-  return (
-    <View
-      ref={ref}
-      style={[styles.helperContainer, style]}
-      nativeID={helperId}
-      {...props}
-    >
-      {children}
-    </View>
-  );
-});
+);
 
 const FormControlHelperText = forwardRef<
-  React.ComponentRef<typeof Text>,
+  React.ComponentRef<typeof Typography>,
   FormControlHelperTextProps
 >(({ children, style, variant, ...props }, ref) => {
   const { theme } = useTheme();
@@ -485,67 +441,57 @@ const FormControlHelperText = forwardRef<
   }
 
   return (
-    <Text ref={ref} style={[textStyle, style]} {...props}>
+    <Typography variant="small" ref={ref} style={[textStyle, style]} {...props}>
       {children}
-    </Text>
+    </Typography>
   );
 });
 
 // Error Components
-const FormControlError = forwardRef<
-  React.ComponentRef<typeof View>,
-  FormControlErrorProps
->(({ children, style, showWhen, ...props }, ref) => {
-  const styles = useThemedStyles(createFormControlStyles);
-  const { errorId, hasError } = useFormControl();
+const FormControlError = forwardRef<React.ComponentRef<typeof View>, FormControlErrorProps>(
+  ({ children, style, showWhen, ...props }, ref) => {
+    const styles = useThemedStyles(createFormControlStyles);
+    const { errorId, hasError } = useFormControl();
 
-  // Control visibility based on showWhen prop or internal error state
-  const shouldShow = showWhen ?? hasError;
+    // Control visibility based on showWhen prop or internal error state
+    const shouldShow = showWhen ?? hasError;
 
-  if (!shouldShow) {
-    return null;
+    if (!shouldShow) {
+      return null;
+    }
+
+    return (
+      <View ref={ref} style={[styles.messageContainer, style]} nativeID={errorId} {...props}>
+        {children}
+      </View>
+    );
   }
+);
 
-  return (
-    <View
-      ref={ref}
-      style={[styles.messageContainer, style]}
-      nativeID={errorId}
-      {...props}
-    >
-      {children}
-    </View>
-  );
-});
+const FormControlErrorIcon = forwardRef<React.ComponentRef<typeof View>, FormControlErrorIconProps>(
+  ({ icon, style, size = 16, ...props }, ref) => {
+    const styles = useThemedStyles(createFormControlStyles);
+    const { hasError } = useFormControl();
+    const { theme } = useTheme();
 
-const FormControlErrorIcon = forwardRef<
-  React.ComponentRef<typeof View>,
-  FormControlErrorIconProps
->(({ icon, style, size = 16, ...props }, ref) => {
-  const styles = useThemedStyles(createFormControlStyles);
-  const { hasError } = useFormControl();
-  const { theme } = useTheme();
+    if (!hasError) {
+      return null;
+    }
 
-  if (!hasError) {
-    return null;
+    const defaultIcon = (
+      <AlertCircle size={size} color={resolveColor(theme, 'error', theme.colors.error)} />
+    );
+
+    return (
+      <View ref={ref} style={[styles.messageIcon, style]} {...props}>
+        {icon ?? defaultIcon}
+      </View>
+    );
   }
-
-  const defaultIcon = (
-    <AlertCircle
-      size={size}
-      color={resolveColor(theme, 'error', theme.colors.error)}
-    />
-  );
-
-  return (
-    <View ref={ref} style={[styles.messageIcon, style]} {...props}>
-      {icon ?? defaultIcon}
-    </View>
-  );
-});
+);
 
 const FormControlErrorText = forwardRef<
-  React.ComponentRef<typeof Text>,
+  React.ComponentRef<typeof Typography>,
   FormControlErrorTextProps
 >(({ children, style, variant, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
@@ -567,37 +513,31 @@ const FormControlErrorText = forwardRef<
   }
 
   return (
-    <Text ref={ref} style={[textStyle, style]} {...props}>
+    <Typography variant="small" ref={ref} style={[textStyle, style]} {...props}>
       {children}
-    </Text>
+    </Typography>
   );
 });
 
 // Success Components
-const FormControlSuccess = forwardRef<
-  React.ComponentRef<typeof View>,
-  FormControlSuccessProps
->(({ children, style, showWhen, ...props }, ref) => {
-  const styles = useThemedStyles(createFormControlStyles);
-  const { successId, hasSuccess } = useFormControl();
+const FormControlSuccess = forwardRef<React.ComponentRef<typeof View>, FormControlSuccessProps>(
+  ({ children, style, showWhen, ...props }, ref) => {
+    const styles = useThemedStyles(createFormControlStyles);
+    const { successId, hasSuccess } = useFormControl();
 
-  const shouldShow = showWhen ?? hasSuccess;
+    const shouldShow = showWhen ?? hasSuccess;
 
-  if (!shouldShow) {
-    return null;
+    if (!shouldShow) {
+      return null;
+    }
+
+    return (
+      <View ref={ref} style={[styles.messageContainer, style]} nativeID={successId} {...props}>
+        {children}
+      </View>
+    );
   }
-
-  return (
-    <View
-      ref={ref}
-      style={[styles.messageContainer, style]}
-      nativeID={successId}
-      {...props}
-    >
-      {children}
-    </View>
-  );
-});
+);
 
 const FormControlSuccessIcon = forwardRef<
   React.ComponentRef<typeof View>,
@@ -612,10 +552,7 @@ const FormControlSuccessIcon = forwardRef<
   }
 
   const defaultIcon = (
-    <Check
-      size={size}
-      color={resolveColor(theme, 'success', theme.colors.success || '#22c55e')}
-    />
+    <Check size={size} color={resolveColor(theme, 'success', theme.colors.success || '#22c55e')} />
   );
 
   return (
@@ -626,7 +563,7 @@ const FormControlSuccessIcon = forwardRef<
 });
 
 const FormControlSuccessText = forwardRef<
-  React.ComponentRef<typeof Text>,
+  React.ComponentRef<typeof Typography>,
   FormControlSuccessTextProps
 >(({ children, style, variant, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
@@ -648,37 +585,31 @@ const FormControlSuccessText = forwardRef<
   }
 
   return (
-    <Text ref={ref} style={[textStyle, style]} {...props}>
+    <Typography variant="small" ref={ref} style={[textStyle, style]} {...props}>
       {children}
-    </Text>
+    </Typography>
   );
 });
 
 // Warning Components
-const FormControlWarning = forwardRef<
-  React.ComponentRef<typeof View>,
-  FormControlWarningProps
->(({ children, style, showWhen, ...props }, ref) => {
-  const styles = useThemedStyles(createFormControlStyles);
-  const { warningId, hasWarning } = useFormControl();
+const FormControlWarning = forwardRef<React.ComponentRef<typeof View>, FormControlWarningProps>(
+  ({ children, style, showWhen, ...props }, ref) => {
+    const styles = useThemedStyles(createFormControlStyles);
+    const { warningId, hasWarning } = useFormControl();
 
-  const shouldShow = showWhen ?? hasWarning;
+    const shouldShow = showWhen ?? hasWarning;
 
-  if (!shouldShow) {
-    return null;
+    if (!shouldShow) {
+      return null;
+    }
+
+    return (
+      <View ref={ref} style={[styles.messageContainer, style]} nativeID={warningId} {...props}>
+        {children}
+      </View>
+    );
   }
-
-  return (
-    <View
-      ref={ref}
-      style={[styles.messageContainer, style]}
-      nativeID={warningId}
-      {...props}
-    >
-      {children}
-    </View>
-  );
-});
+);
 
 const FormControlWarningIcon = forwardRef<
   React.ComponentRef<typeof View>,
@@ -707,7 +638,7 @@ const FormControlWarningIcon = forwardRef<
 });
 
 const FormControlWarningText = forwardRef<
-  React.ComponentRef<typeof Text>,
+  React.ComponentRef<typeof Typography>,
   FormControlWarningTextProps
 >(({ children, style, variant, ...props }, ref) => {
   const styles = useThemedStyles(createFormControlStyles);
@@ -729,9 +660,9 @@ const FormControlWarningText = forwardRef<
   }
 
   return (
-    <Text ref={ref} style={[textStyle, style]} {...props}>
+    <Typography variant="small" ref={ref} style={[textStyle, style]} {...props}>
       {children}
-    </Text>
+    </Typography>
   );
 });
 

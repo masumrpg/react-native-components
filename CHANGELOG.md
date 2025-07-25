@@ -28,7 +28,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Security
 - Added security policy and guidelines
 
-## [1.0.0] - 2024-01-15
+## [1.0.0] - 2025-07-15
 
 ### Added
 - 🎉 Initial release of React Native Components (RNC Theme)
@@ -179,16 +179,16 @@ Example:
 ```markdown
 ### Changed
 - 🔄 **BREAKING**: `Button` component prop `type` renamed to `variant`
-  
+
   **Migration Guide:**
   ```tsx
   // Before
   <Button type="primary">Click me</Button>
-  
+
   // After
   <Button variant="primary">Click me</Button>
   ```
-  
+
   **Reason**: Better consistency with other components
   **Deprecated in**: v0.9.0
   **Removed in**: v1.0.0

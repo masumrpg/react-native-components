@@ -9,13 +9,13 @@ import {
 } from 'react-native-calendars/src/types';
 import {
   View,
-  Text,
   StyleSheet,
   TouchableOpacity,
   Modal,
   ScrollView,
   Dimensions,
 } from 'react-native';
+import { Typography } from '../typography';
 import { Theme } from '../../../types/theme';
 import { useState } from 'react';
 import { ChevronDown, ChevronLeft, ChevronRight } from 'lucide-react-native';
@@ -134,13 +134,13 @@ const CustomHeader = ({
           activeOpacity={0.7}
         >
           {selectedDate ? (
-            <Text style={[styles.headerDate, { color: theme.colors.primary }]}>
+            <Typography variant="subtitle" style={[styles.headerDate, { color: theme.colors.primary }]}>
               {monthName} {selectedDate.day}, {year}
-            </Text>
+            </Typography>
           ) : (
-            <Text style={[styles.headerDate, { color: theme.colors.primary }]}>
+            <Typography variant="subtitle" style={[styles.headerDate, { color: theme.colors.primary }]}>
               {monthName} {day}, {year}
-            </Text>
+            </Typography>
           )}
           <ChevronDown
             size={20}
@@ -167,22 +167,23 @@ const CustomHeader = ({
             ]}
           >
             <View style={styles.pickerHeader}>
-              <Text style={[styles.pickerTitle, { color: theme.colors.text }]}>
+              <Typography variant="title" style={[styles.pickerTitle, { color: theme.colors.text }]}>
                 Select month and year
-              </Text>
+              </Typography>
             </View>
 
             <View style={styles.pickerContent}>
               {/* Month Picker */}
               <View style={styles.pickerSection}>
-                <Text
+                <Typography
+                  variant="subtitle"
                   style={[
                     styles.sectionTitle,
                     { color: theme.colors.textSecondary },
                   ]}
                 >
                   Month
-                </Text>
+                </Typography>
                 <ScrollView
                   style={styles.scrollContainer}
                   showsVerticalScrollIndicator={false}
@@ -202,7 +203,8 @@ const CustomHeader = ({
                       ]}
                       onPress={() => setSelectedMonth(index)}
                     >
-                      <Text
+                      <Typography
+                        variant="body"
                         style={[
                           styles.pickerItemText,
                           {
@@ -214,7 +216,7 @@ const CustomHeader = ({
                         ]}
                       >
                         {monthName}
-                      </Text>
+                      </Typography>
                     </TouchableOpacity>
                   ))}
                 </ScrollView>
@@ -222,14 +224,15 @@ const CustomHeader = ({
 
               {/* Year Picker */}
               <View style={styles.pickerSection}>
-                <Text
+                <Typography
+                  variant="subtitle"
                   style={[
                     styles.sectionTitle,
                     { color: theme.colors.textSecondary },
                   ]}
                 >
                   Year
-                </Text>
+                </Typography>
                 <ScrollView
                   style={styles.scrollContainer}
                   showsVerticalScrollIndicator={false}
@@ -249,7 +252,8 @@ const CustomHeader = ({
                       ]}
                       onPress={() => setSelectedYear(yearItem)}
                     >
-                      <Text
+                      <Typography
+                        variant="body"
                         style={[
                           styles.pickerItemText,
                           {
@@ -261,7 +265,7 @@ const CustomHeader = ({
                         ]}
                       >
                         {yearItem}
-                      </Text>
+                      </Typography>
                     </TouchableOpacity>
                   ))}
                 </ScrollView>
@@ -280,14 +284,15 @@ const CustomHeader = ({
                 ]}
                 onPress={() => setShowPicker(false)}
               >
-                <Text
+                <Typography
+                  variant="button"
                   style={[
                     styles.actionButtonText,
                     { color: theme.colors.textSecondary },
                   ]}
                 >
                   Batal
-                </Text>
+                </Typography>
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -301,14 +306,15 @@ const CustomHeader = ({
                 ]}
                 onPress={handleMonthYearSelect}
               >
-                <Text
+                <Typography
+                  variant="button"
                   style={[
                     styles.actionButtonText,
                     { color: theme.colors.surface },
                   ]}
                 >
                   Pilih
-                </Text>
+                </Typography>
               </TouchableOpacity>
             </View>
           </View>

@@ -4,12 +4,12 @@ import {
   LayoutChangeEvent,
   StyleProp,
   StyleSheet,
-  Text,
   TextStyle,
   TouchableOpacity,
   View,
   ViewStyle,
 } from 'react-native';
+import { Typography } from '../typography';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -78,16 +78,14 @@ export function Collapsible({ children, title, containerStyle, titleStyle }: Col
 
   return (
     <View style={containerStyle}>
-      <TouchableOpacity
-        style={styles.heading}
-        onPress={handleToggle}
-        activeOpacity={0.8}
-      >
+      <TouchableOpacity style={styles.heading} onPress={handleToggle} activeOpacity={0.8}>
         <Animated.View style={chevronAnimatedStyle}>
           <ChevronRight size={18} color={theme.colors.text} />
         </Animated.View>
 
-        <Text style={[styles.title, titleStyle]}>{title}</Text>
+        <Typography variant="subtitle" style={[styles.title, titleStyle]}>
+          {title}
+        </Typography>
       </TouchableOpacity>
 
       <Animated.View style={contentAnimatedStyle}>

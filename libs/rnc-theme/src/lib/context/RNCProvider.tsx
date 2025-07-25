@@ -459,7 +459,7 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
 
   // Show loading splash sementara theme atau font belum ready
   const shouldShowLoading = showLoadingSplash && (!isThemeReady || (fontConfig && !fontLoadingState.loaded && !fontLoadingState.error));
-  
+
   if (shouldShowLoading) {
     if (loadingComponent) {
       return loadingComponent;

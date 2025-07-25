@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Dimensions, Platform } from 'react-native';
+import { View, StyleSheet, Dimensions, Platform } from 'react-native';
+import { Typography } from '../../typography';
 import { TooltipContentProps } from '../types';
 import { useTheme } from '../../../../context/RNCProvider';
 
@@ -90,10 +91,7 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
           bottom: -arrowSize,
           left: Math.max(
             arrowSize,
-            Math.min(
-              tooltipWidth - arrowSize,
-              targetCenterX - tooltipLeft - arrowSize
-            )
+            Math.min(tooltipWidth - arrowSize, targetCenterX - tooltipLeft - arrowSize)
           ),
           borderLeftWidth: arrowSize,
           borderRightWidth: arrowSize,
@@ -108,10 +106,7 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
           top: -arrowSize,
           left: Math.max(
             arrowSize,
-            Math.min(
-              tooltipWidth - arrowSize,
-              targetCenterX - tooltipLeft - arrowSize
-            )
+            Math.min(tooltipWidth - arrowSize, targetCenterX - tooltipLeft - arrowSize)
           ),
           borderLeftWidth: arrowSize,
           borderRightWidth: arrowSize,
@@ -126,10 +121,7 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
           right: -arrowSize + 0.6,
           top: Math.max(
             arrowSize,
-            Math.min(
-              tooltipHeight - arrowSize,
-              targetCenterY - tooltipTop - arrowSize
-            )
+            Math.min(tooltipHeight - arrowSize, targetCenterY - tooltipTop - arrowSize)
           ),
           borderTopWidth: arrowSize,
           borderBottomWidth: arrowSize,
@@ -144,10 +136,7 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
           left: -arrowSize + 0.6,
           top: Math.max(
             arrowSize,
-            Math.min(
-              tooltipHeight - arrowSize,
-              targetCenterY - tooltipTop - arrowSize
-            )
+            Math.min(tooltipHeight - arrowSize, targetCenterY - tooltipTop - arrowSize)
           ),
           borderTopWidth: arrowSize,
           borderBottomWidth: arrowSize,
@@ -161,9 +150,7 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
     }
   };
 
-  const handleLayout = (event: {
-    nativeEvent: { layout: { width: number; height: number } };
-  }) => {
+  const handleLayout = (event: { nativeEvent: { layout: { width: number; height: number } } }) => {
     const { width, height } = event.nativeEvent.layout;
     setTooltipLayout({ width, height });
   };
@@ -182,9 +169,9 @@ export const TooltipContent: React.FC<TooltipContentProps> = ({
     >
       {tooltipLayout.width > 0 && <View style={getArrowStyle()} />}
       {typeof content === 'string' ? (
-        <Text style={[styles.text, { color: theme.colors.background }]}>
+        <Typography variant="small" style={[styles.text, { color: theme.colors.background }]}>
           {content}
-        </Text>
+        </Typography>
       ) : (
         content
       )}

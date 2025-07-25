@@ -2,13 +2,13 @@ import { useState, forwardRef } from 'react';
 import {
   View,
   TouchableOpacity,
-  Text,
   StyleProp,
   ViewStyle,
   TextStyle,
   DimensionValue,
   StyleSheet,
 } from 'react-native';
+import { Typography } from '../typography';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -180,12 +180,12 @@ const Rating = forwardRef<View, RatingProps>(
 
       return (
         <View style={[styles.ratingSummaryContainer, summaryStyle]}>
-          <Text style={[styles.ratingValue, summaryTextStyle]}>
+          <Typography variant="title" style={[styles.ratingValue, summaryTextStyle]}>
             {totalRating.toFixed(1)} {ratingLabel}
-          </Text>
-          <Text style={[styles.reviewersCount, summaryTextStyle]}>
+          </Typography>
+          <Typography variant="body" style={[styles.reviewersCount, summaryTextStyle]}>
             {totalReviewers.toLocaleString()} {reviewersLabel}
-          </Text>
+          </Typography>
         </View>
       );
     };
@@ -193,7 +193,8 @@ const Rating = forwardRef<View, RatingProps>(
     const renderShowRating = () => {
       if (!showRating) return null;
       return (
-        <Text
+        <Typography
+          variant="body"
           style={[
             styles.reviewText,
             {
@@ -203,7 +204,7 @@ const Rating = forwardRef<View, RatingProps>(
           ]}
         >
           {reviews[rating - 1] || ''}
-        </Text>
+        </Typography>
       );
     };
 
@@ -375,7 +376,8 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
     return (
       <View ref={ref} style={[styles.container, style]} {...props}>
         {showRating && (
-          <Text
+          <Typography
+            variant="body"
             style={[
               styles.ratingText,
               {
@@ -384,7 +386,7 @@ const SwipeRating = forwardRef<View, SwipeRatingProps>(
             ]}
           >
             {rating.toFixed(fractions)}
-          </Text>
+          </Typography>
         )}
         <GestureDetector gesture={panGesture}>
           <Animated.View style={styles.ratingContainer} onLayout={onLayout}>

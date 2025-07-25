@@ -1,7 +1,6 @@
 import React, { useState, useCallback, useMemo, useEffect } from 'react';
 import {
   View,
-  Text,
   TouchableOpacity,
   Pressable,
   StyleSheet,
@@ -10,6 +9,7 @@ import {
   Dimensions,
   Platform,
 } from 'react-native';
+import { Typography } from '../typography';
 import { Calendar, CalendarProps } from '../calendar';
 import { Portal } from '../portal';
 import { useTheme } from '../../../context/RNCProvider';
@@ -446,10 +446,15 @@ const DatePicker: React.FC<DatePickerProps> = ({
   return (
     <View style={[styles.container, style]}>
       {label && (
-        <Text style={[styles.label, labelStyle]}>
+        <Typography variant="label" style={[styles.label, labelStyle]}>
           {label}
-          {required && <Text style={styles.required}> *</Text>}
-        </Text>
+          {required && (
+            <Typography variant="body" style={styles.required}>
+              {' '}
+              *
+            </Typography>
+          )}
+        </Typography>
       )}
 
       <Animated.View style={inputAnimatedStyle}>
@@ -464,7 +469,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
               <View style={styles.leftIcon}>{renderIcon()}</View>
             )}
 
-            <Text style={textStyle}>{displayValue || placeholder}</Text>
+            <Typography variant="body" style={textStyle}>
+              {displayValue || placeholder}
+            </Typography>
 
             {showIcon && iconPosition === 'right' && (
               <View style={styles.rightIcon}>{renderIcon()}</View>
@@ -474,9 +481,9 @@ const DatePicker: React.FC<DatePickerProps> = ({
       </Animated.View>
 
       {(helperText ?? error) && (
-        <Text style={[styles.helperText, error && styles.errorText]}>
+        <Typography variant="small" style={[styles.helperText, error && styles.errorText]}>
           {error ?? helperText}
-        </Text>
+        </Typography>
       )}
 
       {isOpen && (
@@ -488,13 +495,7 @@ const DatePicker: React.FC<DatePickerProps> = ({
               </Pressable>
             </Animated.View>
 
-            <Animated.View
-              style={[
-                styles.calendarContainer,
-                calendarAnimatedStyle,
-                calendarStyle,
-              ]}
-            >
+            <Animated.View style={[styles.calendarContainer, calendarAnimatedStyle, calendarStyle]}>
               <Calendar
                 onDayPress={handleDateSelect}
                 selectedDate={

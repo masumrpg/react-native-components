@@ -4,11 +4,11 @@ import {
   TouchableOpacity,
   ViewStyle,
   TextStyle,
-  Text,
   LayoutChangeEvent,
   StyleProp,
   StyleSheet,
 } from 'react-native';
+import { Typography } from '../typography';
 import Animated, {
   useSharedValue,
   useAnimatedStyle,
@@ -459,7 +459,8 @@ const AccordionTrigger = forwardRef<
       disabled={disabled}
       {...props}
     >
-      <Text
+      <Typography
+        variant="body"
         style={[
           styles.triggerText,
           styles[
@@ -471,7 +472,7 @@ const AccordionTrigger = forwardRef<
         ]}
       >
         {children}
-      </Text>
+      </Typography>
       {showIcon && (
         <Animated.View style={[styles.triggerIcon, animatedIconStyle]}>
           {icon ?? (

@@ -1,11 +1,6 @@
 import React, { useEffect, useCallback, useMemo } from 'react';
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet,
-  ActivityIndicator,
-} from 'react-native';
+import { View, TouchableOpacity, StyleSheet, ActivityIndicator } from 'react-native';
+import { Typography } from '../../typography';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -204,12 +199,20 @@ export const ToastItem: React.FC<ToastItemProps> = ({
       <View style={styles.content}>
         {icon && <View style={styles.iconContainer}>{icon}</View>}
         <View style={styles.textContainer}>
-          {toast.title && <Text style={styles.title}>{toast.title}</Text>}
+          {toast.title && (
+            <Typography variant="subtitle" style={styles.title}>
+              {toast.title}
+            </Typography>
+          )}
           {toast.description && (
-            <Text style={styles.description}>{toast.description}</Text>
+            <Typography variant="body" style={styles.description}>
+              {toast.description}
+            </Typography>
           )}
           {toast.isLoading && toast.loadingText && (
-            <Text style={styles.loadingText}>{toast.loadingText}</Text>
+            <Typography variant="small" style={styles.loadingText}>
+              {toast.loadingText}
+            </Typography>
           )}
         </View>
         {/* Hanya tampilkan close button jika tidak loading */}
@@ -220,11 +223,10 @@ export const ToastItem: React.FC<ToastItemProps> = ({
         )}
       </View>
       {toast.action && !toast.isLoading && (
-        <TouchableOpacity
-          style={styles.actionButton}
-          onPress={toast.action.onPress}
-        >
-          <Text style={styles.actionText}>{toast.action.label}</Text>
+        <TouchableOpacity style={styles.actionButton} onPress={toast.action.onPress}>
+          <Typography variant="button" style={styles.actionText}>
+            {toast.action.label}
+          </Typography>
         </TouchableOpacity>
       )}
     </Animated.View>

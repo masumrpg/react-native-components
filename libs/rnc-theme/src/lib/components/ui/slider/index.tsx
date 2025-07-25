@@ -6,15 +6,8 @@ import {
   useState,
   useEffect,
 } from 'react';
-import {
-  View,
-  Text,
-  ViewStyle,
-  TextStyle,
-  LayoutChangeEvent,
-  StyleProp,
-  StyleSheet,
-} from 'react-native';
+import { View, ViewStyle, TextStyle, LayoutChangeEvent, StyleProp, StyleSheet } from 'react-native';
+import { Typography } from '../typography';
 import { Gesture, GestureDetector } from 'react-native-gesture-handler';
 import Animated, {
   useSharedValue,
@@ -426,17 +419,14 @@ const Slider = forwardRef<SliderRef, SliderProps>(
       <View style={[styles.container, { height: finalHeight }, style]}>
         {showLabel && (
           <Animated.View style={[styles.labelContainer, labelAnimatedStyle]}>
-            <Text style={[styles.label, labelStyle]}>
+            <Typography variant="label" style={[styles.label, labelStyle]}>
               {labelFormatter(labelValue)}
-            </Text>
+            </Typography>
           </Animated.View>
         )}
 
         <GestureDetector gesture={panGesture}>
-          <View
-            style={[styles.sliderContainer, { width }]}
-            onLayout={handleLayout}
-          >
+          <View style={[styles.sliderContainer, { width }]} onLayout={handleLayout}>
             {/* Track */}
             <View
               style={[
@@ -783,28 +773,21 @@ const RangeSlider = forwardRef<RangeSliderRef, RangeSliderProps>(
       <View style={[styles.container, { height: finalHeight }, style]}>
         {showLabels && (
           <>
-            <Animated.View
-              style={[styles.labelContainer, minLabelAnimatedStyle]}
-            >
-              <Text style={[styles.label, labelStyle]}>
+            <Animated.View style={[styles.labelContainer, minLabelAnimatedStyle]}>
+              <Typography variant="label" style={[styles.label, labelStyle]}>
                 {labelFormatter(minLabelValue)}
-              </Text>
+              </Typography>
             </Animated.View>
-            <Animated.View
-              style={[styles.labelContainer, maxLabelAnimatedStyle]}
-            >
-              <Text style={[styles.label, labelStyle]}>
+            <Animated.View style={[styles.labelContainer, maxLabelAnimatedStyle]}>
+              <Typography variant="label" style={[styles.label, labelStyle]}>
                 {labelFormatter(maxLabelValue)}
-              </Text>
+              </Typography>
             </Animated.View>
           </>
         )}
 
         <GestureDetector gesture={panGesture}>
-          <View
-            style={[styles.sliderContainer, { width }]}
-            onLayout={handleLayout}
-          >
+          <View style={[styles.sliderContainer, { width }]} onLayout={handleLayout}>
             {/* Track */}
             <View
               style={[

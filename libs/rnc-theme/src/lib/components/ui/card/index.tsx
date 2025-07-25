@@ -1,11 +1,11 @@
 import React, { forwardRef, createContext, useContext } from 'react';
 import {
   StyleSheet,
-  Text,
   TextStyle,
   View,
   ViewStyle,
 } from 'react-native';
+import { Typography } from '../typography';
 import { useTheme } from '../../../context/RNCProvider';
 import { useThemedStyles } from '../../../hooks/useThemedStyles';
 import { Theme } from '../../../types/theme';
@@ -338,11 +338,10 @@ const CardHeader = forwardRef<React.ComponentRef<typeof View>, CardHeaderProps>(
         {...props}
       >
         {title && (
-          <Text
+          <Typography
+            variant={titleVariant}
             style={[
               {
-                fontSize: theme.typography[titleVariant].fontSize,
-                lineHeight: theme.typography[titleVariant].lineHeight,
                 color: textColors.title,
                 fontWeight: '600',
                 marginBottom: subtitle ? theme.spacing.xs : 0,
@@ -351,14 +350,13 @@ const CardHeader = forwardRef<React.ComponentRef<typeof View>, CardHeaderProps>(
             ]}
           >
             {title}
-          </Text>
+          </Typography>
         )}
         {subtitle && (
-          <Text
+          <Typography
+            variant={subtitleVariant}
             style={[
               {
-                fontSize: theme.typography[subtitleVariant].fontSize,
-                lineHeight: theme.typography[subtitleVariant].lineHeight,
                 color: textColors.subtitle,
                 fontWeight: '400',
               },
@@ -366,7 +364,7 @@ const CardHeader = forwardRef<React.ComponentRef<typeof View>, CardHeaderProps>(
             ]}
           >
             {subtitle}
-          </Text>
+          </Typography>
         )}
         {children}
       </View>

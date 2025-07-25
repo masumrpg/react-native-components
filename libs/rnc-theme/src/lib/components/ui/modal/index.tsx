@@ -9,7 +9,6 @@ import React, {
 import {
   Modal as RNModal,
   View,
-  Text,
   TouchableOpacity,
   Pressable,
   ViewStyle,
@@ -23,6 +22,7 @@ import {
   ScrollView,
   StyleSheet,
 } from 'react-native';
+import { Typography } from '../typography';
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
@@ -100,66 +100,61 @@ interface ModalFooterProps {
 }
 
 // FIXED: Styles dengan safe area handling yang lebih baik
-const createModalStyles = (theme: Theme) => StyleSheet.create({
-  overlay: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    justifyContent: 'center',
-    alignItems: 'center',
-    // FIXED: Padding yang lebih konsisten
-    paddingHorizontal: theme.spacing.lg,
-    paddingVertical: theme.spacing.xl,
-    // FIXED: Better Android status bar handling
-    ...(Platform.OS === 'android' && {
-      paddingTop: Math.max(
-        (StatusBar.currentHeight ?? 24) + theme.spacing.lg,
-        theme.spacing.xl
-      ),
-    }),
-  } ,
-  container: {
-    borderWidth: 1,
-    borderColor: theme.colors.border,
-    backgroundColor: theme.colors.surface,
-    overflow: 'hidden',
-    // FIXED: Better sizing constraints
-    maxWidth: '100%',
-    maxHeight: '90%',
-    minWidth: 280,
-    minHeight: 120,
-    alignSelf: 'center',
-    ...createShadow(8)
-  } ,
-  closeButton: {
-    position: 'absolute',
-    top: theme.spacing.md,
-    right: theme.spacing.md,
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: theme.colors.background,
-    justifyContent: 'center',
-    alignItems: 'center',
-    ...createShadow(4),
-    zIndex: 1000,
-  } ,
-  closeButtonText: {
-    fontSize: 16,
-    color: theme.colors.textSecondary,
-    fontWeight: '600',
-    lineHeight: 16,
-  },
-});
+const createModalStyles = (theme: Theme) =>
+  StyleSheet.create({
+    overlay: {
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      backgroundColor: 'rgba(0, 0, 0, 0.6)',
+      justifyContent: 'center',
+      alignItems: 'center',
+      // FIXED: Padding yang lebih konsisten
+      paddingHorizontal: theme.spacing.lg,
+      paddingVertical: theme.spacing.xl,
+      // FIXED: Better Android status bar handling
+      ...(Platform.OS === 'android' && {
+        paddingTop: Math.max((StatusBar.currentHeight ?? 24) + theme.spacing.lg, theme.spacing.xl),
+      }),
+    },
+    container: {
+      borderWidth: 1,
+      borderColor: theme.colors.border,
+      backgroundColor: theme.colors.surface,
+      overflow: 'hidden',
+      // FIXED: Better sizing constraints
+      maxWidth: '100%',
+      maxHeight: '90%',
+      minWidth: 280,
+      minHeight: 120,
+      alignSelf: 'center',
+      ...createShadow(8),
+    },
+    closeButton: {
+      position: 'absolute',
+      top: theme.spacing.md,
+      right: theme.spacing.md,
+      width: 32,
+      height: 32,
+      borderRadius: 16,
+      backgroundColor: theme.colors.background,
+      justifyContent: 'center',
+      alignItems: 'center',
+      ...createShadow(4),
+      zIndex: 1000,
+    },
+    closeButtonText: {
+      fontSize: 16,
+      color: theme.colors.textSecondary,
+      fontWeight: '600',
+      lineHeight: 16,
+    },
+  });
 
 // Variant styles - no changes needed
-const getVariantStyles = (
-  variant: ComponentVariant,
-  theme: Theme
-): ViewStyle => {
+const getVariantStyles = (variant: ComponentVariant, theme: Theme): ViewStyle => {
   switch (variant) {
     case 'default':
       return {
@@ -239,17 +234,11 @@ const getVariantStyles = (
 };
 
 // FIXED: Modal size calculation dengan bounds yang lebih aman
-const getModalSize = (
-  size: ComponentSize,
-  screenWidth: number,
-  screenHeight: number
-) => {
+const getModalSize = (size: ComponentSize, screenWidth: number, screenHeight: number) => {
   // FIXED: Better safe area calculation
   const horizontalPadding = 32; // Total padding horizontal (16 * 2)
   const verticalPadding =
-    Platform.OS === 'android'
-      ? Math.max((StatusBar.currentHeight ?? 24) + 32, 64)
-      : 64;
+    Platform.OS === 'android' ? Math.max((StatusBar.currentHeight ?? 24) + 32, 64) : 64;
 
   const availableWidth = Math.max(screenWidth - horizontalPadding, 280);
   const availableHeight = Math.max(screenHeight - verticalPadding, 400);
@@ -369,14 +358,8 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
 
     const { width: screenWidth, height: screenHeight } = useMemo(() => {
       // Use the larger of window/screen dimensions for better compatibility
-      const width = Math.max(
-        windowDimensions.width || 375,
-        screenDimensions.width || 375
-      );
-      const height = Math.max(
-        windowDimensions.height || 667,
-        screenDimensions.height || 667
-      );
+      const width = Math.max(windowDimensions.width || 375, screenDimensions.width || 375);
+      const height = Math.max(windowDimensions.height || 667, screenDimensions.height || 667);
 
       return { width, height };
     }, [windowDimensions, screenDimensions]);
@@ -396,20 +379,14 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
     );
 
     const modalPosition = useMemo(() => getModalPosition(position), [position]);
-    const variantStyles = useMemo(
-      () => getVariantStyles(variant, theme),
-      [variant, theme]
-    );
+    const variantStyles = useMemo(() => getVariantStyles(variant, theme), [variant, theme]);
 
     // Safe state updater
-    const updateModalState = useCallback(
-      (updates: Partial<typeof modalState>) => {
-        if (mountedRef.current) {
-          setModalState((prev) => ({ ...prev, ...updates }));
-        }
-      },
-      []
-    );
+    const updateModalState = useCallback((updates: Partial<typeof modalState>) => {
+      if (mountedRef.current) {
+        setModalState((prev) => ({ ...prev, ...updates }));
+      }
+    }, []);
 
     // FIXED: Initialize animation values
     const initializeAnimationValues = useCallback(() => {
@@ -602,10 +579,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
         const scaleValue = Math.max(0.1, Math.min(2, scale.value));
         baseStyle.transform.push({ scale: scaleValue });
       } else if (animation === 'slide') {
-        const translateValue = Math.max(
-          -screenHeight,
-          Math.min(screenHeight, translateY.value)
-        );
+        const translateValue = Math.max(-screenHeight, Math.min(screenHeight, translateY.value));
         baseStyle.transform.push({ translateY: translateValue });
       }
 
@@ -655,8 +629,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
                   styles.container,
                   variantStyles,
                   {
-                    backgroundColor:
-                      backgroundColor ?? variantStyles.backgroundColor,
+                    backgroundColor: backgroundColor ?? variantStyles.backgroundColor,
                     borderRadius: theme.components.borderRadius[borderRadius],
                     padding: theme.spacing[padding],
                     marginBottom: margin ? theme.spacing[margin] : undefined,
@@ -677,7 +650,9 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
                     hitSlop={{ top: 10, bottom: 10, left: 10, right: 10 }}
                     disabled={!modalState.isReady}
                   >
-                    <Text style={styles.closeButtonText}>✕</Text>
+                    <Typography variant="body" style={styles.closeButtonText}>
+                      ✕
+                    </Typography>
                   </TouchableOpacity>
                 )}
                 {children}
@@ -691,10 +666,7 @@ const Modal = forwardRef<React.ComponentRef<typeof RNModal>, ModalProps>(
 );
 
 // Header, Content, Footer components - no changes needed
-const ModalHeader = forwardRef<
-  React.ComponentRef<typeof View>,
-  ModalHeaderProps
->(
+const ModalHeader = forwardRef<React.ComponentRef<typeof View>, ModalHeaderProps>(
   (
     {
       title,
@@ -729,11 +701,10 @@ const ModalHeader = forwardRef<
         {...props}
       >
         {title && (
-          <Text
+          <Typography
+            variant={titleVariant}
             style={[
               {
-                fontSize: theme.typography[titleVariant].fontSize,
-                lineHeight: theme.typography[titleVariant].lineHeight,
                 color: theme.colors.text,
                 fontWeight: '600',
                 marginBottom: subtitle ? theme.spacing.xs : 0,
@@ -742,14 +713,13 @@ const ModalHeader = forwardRef<
             ]}
           >
             {title}
-          </Text>
+          </Typography>
         )}
         {subtitle && (
-          <Text
+          <Typography
+            variant={subtitleVariant}
             style={[
               {
-                fontSize: theme.typography[subtitleVariant].fontSize,
-                lineHeight: theme.typography[subtitleVariant].lineHeight,
                 color: theme.colors.textSecondary,
                 fontWeight: '400',
               },
@@ -757,7 +727,7 @@ const ModalHeader = forwardRef<
             ]}
           >
             {subtitle}
-          </Text>
+          </Typography>
         )}
         {children}
         {showCloseButton && onClose && (
@@ -776,9 +746,9 @@ const ModalHeader = forwardRef<
             onPress={onClose}
             activeOpacity={0.7}
           >
-            <Text style={{ fontSize: 16, color: theme.colors.textSecondary }}>
+            <Typography variant="body" style={{ fontSize: 16, color: theme.colors.textSecondary }}>
               ✕
-            </Text>
+            </Typography>
           </TouchableOpacity>
         )}
       </View>
