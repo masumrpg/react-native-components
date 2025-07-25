@@ -22,6 +22,7 @@
     "@babel/preset-env": "^7.27.2",
     "@babel/preset-react": "^7.27.1",
     "@babel/preset-typescript": "^7.27.1",
+    "@expo-google-fonts/poppins": "^0.4.0",
     "@expo/config-plugins": "~10.0.2",
     "@expo/metro-config": "~0.20.14",
     "@expo/metro-runtime": "~5.0.4",

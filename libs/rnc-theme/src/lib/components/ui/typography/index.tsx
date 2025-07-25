@@ -97,26 +97,31 @@ const createTypographyStyles = (theme: Theme) =>
       fontSize: theme.typography.small.fontSize,
       lineHeight: theme.typography.small.lineHeight,
       fontWeight: theme.typography.small.fontWeight ?? '400',
+      fontFamily: theme.typography.small.fontFamily,
     },
     body: {
       fontSize: theme.typography.body.fontSize,
       lineHeight: theme.typography.body.lineHeight,
       fontWeight: theme.typography.body.fontWeight ?? '400',
+      fontFamily: theme.typography.body.fontFamily,
     },
     subtitle: {
       fontSize: theme.typography.subtitle.fontSize,
       lineHeight: theme.typography.subtitle.lineHeight,
       fontWeight: theme.typography.subtitle.fontWeight ?? '500',
+      fontFamily: theme.typography.subtitle.fontFamily,
     },
     title: {
       fontSize: theme.typography.title.fontSize,
       lineHeight: theme.typography.title.lineHeight,
       fontWeight: theme.typography.title.fontWeight ?? '600',
+      fontFamily: theme.typography.title.fontFamily,
     },
     heading: {
       fontSize: theme.typography.heading.fontSize,
       lineHeight: theme.typography.heading.lineHeight,
       fontWeight: theme.typography.heading.fontWeight ?? '700',
+      fontFamily: theme.typography.heading.fontFamily,
     },
     // Heading variants H1-H6
     h1: {
@@ -163,9 +168,10 @@ const createTypographyStyles = (theme: Theme) =>
       letterSpacing: 0.5,
     },
     caption: {
-      fontSize: 12,
-      lineHeight: 16,
-      fontWeight: '400',
+      fontSize: theme.typography.caption.fontSize,
+      lineHeight: theme.typography.caption.lineHeight,
+      fontWeight: theme.typography.caption.fontWeight ?? '400',
+      fontFamily: theme.typography.caption.fontFamily,
       letterSpacing: 0.4,
     },
     overline: {

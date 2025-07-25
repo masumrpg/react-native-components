@@ -9,7 +9,7 @@ import React, {
 } from 'react';
 import { Appearance, ColorSchemeName, View, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { Theme, ThemeMode, ThemeConfig } from '../types/theme';
+import { Theme, ThemeMode, ThemeConfig, FontConfig, FontLoadingState } from '../types/theme';
 import { lightTheme, darkTheme } from '../themes/defaultThemes';
 import { themeRegistry } from '../registry/ThemeRegistry';
 import { BottomSheetProvider } from '../components/ui/bottom-sheet/contexts/BottomSheetContext';
@@ -29,6 +29,7 @@ type ThemeContextType = {
   themeMode: ThemeMode;
   isDark: boolean;
   activePreset?: string;
+  fontLoadingState: FontLoadingState;
   setThemeMode: (mode: ThemeMode) => void;
   updateCustomTheme: (
     customTheme: Partial<Theme>,
@@ -132,6 +133,9 @@ interface ThemeProviderProps {
   loadingComponent?: ReactNode; // Custom loading component
   splashDuration?: number; // Minimum splash duration (ms)
   fallbackTheme?: 'light' | 'dark'; // Fallback if system unavailable
+  fontConfig?: FontConfig; // Custom font configuration
+  fontsLoaded?: boolean; // External font loading state
+  onFontLoadError?: (error: string) => void; // Font loading error callback
 }
 
 export const RNCProvider: React.FC<ThemeProviderProps> = ({
@@ -148,6 +152,9 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
                                                             loadingComponent,
                                                             splashDuration = 150, // Minimum 150ms to prevent flash
                                                             fallbackTheme = 'light',
+                                                            fontConfig,
+                                                            fontsLoaded = true,
+                                                            onFontLoadError,
                                                           }) => {
   const themeStorageKey = themeStorageKeyName ?? THEME_STORAGE_KEY;
 
@@ -162,6 +169,10 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
   const [presetConfig, setPresetConfig] = useState<
     ((isDark: boolean) => Partial<Theme>) | undefined
   >();
+  const [fontLoadingState, setFontLoadingState] = useState<FontLoadingState>({
+    loaded: fontsLoaded,
+    error: undefined,
+  });
 
   // System color scheme dengan fallback
   const [systemColorScheme, setSystemColorScheme] = useState<ColorSchemeName>(() => {
@@ -270,6 +281,30 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
     return () => subscription.remove();
   }, [fallbackTheme]);
 
+  // Font loading state listener
+  useEffect(() => {
+    setFontLoadingState({
+      loaded: fontsLoaded,
+      error: undefined,
+    });
+  }, [fontsLoaded]);
+
+  // Font error handling
+  useEffect(() => {
+    if (!fontsLoaded && onFontLoadError) {
+      const timer = setTimeout(() => {
+        const errorMessage = 'Font loading timeout - using fallback fonts';
+        setFontLoadingState({
+          loaded: false,
+          error: errorMessage,
+        });
+        onFontLoadError(errorMessage);
+      }, 5000); // 5 second timeout
+
+      return () => clearTimeout(timer);
+    }
+  }, [fontsLoaded, onFontLoadError]);
+
   // Auto-regenerate theme ketika mode berubah dan ada active preset
   useEffect(() => {
     if (!isThemeReady) return; // Tunggu sampai theme ready
@@ -346,28 +381,86 @@ export const RNCProvider: React.FC<ThemeProviderProps> = ({
     }, true); // Immediate save untuk reset
   }, [themeMode, themeStorageKey]);
 
+  // Apply font configuration to theme
+  const applyFontConfig = useCallback((theme: Theme): Theme => {
+    if (!fontConfig || !fontLoadingState.loaded) {
+      return theme;
+    }
+
+    const getFontFamily = (weight: string): string => {
+      switch (weight) {
+        case '400':
+        case 'normal':
+          return fontConfig.regular ?? theme.typography.body.fontFamily ?? 'System';
+        case '500':
+          return fontConfig.medium ?? fontConfig.regular ?? theme.typography.body.fontFamily ?? 'System';
+        case '600':
+          return fontConfig.semiBold ?? fontConfig.medium ?? fontConfig.regular ?? theme.typography.body.fontFamily ?? 'System';
+        case '700':
+        case 'bold':
+          return fontConfig.bold ?? fontConfig.semiBold ?? fontConfig.medium ?? fontConfig.regular ?? theme.typography.body.fontFamily ?? 'System';
+        default:
+          return fontConfig.regular ?? theme.typography.body.fontFamily ?? 'System';
+      }
+    };
+
+    return {
+      ...theme,
+      typography: {
+        caption: {
+          ...theme.typography.caption,
+          fontFamily: getFontFamily(theme.typography.caption.fontWeight?.toString() ?? '400'),
+        },
+        small: {
+          ...theme.typography.small,
+          fontFamily: getFontFamily(theme.typography.small.fontWeight?.toString() ?? '400'),
+        },
+        body: {
+          ...theme.typography.body,
+          fontFamily: getFontFamily(theme.typography.body.fontWeight?.toString() ?? '400'),
+        },
+        subtitle: {
+          ...theme.typography.subtitle,
+          fontFamily: getFontFamily(theme.typography.subtitle.fontWeight?.toString() ?? '500'),
+        },
+        title: {
+          ...theme.typography.title,
+          fontFamily: getFontFamily(theme.typography.title.fontWeight?.toString() ?? '600'),
+        },
+        heading: {
+          ...theme.typography.heading,
+          fontFamily: getFontFamily(theme.typography.heading.fontWeight?.toString() ?? '700'),
+        },
+      },
+    };
+  }, [fontConfig, fontLoadingState.loaded]);
+
   // Calculate final theme
   const theme = useMemo(() => {
     const baseTheme = isDark ? darkTheme : lightTheme;
     const providedCustomTheme = isDark ? customDarkTheme : customLightTheme;
     const currentCustomTheme = isDark ? customTheme.dark : customTheme.light;
     const finalCustomTheme = { ...providedCustomTheme, ...currentCustomTheme };
+    const mergedTheme = mergeThemes(baseTheme, finalCustomTheme);
 
-    return mergeThemes(baseTheme, finalCustomTheme);
-  }, [isDark, customDarkTheme, customLightTheme, customTheme]);
+    return applyFontConfig(mergedTheme);
+  }, [isDark, customDarkTheme, customLightTheme, customTheme, applyFontConfig]);
 
   const contextValue: ThemeContextType = useMemo(() => ({
     theme,
     themeMode,
     isDark,
     activePreset,
+    fontLoadingState,
     setThemeMode,
     updateCustomTheme,
     resetTheme,
-  }), [theme, themeMode, isDark, activePreset, setThemeMode, updateCustomTheme, resetTheme]);
+  }), [theme, themeMode, isDark, activePreset, fontLoadingState, setThemeMode, updateCustomTheme, resetTheme]);
 
-  // Show loading splash sementara theme belum ready
-  if (showLoadingSplash && !isThemeReady) {
+  // Show loading splash sementara theme atau font belum ready
+  const shouldShowLoading = showLoadingSplash && (!isThemeReady || (fontConfig && !fontLoadingState.loaded && !fontLoadingState.error));
+  
+  if (shouldShowLoading) {
     if (loadingComponent) {
       return loadingComponent;
     }

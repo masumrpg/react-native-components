@@ -1,12 +1,17 @@
-import { FontSource, useFonts } from 'expo-font';
-import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { useFonts } from 'expo-font';
 import { Stack } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 import 'react-native-reanimated';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
-import { RNCProvider } from 'rnc-theme';
+import { utils, RNCProvider } from 'rnc-theme';
 import { i18nConfig } from '@/config';
+import {
+  Poppins_400Regular,
+  Poppins_500Medium,
+  Poppins_600SemiBold,
+  Poppins_700Bold,
+} from '@expo-google-fonts/poppins';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -21,11 +26,31 @@ export const unstable_settings = {
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
+// Font config
+const fontConfig = utils.createExpoFontConfig({
+  'Poppins-Regular': Poppins_400Regular,
+  'Poppins-Medium': Poppins_500Medium,
+  'Poppins-SemiBold': Poppins_600SemiBold,
+  'Poppins-Bold': Poppins_700Bold,
+});
+
 export default function RootLayout() {
-  const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf') as FontSource,
-    ...FontAwesome.font,
+  // const [loaded, error] = useFonts({
+  //   SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf') as FontSource,
+  //   ...FontAwesome.font,
+  // });
+
+  const [fontsLoaded, error] = useFonts({
+    'Poppins-Regular': Poppins_400Regular,
+    'Poppins-Medium': Poppins_500Medium,
+    'Poppins-SemiBold': Poppins_600SemiBold,
+    'Poppins-Bold': Poppins_700Bold,
   });
+
+  const handleFontLoadError = (error: string) => {
+    console.warn('Font loading error:', error);
+    // You could show a toast notification or handle the error as needed
+  };
 
   // Expo Router uses Error Boundaries to catch errors in the navigation tree.
   useEffect(() => {
@@ -33,12 +58,12 @@ export default function RootLayout() {
   }, [error]);
 
   useEffect(() => {
-    if (loaded) {
+    if (fontsLoaded) {
       SplashScreen.hideAsync();
     }
-  }, [loaded]);
+  }, [fontsLoaded]);
 
-  if (!loaded) {
+  if (!fontsLoaded) {
     return null;
   }
 
@@ -52,6 +77,11 @@ export default function RootLayout() {
         scrollToHideProps={{
           headerHeight: 100,
         }}
+        fontConfig={fontConfig}
+        fontsLoaded={fontsLoaded}
+        onFontLoadError={handleFontLoadError}
+        showLoadingSplash={true}
+        splashDuration={200}
       >
         <Stack
           screenOptions={{

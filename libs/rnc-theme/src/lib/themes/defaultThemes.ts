@@ -58,12 +58,12 @@ export const lightTheme: Theme = {
     },
   },
   typography: {
-    caption: { fontSize: 10, lineHeight: 14, fontWeight: '400' },
-    small: { fontSize: 12, lineHeight: 16, fontWeight: '400' },
-    body: { fontSize: 16, lineHeight: 24, fontWeight: '400' },
-    subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500' },
-    title: { fontSize: 20, lineHeight: 28, fontWeight: '600' },
-    heading: { fontSize: 24, lineHeight: 32, fontWeight: '700' },
+    caption: { fontSize: 10, lineHeight: 14, fontWeight: '400', fontFamily: 'System' },
+    small: { fontSize: 12, lineHeight: 16, fontWeight: '400', fontFamily: 'System' },
+    body: { fontSize: 16, lineHeight: 24, fontWeight: '400', fontFamily: 'System' },
+    subtitle: { fontSize: 18, lineHeight: 26, fontWeight: '500', fontFamily: 'System' },
+    title: { fontSize: 20, lineHeight: 28, fontWeight: '600', fontFamily: 'System' },
+    heading: { fontSize: 24, lineHeight: 32, fontWeight: '700', fontFamily: 'System' },
   },
 };
 

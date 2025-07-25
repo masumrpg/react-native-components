@@ -65,32 +65,53 @@ type ThemeTypography = {
     fontSize: TextStyle['fontSize'];
     lineHeight: TextStyle['lineHeight'];
     fontWeight: TextStyle['fontWeight'];
+    fontFamily?: TextStyle['fontFamily'];
   };
   small: {
     fontSize: TextStyle['fontSize'];
     lineHeight: TextStyle['lineHeight'];
     fontWeight: TextStyle['fontWeight'];
+    fontFamily?: TextStyle['fontFamily'];
   };
   body: {
     fontSize: TextStyle['fontSize'];
     lineHeight: TextStyle['lineHeight'];
     fontWeight: TextStyle['fontWeight'];
+    fontFamily?: TextStyle['fontFamily'];
   };
   subtitle: {
     fontSize: TextStyle['fontSize'];
     lineHeight: TextStyle['lineHeight'];
     fontWeight: TextStyle['fontWeight'];
+    fontFamily?: TextStyle['fontFamily'];
   };
   title: {
     fontSize: TextStyle['fontSize'];
     lineHeight: TextStyle['lineHeight'];
     fontWeight: TextStyle['fontWeight'];
+    fontFamily?: TextStyle['fontFamily'];
   };
   heading: {
     fontSize: TextStyle['fontSize'];
     lineHeight: TextStyle['lineHeight'];
     fontWeight: TextStyle['fontWeight'];
+    fontFamily?: TextStyle['fontFamily'];
   };
+};
+
+// Font configuration type for custom fonts
+type FontConfig = {
+  regular?: string;
+  medium?: string;
+  semiBold?: string;
+  bold?: string;
+  [key: string]: string | undefined;
+};
+
+// Font loading state type
+type FontLoadingState = {
+  loaded: boolean;
+  error?: string;
 };
 
 type Theme = {
@@ -147,4 +168,6 @@ export type {
   CustomThemeConfigFactory,
   PartialCustomThemeConfig,
   PartialCustomThemeConfigFactory,
+  FontConfig,
+  FontLoadingState,
 };
