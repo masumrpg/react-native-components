@@ -128,31 +128,37 @@ const createTypographyStyles = (theme: Theme) =>
       fontSize: 32,
       lineHeight: 40,
       fontWeight: '700',
+      fontFamily: theme.typography.heading.fontFamily,
     },
     h2: {
       fontSize: 28,
       lineHeight: 36,
       fontWeight: '700',
+      fontFamily: theme.typography.heading.fontFamily,
     },
     h3: {
       fontSize: 24,
       lineHeight: 32,
       fontWeight: '600',
+      fontFamily: theme.typography.heading.fontFamily,
     },
     h4: {
       fontSize: 20,
       lineHeight: 28,
       fontWeight: '600',
+      fontFamily: theme.typography.heading.fontFamily,
     },
     h5: {
       fontSize: 18,
       lineHeight: 24,
       fontWeight: '500',
+      fontFamily: theme.typography.heading.fontFamily,
     },
     h6: {
       fontSize: 16,
       lineHeight: 22,
       fontWeight: '500',
+      fontFamily: theme.typography.heading.fontFamily,
     },
     // Variant baru yang ditambahkan
     display: {
@@ -160,12 +166,14 @@ const createTypographyStyles = (theme: Theme) =>
       lineHeight: 56,
       fontWeight: '800',
       letterSpacing: -1,
+      fontFamily: theme.typography.heading.fontFamily,
     },
     lead: {
       fontSize: 20,
       lineHeight: 30,
       fontWeight: '400',
       letterSpacing: 0.5,
+      fontFamily: theme.typography.heading.fontFamily,
     },
     caption: {
       fontSize: theme.typography.caption.fontSize,

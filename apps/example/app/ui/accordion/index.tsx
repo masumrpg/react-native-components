@@ -82,28 +82,18 @@ const AccordionScreen = () => {
   };
 
   return (
-    <VScroll
-      style={[styles.container]}
-      contentContainerStyle={styles.content}
-      themed
-    >
+    <VScroll style={[styles.container]} contentContainerStyle={styles.content} themed>
       {/* Multiple Selection with Outline Variant */}
       <Card margin="md">
-        <Typography variant="h3" style={styles.sectionTitle}>
+        <Typography variant="title" style={styles.sectionTitle}>
           📋 Multiple Selection - Outline Style
         </Typography>
-        <Accordion
-          type="multiple"
-          value={multipleValue}
-          onValueChange={handleMultipleValueChange}
-        >
+        <Accordion type="multiple" value={multipleValue} onValueChange={handleMultipleValueChange}>
           <AccordionItem value="feature-1" variant="outline">
             <AccordionTrigger>Premium Features</AccordionTrigger>
             <AccordionContent>
               <VStack spacing="md">
-                <Typography>
-                  Unlock advanced features with our premium subscription:
-                </Typography>
+                <Typography>Unlock advanced features with our premium subscription:</Typography>
                 <VStack spacing="xs" style={{ paddingLeft: 16 }}>
                   <Typography>• Unlimited cloud storage</Typography>
                   <Typography>• Advanced analytics dashboard</Typography>
@@ -146,9 +136,7 @@ const AccordionScreen = () => {
             <AccordionTrigger>Global Accessibility</AccordionTrigger>
             <AccordionContent>
               <VStack spacing="md">
-                <Typography>
-                  Access your data from anywhere in the world:
-                </Typography>
+                <Typography>Access your data from anywhere in the world:</Typography>
                 <VStack spacing="xs" style={{ paddingLeft: 16 }}>
                   <Typography>• 99.9% uptime guarantee</Typography>
                   <Typography>• Global CDN network</Typography>
@@ -167,7 +155,7 @@ const AccordionScreen = () => {
 
       {/* E-commerce Order Tracking */}
       <Card margin="md">
-        <Typography variant="h3" style={styles.sectionTitle}>
+        <Typography variant="title" style={styles.sectionTitle}>
           🛒 Order Tracking
         </Typography>
         <Accordion
@@ -177,9 +165,7 @@ const AccordionScreen = () => {
           collapsible
         >
           <AccordionItem value="order-123" variant="primary">
-            <AccordionTrigger
-              icon={<Package size={20} color={theme.colors.primary} />}
-            >
+            <AccordionTrigger icon={<Package size={20} color={theme.colors.primary} />}>
               Order #ORD-2024-001 - iPhone 15 Pro
             </AccordionTrigger>
             <AccordionContent>
@@ -188,9 +174,7 @@ const AccordionScreen = () => {
                   <Typography variant="subtitle">Status:</Typography>
                   <HStack spacing="xs" align="center">
                     <CheckCircle size={16} color={theme.colors.success} />
-                    <Typography color={theme.colors.success}>
-                      Delivered
-                    </Typography>
+                    <Typography color={theme.colors.success}>Delivered</Typography>
                   </HStack>
                 </HStack>
 
@@ -216,9 +200,7 @@ const AccordionScreen = () => {
                   <VStack spacing="xs" style={{ paddingLeft: 16 }}>
                     <HStack spacing="sm" align="center">
                       <CheckCircle size={14} color={theme.colors.success} />
-                      <Typography>
-                        Order Confirmed - Mar 15, 10:30 AM
-                      </Typography>
+                      <Typography>Order Confirmed - Mar 15, 10:30 AM</Typography>
                     </HStack>
                     <HStack spacing="sm" align="center">
                       <CheckCircle size={14} color={theme.colors.success} />
@@ -230,9 +212,7 @@ const AccordionScreen = () => {
                     </HStack>
                     <HStack spacing="sm" align="center">
                       <CheckCircle size={14} color={theme.colors.success} />
-                      <Typography>
-                        Out for Delivery - Mar 18, 8:30 AM
-                      </Typography>
+                      <Typography>Out for Delivery - Mar 18, 8:30 AM</Typography>
                     </HStack>
                     <HStack spacing="sm" align="center">
                       <CheckCircle size={14} color={theme.colors.success} />
@@ -254,9 +234,7 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="order-124" variant="warning">
-            <AccordionTrigger
-              icon={<Truck size={20} color={theme.colors.warning} />}
-            >
+            <AccordionTrigger icon={<Truck size={20} color={theme.colors.warning} />}>
               Order #ORD-2024-002 - MacBook Air M3
             </AccordionTrigger>
             <AccordionContent>
@@ -265,9 +243,7 @@ const AccordionScreen = () => {
                   <Typography variant="subtitle">Status:</Typography>
                   <HStack spacing="xs" align="center">
                     <Clock size={16} color={theme.colors.warning} />
-                    <Typography color={theme.colors.warning}>
-                      In Transit
-                    </Typography>
+                    <Typography color={theme.colors.warning}>In Transit</Typography>
                   </HStack>
                 </HStack>
 
@@ -300,35 +276,26 @@ const AccordionScreen = () => {
 
       {/* Customer Support FAQ */}
       <Card margin="md">
-        <Typography variant="h3" style={styles.sectionTitle}>
+        <Typography variant="title" style={styles.sectionTitle}>
           ❓ Frequently Asked Questions
         </Typography>
-        <Accordion
-          type="single"
-          value={faqValue}
-          onValueChange={handleFaqValueChange}
-          collapsible
-        >
+        <Accordion type="single" value={faqValue} onValueChange={handleFaqValueChange} collapsible>
           <AccordionItem value="shipping" variant="info">
             <AccordionTrigger>How long does shipping take?</AccordionTrigger>
             <AccordionContent>
               <VStack spacing="md">
                 <Typography>
-                  Shipping times vary depending on your location and the
-                  shipping method selected:
+                  Shipping times vary depending on your location and the shipping method selected:
                 </Typography>
                 <VStack spacing="sm" style={{ paddingLeft: 16 }}>
-                  <Typography>
-                    • Standard Shipping: 5-7 business days
-                  </Typography>
+                  <Typography>• Standard Shipping: 5-7 business days</Typography>
                   <Typography>• Express Shipping: 2-3 business days</Typography>
                   <Typography>• Overnight Shipping: 1 business day</Typography>
                   <Typography>• International: 7-14 business days</Typography>
                 </VStack>
                 <Typography>
-                  Orders placed before 2 PM EST on weekdays are typically
-                  processed the same day. Weekend orders are processed on the
-                  next business day.
+                  Orders placed before 2 PM EST on weekdays are typically processed the same day.
+                  Weekend orders are processed on the next business day.
                 </Typography>
                 <HStack spacing="sm">
                   <Button variant="outline" style={{ flex: 1 }}>
@@ -348,19 +315,15 @@ const AccordionScreen = () => {
               <VStack spacing="md">
                 <Typography variant="subtitle">30-Day Return Policy</Typography>
                 <Typography>
-                  We offer a hassle-free 30-day return policy for most items.
-                  Here's what you need to know:
+                  We offer a hassle-free 30-day return policy for most items. Here's what you need
+                  to know:
                 </Typography>
 
                 <VStack spacing="sm">
                   <Typography variant="subtitle">Eligible Items:</Typography>
                   <VStack spacing="xs" style={{ paddingLeft: 16 }}>
-                    <Typography>
-                      • Unopened items in original packaging
-                    </Typography>
-                    <Typography>
-                      • Items with all original accessories
-                    </Typography>
+                    <Typography>• Unopened items in original packaging</Typography>
+                    <Typography>• Items with all original accessories</Typography>
                     <Typography>• Items without damage or wear</Typography>
                   </VStack>
                 </VStack>
@@ -371,12 +334,8 @@ const AccordionScreen = () => {
                     <Typography>1. Initiate return request online</Typography>
                     <Typography>2. Print prepaid return label</Typography>
                     <Typography>3. Package item securely</Typography>
-                    <Typography>
-                      4. Drop off at any authorized location
-                    </Typography>
-                    <Typography>
-                      5. Receive refund within 5-7 business days
-                    </Typography>
+                    <Typography>4. Drop off at any authorized location</Typography>
+                    <Typography>5. Receive refund within 5-7 business days</Typography>
                   </VStack>
                 </VStack>
 
@@ -388,25 +347,18 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="warranty" variant="secondary">
-            <AccordionTrigger>
-              Do you offer warranty on products?
-            </AccordionTrigger>
+            <AccordionTrigger>Do you offer warranty on products?</AccordionTrigger>
             <AccordionContent>
               <VStack spacing="md">
                 <Typography>
-                  Yes! We provide comprehensive warranty coverage for all our
-                  products:
+                  Yes! We provide comprehensive warranty coverage for all our products:
                 </Typography>
 
                 <VStack spacing="md">
                   <VStack spacing="sm">
-                    <Typography variant="subtitle">
-                      Electronics (1-2 Years):
-                    </Typography>
+                    <Typography variant="subtitle">Electronics (1-2 Years):</Typography>
                     <VStack spacing="xs" style={{ paddingLeft: 16 }}>
-                      <Typography>
-                        • Smartphones: 1 year manufacturer warranty
-                      </Typography>
+                      <Typography>• Smartphones: 1 year manufacturer warranty</Typography>
                       <Typography>• Laptops & Computers: 1-2 years</Typography>
                       <Typography>• Audio Equipment: 1 year</Typography>
                       <Typography>• Gaming Consoles: 1 year</Typography>
@@ -414,9 +366,7 @@ const AccordionScreen = () => {
                   </VStack>
 
                   <VStack spacing="sm">
-                    <Typography variant="subtitle">
-                      Home Appliances (2-5 Years):
-                    </Typography>
+                    <Typography variant="subtitle">Home Appliances (2-5 Years):</Typography>
                     <VStack spacing="xs" style={{ paddingLeft: 16 }}>
                       <Typography>• Kitchen Appliances: 2-3 years</Typography>
                       <Typography>• Washing Machines: 5 years</Typography>
@@ -425,12 +375,9 @@ const AccordionScreen = () => {
                   </VStack>
 
                   <VStack spacing="sm">
-                    <Typography variant="subtitle">
-                      Extended Warranty Available:
-                    </Typography>
+                    <Typography variant="subtitle">Extended Warranty Available:</Typography>
                     <Typography style={{ paddingLeft: 16 }}>
-                      Purchase extended warranty for additional coverage up to 3
-                      years.
+                      Purchase extended warranty for additional coverage up to 3 years.
                     </Typography>
                   </VStack>
                 </VStack>
@@ -451,7 +398,7 @@ const AccordionScreen = () => {
 
       {/* User Profile Management */}
       <Card margin="md">
-        <Typography variant="h3" style={styles.sectionTitle}>
+        <Typography variant="title" style={styles.sectionTitle}>
           👤 Profile Management
         </Typography>
         <Accordion
@@ -461,9 +408,7 @@ const AccordionScreen = () => {
           collapsible
         >
           <AccordionItem value="personal-info" variant="primary">
-            <AccordionTrigger
-              icon={<User size={20} color={theme.colors.primary} />}
-            >
+            <AccordionTrigger icon={<User size={20} color={theme.colors.primary} />}>
               Personal Information
             </AccordionTrigger>
             <AccordionContent>
@@ -516,18 +461,14 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="address" variant="info">
-            <AccordionTrigger
-              icon={<MapPin size={20} color={theme.colors.info} />}
-            >
+            <AccordionTrigger icon={<MapPin size={20} color={theme.colors.info} />}>
               Address Book
             </AccordionTrigger>
             <AccordionContent>
               <VStack spacing="md">
                 <VStack spacing="sm">
                   <HStack justify="space-between" align="center">
-                    <Typography variant="subtitle">
-                      Home Address (Default)
-                    </Typography>
+                    <Typography variant="subtitle">Home Address (Default)</Typography>
                     <Button size="sm" variant="outline">
                       <ButtonText>Edit</ButtonText>
                     </Button>
@@ -563,9 +504,7 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="preferences" variant="secondary">
-            <AccordionTrigger
-              icon={<Settings size={20} color={theme.colors.secondary} />}
-            >
+            <AccordionTrigger icon={<Settings size={20} color={theme.colors.secondary} />}>
               Preferences & Settings
             </AccordionTrigger>
             <AccordionContent>
@@ -619,18 +558,12 @@ const AccordionScreen = () => {
 
       {/* Device Management */}
       <Card margin="md">
-        <Typography variant="h3" style={styles.sectionTitle}>
+        <Typography variant="title" style={styles.sectionTitle}>
           📱 Device Management
         </Typography>
-        <Accordion
-          type="multiple"
-          value={deviceValue}
-          onValueChange={handleDeviceValueChange}
-        >
+        <Accordion type="multiple" value={deviceValue} onValueChange={handleDeviceValueChange}>
           <AccordionItem value="mobile-devices" variant="primary">
-            <AccordionTrigger
-              icon={<Smartphone size={20} color={theme.colors.primary} />}
-            >
+            <AccordionTrigger icon={<Smartphone size={20} color={theme.colors.primary} />}>
               Mobile Devices (3)
             </AccordionTrigger>
             <AccordionContent>
@@ -639,9 +572,7 @@ const AccordionScreen = () => {
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
                       <Typography variant="subtitle">iPhone 15 Pro</Typography>
-                      <Typography>
-                        iOS 17.3.1 • Last seen: 2 minutes ago
-                      </Typography>
+                      <Typography>iOS 17.3.1 • Last seen: 2 minutes ago</Typography>
                     </VStack>
                     <HStack spacing="xs">
                       <Button size="sm" variant="outline">
@@ -657,12 +588,8 @@ const AccordionScreen = () => {
                 <VStack spacing="sm">
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
-                      <Typography variant="subtitle">
-                        Samsung Galaxy S24
-                      </Typography>
-                      <Typography>
-                        Android 14 • Last seen: 1 hour ago
-                      </Typography>
+                      <Typography variant="subtitle">Samsung Galaxy S24</Typography>
+                      <Typography>Android 14 • Last seen: 1 hour ago</Typography>
                     </VStack>
                     <HStack spacing="xs">
                       <Button size="sm" variant="outline">
@@ -679,9 +606,7 @@ const AccordionScreen = () => {
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
                       <Typography variant="subtitle">iPad Air</Typography>
-                      <Typography>
-                        iPadOS 17.3 • Last seen: 3 days ago
-                      </Typography>
+                      <Typography>iPadOS 17.3 • Last seen: 3 days ago</Typography>
                     </VStack>
                     <HStack spacing="xs">
                       <Button size="sm" variant="outline">
@@ -702,9 +627,7 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="computers" variant="info">
-            <AccordionTrigger
-              icon={<Laptop size={20} color={theme.colors.info} />}
-            >
+            <AccordionTrigger icon={<Laptop size={20} color={theme.colors.info} />}>
               Computers (2)
             </AccordionTrigger>
             <AccordionContent>
@@ -712,9 +635,7 @@ const AccordionScreen = () => {
                 <VStack spacing="sm">
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
-                      <Typography variant="subtitle">
-                        MacBook Pro 16"
-                      </Typography>
+                      <Typography variant="subtitle">MacBook Pro 16"</Typography>
                       <Typography>macOS Sonoma 14.3 • Active now</Typography>
                     </VStack>
                     <HStack spacing="xs">
@@ -731,12 +652,8 @@ const AccordionScreen = () => {
                 <VStack spacing="sm">
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
-                      <Typography variant="subtitle">
-                        Windows Desktop
-                      </Typography>
-                      <Typography>
-                        Windows 11 • Last seen: 2 hours ago
-                      </Typography>
+                      <Typography variant="subtitle">Windows Desktop</Typography>
+                      <Typography>Windows 11 • Last seen: 2 hours ago</Typography>
                     </VStack>
                     <HStack spacing="xs">
                       <Button size="sm" variant="outline">
@@ -757,9 +674,7 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="accessories" variant="secondary">
-            <AccordionTrigger
-              icon={<Headphones size={20} color={theme.colors.secondary} />}
-            >
+            <AccordionTrigger icon={<Headphones size={20} color={theme.colors.secondary} />}>
               Accessories (4)
             </AccordionTrigger>
             <AccordionContent>
@@ -767,9 +682,7 @@ const AccordionScreen = () => {
                 <VStack spacing="sm">
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
-                      <Typography variant="subtitle">
-                        AirPods Pro (2nd Gen)
-                      </Typography>
+                      <Typography variant="subtitle">AirPods Pro (2nd Gen)</Typography>
                       <Typography>Connected • Battery: 85%</Typography>
                     </VStack>
                     <Button size="sm" variant="success">
@@ -781,9 +694,7 @@ const AccordionScreen = () => {
                 <VStack spacing="sm">
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
-                      <Typography variant="subtitle">
-                        Apple Watch Series 9
-                      </Typography>
+                      <Typography variant="subtitle">Apple Watch Series 9</Typography>
                       <Typography>Connected • Battery: 67%</Typography>
                     </VStack>
                     <Button size="sm" variant="success">
@@ -808,9 +719,7 @@ const AccordionScreen = () => {
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
                       <Typography variant="subtitle">Magic Mouse</Typography>
-                      <Typography>
-                        Disconnected • Last seen: 1 day ago
-                      </Typography>
+                      <Typography>Disconnected • Last seen: 1 day ago</Typography>
                     </VStack>
                     <Button size="sm" variant="outline">
                       <ButtonText>Connect</ButtonText>
@@ -825,7 +734,7 @@ const AccordionScreen = () => {
 
       {/* Billing & Payments */}
       <Card margin="md">
-        <Typography variant="h3" style={styles.sectionTitle}>
+        <Typography variant="title" style={styles.sectionTitle}>
           💳 Billing & Payments
         </Typography>
         <Accordion
@@ -835,9 +744,7 @@ const AccordionScreen = () => {
           collapsible
         >
           <AccordionItem value="payment-methods" variant="primary">
-            <AccordionTrigger
-              icon={<CreditCard size={20} color={theme.colors.primary} />}
-            >
+            <AccordionTrigger icon={<CreditCard size={20} color={theme.colors.primary} />}>
               Payment Methods
             </AccordionTrigger>
             <AccordionContent>
@@ -845,9 +752,7 @@ const AccordionScreen = () => {
                 <VStack spacing="sm">
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
-                      <Typography variant="subtitle">
-                        Visa •••• 4242 (Default)
-                      </Typography>
+                      <Typography variant="subtitle">Visa •••• 4242 (Default)</Typography>
                       <Typography>Expires 12/2027</Typography>
                     </VStack>
                     <HStack spacing="xs">
@@ -864,9 +769,7 @@ const AccordionScreen = () => {
                 <VStack spacing="sm">
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
-                      <Typography variant="subtitle">
-                        Mastercard •••• 8888
-                      </Typography>
+                      <Typography variant="subtitle">Mastercard •••• 8888</Typography>
                       <Typography>Expires 08/2026</Typography>
                     </VStack>
                     <HStack spacing="xs">
@@ -905,9 +808,7 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="billing-history" variant="info">
-            <AccordionTrigger
-              icon={<FileText size={20} color={theme.colors.info} />}
-            >
+            <AccordionTrigger icon={<FileText size={20} color={theme.colors.info} />}>
               Billing History
             </AccordionTrigger>
             <AccordionContent>
@@ -915,9 +816,7 @@ const AccordionScreen = () => {
                 <VStack spacing="sm">
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
-                      <Typography variant="subtitle">
-                        March 2024 - Premium Plan
-                      </Typography>
+                      <Typography variant="subtitle">March 2024 - Premium Plan</Typography>
                       <Typography>Paid on Mar 1, 2024</Typography>
                     </VStack>
                     <VStack spacing="xs">
@@ -932,9 +831,7 @@ const AccordionScreen = () => {
                 <VStack spacing="sm">
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
-                      <Typography variant="subtitle">
-                        February 2024 - Premium Plan
-                      </Typography>
+                      <Typography variant="subtitle">February 2024 - Premium Plan</Typography>
                       <Typography>Paid on Feb 1, 2024</Typography>
                     </VStack>
                     <VStack spacing="xs">
@@ -949,9 +846,7 @@ const AccordionScreen = () => {
                 <VStack spacing="sm">
                   <HStack justify="space-between" align="center">
                     <VStack spacing="xs">
-                      <Typography variant="subtitle">
-                        January 2024 - Premium Plan
-                      </Typography>
+                      <Typography variant="subtitle">January 2024 - Premium Plan</Typography>
                       <Typography>Paid on Jan 1, 2024</Typography>
                     </VStack>
                     <VStack spacing="xs">
@@ -971,9 +866,7 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="subscription" variant="success">
-            <AccordionTrigger
-              icon={<Star size={20} color={theme.colors.success} />}
-            >
+            <AccordionTrigger icon={<Star size={20} color={theme.colors.success} />}>
               Current Subscription
             </AccordionTrigger>
             <AccordionContent>
@@ -1028,18 +921,12 @@ const AccordionScreen = () => {
 
       {/* Media Library */}
       <Card margin="md">
-        <Typography variant="h3" style={styles.sectionTitle}>
+        <Typography variant="title" style={styles.sectionTitle}>
           🎵 Media Library
         </Typography>
-        <Accordion
-          type="multiple"
-          value={mediaValue}
-          onValueChange={handleMediaValueChange}
-        >
+        <Accordion type="multiple" value={mediaValue} onValueChange={handleMediaValueChange}>
           <AccordionItem value="photos" variant="primary">
-            <AccordionTrigger
-              icon={<ImageIcon size={20} color={theme.colors.primary} />}
-            >
+            <AccordionTrigger icon={<ImageIcon size={20} color={theme.colors.primary} />}>
               Photos (1,247)
             </AccordionTrigger>
             <AccordionContent>
@@ -1080,9 +967,7 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="videos" variant="info">
-            <AccordionTrigger
-              icon={<Video size={20} color={theme.colors.info} />}
-            >
+            <AccordionTrigger icon={<Video size={20} color={theme.colors.info} />}>
               Videos (89)
             </AccordionTrigger>
             <AccordionContent>
@@ -1131,9 +1016,7 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="music" variant="secondary">
-            <AccordionTrigger
-              icon={<Music size={20} color={theme.colors.secondary} />}
-            >
+            <AccordionTrigger icon={<Music size={20} color={theme.colors.secondary} />}>
               Music (2,456 songs)
             </AccordionTrigger>
             <AccordionContent>
@@ -1163,9 +1046,7 @@ const AccordionScreen = () => {
                     <HStack justify="space-between" align="center">
                       <VStack spacing="xs">
                         <Typography>Imagine</Typography>
-                        <Typography style={{ opacity: 0.7 }}>
-                          John Lennon
-                        </Typography>
+                        <Typography style={{ opacity: 0.7 }}>John Lennon</Typography>
                       </VStack>
                       <Typography>3:07</Typography>
                     </HStack>
@@ -1206,7 +1087,7 @@ const AccordionScreen = () => {
 
       {/* Technical Support */}
       <Card margin="md">
-        <Typography variant="h3" style={styles.sectionTitle}>
+        <Typography variant="title" style={styles.sectionTitle}>
           🛠️ Technical Support
         </Typography>
         <Accordion
@@ -1216,9 +1097,7 @@ const AccordionScreen = () => {
           collapsible
         >
           <AccordionItem value="troubleshooting" variant="warning">
-            <AccordionTrigger
-              icon={<AlertCircle size={20} color={theme.colors.warning} />}
-            >
+            <AccordionTrigger icon={<AlertCircle size={20} color={theme.colors.warning} />}>
               Common Issues & Troubleshooting
             </AccordionTrigger>
             <AccordionContent>
@@ -1262,20 +1141,14 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="system-status" variant="success">
-            <AccordionTrigger
-              icon={<CheckCircle size={20} color={theme.colors.success} />}
-            >
+            <AccordionTrigger icon={<CheckCircle size={20} color={theme.colors.success} />}>
               System Status
             </AccordionTrigger>
             <AccordionContent>
               <VStack spacing="md">
                 <VStack spacing="sm">
-                  <Typography variant="subtitle">
-                    All Systems Operational
-                  </Typography>
-                  <Typography>
-                    Last updated: March 20, 2024 at 2:30 PM EST
-                  </Typography>
+                  <Typography variant="subtitle">All Systems Operational</Typography>
+                  <Typography>Last updated: March 20, 2024 at 2:30 PM EST</Typography>
                 </VStack>
 
                 <VStack spacing="sm">
@@ -1285,45 +1158,35 @@ const AccordionScreen = () => {
                       <Typography>API Services</Typography>
                       <HStack spacing="xs" align="center">
                         <CheckCircle size={14} color={theme.colors.success} />
-                        <Typography color={theme.colors.success}>
-                          Operational
-                        </Typography>
+                        <Typography color={theme.colors.success}>Operational</Typography>
                       </HStack>
                     </HStack>
                     <HStack justify="space-between" align="center">
                       <Typography>Database</Typography>
                       <HStack spacing="xs" align="center">
                         <CheckCircle size={14} color={theme.colors.success} />
-                        <Typography color={theme.colors.success}>
-                          Operational
-                        </Typography>
+                        <Typography color={theme.colors.success}>Operational</Typography>
                       </HStack>
                     </HStack>
                     <HStack justify="space-between" align="center">
                       <Typography>File Storage</Typography>
                       <HStack spacing="xs" align="center">
                         <CheckCircle size={14} color={theme.colors.success} />
-                        <Typography color={theme.colors.success}>
-                          Operational
-                        </Typography>
+                        <Typography color={theme.colors.success}>Operational</Typography>
                       </HStack>
                     </HStack>
                     <HStack justify="space-between" align="center">
                       <Typography>Authentication</Typography>
                       <HStack spacing="xs" align="center">
                         <CheckCircle size={14} color={theme.colors.success} />
-                        <Typography color={theme.colors.success}>
-                          Operational
-                        </Typography>
+                        <Typography color={theme.colors.success}>Operational</Typography>
                       </HStack>
                     </HStack>
                   </VStack>
                 </VStack>
 
                 <VStack spacing="sm">
-                  <Typography variant="subtitle">
-                    Performance Metrics:
-                  </Typography>
+                  <Typography variant="subtitle">Performance Metrics:</Typography>
                   <VStack spacing="xs" style={{ paddingLeft: 16 }}>
                     <HStack justify="space-between" align="center">
                       <Typography>Response Time</Typography>
@@ -1348,9 +1211,7 @@ const AccordionScreen = () => {
           </AccordionItem>
 
           <AccordionItem value="contact-support" variant="info">
-            <AccordionTrigger
-              icon={<HelpCircle size={20} color={theme.colors.info} />}
-            >
+            <AccordionTrigger icon={<HelpCircle size={20} color={theme.colors.info} />}>
               Contact Support
             </AccordionTrigger>
             <AccordionContent>
@@ -1364,9 +1225,7 @@ const AccordionScreen = () => {
                         <Mail size={16} color={theme.colors.info} />
                         <VStack spacing="xs">
                           <Typography>Email Support</Typography>
-                          <Typography style={{ opacity: 0.7 }}>
-                            Response within 24 hours
-                          </Typography>
+                          <Typography style={{ opacity: 0.7 }}>Response within 24 hours</Typography>
                         </VStack>
                       </HStack>
                       <Button size="sm" variant="info">
@@ -1379,9 +1238,7 @@ const AccordionScreen = () => {
                         <Phone size={16} color={theme.colors.success} />
                         <VStack spacing="xs">
                           <Typography>Phone Support</Typography>
-                          <Typography style={{ opacity: 0.7 }}>
-                            Mon-Fri 9AM-6PM EST
-                          </Typography>
+                          <Typography style={{ opacity: 0.7 }}>Mon-Fri 9AM-6PM EST</Typography>
                         </VStack>
                       </HStack>
                       <Button size="sm" variant="success">
@@ -1394,9 +1251,7 @@ const AccordionScreen = () => {
                         <HelpCircle size={16} color={theme.colors.primary} />
                         <VStack spacing="xs">
                           <Typography>Live Chat</Typography>
-                          <Typography style={{ opacity: 0.7 }}>
-                            Available 24/7
-                          </Typography>
+                          <Typography style={{ opacity: 0.7 }}>Available 24/7</Typography>
                         </VStack>
                       </HStack>
                       <Button size="sm" variant="primary">
@@ -1407,18 +1262,12 @@ const AccordionScreen = () => {
                 </VStack>
 
                 <VStack spacing="sm">
-                  <Typography variant="subtitle">
-                    Before Contacting Support:
-                  </Typography>
+                  <Typography variant="subtitle">Before Contacting Support:</Typography>
                   <VStack spacing="xs" style={{ paddingLeft: 16 }}>
                     <Typography>• Check our FAQ section above</Typography>
                     <Typography>• Try basic troubleshooting steps</Typography>
-                    <Typography>
-                      • Have your account information ready
-                    </Typography>
-                    <Typography>
-                      • Note any error messages you've seen
-                    </Typography>
+                    <Typography>• Have your account information ready</Typography>
+                    <Typography>• Note any error messages you've seen</Typography>
                   </VStack>
                 </VStack>
 
@@ -1433,7 +1282,7 @@ const AccordionScreen = () => {
 
       {/* Original Examples for Reference */}
       <Card margin="md">
-        <Typography variant="h3" style={styles.sectionTitle}>
+        <Typography variant="title" style={styles.sectionTitle}>
           📚 Component Examples
         </Typography>
 
@@ -1447,13 +1296,11 @@ const AccordionScreen = () => {
               </Typography>
               <Accordion type="single" collapsible>
                 <AccordionItem value={`size-${size}`} size={size}>
-                  <AccordionTrigger>
-                    Accordion with {size} size
-                  </AccordionTrigger>
+                  <AccordionTrigger>Accordion with {size} size</AccordionTrigger>
                   <AccordionContent>
                     <Typography>
-                      This accordion uses the {size} size variant with
-                      appropriate padding and text sizing.
+                      This accordion uses the {size} size variant with appropriate padding and text
+                      sizing.
                     </Typography>
                   </AccordionContent>
                 </AccordionItem>
@@ -1487,13 +1334,12 @@ const AccordionScreen = () => {
               <Accordion type="single" collapsible>
                 <AccordionItem value={`variant-${variant}`} variant={variant}>
                   <AccordionTrigger>
-                    {variant.charAt(0).toUpperCase() + variant.slice(1)}{' '}
-                    Accordion
+                    {variant.charAt(0).toUpperCase() + variant.slice(1)} Accordion
                   </AccordionTrigger>
                   <AccordionContent>
                     <Typography>
-                      This accordion demonstrates the {variant} variant styling
-                      with appropriate colors and borders.
+                      This accordion demonstrates the {variant} variant styling with appropriate
+                      colors and borders.
                     </Typography>
                   </AccordionContent>
                 </AccordionItem>
